@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "author": "CW Affiliate Investments",
+  "projects": {
+    "adminstack": {
+      "dir": "C:\\Projects\\AdminStack",
+      "claude_md": "C:\\Projects\\AdminStack\\CLAUDE.md",
+      "deploy_target": "netlify",
+      "repo": "github.com/cwinvestments/AdminStack"
+    },
+    "imagestack": {
+      "dir": "C:\\Projects\\imagestack",
+      "claude_md": "C:\\Projects\\imagestack\\CLAUDE.md",
+      "deploy_target": "netlify",
+      "repo": "github.com/cwinvestments/imagestack"
+    },
+    "greenacres": {
+      "dir": "C:\\Projects\\GreenAcres",
+      "claude_md": "C:\\Projects\\GreenAcres\\CLAUDE.md",
+      "deploy_target": "netlify",
+      "repo": "github.com/cwinvestments/greenacres"
+    },
+    "algostack": {
+      "dir": "C:\\Projects\\algostack",
+      "claude_md": "C:\\Projects\\algostack\\CLAUDE.md",
+      "deploy_target": "railway",
+      "repo": "github.com/cwinvestments/algostack"
+    },
+    "epsteinscan": {
+      "dir": "C:\\Projects\\epsteinscan",
+      "claude_md": "C:\\Projects\\epsteinscan\\CLAUDE.md",
+      "deploy_target": "railway",
+      "repo": "github.com/cwinvestments/epsteinscan"
+    }
+  },
+  "cc_monitor": {
+    "api_url": "https://admin.cwaffiliateinvestments.com/api/cc-sessions/report",
+    "api_key": ""
+  },
+  "defaults": {
+    "commit_format": "[{project}] {message}",
+    "always_build_before_push": true,
+    "auto_diary": true,
+    "auto_monitor": true
+  }
+}
