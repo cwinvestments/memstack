@@ -1,12 +1,8 @@
-# MemStack
+# MemStack v2.0
 
-A structured skill framework for Claude Code. Modular, auto-triggering skills that activate when CC detects specific keywords in your prompts.
+A structured skill framework for Claude Code. Modular, auto-triggering skills that activate when CC detects specific keywords, conditions, or background events in your prompts.
 
-## What Is This?
-
-MemStack is CLAUDE.md on steroids. Instead of one big context file, you have **14 modular skills** that activate on demand. Each skill is a self-contained markdown file with trigger keywords, step-by-step instructions, and examples.
-
-When CC sees a trigger keyword in your prompt (like "commit", "recall", or "diagram"), it reads the corresponding skill file and follows its instructions automatically.
+Architecture inspired by [Developer Kaki's MemoryCore](https://github.com/Kiyoraka/Project-AI-MemoryCore).
 
 ## Quick Start
 
@@ -16,77 +12,101 @@ Add this line to the start of any CC session prompt:
 Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.
 ```
 
-That's it. CC will read the master index and auto-activate skills as needed.
+CC reads the master index, remembers all triggers, and auto-activates skills as needed.
+
+## How Skills Work
+
+Each skill is a self-contained markdown file with YAML frontmatter for auto-discovery. When CC detects a trigger, it reads the skill file and follows its protocol.
+
+### Trigger Types
+
+| Type | Behavior | Examples |
+|------|----------|---------|
+| **Keyword** | Fires when specific phrases appear in prompt | "commit", "diagram", "recall" |
+| **Passive** | Always-on background behavior | Monitor, Seal, Deploy |
+| **Contextual** | Fires when conditions are detected | File over 1K lines, session ending, context low |
+
+### Activation Messages
+
+Every skill outputs a visible activation line when it fires:
+
+```
+🔒 Seal — Clean commits, every time.
+📋 Work — Plan execution engaged.
+📡 Monitor — Reporting to AdminStack...
+```
+
+### Leveling System
+
+Skills evolve through levels as they're improved:
+
+- **Lv.1** — Base capability (initial creation)
+- **Lv.2** — Enhanced (YAML frontmatter, context guards, activation messages)
+- **Lv.3** — Advanced (proactive behavior, deep cross-skill integration)
+- **Lv.4+** — Expert (fully autonomous, handles edge cases gracefully)
 
 ## Skills
 
-| Skill    | What It Does                                    | Trigger Examples                    |
-|----------|-------------------------------------------------|-------------------------------------|
-| Familiar | Splits tasks across multiple CC sessions        | "dispatch", "send familiar"         |
-| Echo     | Recalls information from past sessions          | "recall", "do you remember"         |
-| Seal     | Enforces clean git commits with build checks    | "commit", "push"                    |
-| Work     | Manages task lists and tracks progress           | "what's next", "todo"               |
-| Project  | Saves/restores project state between sessions    | "save project", "handoff"           |
-| Grimoire | Manages CLAUDE.md files across projects          | "update context", "save library"    |
-| Scan     | Analyzes project scope and suggests pricing      | "scan project", "estimate"          |
-| Quill    | Generates professional client quotations         | "create quotation", "proposal"      |
-| Forge    | Creates new MemStack skills                      | "forge this", "new skill"           |
-| Diary    | Documents session accomplishments                | "save diary", "log session"         |
-| Shard    | Refactors large files into smaller modules       | "shard this", "split file"          |
-| Sight    | Generates Mermaid architecture diagrams          | "draw", "diagram", "visualize"      |
-| Monitor  | Reports session status to AdminStack CC Monitor  | Auto-activates if configured        |
-| Deploy   | Verifies builds and guards deployments           | "deploy", "ship it"                 |
+| Skill | Emoji | Type | What It Does |
+|-------|-------|------|-------------|
+| Familiar | 👻 | Keyword | Splits tasks across multiple CC sessions |
+| Echo | 🔊 | Keyword | Recalls information from past sessions |
+| Seal | 🔒 | Passive | Enforces clean git commits with build checks |
+| Work | 📋 | Keyword | Plan execution with 3 modes: copy/append/resume |
+| Project | 💾 | Contextual | Saves/restores project state between sessions |
+| Grimoire | 📖 | Keyword | Manages CLAUDE.md files across projects |
+| Scan | 🔍 | Keyword | Analyzes project scope and suggests pricing |
+| Quill | ✒️ | Keyword | Generates professional client quotations |
+| Forge | 🔨 | Keyword | Creates new MemStack skills |
+| Diary | 📓 | Contextual | Documents session accomplishments |
+| Shard | 💎 | Contextual | Refactors large files into smaller modules |
+| Sight | 👁️ | Keyword | Generates Mermaid architecture diagrams |
+| Monitor | 📡 | Passive | Reports session status to AdminStack CC Monitor |
+| Deploy | 🚀 | Passive | Verifies builds and guards deployments |
+
+## Work Skill — 3 Modes
+
+The Work skill is the backbone for task management across CC sessions:
+
+- **Copy Mode** (`"copy plan"`) — captures the entire current plan into memory. Use when starting fresh.
+- **Append Mode** (`"append plan"`) — adds latest progress to existing plan. Keeps file under 1K lines by summarizing old entries.
+- **Resume Mode** (`"resume plan"`) — restores plan context after CC compact or new session. Reads the saved plan and picks up where you left off.
+
+Quick commands: `"what's next"`, `"priorities"`, `"todo"`
+
+## Session Memory Management
+
+Session logs have a **500-line limit**. When a log approaches the limit, Diary creates a recap summary and archives the full log to `memory/sessions/archive/`. This prevents stale context from bloating the context window.
+
+Templates in `memory/`:
+- `session-format.md` — active session state template
+- `main-memory-format.md` — persistent project memory template
 
 ## Folder Structure
 
 ```
 memstack/
-├── MEMSTACK.md              # Master index — add this to CC prompts
-├── skills/                  # Skill files (one per skill)
-│   ├── familiar.md
-│   ├── echo.md
-│   └── ...
+├── MEMSTACK.md              # Master index (add to CC prompts)
+├── config.json              # Projects, API keys, limits
+├── skills/                  # 14 skill files with YAML frontmatter
 ├── memory/
-│   ├── sessions/            # Auto-saved session logs (Diary)
-│   ├── projects/            # Project state snapshots (Project)
+│   ├── session-format.md    # Active session template
+│   ├── main-memory-format.md # Project memory template
+│   ├── sessions/            # Session logs (Diary)
+│   │   └── archive/         # Archived logs over 500 lines
+│   ├── projects/            # Project state snapshots & plans (Work, Project)
 │   └── ideas/               # Idea storage
-├── templates/               # Reusable document templates
-│   ├── handoff.md
-│   ├── project-snapshot.md
-│   └── client-quote.md
-└── config.json              # Project directories, API keys, defaults
+└── templates/               # Document templates (handoff, quote, snapshot)
 ```
 
 ## Creating New Skills
 
-Use the **Forge** skill. Say "forge a new skill for [description]" and CC will walk you through the creation process, generate the skill file, and add it to the master index.
-
-Or create one manually following the format in any existing skill file:
-
-```markdown
-# [Skill Name] — MemStack Skill
-
-## Trigger Keywords
-## Purpose
-## Instructions
-## Inputs
-## Outputs
-## Example Usage
-```
+Use the **Forge** skill: say `"forge a new skill for [description]"`. Forge walks you through creation, generates the file with proper YAML frontmatter, and updates the master index.
 
 ## Configuration
 
-Edit `config.json` to set:
+Edit `config.json`:
 - **projects** — directory paths, CLAUDE.md locations, deploy targets
-- **cc_monitor** — AdminStack CC Monitor API key for auto-reporting
+- **cc_monitor** — AdminStack CC Monitor API URL and key
+- **session_limits** — max lines for session logs (500) and plans (1000)
 - **defaults** — commit format, auto-diary, auto-monitor toggles
-
-## How Triggers Work
-
-1. You paste `MEMSTACK.md` path into your CC session prompt
-2. CC reads the skill index and remembers all trigger keywords
-3. When your prompt contains a trigger keyword, CC reads that skill file
-4. CC follows the skill's instructions step-by-step
-5. Multiple skills can activate in the same session
-
-Skills don't conflict — they're designed to compose. Seal activates after Work finishes. Diary captures what Work accomplished. Monitor reports throughout.

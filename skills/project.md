@@ -1,12 +1,20 @@
-# Project — MemStack Skill
+---
+name: project
+description: "MUST use when saving project state for session handoff, restoring a previous session, or when context is running low. Triggers on 'save project', 'load project', 'handoff', 'session ending', 'context running low'. Generates ready-to-paste prompts for the next CC session."
+---
 
-## Trigger Keywords
-- save project, load project, handoff, session ending, context running low
+# 💾 Project — Saving Project State...
+*Save and restore project state between CC sessions for seamless handoffs.*
 
-## Purpose
-Save and restore project state between CC sessions. Generates handoff documents so the next session can pick up exactly where this one left off.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`💾 Project — Saving project state...`
+
+Then execute the protocol below.
+
+## Protocol
 
 ### Saving (handoff):
 
@@ -16,20 +24,16 @@ Save and restore project state between CC sessions. Generates handoff documents 
    - Open questions or decisions pending
    - Next steps in priority order
    - Key file paths that were modified
-
 2. **Run git status** to capture uncommitted state
-
-3. **Generate handoff document** using `templates/handoff.md`:
-   - Save to `memory/projects/{project}-{date}.md`
-   - Include a ready-to-paste prompt for the next CC session
-
-4. **Present the handoff prompt** — the user copies this into their next CC session
+3. **Generate handoff document** using `templates/handoff.md`
+4. **Save to** `memory/projects/{project}-{date}.md`
+5. **Present the ready-to-paste prompt** for the next CC session
 
 ### Loading (restore):
 
 1. **Find the most recent handoff** in `memory/projects/` for the requested project
 2. **Read and present** the saved state
-3. **Show the next steps** so CC can continue immediately
+3. **Show next steps** so CC can continue immediately
 
 ## Inputs
 - Project name
@@ -41,31 +45,28 @@ Save and restore project state between CC sessions. Generates handoff documents 
 
 ## Example Usage
 
-**User prompt:** "context is running low — save project"
-
-**Project activates:**
+**User:** "context is running low — save project"
 
 ```
-Saving AdminStack session state...
+💾 Project — Saving project state...
 
-Handoff saved: memory/projects/adminstack-2026-02-18.md
+Saved: memory/projects/adminstack-2026-02-18.md
 
---- PASTE THIS INTO YOUR NEXT CC SESSION ---
-
+--- PASTE INTO NEXT CC SESSION ---
 Working directory: C:\Projects\AdminStack
 Read C:\Projects\memstack\MEMSTACK.md
 
-Resume AdminStack work. Last session (2026-02-18) completed:
-- Built CC Monitor page with auto-refresh and notifications
-- Added /api/cc-sessions CRUD + public report endpoint
-- Fixed API key validation with .trim()
+Resume AdminStack. Last session completed:
+- Built CC Monitor page with auto-refresh
+- Fixed API key validation
 
 Next steps:
-1. Build cc-reporter.js Node script
-2. Add WebSocket real-time updates
-3. Mobile responsive polish
-
-Uncommitted changes: None (all pushed to main)
-
+1. Build cc-reporter.js script
+2. Add WebSocket updates
 --- END HANDOFF ---
 ```
+
+## Level History
+
+- **Lv.1** — Base: Session state capture and handoff generation. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, activation message, template integration. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

@@ -1,40 +1,57 @@
-# Diary — MemStack Skill
+---
+name: diary
+description: "MUST use when documenting session accomplishments, logging what was built, or at the end of any productive session. Triggers on 'save diary', 'write diary', 'log session'. Auto-activates at session end if auto_diary is true in config.json. Creates searchable logs for Echo."
+---
 
-## Trigger Keywords
-- save diary, write diary, log session (auto-activates at session end if auto_diary is true)
+# 📓 Diary — Logging Session...
+*Document what was accomplished in each CC session for future recall.*
 
-## Purpose
-Document what was accomplished in each CC session. Creates a searchable log that Echo can reference later.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`📓 Diary — Logging session...`
+
+Then execute the protocol below.
+
+## Context Guard
+
+| Context | Status |
+|---------|--------|
+| **User says "save diary" or "log session"** | ACTIVE — write diary |
+| **Session ending with productive work done** | ACTIVE — auto-diary |
+| **Task completed and user is wrapping up** | ACTIVE — suggest diary |
+| **Mid-session, user is actively working** | DORMANT — do not interrupt |
+| **Casual conversation, no work done** | DORMANT — nothing to log |
+
+## Protocol
 
 1. **Summarize the session:**
    - Project name and working directory
    - Date and approximate duration
    - What was built or changed
-   - Files created or modified (list key ones)
+   - Key files created or modified
    - Commits made (hashes and messages)
    - Decisions made and why
-   - Problems encountered and how they were solved
+   - Problems encountered and solutions
 
-2. **Check git log** for commits made this session:
+2. **Check git log** for commits:
    ```bash
    git log --oneline -10
    ```
 
-3. **Format the diary entry** as markdown:
+3. **Format the diary entry:**
    ```markdown
    # Session Diary — {project} — {date}
 
    ## Accomplished
-   - Item 1
-   - Item 2
+   - Item 1...
 
    ## Files Changed
    - path/to/file.ts — description
 
    ## Commits
-   - abc1234 Commit message
+   - abc1234 Message
 
    ## Decisions
    - Decision: reason
@@ -45,10 +62,19 @@ Document what was accomplished in each CC session. Creates a searchable log that
 
 4. **Save to** `memory/sessions/{date}-{project}.md`
 
-5. **Confirm** — show the user a brief summary of what was logged
+## Session File Size Management
+
+Session logs in `memory/sessions/` have a **500-line limit** per file.
+
+When a session log approaches 500 lines:
+1. Create a recap summary (5-10 lines) capturing key accomplishments, decisions, and next steps
+2. Move the full log to `memory/sessions/archive/{original-filename}`
+3. Start a fresh log file with only the recap block for continuity
+
+This prevents stale context from bloating the context window. The archive preserves full history for Echo to search later.
 
 ## Inputs
-- Current session context (CC tracks this naturally)
+- Current session context
 - Project name from working directory or config.json
 - Git log for commit history
 
@@ -58,19 +84,22 @@ Document what was accomplished in each CC session. Creates a searchable log that
 
 ## Example Usage
 
-**User prompt:** "save diary" (at end of session)
-
-**Diary activates:**
+**User:** "save diary"
 
 ```
-Session Diary saved: memory/sessions/2026-02-18-adminstack.md
+📓 Diary — Logging session...
 
-Summary:
-  Project: AdminStack
-  Duration: ~2 hours
-  Accomplished: Built CC Monitor page, API routes, setup guide
-  Commits: 4 (45b4c42, d1c7e11, f6c8e18, f0e793f)
-  Files changed: 8
+Saved: memory/sessions/2026-02-18-adminstack.md
+
+Project: AdminStack | Duration: ~2 hours
+Accomplished: Built CC Monitor page, API routes, setup guide
+Commits: 4 (45b4c42, d1c7e11, f6c8e18, f0e793f)
+Files changed: 8
 
 This session is now searchable via Echo.
 ```
+
+## Level History
+
+- **Lv.1** — Base: Session logging with git integration. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, 500-line limit with archive, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

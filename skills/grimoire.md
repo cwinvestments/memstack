@@ -1,12 +1,20 @@
-# Grimoire — MemStack Skill
+---
+name: grimoire
+description: "MUST use when updating a project's CLAUDE.md file, syncing knowledge across projects, or saving new patterns to context. Triggers on 'save library', 'load library', 'update context', 'update claude.md', 'update claude'. Manages persistent project knowledge."
+---
 
-## Trigger Keywords
-- save library, load library, update context, update claude.md, update claude
+# 📖 Grimoire — Updating the Knowledge Library
+*Manage and update CLAUDE.md files across all projects.*
 
-## Purpose
-Manage and update CLAUDE.md files across all projects. Keep project context current as features are built.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`📖 Grimoire — Updating the knowledge library.`
+
+Then execute the protocol below.
+
+## Protocol
 
 1. **Identify the target project** — use config.json to find the CLAUDE.md path
 2. **Read the current CLAUDE.md** if it exists
@@ -17,20 +25,14 @@ Manage and update CLAUDE.md files across all projects. Keep project context curr
    - Architecture decisions made
    - Environment variables added
    - Dependencies installed
-4. **Update the CLAUDE.md** — add new information in the correct section:
+4. **Update the CLAUDE.md:**
    - Keep existing content intact
    - Add new entries under the right headings
    - Don't duplicate existing entries
-   - Use consistent formatting with the rest of the file
+   - Use consistent formatting
 5. **If no CLAUDE.md exists** — create one with standard sections:
-   - Project Overview
-   - Tech Stack
-   - Directory Structure
-   - Key Files
-   - API Endpoints
-   - Database Schema
-   - Environment Variables
-   - Development Commands
+   - Project Overview, Tech Stack, Directory Structure, Key Files
+   - API Endpoints, Database Schema, Environment Variables, Dev Commands
 
 ## Inputs
 - Project name (maps to config.json entry)
@@ -42,25 +44,27 @@ Manage and update CLAUDE.md files across all projects. Keep project context curr
 
 ## Example Usage
 
-**User prompt:** "update claude.md with the CC Monitor stuff we just built"
-
-**Grimoire activates:**
+**User:** "update claude.md with the CC Monitor stuff"
 
 ```
+📖 Grimoire — Updating the knowledge library.
+
 Reading: C:\Projects\AdminStack\CLAUDE.md
 
-Adding to API Endpoints section:
-  - POST/GET/PATCH/DELETE /api/cc-sessions — CC session CRUD (admin)
-  - POST /api/cc-sessions/report — Public reporter endpoint (API key auth)
+Adding to API Endpoints:
+  - POST/GET/PATCH/DELETE /api/cc-sessions
+  - POST /api/cc-sessions/report
 
-Adding to Database Schema section:
-  - cc_sessions — Claude Code session tracking (020_cc_sessions.sql)
+Adding to Database Schema:
+  - cc_sessions (020_cc_sessions.sql)
 
-Adding to Pages section:
-  - /cc-monitor — Claude Code session monitoring dashboard
+Adding to Environment Variables:
+  - CC_MONITOR_API_KEY
 
-Adding to Environment Variables section:
-  - CC_MONITOR_API_KEY — API key for cc-reporter script
-
-CLAUDE.md updated successfully.
+CLAUDE.md updated ✓
 ```
+
+## Level History
+
+- **Lv.1** — Base: CLAUDE.md read/write with section management. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, activation message, auto-detect what changed. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

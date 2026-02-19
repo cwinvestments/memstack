@@ -1,44 +1,41 @@
-# MemStack v1.0 — Skill Framework for Claude Code
+# MemStack v2.0 — Skill Framework for Claude Code
 
-You are running with MemStack enabled. This file is your skill index.
-
-## How It Works
-
-When you detect a **trigger keyword** in the user's prompt, read the corresponding skill file from `C:\Projects\memstack\skills\` and follow its instructions. Skills are self-contained — each file tells you exactly what to do.
+You are running with MemStack enabled. Read the matching skill file from `C:\Projects\memstack\skills\` when triggered.
 
 ## Global Rules
+1. Read the project's `CLAUDE.md` first if one exists
+2. Never commit `node_modules/`, `.env`, or build artifacts — run `npm run build` before any push
+3. Commit format: `[ProjectName] Brief description` — Co-authored-by Claude
+4. If `cc_monitor.api_key` is set in `config.json`, Monitor activates automatically
+5. Skill chain: Work → Seal → Diary → Monitor
 
-1. Always read the project's `CLAUDE.md` first if one exists
-2. Never commit `node_modules/`, `.env`, or build artifacts
-3. Run `npm run build` before any git push
-4. Use commit format: `[ProjectName] Brief description`
-5. If `cc_monitor.api_key` is set in `config.json`, activate Monitor skill automatically
+## Trigger Types
+- **Keyword** — fires when specific phrases appear in prompt
+- **Passive** — always-on background behavior, no explicit trigger
+- **Contextual** — fires when conditions are detected (file size, session state)
 
 ## Skill Index
 
-| #  | Skill    | Function                            | Triggers                                          |
-|----|----------|-------------------------------------|---------------------------------------------------|
-| 1  | Familiar | Multi-agent dispatch                | "dispatch", "send familiar", "split task"         |
-| 2  | Echo     | Memory recall from past sessions    | "recall", "last session", "do you remember"       |
-| 3  | Seal     | Git commit guardian                 | "commit", "push", end of any task                 |
-| 4  | Work     | Plan execution & TODO tracking      | "copy plan", "what's next", "todo", "priorities"  |
-| 5  | Project  | Session handoff & lifecycle         | "save project", "handoff", "context running low"  |
-| 6  | Grimoire | Knowledge library & CLAUDE.md mgmt  | "save library", "update context", "update claude" |
-| 7  | Scan     | Project analysis & pricing          | "scan project", "estimate", "how much to charge"  |
-| 8  | Quill    | Client quotation generator          | "create quotation", "generate quote", "proposal"  |
-| 9  | Forge    | Self-improvement & new skills       | "forge this", "new skill", "create enchantment"   |
-| 10 | Diary    | Session documentation               | "save diary", "log session", end of session       |
-| 11 | Shard    | Large file refactoring (1000+ LOC)  | "shard this", "refactor", "split file"            |
-| 12 | Sight    | Architecture visualization          | "draw", "diagram", "visualize", "architecture"    |
-| 13 | Monitor  | CC Monitor self-reporting           | Auto-activates if API key is configured            |
-| 14 | Deploy   | Build verification & deployment     | "deploy", "ship it", before any git push           |
+| #  | Skill    | Emoji | Type       | Function                          | Key Triggers                                       |
+|----|----------|-------|------------|-----------------------------------|----------------------------------------------------|
+| 1  | Familiar | 👻    | Keyword    | Multi-agent dispatch              | "dispatch", "send familiar", "split task"          |
+| 2  | Echo     | 🔊    | Keyword    | Memory recall from past sessions  | "recall", "last session", "do you remember"        |
+| 3  | Seal     | 🔒    | Passive    | Git commit guardian               | "commit", "push", end of any task                  |
+| 4  | Work     | 📋    | Keyword    | Plan execution (copy/append/resume) | "copy plan", "append plan", "resume plan", "todo"|
+| 5  | Project  | 💾    | Contextual | Session handoff & lifecycle       | "save project", "handoff", "context running low"   |
+| 6  | Grimoire | 📖    | Keyword    | CLAUDE.md management              | "update context", "update claude", "save library"  |
+| 7  | Scan     | 🔍    | Keyword    | Project analysis & pricing        | "scan project", "estimate", "how much to charge"   |
+| 8  | Quill    | ✒️    | Keyword    | Client quotation generator        | "create quotation", "generate quote", "proposal"   |
+| 9  | Forge    | 🔨    | Keyword    | New skill creation                | "forge this", "new skill", "create enchantment"    |
+| 10 | Diary    | 📓    | Contextual | Session documentation             | "save diary", "log session", end of session        |
+| 11 | Shard    | 💎    | Contextual | Large file refactoring (1000+ LOC)| "shard this", "split file", files over 1K lines    |
+| 12 | Sight    | 👁️    | Keyword    | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
+| 13 | Monitor  | 📡    | Passive    | CC Monitor self-reporting         | Auto-activates if API key configured               |
+| 14 | Deploy   | 🚀    | Passive    | Build & deployment guardian       | "deploy", "ship it", before any git push           |
 
-## Config Location
-
-`C:\Projects\memstack\config.json` — project directories, deploy targets, CC Monitor API key.
+## Leveling: Lv.1=Base, Lv.2=Enhanced, Lv.3=Advanced, Lv.4+=Expert. All skills currently Lv.2.
 
 ## Paths
+- Skills: `C:\Projects\memstack\skills\` | Memory: `C:\Projects\memstack\memory\` | Config: `config.json`
 
-- Skills: `C:\Projects\memstack\skills\`
-- Memory: `C:\Projects\memstack\memory\`
-- Templates: `C:\Projects\memstack\templates\`
+*Architecture inspired by Developer Kaki's MemoryCore (github.com/Kiyoraka/Project-AI-MemoryCore)*

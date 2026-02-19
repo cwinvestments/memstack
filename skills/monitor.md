@@ -1,17 +1,25 @@
-# Monitor — MemStack Skill
+---
+name: monitor
+description: "Auto-activates on every session if cc_monitor.api_key is set in config.json. Reports CC session status to AdminStack CC Monitor dashboard silently throughout each session. No trigger keywords needed — always-on passive skill."
+---
 
-## Trigger Keywords
-- Auto-activates on every session if `cc_monitor.api_key` is set in config.json
+# 📡 Monitor — Reporting to AdminStack...
+*Auto-report CC session status to AdminStack CC Monitor dashboard throughout each session.*
 
-## Purpose
-Auto-report CC session status to AdminStack CC Monitor dashboard throughout each session.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`📡 Monitor — Reporting to AdminStack...`
+
+Then execute the protocol below silently (do not show curl output to user unless there's an error).
+
+## Protocol
 
 ### On session start:
 
-1. **Read config.json** — get `cc_monitor.api_url` and `cc_monitor.api_key`
-2. **If api_key is empty** — skip silently, do not prompt the user
+1. **Read config.json** to get `cc_monitor.api_url` and `cc_monitor.api_key`
+2. **If no API key is set** — skip silently, do not activate
 3. **Report "working" status:**
    ```bash
    curl -s -X POST {api_url} \
@@ -19,24 +27,24 @@ Auto-report CC session status to AdminStack CC Monitor dashboard throughout each
      -d '{
        "api_key": "{api_key}",
        "session_name": "{task_name}",
-       "project": "{project_name}",
+       "project": "{project}",
        "status": "working",
-       "last_output": "Starting task"
+       "last_output": "Starting: {brief_description}"
      }'
    ```
 
 ### During the session:
 
-4. **When waiting for user input** — report "waiting_input":
+4. **Report progress** at major milestones (file creation, build completion, etc.):
    ```bash
    curl -s -X POST {api_url} \
      -H "Content-Type: application/json" \
      -d '{
        "api_key": "{api_key}",
        "session_name": "{task_name}",
-       "project": "{project_name}",
-       "status": "waiting_input",
-       "last_output": "{what you need from the user}"
+       "project": "{project}",
+       "status": "working",
+       "last_output": "{what_just_happened}"
      }'
    ```
 
@@ -49,34 +57,34 @@ Auto-report CC session status to AdminStack CC Monitor dashboard throughout each
      -d '{
        "api_key": "{api_key}",
        "session_name": "{task_name}",
-       "project": "{project_name}",
+       "project": "{project}",
        "status": "completed",
-       "last_output": "{brief summary of what was accomplished}"
+       "last_output": "{final_summary}"
      }'
    ```
 
-### Rules:
-- Keep `last_output` under 500 characters
-- Use the task name from the user's prompt as `session_name`
+## Rules
+
 - Use the project name from config.json or the working directory name as `project`
-- Do not report on trivial questions — only report on actual task sessions
+- Use the task description from the user's first message as `session_name`
+- Keep `last_output` under 200 characters — brief, informative summaries
+- Run all curl commands silently (`-s` flag) — do not show output to user unless error
+- If a curl fails, ignore it and continue — monitoring should never block work
+- Report at natural breakpoints, not after every small action
 
 ## Inputs
-- config.json: `cc_monitor.api_url`, `cc_monitor.api_key`
-- Task name from user prompt
-- Project name from config.json or working directory
+- config.json cc_monitor settings (api_url, api_key)
+- Current task context (project name, task description)
 
 ## Outputs
 - HTTP POST requests to CC Monitor API (silent — don't show output to user unless error)
 
 ## Example Usage
 
-**Session starts with:** "Build the analytics dashboard for AdminStack"
+```
+📡 Monitor — Reporting to AdminStack...
 
-**Monitor auto-activates (silently):**
-
-```bash
-# Sent automatically at start:
+# Sent automatically at session start:
 curl -s -X POST https://admin.cwaffiliateinvestments.com/api/cc-sessions/report \
   -H "Content-Type: application/json" \
   -d '{"api_key":"...","session_name":"Analytics Dashboard","project":"AdminStack","status":"working","last_output":"Starting task"}'
@@ -86,3 +94,8 @@ curl -s -X POST ... -d '{"status":"completed","last_output":"Built analytics pag
 ```
 
 The user sees nothing — Monitor works silently in the background.
+
+## Level History
+
+- **Lv.1** — Base: Silent CC Monitor reporting with curl. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, activation message, structured protocol sections. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

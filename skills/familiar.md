@@ -1,12 +1,20 @@
-# Familiar — MemStack Skill
+---
+name: familiar
+description: "MUST use when dispatching work across multiple CC sessions, splitting a large task into sub-tasks, or coordinating parallel development. Triggers on 'dispatch', 'send familiar', 'split task', 'multi-session'. Use when a task is too large for a single session."
+---
 
-## Trigger Keywords
-- dispatch, send familiar, multi-session, split task
+# 👻 Familiar — Dispatching Sub-Agents...
+*Break large tasks into coordinated CC session prompts for parallel execution.*
 
-## Purpose
-Break a large task into sub-tasks and generate separate CC prompts for parallel execution across multiple sessions.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`👻 Familiar — Dispatching sub-agents...`
+
+Then execute the protocol below.
+
+## Protocol
 
 1. **Analyze the task** — identify independent sub-tasks that can run in parallel
 2. **Determine session count** — split into 2-6 sessions based on complexity
@@ -15,7 +23,7 @@ Break a large task into sub-tasks and generate separate CC prompts for parallel 
    - Full task description with acceptance criteria
    - Any shared context (database schema, API contracts, types)
    - MemStack activation line: `Read C:\Projects\memstack\MEMSTACK.md`
-   - CC Monitor reporting snippet (if configured)
+   - CC Monitor reporting snippet (if configured in config.json)
 4. **Add coordination notes** — specify what each session should NOT touch to avoid conflicts
 5. **Define merge order** — which session's work should be committed first
 
@@ -30,23 +38,29 @@ Break a large task into sub-tasks and generate separate CC prompts for parallel 
 
 ## Example Usage
 
-**User prompt:** "dispatch — build the new dashboard page, API routes, and database migration for the analytics feature"
+**User:** "dispatch — build the analytics dashboard, API routes, and database migration"
 
-**Familiar activates and produces:**
+**Familiar activates:**
 
 ```
-## Session 1 — Database & Types
-Working directory: C:\Projects\AdminStack
-Task: Create database migration for analytics tables and TypeScript types...
+👻 Familiar — Dispatching sub-agents...
 
-## Session 2 — API Routes
+Session 1 — Database & Types
 Working directory: C:\Projects\AdminStack
-Task: Build /api/analytics endpoints. Types will be committed by Session 1...
+Task: Create migration + TypeScript types for analytics...
 
-## Session 3 — Frontend Page
+Session 2 — API Routes
 Working directory: C:\Projects\AdminStack
-Task: Build the analytics dashboard page at /analytics...
+Task: Build /api/analytics endpoints (types from Session 1)...
+
+Session 3 — Frontend Page
+Working directory: C:\Projects\AdminStack
+Task: Build /analytics dashboard page...
 
 Merge order: Session 1 → Session 2 → Session 3
-Conflicts to avoid: Session 2 and 3 should not modify database/ or types/
 ```
+
+## Level History
+
+- **Lv.1** — Base: Multi-agent dispatch with coordinated prompts. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, activation message, merge ordering. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

@@ -1,42 +1,60 @@
-# Shard — MemStack Skill
+---
+name: shard
+description: "MUST use when refactoring large files over 1000 lines, splitting monolithic files into modules, or when a file is becoming unwieldy. Triggers on 'shard this', 'split file', 'refactor', 'files over 1K lines'. Also activates contextually when editing a file over 1000 lines."
+---
 
-## Trigger Keywords
-- shard this, files over 1K lines, refactor, split file
+# 💎 Shard — Refactoring Large File...
+*Split monolithic files into focused, maintainable modules.*
 
-## Purpose
-Refactor large files (1000+ lines) into smaller, focused modules while maintaining all imports and exports.
+## Activation
 
-## Instructions
+When this skill activates, output:
 
-1. **Identify the target file** and count its lines:
+`💎 Shard — Refactoring large file...`
+
+Then execute the protocol below.
+
+## Context Guard
+
+| Context | Status |
+|---------|--------|
+| **User says "shard", "split file", or "refactor"** | ACTIVE — full protocol |
+| **Editing a file over 1000 lines** | ACTIVE — suggest refactor |
+| **User says "refactor" for logic changes (not splitting)** | DORMANT — not a shard task |
+| **Discussing code organization concepts** | DORMANT — do not activate |
+| **File is under 500 lines** | DORMANT — not worth splitting |
+
+## Protocol
+
+1. **Identify the target file** and count lines:
    ```bash
    wc -l <file>
    ```
 
-2. **Analyze the file structure:**
+2. **Analyze structure:**
    - List all exports (functions, components, types, constants)
-   - Identify logical groupings (related functions, component + helpers, types + validators)
-   - Map internal dependencies (what calls what within the file)
+   - Identify logical groupings
+   - Map internal dependencies (what calls what)
 
-3. **Plan the split** — propose a split to the user before executing:
-   - Target: each new file should be 100-300 lines
-   - Group related functionality together
-   - Keep types/interfaces near their consumers
-   - Shared utilities go in a separate utils file
+3. **Propose the split** — present to user BEFORE executing:
+   - Target: 100-300 lines per new file
+   - Group related functionality
+   - Keep types near consumers
+   - Shared utilities in separate file
 
 4. **Execute the refactor:**
    - Create new files with proper names
-   - Move code into the appropriate files
-   - Add import/export statements to each new file
-   - Create an index.ts barrel file if needed for backwards compatibility
-   - Update all imports throughout the project that reference the old file
+   - Move code to appropriate files
+   - Add import/export statements
+   - Create index.ts barrel if needed for backwards compatibility
+   - Update all imports throughout the project
 
-5. **Verify nothing broke:**
+5. **Verify build:**
    ```bash
    npm run build 2>&1 | tail -20
    ```
 
-6. **Present the result** — show the new file structure with line counts
+6. **Present result** — new file structure with line counts
 
 ## Inputs
 - File path to refactor
@@ -44,37 +62,28 @@ Refactor large files (1000+ lines) into smaller, focused modules while maintaini
 
 ## Outputs
 - Multiple smaller files replacing the original
-- Updated imports throughout the project
+- Updated imports throughout project
 - Build verification
 
 ## Example Usage
 
-**User prompt:** "shard src/app/(dashboard)/infrastructure/page.tsx — it's over 1100 lines"
-
-**Shard activates:**
+**User:** "shard infrastructure/page.tsx — it's 1100 lines"
 
 ```
-Analyzing: infrastructure/page.tsx (1,110 lines)
+💎 Shard — Refactoring large file...
 
-Exports found: 1 default export (InfrastructurePage)
-Internal components: RailwayTab, HetznerTab, HeadroomTab
-Types: 8 interfaces
-Constants: 3 status config objects
+infrastructure/page.tsx (1,110 lines) → 6 files:
+  page.tsx         (~120 lines) — Main page, tab switcher
+  RailwayTab.tsx   (~200 lines) — Railway monitoring
+  HetznerTab.tsx   (~180 lines) — Hetzner monitoring
+  HeadroomTab.tsx  (~250 lines) — Headroom + setup guide
+  types.ts         (~80 lines)  — Shared interfaces
+  constants.ts     (~60 lines)  — Status configs
 
-Proposed split:
-  infrastructure/
-    page.tsx              (~120 lines) — Main page, tab switcher
-    RailwayTab.tsx        (~200 lines) — Railway monitoring
-    HetznerTab.tsx        (~180 lines) — Hetzner monitoring
-    HeadroomTab.tsx       (~250 lines) — Headroom proxy + setup guide
-    types.ts              (~80 lines)  — Shared interfaces
-    constants.ts          (~60 lines)  — Status configs
-
-Proceed? [User confirms]
-
-Splitting... ✓
-Updating imports... ✓
-Build check... ✓ passed
-
-6 files created, 0 build errors.
+Build check: ✓ passed
 ```
+
+## Level History
+
+- **Lv.1** — Base: File analysis and splitting with import updates. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, propose-before-execute, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

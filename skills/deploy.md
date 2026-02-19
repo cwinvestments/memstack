@@ -1,72 +1,80 @@
-# Deploy — MemStack Skill
+---
+name: deploy
+description: "MUST use before any git push or deployment. Auto-activates before pushing code. Triggers on 'deploy', 'build', 'ship it', 'push'. Runs build verification, checks for debug artifacts, and confirms deployment safety."
+---
 
-## Trigger Keywords
-- deploy, build, ship it (auto-activates before any git push)
+# 🚀 Deploy — Pre-flight checks running...
+*Verify builds pass and deployments are safe before shipping code.*
 
-## Purpose
-Verify builds pass and deployments are safe before shipping code.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`🚀 Deploy — Pre-flight checks running...`
+
+Then execute the protocol below.
+
+## Context Guard
+
+| Context | Status |
+|---------|--------|
+| **User says "deploy", "ship it", or "push"** | ACTIVE — run full checks |
+| **About to run git push** | ACTIVE — run full checks |
+| **User says "build" to test locally** | ACTIVE — run build only |
+| **Discussing deployment concepts** | DORMANT — do not activate |
+| **Committing without pushing** | DORMANT — Seal handles commits |
+
+## Protocol
 
 1. **Run the full build:**
    ```bash
-   npm run build 2>&1
-   ```
-   If it fails, STOP. Fix all errors before proceeding.
-
-2. **Check for TypeScript errors:**
-   ```bash
-   npx tsc --noEmit 2>&1
+   npm run build 2>&1 | tail -30
    ```
 
-3. **Scan for debug artifacts** — check for leftover console.logs in production code:
+2. **Check for build errors** — if any, STOP and fix before proceeding
+
+3. **Check for debug artifacts:**
    ```bash
    grep -rn "console.log\|console.warn\|console.error\|debugger" src/ --include="*.ts" --include="*.tsx" | grep -v "node_modules" | grep -v ".test." | head -20
    ```
-   Warn the user about any found (don't auto-remove — some may be intentional).
 
-4. **Verify environment variables** — check that the deploy target has required env vars:
-   - Read the project's `.env.example` or `.env.local` if they exist
-   - List any vars that are referenced in code but might be missing on the deploy target
+4. **Check for .env or secrets in staged files:**
+   ```bash
+   git diff --cached --name-only | grep -E "\.env|secret|credential|password"
+   ```
 
-5. **Confirm deploy target** from config.json:
-   - Netlify: check for `netlify.toml` or Netlify CLI config
-   - Railway: check for `railway.toml` or Procfile
-   - Vercel: check for `vercel.json`
+5. **Show deployment summary:**
+   - Build status (pass/fail)
+   - Warning count
+   - Files changed (from git)
+   - Deploy target (from project context)
 
-6. **Execute deployment** based on target:
-   - **Netlify:** `git push` triggers auto-deploy
-   - **Railway:** `git push` triggers auto-deploy
-   - **Vercel:** `vercel --prod` or `git push`
+6. **Ask user to confirm** before pushing
 
-7. **Post-deploy verification:**
-   - Wait 30 seconds for deployment to propagate
-   - If a health check URL is known, ping it
-   - Report success or failure
+7. **Execute push** only after confirmation
 
 ## Inputs
-- Project name and deploy target from config.json
-- Current branch and remote status
+- Project build command (from package.json)
+- Git status and staged changes
+- Deploy target (Netlify, Vercel, Railway, etc.)
 
 ## Outputs
 - Build verification report (pass/fail)
-- Deployment status
-- Any warnings (console.logs, missing env vars)
+- Debug artifact warnings
+- Deployment confirmation
 
 ## Example Usage
 
-**User prompt:** "ship it" (after completing a feature)
-
-**Deploy activates:**
+**User:** "ship it"
 
 ```
-Deploy Guardian — AdminStack (Netlify)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 Deploy — Pre-flight checks running...
 
-Build check:     ✓ passed (47 routes compiled)
+Build:           ✓ passed (12.4s)
 TypeScript:      ✓ no errors
-Console.logs:    ⚠ 3 found (src/app/api/contacts/route.ts:24, ...)
-Env vars:        ✓ all present on Netlify
+Debug artifacts: ⚠ 3 console.log statements
+Secrets check:   ✓ clean
+Files changed:   8 files (+342, -56)
 Deploy target:   Netlify (auto-deploy on push to main)
 
 Warnings:
@@ -76,3 +84,8 @@ Proceed with push? [User confirms]
 Pushing to main... ✓
 Netlify deploy triggered. Check: https://app.netlify.com/sites/adminstack/deploys
 ```
+
+## Level History
+
+- **Lv.1** — Base: Build verification and push safety checks. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, secrets check step. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

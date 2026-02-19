@@ -1,18 +1,37 @@
-# Seal — MemStack Skill
+---
+name: seal
+description: "MUST use when committing code, pushing to git, or completing any task. Also triggers on 'commit', 'push', 'ship it', 'task done'. Auto-activates before any git push. Enforces build verification and clean commit hygiene."
+---
 
-## Trigger Keywords
-- commit, push, task completion (auto-activates at end of any task)
+# 🔒 Seal — Clean Commits, Every Time
+*The guardian that ensures every push is build-verified and properly formatted.*
 
-## Purpose
-Enforce consistent, clean git commits with build verification before pushing.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`🔒 Seal — Clean commits, every time.`
+
+Then execute the protocol below.
+
+## Context Guard
+
+| Context | Status |
+|---------|--------|
+| **User says "commit" or "push"** | ACTIVE — full protocol |
+| **Task completion detected** | ACTIVE — full protocol |
+| **About to run git push** | ACTIVE — full protocol |
+| **Discussing git concepts theoretically** | DORMANT — do not activate |
+| **Reading git logs or history** | DORMANT — do not activate |
+| **User explicitly says "skip build check"** | ACTIVE — skip step 1 only |
+
+## Protocol
 
 1. **Run build check:**
    ```bash
    npm run build 2>&1 | tail -20
    ```
-   If the build fails, FIX the errors before proceeding. Never commit broken code.
+   If build fails — STOP. Fix errors before proceeding.
 
 2. **Check git status:**
    ```bash
@@ -20,47 +39,47 @@ Enforce consistent, clean git commits with build verification before pushing.
    git diff --stat
    ```
 
-3. **Stage only relevant files** — never use `git add .` blindly. Exclude:
-   - `node_modules/`
-   - `.env`, `.env.local`, any file with secrets
+3. **Stage only relevant files.** Never `git add .` blindly. Exclude:
+   - `node_modules/`, `.env`, `.env.local`, any secrets
    - Build output (`dist/`, `.next/`, `out/`)
    - OS files (`.DS_Store`, `Thumbs.db`)
 
-4. **Generate commit message** using the format from config.json:
+4. **Generate commit message** using config.json format:
    - Default: `[ProjectName] Brief description of change`
-   - Be specific: "[AdminStack] Add CC Monitor page with session tracking" not "[AdminStack] Update code"
+   - Be specific — describe WHAT changed and WHY
    - Add `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
 
 5. **Commit and push:**
    ```bash
    git add <specific files>
-   git commit -m "[Project] Message\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
+   git commit -m "[Project] Message
+
+   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>"
    git push
    ```
 
 6. **Verify push succeeded** — run `git status` after push.
 
-## Inputs
-- Project name (from config.json or working directory)
-- Files changed during the task
-
-## Outputs
-- Clean git commit with descriptive message
-- Confirmation of successful push
+## Mandatory Rules
+- NEVER commit with `--no-verify`
+- NEVER force push to main/master
+- NEVER amend published commits without explicit user request
+- Always create NEW commits after hook failures
 
 ## Example Usage
 
-**User prompt:** "commit this" (after building a feature)
-
-**Seal activates:**
+**User:** "commit this"
 
 ```
-Running build check... ✓ Build passed
-Staging files:
-  - src/app/(dashboard)/cc-monitor/page.tsx
-  - src/app/api/cc-sessions/route.ts
-  - database/020_cc_sessions.sql
+🔒 Seal — Clean commits, every time.
 
-Commit: [AdminStack] Add CC Monitor page for tracking Claude Code sessions
-Push: main → origin/main ✓
+Build check:  ✓ passed
+Staging:      3 files (page.tsx, route.ts, migration.sql)
+Commit:       [AdminStack] Add CC Monitor page for session tracking
+Push:         main → origin/main ✓
 ```
+
+## Level History
+
+- **Lv.1** — Base: Build check, staged commits, descriptive messages. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, mandatory rules, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

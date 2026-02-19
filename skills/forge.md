@@ -1,76 +1,74 @@
-# Forge — MemStack Skill
+---
+name: forge
+description: "MUST use when creating new MemStack skills, improving existing skills, or extending the skill framework. Triggers on 'create enchantment', 'forge this', 'new skill', 'improve skill', 'add skill'. Generates properly formatted skill files and updates the master index."
+---
 
-## Trigger Keywords
-- create enchantment, forge this, new skill, improve skill, add skill
+# 🔨 Forge — Creating New Enchantment...
+*Create new MemStack skills or improve existing ones.*
 
-## Purpose
-Create new MemStack skills or improve existing ones. Walks through the creation process step by step.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`🔨 Forge — Creating new enchantment...`
+
+Then execute the protocol below.
+
+## Protocol
 
 ### Creating a new skill:
 
 1. **Ask the user:**
    - What should the skill do?
    - What trigger keywords should activate it?
-   - What inputs does it need?
-   - What should it output?
+   - What inputs does it need? What should it output?
 
-2. **Generate the skill file** following the standard format:
-   ```markdown
-   # [Name] — MemStack Skill
-
-   ## Trigger Keywords
-   ## Purpose
-   ## Instructions
-   ## Inputs
-   ## Outputs
-   ## Example Usage
-   ```
+2. **Generate the skill file** with v2.0 format:
+   - YAML frontmatter with name and description ("MUST use when..." format)
+   - Activation message (pick an appropriate emoji)
+   - Context guard (if the skill could have false positives)
+   - Protocol steps
+   - Inputs/Outputs
+   - Example usage
+   - Level history starting at Lv.1
 
 3. **Write the file** to `C:\Projects\memstack\skills\{name}.md`
 
-4. **Update MEMSTACK.md** — add a new row to the Skill Index table with:
-   - Next number in sequence
-   - Skill name
-   - Brief function description
-   - Trigger keywords
+4. **Update MEMSTACK.md** — add a new row to the Skill Index table
 
-5. **Confirm creation** — show the user the new skill summary
+5. **Confirm creation** — show the skill summary
 
 ### Improving an existing skill:
 
 1. **Read the current skill file**
-2. **Identify what to improve** based on user feedback
-3. **Update the file** — keep the same format, enhance the instructions
-4. **Confirm changes**
+2. **Apply improvements** based on user feedback
+3. **Increment the level** in Level History
+4. **Update the file**
 
 ## Inputs
-- Skill concept description
-- Trigger keywords
-- Desired behavior
+- Skill concept description, trigger keywords, desired behavior
 
 ## Outputs
 - New skill .md file in skills/
 - Updated MEMSTACK.md index
-- Confirmation summary
 
 ## Example Usage
 
-**User prompt:** "forge a new skill called Beacon that pings a health check endpoint every 5 minutes"
-
-**Forge activates:**
+**User:** "forge a new skill called Beacon for health check pinging"
 
 ```
-Creating new MemStack skill: Beacon
+🔨 Forge — Creating new enchantment...
 
-Skill name: Beacon
-Triggers: "health check", "ping", "uptime"
-Purpose: Periodically ping health check endpoints and report status
+Creating: Beacon
+Emoji: 🔔 | Type: Passive | Triggers: "health check", "ping", "uptime"
 
 Writing: skills/beacon.md ✓
 Updating: MEMSTACK.md — added row #15 ✓
 
-Beacon skill created. It will activate when you say:
-  "health check", "ping", or "uptime"
+Beacon is ready. Triggers: "health check", "ping", "uptime"
 ```
+
+## Level History
+
+- **Lv.1** — Base: Skill file generation and index updates. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, v2.0 format generation, level tracking. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

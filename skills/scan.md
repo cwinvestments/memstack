@@ -1,72 +1,75 @@
-# Scan — MemStack Skill
+---
+name: scan
+description: "MUST use when analyzing a project's scope, counting files/endpoints/tables, or estimating pricing for client work. Triggers on 'scan project', 'analyze project', 'how much should I charge', 'how much to charge', 'estimate'. Produces detailed project metrics and pricing tiers."
+---
 
-## Trigger Keywords
-- scan project, analyze project, how much should I charge, how much to charge, estimate
+# 🔍 Scan — Analyzing Project Scope...
+*Analyze a project's complexity and generate pricing recommendations.*
 
-## Purpose
-Analyze a project's scope, complexity, and technology stack to generate a pricing recommendation.
+## Activation
 
-## Instructions
+When this skill activates, output:
+
+`🔍 Scan — Analyzing project scope...`
+
+Then execute the protocol below.
+
+## Context Guard
+
+| Context | Status |
+|---------|--------|
+| **User asks to scan or analyze a project** | ACTIVE — full scan |
+| **User asks about pricing or estimates** | ACTIVE — full scan + pricing |
+| **User mentions project metrics (LOC, file count)** | ACTIVE — quick metrics |
+| **Discussing project analysis concepts generally** | DORMANT — do not activate |
+| **User is building/coding, not analyzing** | DORMANT — do not activate |
+
+## Protocol
 
 1. **Scan the codebase:**
    ```bash
-   find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.py" -o -name "*.css" \) | wc -l
-   find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" \) -exec cat {} + | wc -l
+   find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.py" -o -name "*.css" \) | wc -l
+   find . -type f \( -name "*.ts" -o -name "*.tsx" -o -name "*.js" \) -exec cat {} + | wc -l
    ```
 
-2. **Count key components:**
-   - Pages / routes
-   - API endpoints
-   - Database tables
-   - External integrations (Stripe, Supabase, email, etc.)
-   - Authentication system complexity
-   - File upload / media handling
+2. **Count key components:** pages/routes, API endpoints, database tables, external integrations, auth complexity
 
 3. **Assess complexity tier:**
-   - **Simple** (< 20 files, < 3K LOC, 1-3 pages): $500–$2,000
-   - **Medium** (20-60 files, 3K-15K LOC, 4-10 pages): $2,000–$8,000
-   - **Complex** (60-150 files, 15K-50K LOC, 10-25 pages): $8,000–$25,000
-   - **Enterprise** (150+ files, 50K+ LOC, 25+ pages): $25,000+
+   - **Simple** (< 20 files, < 3K LOC): $500–$2,000
+   - **Medium** (20-60 files, 3K-15K LOC): $2,000–$8,000
+   - **Complex** (60-150 files, 15K-50K LOC): $8,000–$25,000
+   - **Enterprise** (150+ files, 50K+ LOC): $25,000+
 
-4. **Factor in:**
-   - Auth complexity (basic vs 2FA vs SSO)
-   - Payment integration (adds $1,000–$3,000)
-   - Real-time features (adds $1,000–$2,000)
-   - Admin dashboard (adds $2,000–$5,000)
-   - Mobile responsiveness (adds 20-30%)
-   - API integrations per service ($500–$1,500 each)
+4. **Factor in:** Auth (+2FA/SSO), payments (+$1-3K), real-time (+$1-2K), admin panel (+$2-5K), mobile responsive (+20-30%), per API integration (+$500-1.5K)
 
-5. **Generate pricing report** with three tiers: Budget, Standard, Premium
+5. **Generate three-tier pricing:** Budget, Standard, Premium
 
 ## Inputs
 - Project directory path
-- Whether this is a new build or maintenance estimate
+- New build vs maintenance estimate
 
 ## Outputs
-- Project analysis report: file counts, LOC, endpoints, tables
+- Project analysis: file counts, LOC, endpoints, tables
 - Complexity tier assessment
-- Three-tier pricing recommendation with justification
+- Three-tier pricing recommendation
 
 ## Example Usage
 
-**User prompt:** "scan AdminStack and tell me what I should charge for something like this"
-
-**Scan activates:**
+**User:** "scan AdminStack and estimate pricing"
 
 ```
-AdminStack Project Analysis
-━━━━━━━━━━━━━━━━━━━━━━━━━━
-Files: 127 source files
-Lines of Code: ~28,000
-Pages: 22 dashboard pages + 5 auth pages
-API Routes: 34 endpoints
-Database Tables: 19
-Integrations: Supabase, Stripe, Square, SendGrid, Railway, Hetzner
+🔍 Scan — Analyzing project scope...
 
+Files: 127 | LOC: ~28,000 | Pages: 27 | API Routes: 34 | Tables: 20
+Integrations: Supabase, Stripe, Square, SendGrid, Railway, Hetzner
 Complexity: Complex tier
 
-Pricing Recommendation:
-  Budget:   $15,000 — Core features, basic styling, no admin panel
-  Standard: $22,000 — Full feature set, admin panel, responsive
-  Premium:  $30,000 — Full features + custom integrations + 3mo support
+Budget:   $15,000 — Core features, basic styling
+Standard: $22,000 — Full features, admin panel, responsive
+Premium:  $30,000 — Full + custom integrations + 3mo support
 ```
+
+## Level History
+
+- **Lv.1** — Base: File/LOC counting with complexity assessment. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, integration pricing. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
