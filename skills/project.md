@@ -25,22 +25,37 @@ Then execute the protocol below.
    - Next steps in priority order
    - Key file paths that were modified
 2. **Run git status** to capture uncommitted state
-3. **Generate handoff document** using `templates/handoff.md`
-4. **Save to** `memory/projects/{project}-{date}.md`
+3. **Save project context to SQLite:**
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py set-context '{"project":"<name>","status":"active","current_branch":"<branch>","last_session_date":"<YYYY-MM-DD>","known_issues":"<issues>","backlog":"<next tasks>"}'
+   ```
+4. **Also save markdown handoff** to `memory/projects/{project}-{date}.md`
 5. **Present the ready-to-paste prompt** for the next CC session
 
 ### Loading (restore):
 
-1. **Find the most recent handoff** in `memory/projects/` for the requested project
-2. **Read and present** the saved state
-3. **Show next steps** so CC can continue immediately
+1. **Load project context from SQLite:**
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py get-context <project>
+   ```
+2. **Load recent sessions:**
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py get-sessions <project> --limit 3
+   ```
+3. **Load plan if exists:**
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py get-plan <project>
+   ```
+4. **Fallback:** Check `memory/projects/` for markdown handoffs
+5. **Present combined state** so CC can continue immediately
 
 ## Inputs
 - Project name
 - Current session context (what was done, what's pending)
 
 ## Outputs
-- Handoff document saved to memory
+- Project context saved to SQLite database
+- Markdown handoff in memory/projects/ (backup)
 - Ready-to-paste prompt for next CC session
 
 ## Example Usage
@@ -70,3 +85,4 @@ Next steps:
 
 - **Lv.1** — Base: Session state capture and handoff generation. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, activation message, template integration. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3** — Advanced: SQLite-backed project context, combined restore from DB + sessions + plan. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)

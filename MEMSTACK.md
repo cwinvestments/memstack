@@ -1,4 +1,4 @@
-# MemStack v2.0 — Skill Framework for Claude Code
+# MemStack v2.1 — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Read the matching skill file from `C:\Projects\memstack\skills\` when triggered.
 
@@ -33,9 +33,24 @@ You are running with MemStack enabled. Read the matching skill file from `C:\Pro
 | 13 | Monitor  | 📡    | Passive    | CC Monitor self-reporting         | Auto-activates if API key configured               |
 | 14 | Deploy   | 🚀    | Passive    | Build & deployment guardian       | "deploy", "ship it", before any git push           |
 
-## Leveling: Lv.1=Base, Lv.2=Enhanced, Lv.3=Advanced, Lv.4+=Expert. All skills currently Lv.2.
+## Leveling: Lv.1=Base, Lv.2=Enhanced, Lv.3=Advanced, Lv.4+=Expert. Core skills (Echo, Diary, Work, Project) at Lv.3. Others at Lv.2.
+
+## Skill Deconfliction
+When multiple skills could activate on the same prompt, use these ownership rules:
+- **"commit"** → Seal only (not Deploy)
+- **"push" / "ship it" / "deploy"** → Deploy only (Deploy invokes Seal as sub-step if needed)
+- **"build"** → Neither — just run the build command directly
+- **"recall" / "remember"** → Echo only (not Diary or Project)
+- **"save diary" / "log session"** → Diary only (not Project)
+- **"save project" / "handoff"** → Project only (not Diary)
+- **"todo" / "plan"** → Work only
+
+## Storage
+- **Database (primary):** `C:\Projects\memstack\db\memstack.db` — SQLite with WAL mode
+- **DB Helper:** `python C:/Projects/memstack/db/memstack-db.py <command>` — repository pattern CLI
+- **Commands:** `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`, `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
 
 ## Paths
-- Skills: `C:\Projects\memstack\skills\` | Memory: `C:\Projects\memstack\memory\` | Config: `config.json`
+- Skills: `C:\Projects\memstack\skills\` | Memory (legacy): `C:\Projects\memstack\memory\` | DB: `C:\Projects\memstack\db\` | Config: `config.json`
 
 *Architecture inspired by Developer Kaki's MemoryCore (github.com/Kiyoraka/Project-AI-MemoryCore)*

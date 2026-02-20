@@ -28,40 +28,40 @@ Then determine which mode to use based on the trigger.
 
 **Trigger:** "copy plan" or when a new plan is provided
 
-1. Parse the entire plan into individual tasks
-2. Create a numbered checklist with status markers
-3. Write the full plan to `memory/projects/{project}-plan.md`
-4. Confirm with task count
-
-**Status markers:**
-- `[ ]` — pending
-- `[~]` — in progress
-- `[x]` — completed
-- `[!]` — blocked (include reason)
-
-## Mode 2: Append Plan
-
-**Trigger:** "append plan"
-
-1. Read existing `memory/projects/{project}-plan.md`
-2. Append a new progress section with timestamp:
+1. Parse the entire plan into individual numbered tasks
+2. For each task, save to SQLite:
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py add-plan-task '{"project":"<name>","task_number":<n>,"description":"<task>","status":"pending"}'
    ```
-   ## Update — {date} {time}
-   - Completed: {what was done}
-   - Next: {what's coming}
+3. Confirm with task count
+4. Also write a markdown copy to `memory/projects/{project}-plan.md` for human readability
+
+**Status values:** `pending`, `in_progress`, `completed`, `blocked`
+
+## Mode 2: Append Plan (Update Tasks)
+
+**Trigger:** "append plan" or when updating task statuses
+
+1. Read current plan from SQLite:
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py get-plan <project>
    ```
-3. **Size check:** If file exceeds 1,000 lines:
-   - Summarize the oldest entries into a `## Recap` block (10-15 lines)
-   - Remove the detailed old entries
-   - Keep the recap + recent entries under 1,000 lines
-4. Save the updated file
+2. Update individual task statuses:
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py update-task '{"project":"<name>","task_number":<n>,"status":"completed"}'
+   ```
+3. Add new tasks if needed via `add-plan-task`
+4. No size limits needed — SQLite handles scale
 
 ## Mode 3: Resume Plan
 
 **Trigger:** "resume plan" — use after CC compact or new session
 
-1. Read `memory/projects/{project}-plan.md`
-2. Parse current status: what's done, what's pending, what's blocked
+1. Load plan from SQLite:
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py get-plan <project>
+   ```
+2. Parse the JSON output for task statuses
 3. Output a summary:
    ```
    Plan: {project} ({done}/{total} complete)
@@ -77,14 +77,14 @@ Then determine which mode to use based on the trigger.
 
 ## Quick Commands
 
-- **"what's next"** — reads plan, returns the single next uncompleted task
+- **"what's next"** — queries plan, returns the single next pending task
 - **"priorities"** — shows top 3 pending items from the plan
 - **"todo"** — shows all pending and in-progress items with status
 
 ## Inputs
 - Plan text (copy mode) or project name (append/resume)
-- Memory directory: `C:\Projects\memstack\memory\projects\`
-- Plan max lines from config.json: `session_limits.plan_max_lines` (default 1000)
+- Database: `C:\Projects\memstack\db\memstack.db` (via memstack-db.py)
+- Fallback: `C:\Projects\memstack\memory\projects\` (legacy markdown)
 
 ## Outputs
 - Formatted task list with status indicators
@@ -117,3 +117,4 @@ Recommended next: Task 6 — Build cc-reporter.js
 
 - **Lv.1** — Base: Single-mode TODO tracking. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Three modes (copy/append/resume), 1K-line limit with auto-summarize, context guard, YAML frontmatter. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3** — Advanced: SQLite-backed plans with per-task status tracking, no size limits, structured queries. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)

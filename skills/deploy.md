@@ -16,13 +16,18 @@ Then execute the protocol below.
 
 ## Context Guard
 
-| Context | Status |
-|---------|--------|
-| **User says "deploy", "ship it", or "push"** | ACTIVE — run full checks |
-| **About to run git push** | ACTIVE — run full checks |
-| **User says "build" to test locally** | ACTIVE — run build only |
-| **Discussing deployment concepts** | DORMANT — do not activate |
-| **Committing without pushing** | DORMANT — Seal handles commits |
+| Context | Status | Priority |
+|---------|--------|----------|
+| **User says "deploy", "ship it", or "push" with intent to publish** | ACTIVE — run full checks | P1 |
+| **About to run `git push` as part of a task** | ACTIVE — run full checks | P1 |
+| **User says "build" to test locally (no push intent)** | DORMANT — just run `npm run build` directly | — |
+| **Discussing deployment concepts ("how does Netlify work")** | DORMANT — do not activate | — |
+| **Committing without pushing (user just said "commit")** | DORMANT — Seal handles commits | — |
+| **Running tests or linting** | DORMANT — not a deploy action | — |
+| **SSH-based server deploys (manual server work)** | DORMANT — user is handling deployment manually | — |
+
+### Deconfliction with Seal
+Deploy owns the **push**. If uncommitted changes exist, Deploy invokes Seal's commit protocol first, then runs its own pre-flight checks, then pushes. Seal does NOT independently activate on "push".
 
 ## Protocol
 

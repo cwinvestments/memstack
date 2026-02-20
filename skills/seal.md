@@ -16,14 +16,19 @@ Then execute the protocol below.
 
 ## Context Guard
 
-| Context | Status |
-|---------|--------|
-| **User says "commit" or "push"** | ACTIVE — full protocol |
-| **Task completion detected** | ACTIVE — full protocol |
-| **About to run git push** | ACTIVE — full protocol |
-| **Discussing git concepts theoretically** | DORMANT — do not activate |
-| **Reading git logs or history** | DORMANT — do not activate |
-| **User explicitly says "skip build check"** | ACTIVE — skip step 1 only |
+| Context | Status | Priority |
+|---------|--------|----------|
+| **User says "commit" with intent to create a git commit** | ACTIVE — full protocol | P1 |
+| **User explicitly says "push" or "ship it"** | DEFER to Deploy — Seal handles commit step only | P2 |
+| **User explicitly says "skip build check"** | ACTIVE — skip step 1 only | P1 |
+| **Discussing git concepts ("what is a commit", "how does push work")** | DORMANT | — |
+| **Reading git logs, blame, or history** | DORMANT | — |
+| **User says "deploy" or "build"** | DORMANT — Deploy skill handles this | — |
+| **Mid-task coding (user hasn't asked to commit)** | DORMANT — don't interrupt | — |
+| **Amending or rebasing (user managing git history)** | DORMANT — don't interfere | — |
+
+### Deconfliction with Deploy
+Seal handles **commits**. Deploy handles **pushes and deployments**. When a user says "push", Deploy activates and may invoke Seal's commit protocol as a sub-step. Seal should NOT independently activate on "push" — it waits for Deploy to call it.
 
 ## Protocol
 

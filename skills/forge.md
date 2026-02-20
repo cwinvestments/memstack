@@ -23,7 +23,7 @@ Then execute the protocol below.
    - What trigger keywords should activate it?
    - What inputs does it need? What should it output?
 
-2. **Generate the skill file** with v2.0 format:
+2. **Generate the skill file** with v2.1 format:
    - YAML frontmatter with name and description ("MUST use when..." format)
    - Activation message (pick an appropriate emoji)
    - Context guard (if the skill could have false positives)
@@ -71,4 +71,4 @@ Beacon is ready. Triggers: "health check", "ping", "uptime"
 ## Level History
 
 - **Lv.1** — Base: Skill file generation and index updates. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, v2.0 format generation, level tracking. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.2** — Enhanced: Added YAML frontmatter, v2.1 format generation, level tracking. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
