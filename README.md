@@ -56,7 +56,7 @@ MemStack v3.0
     └── Forge, Shard, Sight      — Dev tools (Lv.2)
 ```
 
-**Hooks** always fire (deterministic). **Rules** always load (persistent). **Skills** fire on keyword/condition match.
+**Hooks** always fire (deterministic, zero tokens). **Rules** always load (persistent awareness). **Skills** fire on keyword/condition match.
 
 ## Slash Commands
 
@@ -69,39 +69,27 @@ MemStack v3.0
 
 | Skill | Emoji | Level | What It Does |
 |-------|-------|-------|-------------|
-| Familiar | 👻 | Lv.2 | Splits tasks across multiple CC sessions |
 | Echo | 🔊 | **Lv.4** | Recalls information from past sessions via SQLite search |
 | Work | 📋 | **Lv.4** | Plan execution with SQLite-backed task tracking |
+| Diary | 📓 | **Lv.4** | Documents sessions to SQLite + auto-extracts insights |
 | Project | 💾 | **Lv.3** | Saves/restores project state via SQLite context |
 | Grimoire | 📖 | Lv.2 | Manages CLAUDE.md files across projects |
+| Familiar | 👻 | Lv.2 | Splits tasks across multiple CC sessions |
 | Scan | 🔍 | Lv.2 | Analyzes project scope and suggests pricing |
 | Quill | ✒️ | Lv.2 | Generates professional client quotations |
 | Forge | 🔨 | Lv.2 | Creates new MemStack skills |
-| Diary | 📓 | **Lv.4** | Documents sessions to SQLite + auto-extracts insights |
 | Shard | 💎 | Lv.2 | Refactors large files into smaller modules |
 | Sight | 👁️ | Lv.2 | Generates Mermaid architecture diagrams |
 
-Deprecated skills (Seal, Deploy, Monitor) are replaced by deterministic hooks.
-
-## Headroom Integration
-
-MemStack auto-detects and auto-starts the [Headroom](https://github.com/nicobailon/headroom) context compression proxy on session start:
-
-1. **Checks** if Headroom is already running at `localhost:8787`
-2. **Auto-starts** it if the `headroom` command is installed but not running
-3. **Exports** `ANTHROPIC_BASE_URL` so CC routes through the proxy
-4. **Skips silently** if Headroom isn't installed — never blocks session start
-
-Headroom compresses tool outputs by ~34%, extending effective context window. Check status with `/memstack-headroom`.
+Deprecated skills (Seal, Deploy, Monitor) have been replaced by deterministic hooks that always fire — no LLM required.
 
 ## Storage
 
-All memory is stored in SQLite (`db/memstack.db`) with WAL mode. CLI access:
-
+All memory is stored in SQLite (`db/memstack.db`) with WAL mode:
 ```bash
 python db/memstack-db.py search "authentication"     # Search everything
-python db/memstack-db.py get-sessions AdminStack      # Recent sessions
-python db/memstack-db.py get-insights AdminStack      # Decisions and patterns
+python db/memstack-db.py get-sessions my-app          # Recent sessions
+python db/memstack-db.py get-insights my-app          # Decisions and patterns
 python db/memstack-db.py stats                        # Database overview
 ```
 
@@ -112,31 +100,39 @@ python db/memstack-db.py stats                        # Database overview
 | `project_context` | Current state of each project (auto-indexed from CLAUDE.md) |
 | `plans` | Task lists with per-task status |
 
-## Configuration
+## Configuration Reference
 
-Copy `config.json` to `config.local.json` and customize:
+`config.local.json` sections:
 
-- **projects** — directory paths, CLAUDE.md locations, deploy targets
-- **cc_monitor** — optional dashboard API URL and key
-- **headroom** — auto-start toggle and port (default: 8787)
-- **session_limits** — max lines for exports
-- **defaults** — commit format, auto-diary, auto-monitor toggles
+| Section | Required | Purpose |
+|---------|----------|---------|
+| `projects` | Yes | Your project paths and CLAUDE.md locations |
+| `headroom` | No | Context compression settings (port, auto-start) |
+| `cc_monitor` | No | External dashboard API URL and key |
+| `session_limits` | No | Max lines for session log exports (default: 500) |
+| `defaults` | No | Commit format, auto-diary, auto-monitor toggles |
 
-`config.local.json` is gitignored. `config.json` is the template.
-
-## Migration
-
-From MemStack v2.x:
-
+## Upgrading from v2.x
 ```bash
-python db/memstack-db.py init      # Create/update database
-python db/migrate.py               # Import existing markdown files (idempotent)
+git pull
+python db/memstack-db.py init      # Update database schema
+python db/migrate.py               # Import existing markdown files (safe to re-run)
 python db/memstack-db.py stats     # Verify migration
 ```
 
-## Creating Skills
+## Creating Custom Skills
 
-Use the **Forge** skill: say `"forge a new skill for [description]"`. Forge generates the file with YAML frontmatter and updates the master index.
+Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC session. Forge generates the file with YAML frontmatter and registers it in the master index.
+
+## Troubleshooting
+
+**"Python was not found"** — Install Python 3.10+ and make sure "Add Python to PATH" is checked during install. Restart your terminal after installing.
+
+**CC sessions not using Headroom** — Run `headroom proxy` in a separate terminal first, then launch CC. Or install permanently with `setx ANTHROPIC_BASE_URL http://127.0.0.1:8787` (Windows).
+
+**Hook errors on push** — The pre-push hook blocks pushes that contain secrets or fail build checks. Fix the issue it reports, then push again.
+
+**"Database locked" errors** — Close any other process accessing `db/memstack.db`, or delete the `.db-wal` and `.db-shm` files and retry.
 
 ## License
 
