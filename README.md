@@ -4,30 +4,23 @@
 
 A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, deterministic hooks, always-on rules, and slash commands.
 
-Architecture inspired by [Developer Kaki's MemoryCore](https://github.com/Kiyoraka/Project-AI-MemoryCore). SQLite backend inspired by [Accomplish AI](https://github.com/accomplish-ai/accomplish) research. CC native features informed by [claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice).
+## What It Does
 
-## Installation
+MemStack gives Claude Code **persistent memory** across sessions, **automated safety checks** on every commit and push, and **context compression** to make your sessions last longer.
 
-### Manual Setup (Current)
+## Prerequisites
 
-```bash
-git clone https://github.com/cwinvestments/memstack.git
-cd memstack
-cp config.json config.local.json   # Edit with your real paths and API keys
-python db/memstack-db.py init      # Initialize SQLite database
-```
+- **Claude Code** — Install guide: https://docs.anthropic.com/en/docs/claude-code
+- **Python 3.10+** — Download: https://www.python.org/downloads/
+- **Git** — Download: https://git-scm.com/downloads
 
-Add to any CC session prompt:
+## Quick Start
 
-```
-Read /path/to/memstack/MEMSTACK.md and follow the MemStack skill framework.
-```
-
-### Package Install (Future)
-
-```bash
-npx skills add cwinvestments/memstack
-```
+1. Clone: `git clone https://github.com/cwinvestments/memstack.git && cd memstack`
+2. Config: `cp config.json config.local.json` — edit the `"projects"` section with your paths
+3. Init DB: `python db/memstack-db.py init`
+4. Use it: Start every CC prompt with `"Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework."`
+5. Optional: `pip install headroom-ai` (auto-detected, saves ~34% context)
 
 ## Three-Layer Architecture
 
