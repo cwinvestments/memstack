@@ -16,11 +16,50 @@ MemStack gives Claude Code **persistent memory** across sessions, **automated sa
 
 ## Quick Start
 
-1. Clone: `git clone https://github.com/cwinvestments/memstack.git && cd memstack`
-2. Config: `cp config.json config.local.json` — edit the `"projects"` section with your paths
-3. Init DB: `python db/memstack-db.py init`
-4. Use it: Start every CC prompt with `"Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework."`
-5. Optional: `pip install headroom-ai` (auto-detected, saves ~34% context)
+### Step 1: Clone the repo
+```bash
+git clone https://github.com/cwinvestments/memstack.git
+cd memstack
+```
+
+### Step 2: Create your local config
+```bash
+cp config.json config.local.json
+```
+
+Open `config.local.json` and edit the `projects` section with your actual paths:
+
+Windows: `"path": "C:\\Projects\\my-app"`
+
+Mac/Linux: `"path": "/home/user/projects/my-app"`
+
+Everything else works with defaults.
+
+### Step 3: Initialize the database
+```bash
+python db/memstack-db.py init
+```
+
+### Step 4: Use it
+
+Add this to the start of every Claude Code prompt:
+
+Windows: `Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.`
+
+Mac/Linux: `Read /home/user/memstack/MEMSTACK.md and follow the MemStack skill framework.`
+
+### Step 5 (Optional): Install Headroom
+
+[Headroom](https://github.com/chopratejas/headroom) compresses tool outputs by ~34%, making sessions last longer.
+```bash
+pip install headroom-ai
+```
+
+MemStack auto-detects and auto-starts it. To make permanent:
+
+Windows: `setx ANTHROPIC_BASE_URL http://127.0.0.1:8787`
+
+Mac/Linux: `echo 'export ANTHROPIC_BASE_URL=http://127.0.0.1:8787' >> ~/.bashrc && source ~/.bashrc`
 
 ## Three-Layer Architecture
 
