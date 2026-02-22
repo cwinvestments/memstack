@@ -24,5 +24,8 @@ When making architectural decisions or non-obvious choices, update the project's
 ## One Task at a Time
 Complete the current task fully before starting a new one. If a task reveals sub-tasks, finish the original first or explicitly save state before switching.
 
+## Deprecated Skills — Do Not Activate
+Skills marked `deprecated: true` (Seal, Deploy, Monitor) are replaced by deterministic hooks in `.claude/hooks/`. Never follow their protocols manually — the hooks fire automatically on the correct CC lifecycle events. Only read deprecated skill files if debugging hook behavior.
+
 ## Skill Chain
-When finishing a task: commit (Seal) → log session (Diary) → report status (Monitor). Each step should complete before the next begins.
+When finishing a task: commit (hook) → log session (Diary) → report status (hook). Hooks fire automatically; only Diary requires explicit activation.

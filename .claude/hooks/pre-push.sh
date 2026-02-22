@@ -19,8 +19,9 @@ else
     PROJECT_NAME=$(basename "$(pwd)")
 fi
 
-# --- Check 1: Uncommitted changes ---
-if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+# --- Check 1: Uncommitted changes (modified/staged tracked files only) ---
+# Filter out untracked files (??) — they don't affect the push
+if git status --porcelain 2>/dev/null | grep -qE '^[^?]'; then
     echo "SEAL: Uncommitted changes detected. Commit before pushing."
     git status --short
     exit 2
@@ -58,8 +59,14 @@ if [ -n "$LAST_MSG" ]; then
 fi
 
 # --- Check 4: Secrets scan on recent commits ---
-SECRETS_PATTERN='(api_key|api_secret|password|token|secret)(\s*[:=]\s*["\x27])[^\s"'\'']{8,}'
-if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iE "$SECRETS_PATTERN" | grep -v "config.json" | head -3; then
+# Use grep -P (Perl regex) for \s and \x27 support; fall back to -E with POSIX classes
+SECRETS_PATTERN='(api_key|api_secret|password|token|secret)\s*[:=]\s*["\x27][^\s"'\'']{8,}'
+if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iP "$SECRETS_PATTERN" 2>/dev/null | grep -v "config.json" | head -3; then
+    echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
+    exit 2
+fi
+# Fallback: simpler pattern with grep -iE for systems without grep -P
+if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iE "(api_key|api_secret|password|token|secret)[[:space:]]*[:=][[:space:]]*[\"'][A-Za-z0-9_-]{8,}" 2>/dev/null | grep -v "config.json" | head -3; then
     echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
     exit 2
 fi

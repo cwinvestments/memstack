@@ -22,11 +22,16 @@ else
 fi
 
 # --- Read API config ---
-# Use python for reliable JSON parsing (available everywhere MemStack runs)
+# Use python for reliable JSON parsing
+# Convert MSYS paths to Windows paths for Python compatibility
+PYTHON_CONFIG="$CONFIG_FILE"
+if command -v cygpath &>/dev/null; then
+    PYTHON_CONFIG=$(cygpath -w "$CONFIG_FILE")
+fi
 read -r API_URL API_KEY <<< $(python -c "
 import json, sys
 try:
-    with open('$CONFIG_FILE') as f:
+    with open(r'$PYTHON_CONFIG') as f:
         cfg = json.load(f)
     m = cfg.get('cc_monitor', {})
     print(m.get('api_url', ''), m.get('api_key', ''))

@@ -33,7 +33,7 @@ fi
 SECRETS_FOUND=""
 for file in $COMMITTED_FILES; do
     if [ -f "$file" ]; then
-        hits=$(grep -inE '(api_key|api_secret|password|token|secret)\s*[:=]\s*["\x27][^\s"'\'']{8,}' "$file" 2>/dev/null | head -3)
+        hits=$(grep -inP '(api_key|api_secret|password|token|secret)\s*[:=]\s*["\x27][^\s"'\'']{8,}' "$file" 2>/dev/null || grep -inE '(api_key|api_secret|password|token|secret)[[:space:]]*[:=][[:space:]]*[\"'"'"'][A-Za-z0-9_-]{8,}' "$file" 2>/dev/null | head -3)
         if [ -n "$hits" ]; then
             SECRETS_FOUND="${SECRETS_FOUND}\n  $file:\n$hits"
         fi
