@@ -1,44 +1,73 @@
-# MemStack v2.1 — Skill Framework for Claude Code
+# MemStack v3.0-alpha — Skill Framework for Claude Code
 
-You are running with MemStack enabled. Read the matching skill file from `C:\Projects\memstack\skills\` when triggered.
+You are running with MemStack enabled. Skills in `C:\Projects\memstack\skills\` activate on keyword/contextual triggers. Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events.
 
 ## Global Rules
+See `.claude/rules/memstack.md` for the full rule set. Summary:
 1. Read the project's `CLAUDE.md` first if one exists
-2. Never commit `node_modules/`, `.env`, or build artifacts — run `npm run build` before any push
-3. Commit format: `[ProjectName] Brief description` — Co-authored-by Claude
-4. If `cc_monitor.api_key` is set in `config.json`, Monitor activates automatically
-5. Skill chain: Work → Seal → Diary → Monitor
+2. Commit format: `[ProjectName] Brief description` — Co-authored-by Claude
+3. Always build before push (enforced by hook)
+4. Document decisions in CLAUDE.md
+5. Skill chain: Work → Seal (hook) → Diary → Monitor (hook)
+
+## Architecture (v3.0)
+
+MemStack v3.0 uses **two layers**:
+
+| Layer | What | How | Examples |
+|-------|------|-----|---------|
+| **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor (session start/end) |
+| **Skills** | Context-aware workflows | Markdown protocols activated by keywords/conditions | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
+
+Hooks **always fire** — they don't depend on the LLM remembering. Skills fire when CC detects matching triggers.
+
+### Hook Configuration
+
+Hooks are wired in `.claude/settings.json`:
+
+| Hook Script | CC Event | Replaces Skill | Behavior |
+|-------------|----------|----------------|----------|
+| `pre-push.sh` | `PreToolUse` (git push) | Seal | Build check, secrets scan, commit format — **blocks push on failure** |
+| `post-commit.sh` | `PostToolUse` (git commit) | Deploy | Debug artifact scan, secrets check — **warns after commit** |
+| `session-start.sh` | `SessionStart` | Monitor | Reports "working" status to monitoring API |
+| `session-end.sh` | `Stop` | Monitor | Reports "completed" status to monitoring API |
+
+### Hook Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success — continue |
+| `1` | Error (logged, continues) |
+| `2` | **Block the operation** |
 
 ## Trigger Types
 - **Keyword** — fires when specific phrases appear in prompt
-- **Passive** — always-on background behavior, no explicit trigger
+- **Passive** — always-on background behavior (now hooks in v3.0)
 - **Contextual** — fires when conditions are detected (file size, session state)
 
 ## Skill Index
 
-| #  | Skill    | Emoji | Type       | Function                          | Key Triggers                                       |
-|----|----------|-------|------------|-----------------------------------|----------------------------------------------------|
-| 1  | Familiar | 👻    | Keyword    | Multi-agent dispatch              | "dispatch", "send familiar", "split task"          |
-| 2  | Echo     | 🔊    | Keyword    | Memory recall from past sessions  | "recall", "last session", "do you remember"        |
-| 3  | Seal     | 🔒    | Passive    | Git commit guardian               | "commit", "push", end of any task                  |
-| 4  | Work     | 📋    | Keyword    | Plan execution (copy/append/resume) | "copy plan", "append plan", "resume plan", "todo"|
-| 5  | Project  | 💾    | Contextual | Session handoff & lifecycle       | "save project", "handoff", "context running low"   |
-| 6  | Grimoire | 📖    | Keyword    | CLAUDE.md management              | "update context", "update claude", "save library"  |
-| 7  | Scan     | 🔍    | Keyword    | Project analysis & pricing        | "scan project", "estimate", "how much to charge"   |
-| 8  | Quill    | ✒️    | Keyword    | Client quotation generator        | "create quotation", "generate quote", "proposal"   |
-| 9  | Forge    | 🔨    | Keyword    | New skill creation                | "forge this", "new skill", "create enchantment"    |
-| 10 | Diary    | 📓    | Contextual | Session documentation             | "save diary", "log session", end of session        |
-| 11 | Shard    | 💎    | Contextual | Large file refactoring (1000+ LOC)| "shard this", "split file", files over 1K lines    |
-| 12 | Sight    | 👁️    | Keyword    | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
-| 13 | Monitor  | 📡    | Passive    | CC Monitor self-reporting         | Auto-activates if API key configured               |
-| 14 | Deploy   | 🚀    | Passive    | Build & deployment guardian       | "deploy", "ship it", before any git push           |
-
-## Leveling: Lv.1=Base, Lv.2=Enhanced, Lv.3=Advanced, Lv.4+=Expert. Core skills (Echo, Diary, Work, Project) at Lv.3. Others at Lv.2.
+| #  | Skill    | Emoji | Type       | Level    | Function                          | Key Triggers                                       |
+|----|----------|-------|------------|----------|-----------------------------------|----------------------------------------------------|
+| 1  | Familiar | 👻    | Keyword    | Lv.2     | Multi-agent dispatch              | "dispatch", "send familiar", "split task"          |
+| 2  | Echo     | 🔊    | Keyword    | **Lv.3** | Memory recall from past sessions  | "recall", "last session", "do you remember"        |
+| 3  | ~~Seal~~ | 🔒    | ~~Passive~~| **Hook** | ~~Git commit guardian~~ → `.claude/hooks/pre-push.sh` | Deterministic on git push |
+| 4  | Work     | 📋    | Keyword    | **Lv.3** | Plan execution (copy/append/resume) | "copy plan", "append plan", "resume plan", "todo"|
+| 5  | Project  | 💾    | Contextual | **Lv.3** | Session handoff & lifecycle       | "save project", "handoff", "context running low"   |
+| 6  | Grimoire | 📖    | Keyword    | Lv.2     | CLAUDE.md management              | "update context", "update claude", "save library"  |
+| 7  | Scan     | 🔍    | Keyword    | Lv.2     | Project analysis & pricing        | "scan project", "estimate", "how much to charge"   |
+| 8  | Quill    | ✒️    | Keyword    | Lv.2     | Client quotation generator        | "create quotation", "generate quote", "proposal"   |
+| 9  | Forge    | 🔨    | Keyword    | Lv.2     | New skill creation                | "forge this", "new skill", "create enchantment"    |
+| 10 | Diary    | 📓    | Contextual | **Lv.3** | Session documentation             | "save diary", "log session", end of session        |
+| 11 | Shard    | 💎    | Contextual | Lv.2     | Large file refactoring (1000+ LOC)| "shard this", "split file", files over 1K lines    |
+| 12 | Sight    | 👁️    | Keyword    | Lv.2     | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
+| 13 | ~~Monitor~~ | 📡 | ~~Passive~~| **Hook** | ~~CC Monitor self-reporting~~ → `.claude/hooks/session-*.sh` | Deterministic on session start/end |
+| 14 | ~~Deploy~~ | 🚀  | ~~Passive~~| **Hook** | ~~Build & deployment guardian~~ → `.claude/hooks/post-commit.sh` | Deterministic on git commit |
 
 ## Skill Deconfliction
 When multiple skills could activate on the same prompt, use these ownership rules:
-- **"commit"** → Seal only (not Deploy)
-- **"push" / "ship it" / "deploy"** → Deploy only (Deploy invokes Seal as sub-step if needed)
+- **"commit"** → post-commit hook fires automatically
+- **"push" / "ship it" / "deploy"** → pre-push hook blocks if checks fail
 - **"build"** → Neither — just run the build command directly
 - **"recall" / "remember"** → Echo only (not Diary or Project)
 - **"save diary" / "log session"** → Diary only (not Project)
@@ -51,6 +80,6 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **Commands:** `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`, `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
 
 ## Paths
-- Skills: `C:\Projects\memstack\skills\` | Memory (legacy): `C:\Projects\memstack\memory\` | DB: `C:\Projects\memstack\db\` | Config: `config.json`
+- Skills: `C:\Projects\memstack\skills\` | Hooks: `.claude/hooks/` | Rules: `.claude/rules/` | DB: `C:\Projects\memstack\db\` | Config: `config.json`
 
 *Architecture inspired by Developer Kaki's MemoryCore (github.com/Kiyoraka/Project-AI-MemoryCore)*

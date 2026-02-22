@@ -1,9 +1,15 @@
 ---
 name: seal
-description: "MUST use when committing code, pushing to git, or completing any task. Also triggers on 'commit', 'push', 'ship it', 'task done'. Auto-activates before any git push. Enforces build verification and clean commit hygiene."
+description: "DEPRECATED v3.0 — Replaced by native CC hook at .claude/hooks/pre-push.sh. Kept as fallback for CC versions without hook support. Original: MUST use when committing code, pushing to git, or completing any task."
+deprecated: true
+replaced_by: ".claude/hooks/pre-push.sh"
 ---
 
 # 🔒 Seal — Clean Commits, Every Time
+
+> **DEPRECATED in MemStack v3.0** — This skill is now a deterministic CC hook.
+> See `.claude/hooks/pre-push.sh` and `.claude/settings.json`.
+> This file is preserved as fallback for older CC versions without hook support.
 *The guardian that ensures every push is build-verified and properly formatted.*
 
 ## Activation
@@ -88,3 +94,4 @@ Push:         main → origin/main ✓
 
 - **Lv.1** — Base: Build check, staged commits, descriptive messages. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, mandatory rules, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3** — DEPRECATED: Replaced by deterministic CC hook `.claude/hooks/pre-push.sh`. Skill preserved as fallback. (Origin: MemStack v3.0, Feb 2026)

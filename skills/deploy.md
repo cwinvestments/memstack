@@ -1,9 +1,15 @@
 ---
 name: deploy
-description: "MUST use before any git push or deployment. Auto-activates before pushing code. Triggers on 'deploy', 'build', 'ship it', 'push'. Runs build verification, checks for debug artifacts, and confirms deployment safety."
+description: "DEPRECATED v3.0 — Replaced by native CC hook at .claude/hooks/post-commit.sh. Kept as fallback for CC versions without hook support. Original: MUST use before any git push or deployment."
+deprecated: true
+replaced_by: ".claude/hooks/post-commit.sh"
 ---
 
 # 🚀 Deploy — Pre-flight checks running...
+
+> **DEPRECATED in MemStack v3.0** — This skill is now a deterministic CC hook.
+> See `.claude/hooks/post-commit.sh` and `.claude/settings.json`.
+> This file is preserved as fallback for older CC versions without hook support.
 *Verify builds pass and deployments are safe before shipping code.*
 
 ## Activation
@@ -94,3 +100,4 @@ Netlify deploy triggered. Check: https://app.netlify.com/sites/adminstack/deploy
 
 - **Lv.1** — Base: Build verification and push safety checks. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, secrets check step. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3** — DEPRECATED: Replaced by deterministic CC hook `.claude/hooks/post-commit.sh`. Skill preserved as fallback. (Origin: MemStack v3.0, Feb 2026)

@@ -1,9 +1,15 @@
 ---
 name: monitor
-description: "Auto-activates on every session if cc_monitor.api_key is set in config.json. Reports CC session status to AdminStack CC Monitor dashboard silently throughout each session. No trigger keywords needed — always-on passive skill."
+description: "DEPRECATED v3.0 — Replaced by native CC hooks at .claude/hooks/session-start.sh and session-end.sh. Kept as fallback for CC versions without hook support. Original: Auto-activates on every session if cc_monitor.api_key is set."
+deprecated: true
+replaced_by: ".claude/hooks/session-start.sh, .claude/hooks/session-end.sh"
 ---
 
-# 📡 Monitor — Reporting to AdminStack...
+# 📡 Monitor — Reporting Status...
+
+> **DEPRECATED in MemStack v3.0** — This skill is now a pair of deterministic CC hooks.
+> See `.claude/hooks/session-start.sh`, `.claude/hooks/session-end.sh`, and `.claude/settings.json`.
+> This file is preserved as fallback for older CC versions without hook support.
 *Auto-report CC session status to AdminStack CC Monitor dashboard throughout each session.*
 
 ## Activation
@@ -99,3 +105,4 @@ The user sees nothing — Monitor works silently in the background.
 
 - **Lv.1** — Base: Silent CC Monitor reporting with curl. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, activation message, structured protocol sections. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3** — DEPRECATED: Replaced by deterministic CC hooks `session-start.sh` + `session-end.sh`. Skill preserved as fallback. (Origin: MemStack v3.0, Feb 2026)
