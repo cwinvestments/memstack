@@ -1,0 +1,36 @@
+{
+  "name": "@cwinvestments/memstack",
+  "version": "3.0.0-rc",
+  "description": "Structured skill framework for Claude Code with SQLite memory, hooks, and rules",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cwinvestments/memstack"
+  },
+  "homepage": "https://github.com/cwinvestments/memstack#readme",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "memory",
+    "ai-development",
+    "vibe-coding",
+    "sqlite",
+    "hooks",
+    "rules"
+  ],
+  "files": [
+    ".claude/hooks/",
+    ".claude/rules/",
+    ".claude/commands/",
+    ".claude/settings.json",
+    "skills/",
+    "db/schema.sql",
+    "db/memstack-db.py",
+    "db/migrate.py",
+    "templates/",
+    "MEMSTACK.md",
+    "README.md",
+    "LICENSE",
+    "config.json"
+  ]
+}

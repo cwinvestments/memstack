@@ -1,200 +1,145 @@
-# MemStack v2.1
+# MemStack v3.0
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.0-rc](https://img.shields.io/badge/Version-3.0--rc-green.svg)](CHANGELOG.md)
 
-A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory. Modular, auto-triggering skills that activate when Claude Code detects specific keywords, conditions, or background events in your prompts.
+A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, deterministic hooks, always-on rules, and slash commands.
 
-Architecture inspired by [Developer Kaki's MemoryCore](https://github.com/Kiyoraka/Project-AI-MemoryCore). SQLite backend inspired by [Accomplish AI](https://github.com/accomplish-ai/accomplish) research.
+Architecture inspired by [Developer Kaki's MemoryCore](https://github.com/Kiyoraka/Project-AI-MemoryCore). SQLite backend inspired by [Accomplish AI](https://github.com/accomplish-ai/accomplish) research. CC native features informed by [claude-code-best-practice](https://github.com/shanraisshan/claude-code-best-practice).
 
-## Quick Start
+## Installation
 
-1. Clone this repo somewhere on your machine
-2. Copy `config.json` and fill in your project paths and (optional) API keys
-3. Add this line to the start of any Claude Code session prompt:
+### Manual Setup (Current)
+
+```bash
+git clone https://github.com/cwinvestments/memstack.git
+cd memstack
+cp config.json config.local.json   # Edit with your real paths and API keys
+python db/memstack-db.py init      # Initialize SQLite database
+```
+
+Add to any CC session prompt:
 
 ```
 Read /path/to/memstack/MEMSTACK.md and follow the MemStack skill framework.
 ```
 
-Claude Code reads the master index, remembers all triggers, and auto-activates skills as needed.
-
-4. Initialize the SQLite database:
+### Package Install (Future)
 
 ```bash
-python db/memstack-db.py init
+npx skills add cwinvestments/memstack
 ```
 
-## How Skills Work
+## Three-Layer Architecture
 
-Each skill is a self-contained markdown file with YAML frontmatter for auto-discovery. When CC detects a trigger, it reads the skill file and follows its protocol.
-
-### Trigger Types
-
-| Type | Behavior | Examples |
-|------|----------|---------|
-| **Keyword** | Fires when specific phrases appear in prompt | "commit", "diagram", "recall" |
-| **Passive** | Always-on background behavior | Monitor, Seal, Deploy |
-| **Contextual** | Fires when conditions are detected | File over 1K lines, session ending, context low |
-
-### Skill Deconfliction
-
-When multiple skills could activate on the same prompt, ownership rules apply:
-
-| Trigger | Owner | Not |
-|---------|-------|-----|
-| "commit" | Seal | Deploy |
-| "push" / "ship it" / "deploy" | Deploy | Seal |
-| "build" | Neither | Just run the command |
-| "recall" / "remember" | Echo | Diary, Project |
-| "save diary" / "log session" | Diary | Project |
-| "save project" / "handoff" | Project | Diary |
-| "todo" / "plan" | Work | — |
-
-### Activation Messages
-
-Every skill outputs a visible activation line when it fires:
+MemStack v3.0 uses three layers with increasing reliability:
 
 ```
-🔒 Seal — Clean commits, every time.
-📋 Work — Plan execution engaged.
-📡 Monitor — Reporting status...
+MemStack v3.0
+├── Hooks (deterministic)        — Shell scripts, CC lifecycle events
+│   ├── pre-push.sh              — Build check, secrets scan, blocks bad pushes
+│   ├── post-commit.sh           — Debug artifacts, format validation
+│   ├── session-start.sh         — Headroom auto-start + CLAUDE.md indexer + API monitor
+│   └── session-end.sh           — Report "completed" to monitoring API
+├── Rules (always-loaded)        — Markdown files, loaded every session
+│   ├── memstack.md              — Global conventions, deprecated skill guard
+│   ├── echo.md                  — Memory recall protocol
+│   ├── diary.md                 — Session logging protocol
+│   ├── work.md                  — Task planning protocol
+│   └── headroom.md              — Compression proxy awareness
+├── Commands (slash)             — Quick-access utilities
+│   ├── memstack-search.md       — /memstack-search <query>
+│   └── memstack-headroom.md     — /memstack-headroom (proxy stats)
+└── Skills (context-aware)       — Markdown protocols, keyword triggers
+    ├── Echo, Diary, Work        — SQLite-backed memory (Lv.4)
+    ├── Project, Grimoire        — Session lifecycle (Lv.2-3)
+    ├── Scan, Quill              — Business tools (Lv.2)
+    └── Forge, Shard, Sight      — Dev tools (Lv.2)
 ```
 
-### Leveling System
+**Hooks** always fire (deterministic). **Rules** always load (persistent). **Skills** fire on keyword/condition match.
 
-Skills evolve through levels as they're improved:
+## Slash Commands
 
-- **Lv.1** — Base capability (initial creation)
-- **Lv.2** — Enhanced (YAML frontmatter, context guards, activation messages)
-- **Lv.3** — Advanced (SQLite backend, proactive behavior, deep cross-skill integration)
-- **Lv.4+** — Expert (fully autonomous, handles edge cases gracefully)
-
-Core skills (Echo, Diary, Work, Project) are at **Lv.3**. Others at Lv.2.
+| Command | What It Does |
+|---------|-------------|
+| `/memstack-search <query>` | Search SQLite memory for past sessions, insights, and project context |
+| `/memstack-headroom` | Check Headroom proxy status and token savings |
 
 ## Skills
 
-| Skill | Emoji | Type | Level | What It Does |
-|-------|-------|------|-------|-------------|
-| Familiar | 👻 | Keyword | Lv.2 | Splits tasks across multiple CC sessions |
-| Echo | 🔊 | Keyword | **Lv.3** | Recalls information from past sessions via SQLite search |
-| Seal | 🔒 | Passive | Lv.2 | Enforces clean git commits with build checks |
-| Work | 📋 | Keyword | **Lv.3** | Plan execution with SQLite-backed task tracking |
-| Project | 💾 | Contextual | **Lv.3** | Saves/restores project state via SQLite context |
-| Grimoire | 📖 | Keyword | Lv.2 | Manages CLAUDE.md files across projects |
-| Scan | 🔍 | Keyword | Lv.2 | Analyzes project scope and suggests pricing |
-| Quill | ✒️ | Keyword | Lv.2 | Generates professional client quotations |
-| Forge | 🔨 | Keyword | Lv.2 | Creates new MemStack skills |
-| Diary | 📓 | Contextual | **Lv.3** | Documents sessions to SQLite + auto-extracts insights |
-| Shard | 💎 | Contextual | Lv.2 | Refactors large files into smaller modules |
-| Sight | 👁️ | Keyword | Lv.2 | Generates Mermaid architecture diagrams |
-| Monitor | 📡 | Passive | Lv.2 | Reports session status to external dashboard |
-| Deploy | 🚀 | Passive | Lv.2 | Verifies builds and guards deployments |
+| Skill | Emoji | Level | What It Does |
+|-------|-------|-------|-------------|
+| Familiar | 👻 | Lv.2 | Splits tasks across multiple CC sessions |
+| Echo | 🔊 | **Lv.4** | Recalls information from past sessions via SQLite search |
+| Work | 📋 | **Lv.4** | Plan execution with SQLite-backed task tracking |
+| Project | 💾 | **Lv.3** | Saves/restores project state via SQLite context |
+| Grimoire | 📖 | Lv.2 | Manages CLAUDE.md files across projects |
+| Scan | 🔍 | Lv.2 | Analyzes project scope and suggests pricing |
+| Quill | ✒️ | Lv.2 | Generates professional client quotations |
+| Forge | 🔨 | Lv.2 | Creates new MemStack skills |
+| Diary | 📓 | **Lv.4** | Documents sessions to SQLite + auto-extracts insights |
+| Shard | 💎 | Lv.2 | Refactors large files into smaller modules |
+| Sight | 👁️ | Lv.2 | Generates Mermaid architecture diagrams |
 
-## Storage Architecture
+Deprecated skills (Seal, Deploy, Monitor) are replaced by deterministic hooks.
 
-### SQLite Database (Primary — v2.1+)
+## Headroom Integration
 
-All memory is stored in `db/memstack.db` using SQLite with WAL mode. Skills access it via the repository pattern CLI:
+MemStack auto-detects and auto-starts the [Headroom](https://github.com/nicobailon/headroom) context compression proxy on session start:
+
+1. **Checks** if Headroom is already running at `localhost:8787`
+2. **Auto-starts** it if the `headroom` command is installed but not running
+3. **Exports** `ANTHROPIC_BASE_URL` so CC routes through the proxy
+4. **Skips silently** if Headroom isn't installed — never blocks session start
+
+Headroom compresses tool outputs by ~34%, extending effective context window. Check status with `/memstack-headroom`.
+
+## Storage
+
+All memory is stored in SQLite (`db/memstack.db`) with WAL mode. CLI access:
 
 ```bash
-python db/memstack-db.py <command> [args...]
+python db/memstack-db.py search "authentication"     # Search everything
+python db/memstack-db.py get-sessions AdminStack      # Recent sessions
+python db/memstack-db.py get-insights AdminStack      # Decisions and patterns
+python db/memstack-db.py stats                        # Database overview
 ```
 
-**Tables:**
-
-| Table | Purpose | Used By |
-|-------|---------|---------|
-| `sessions` | Session diary entries | Diary (write), Echo (read) |
-| `insights` | Extracted decisions and patterns | Diary (write), Echo (read) |
-| `project_context` | Current state of each project | Project (read/write) |
-| `plans` | Task lists with per-task status | Work (read/write) |
-
-**Commands:**
-
-| Command | Description |
-|---------|-------------|
-| `init` | Initialize or migrate the database |
-| `add-session <json>` | Add a session diary entry |
-| `add-insight <json>` | Add an insight or decision |
-| `search <query>` | Full-text search across all tables |
-| `get-sessions <project>` | Get recent sessions for a project |
-| `get-insights <project>` | Get insights for a project |
-| `get-context <project>` | Get project context |
-| `set-context <json>` | Upsert project context |
-| `add-plan-task <json>` | Add a task to a project plan |
-| `get-plan <project>` | Get all plan tasks for a project |
-| `update-task <json>` | Update a plan task status |
-| `export-md <project>` | Export project memory as markdown |
-| `stats` | Show database statistics |
-
-### Markdown (Legacy Fallback + Export)
-
-Markdown files in `memory/` are preserved as human-readable backups and for backwards compatibility. SQLite is the source of truth; markdown is the export format.
-
-- `memory/sessions/` — Session diary exports (written by Diary alongside SQLite)
-- `memory/projects/` — Project handoffs and plans (written by Project/Work alongside SQLite)
-
-## Work Skill — 3 Modes
-
-The Work skill is the backbone for task management across CC sessions, now backed by SQLite:
-
-- **Copy Mode** (`"copy plan"`) — parses plan into individual tasks, saves each to the `plans` table
-- **Append Mode** (`"append plan"`) — updates individual task statuses in the database
-- **Resume Mode** (`"resume plan"`) — loads plan from SQLite and shows progress summary
-
-Quick commands: `"what's next"`, `"priorities"`, `"todo"`
-
-## Folder Structure
-
-```
-memstack/
-├── MEMSTACK.md              # Master index (add to CC prompts)
-├── config.json              # Projects, API keys, limits
-├── CHANGELOG.md             # Version history
-├── README.md                # This file
-├── db/
-│   ├── memstack.db          # SQLite database (primary storage)
-│   ├── schema.sql           # Database schema (4 tables)
-│   ├── memstack-db.py       # Repository pattern CLI helper
-│   └── migrate.py           # Markdown → SQLite migration (idempotent)
-├── skills/                  # 14 skill files with YAML frontmatter
-├── memory/
-│   ├── session-format.md    # Active session template
-│   ├── main-memory-format.md # Project memory template
-│   ├── sessions/            # Session diary exports (legacy + backup)
-│   │   └── archive/         # Archived logs
-│   ├── projects/            # Project handoffs & plans (legacy + backup)
-│   └── ideas/               # Idea storage
-├── templates/               # Document templates (handoff, quote, snapshot)
-└── research/                # Research reports (e.g., Accomplish comparison)
-```
-
-## Creating New Skills
-
-Use the **Forge** skill: say `"forge a new skill for [description]"`. Forge walks you through creation, generates the file with proper YAML frontmatter, and updates the master index.
+| Table | Purpose |
+|-------|---------|
+| `sessions` | Session diary entries (written by Diary, read by Echo) |
+| `insights` | Extracted decisions and patterns |
+| `project_context` | Current state of each project (auto-indexed from CLAUDE.md) |
+| `plans` | Task lists with per-task status |
 
 ## Configuration
 
-Copy `config.json` and customize for your setup:
+Copy `config.json` to `config.local.json` and customize:
+
 - **projects** — directory paths, CLAUDE.md locations, deploy targets
-- **cc_monitor** — optional dashboard API URL and key (for Monitor skill)
-- **session_limits** — max lines for session log exports (500) and plan exports (1000)
+- **cc_monitor** — optional dashboard API URL and key
+- **headroom** — auto-start toggle and port (default: 8787)
+- **session_limits** — max lines for exports
 - **defaults** — commit format, auto-diary, auto-monitor toggles
 
-Keep your real config in `config.local.json` (gitignored) — `config.json` is the template.
+`config.local.json` is gitignored. `config.json` is the template.
 
-## Migration from v2.0
+## Migration
 
-If upgrading from MemStack v2.0 (markdown-only):
+From MemStack v2.x:
 
 ```bash
-python db/memstack-db.py init      # Create the database
+python db/memstack-db.py init      # Create/update database
 python db/migrate.py               # Import existing markdown files (idempotent)
 python db/memstack-db.py stats     # Verify migration
 ```
 
-Existing markdown files are preserved. Skills will use SQLite as primary and fall back to markdown if the database entry is missing.
+## Creating Skills
+
+Use the **Forge** skill: say `"forge a new skill for [description]"`. Forge generates the file with YAML frontmatter and updates the master index.
 
 ## License
 
 MIT — see [LICENSE](LICENSE) for details.
+
+Copyright (c) 2026 CW Affiliate Investments LLC

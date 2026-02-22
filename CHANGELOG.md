@@ -1,5 +1,45 @@
 # MemStack Changelog
 
+## v3.0.0-rc — 2026-02-22 — Plugin Packaging + Headroom Integration
+
+**Builds on:** v3.0-beta rules and slash commands
+
+### New: Headroom Auto-Integration
+
+- `session-start.sh` now auto-detects and auto-starts the Headroom compression proxy
+- Checks `localhost:8787/health` — if running, does nothing; if installed but stopped, auto-starts it
+- Exports `ANTHROPIC_BASE_URL` when proxy starts successfully
+- Never blocks session start — all Headroom logic is non-blocking with timeouts
+- Configurable via `config.json` `headroom` section (`auto_start`, `port`)
+- New rule: `.claude/rules/headroom.md` — proxy awareness and troubleshooting
+- New command: `/memstack-headroom` — check proxy status and token savings
+
+### New: Plugin Packaging
+
+- `package.json` — NPM-style package manifest for `@cwinvestments/memstack`
+- `files` list includes all distributable assets, excludes `config.local.json`, `memory/`, `db/memstack.db`
+- Future install: `npx skills add cwinvestments/memstack`
+
+### Updated
+
+- `README.md` — Full rewrite for v3.0: installation, three-layer architecture diagram, Headroom section, slash commands, v3.0 badge
+- `MEMSTACK.md` — v3.0-rc: Headroom in hook/rules/commands tables
+- `config.json` — Added `headroom` section, version bump to 3.0.0-rc
+
+### Files Added
+- `package.json` — Plugin package manifest
+- `.claude/rules/headroom.md` — Headroom proxy awareness rule
+- `.claude/commands/memstack-headroom.md` — Slash command for proxy stats
+
+### Files Modified
+- `.claude/hooks/session-start.sh` — Headroom auto-detection and auto-start
+- `MEMSTACK.md` — v3.0-rc architecture tables
+- `CHANGELOG.md` — This entry
+- `README.md` — Full rewrite for v3.0
+- `config.json` — Headroom section, version bump
+
+---
+
 ## v3.0.0-beta — 2026-02-22 — Rules Integration, Slash Commands, Auto-Indexing
 
 **Builds on:** v3.0-alpha hook architecture

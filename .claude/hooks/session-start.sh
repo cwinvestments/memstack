@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# MemStack v3.0-beta — Session Start Hook
-# 1. Auto-indexes CLAUDE.md into SQLite project_context
-# 2. Reports session start to monitoring API
+# MemStack v3.0-rc — Session Start Hook
+# 1. Headroom proxy auto-detection and auto-start
+# 2. Auto-indexes CLAUDE.md into SQLite project_context
+# 3. Reports session start to monitoring API
 # Always exit 0 — should never block work
 #
 # Triggered by: SessionStart hook event
@@ -11,6 +12,52 @@ set -uo pipefail
 # --- Find MemStack root ---
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MEMSTACK_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# --- Read Headroom config ---
+HEADROOM_PORT=8787
+HEADROOM_AUTO_START=true
+CONFIG_FILE=""
+if [ -f "$MEMSTACK_ROOT/config.local.json" ]; then
+    CONFIG_FILE="$MEMSTACK_ROOT/config.local.json"
+elif [ -f "$MEMSTACK_ROOT/config.json" ]; then
+    CONFIG_FILE="$MEMSTACK_ROOT/config.json"
+fi
+
+if [ -n "$CONFIG_FILE" ]; then
+    PYTHON_CONFIG="$CONFIG_FILE"
+    if command -v cygpath &>/dev/null; then
+        PYTHON_CONFIG=$(cygpath -w "$CONFIG_FILE")
+    fi
+    read -r HEADROOM_PORT HEADROOM_AUTO_START <<< $(python -c "
+import json
+try:
+    with open(r'$PYTHON_CONFIG') as f:
+        cfg = json.load(f)
+    h = cfg.get('headroom', {})
+    print(h.get('port', 8787), str(h.get('auto_start', True)).lower())
+except:
+    print('8787 true')
+" 2>/dev/null || echo "8787 true")
+fi
+
+# --- Headroom proxy auto-detection ---
+# Check if Headroom is already running, auto-start if installed and configured
+if [ "$HEADROOM_AUTO_START" = "true" ]; then
+    HEADROOM_URL="http://127.0.0.1:${HEADROOM_PORT}"
+
+    if curl -s -m 2 "${HEADROOM_URL}/health" >/dev/null 2>&1; then
+        # Headroom already running — nothing to do
+        :
+    elif command -v headroom &>/dev/null; then
+        # Headroom installed but not running — auto-start
+        headroom proxy --port "$HEADROOM_PORT" >/dev/null 2>&1 &
+        sleep 2
+        if curl -s -m 2 "${HEADROOM_URL}/health" >/dev/null 2>&1; then
+            export ANTHROPIC_BASE_URL="${HEADROOM_URL}"
+        fi
+    fi
+    # If headroom not installed, skip silently
+fi
 
 # --- Detect project ---
 PROJECT_NAME=""
@@ -70,20 +117,8 @@ subprocess.run(
 " 2>/dev/null || true
 fi
 
-# --- Find config for API reporting ---
-CONFIG_FILE=""
-if [ -f "$MEMSTACK_ROOT/config.local.json" ]; then
-    CONFIG_FILE="$MEMSTACK_ROOT/config.local.json"
-elif [ -f "$MEMSTACK_ROOT/config.json" ]; then
-    CONFIG_FILE="$MEMSTACK_ROOT/config.json"
-fi
-
 # --- Report session start to monitoring API ---
 if [ -n "$CONFIG_FILE" ]; then
-    PYTHON_CONFIG="$CONFIG_FILE"
-    if command -v cygpath &>/dev/null; then
-        PYTHON_CONFIG=$(cygpath -w "$CONFIG_FILE")
-    fi
     read -r API_URL API_KEY <<< $(python -c "
 import json
 try:

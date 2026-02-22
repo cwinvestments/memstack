@@ -1,4 +1,4 @@
-# MemStack v3.0-beta — Skill Framework for Claude Code
+# MemStack v3.0-rc — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Skills in `C:\Projects\memstack\skills\` activate on keyword/contextual triggers. Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
@@ -10,13 +10,13 @@ See `.claude/rules/memstack.md` for the full rule set. Summary:
 4. Document decisions in CLAUDE.md
 5. Skill chain: Work → Seal (hook) → Diary → Monitor (hook)
 
-## Architecture (v3.0-beta)
+## Architecture (v3.0-rc)
 
-MemStack v3.0-beta uses **three layers**:
+MemStack v3.0-rc uses **three layers**:
 
 | Layer | What | How | Examples |
 |-------|------|-----|---------|
-| **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor (session start/end), CLAUDE.md auto-indexing |
+| **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor + Headroom + CLAUDE.md indexer (session start/end) |
 | **Rules** | Always-on behavioral guidance | Markdown files loaded every session | Echo recall, Diary logging, Work planning, global conventions |
 | **Skills** | Context-aware workflows | Markdown protocols activated by keywords/conditions | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
 
@@ -30,7 +30,7 @@ Hooks are wired in `.claude/settings.json`:
 |-------------|----------|----------|
 | `pre-push.sh` | `PreToolUse` (git push) | Build check, secrets scan, commit format — **blocks push on failure** |
 | `post-commit.sh` | `PostToolUse` (git commit) | Debug artifact scan, secrets check — **warns after commit** |
-| `session-start.sh` | `SessionStart` | **Auto-indexes CLAUDE.md** into SQLite + reports "working" to API |
+| `session-start.sh` | `SessionStart` | **Headroom auto-start** + **CLAUDE.md auto-index** + reports "working" to API |
 | `session-end.sh` | `Stop` | Reports "completed" status to monitoring API |
 
 ### Rules Configuration
@@ -43,12 +43,14 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | `echo.md` | Echo (Lv.4) | Always-on memory recall protocol — search SQLite first |
 | `diary.md` | Diary (Lv.4) | Always-on session logging awareness — log after task completion |
 | `work.md` | Work (Lv.4) | Always-on task planning protocol — activate on plan/todo/task |
+| `headroom.md` | Headroom | Compression proxy awareness — troubleshooting, stats check |
 
 ### Slash Commands
 
 | Command | File | Behavior |
 |---------|------|----------|
 | `/memstack-search <query>` | `.claude/commands/memstack-search.md` | Quick memory search — runs `memstack-db.py search` |
+| `/memstack-headroom` | `.claude/commands/memstack-headroom.md` | Headroom proxy status and token savings |
 
 ### Hook Exit Codes
 
