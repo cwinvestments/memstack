@@ -1,18 +1,28 @@
 # MemStack v2.1
 
-A structured skill framework for Claude Code with SQLite-backed persistent memory. Modular, auto-triggering skills that activate when CC detects specific keywords, conditions, or background events in your prompts.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory. Modular, auto-triggering skills that activate when Claude Code detects specific keywords, conditions, or background events in your prompts.
 
 Architecture inspired by [Developer Kaki's MemoryCore](https://github.com/Kiyoraka/Project-AI-MemoryCore). SQLite backend inspired by [Accomplish AI](https://github.com/accomplish-ai/accomplish) research.
 
 ## Quick Start
 
-Add this line to the start of any CC session prompt:
+1. Clone this repo somewhere on your machine
+2. Copy `config.json` and fill in your project paths and (optional) API keys
+3. Add this line to the start of any Claude Code session prompt:
 
 ```
-Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.
+Read /path/to/memstack/MEMSTACK.md and follow the MemStack skill framework.
 ```
 
-CC reads the master index, remembers all triggers, and auto-activates skills as needed.
+Claude Code reads the master index, remembers all triggers, and auto-activates skills as needed.
+
+4. Initialize the SQLite database:
+
+```bash
+python db/memstack-db.py init
+```
 
 ## How Skills Work
 
@@ -47,7 +57,7 @@ Every skill outputs a visible activation line when it fires:
 ```
 🔒 Seal — Clean commits, every time.
 📋 Work — Plan execution engaged.
-📡 Monitor — Reporting to AdminStack...
+📡 Monitor — Reporting status...
 ```
 
 ### Leveling System
@@ -77,7 +87,7 @@ Core skills (Echo, Diary, Work, Project) are at **Lv.3**. Others at Lv.2.
 | Diary | 📓 | Contextual | **Lv.3** | Documents sessions to SQLite + auto-extracts insights |
 | Shard | 💎 | Contextual | Lv.2 | Refactors large files into smaller modules |
 | Sight | 👁️ | Keyword | Lv.2 | Generates Mermaid architecture diagrams |
-| Monitor | 📡 | Passive | Lv.2 | Reports session status to AdminStack CC Monitor |
+| Monitor | 📡 | Passive | Lv.2 | Reports session status to external dashboard |
 | Deploy | 🚀 | Passive | Lv.2 | Verifies builds and guards deployments |
 
 ## Storage Architecture
@@ -165,11 +175,13 @@ Use the **Forge** skill: say `"forge a new skill for [description]"`. Forge walk
 
 ## Configuration
 
-Edit `config.json`:
+Copy `config.json` and customize for your setup:
 - **projects** — directory paths, CLAUDE.md locations, deploy targets
-- **cc_monitor** — AdminStack CC Monitor API URL and key
+- **cc_monitor** — optional dashboard API URL and key (for Monitor skill)
 - **session_limits** — max lines for session log exports (500) and plan exports (1000)
 - **defaults** — commit format, auto-diary, auto-monitor toggles
+
+Keep your real config in `config.local.json` (gitignored) — `config.json` is the template.
 
 ## Migration from v2.0
 
@@ -182,3 +194,7 @@ python db/memstack-db.py stats     # Verify migration
 ```
 
 Existing markdown files are preserved. Skills will use SQLite as primary and fall back to markdown if the database entry is missing.
+
+## License
+
+MIT — see [LICENSE](LICENSE) for details.

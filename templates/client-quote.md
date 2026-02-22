@@ -1,6 +1,6 @@
 # Project Quotation
 
-**CW AFFILIATE INVESTMENTS**
+**{company_name}**
 Prepared for: {client_name}, {client_company}
 Date: {date}
 Valid Until: {valid_until}
@@ -67,4 +67,4 @@ Reference: {quote_ref}
 ---
 
 *This quotation is valid for 30 days from the date of issue.*
-*CW Affiliate Investments — {contact_email}*
+*{company_name} — {contact_email}*

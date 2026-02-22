@@ -1,47 +1,23 @@
 {
   "version": "2.1.0",
-  "author": "CW Affiliate Investments",
+  "author": "Your Name or Company",
   "projects": {
-    "adminstack": {
-      "dir": "C:\\Projects\\AdminStack",
-      "claude_md": "C:\\Projects\\AdminStack\\CLAUDE.md",
+    "my-app": {
+      "dir": "C:\\Projects\\my-app",
+      "claude_md": "C:\\Projects\\my-app\\CLAUDE.md",
       "deploy_target": "netlify",
-      "repo": "github.com/cwinvestments/AdminStack"
+      "repo": "github.com/youruser/my-app"
     },
-    "imagestack": {
-      "dir": "C:\\Projects\\imagestack",
-      "claude_md": "C:\\Projects\\imagestack\\CLAUDE.md",
-      "deploy_target": "netlify",
-      "repo": "github.com/cwinvestments/imagestack"
-    },
-    "greenacres": {
-      "dir": "C:\\Projects\\GreenAcres",
-      "claude_md": "C:\\Projects\\GreenAcres\\CLAUDE.md",
-      "deploy_target": "netlify",
-      "repo": "github.com/cwinvestments/greenacres"
-    },
-    "algostack": {
-      "dir": "C:\\Projects\\algostack",
-      "claude_md": "C:\\Projects\\algostack\\CLAUDE.md",
+    "another-project": {
+      "dir": "C:\\Projects\\another-project",
+      "claude_md": "C:\\Projects\\another-project\\CLAUDE.md",
       "deploy_target": "railway",
-      "repo": "github.com/cwinvestments/algostack"
-    },
-    "epsteinscan": {
-      "dir": "C:\\Projects\\epsteinscan",
-      "claude_md": "C:\\Projects\\epsteinscan\\CLAUDE.md",
-      "deploy_target": "railway",
-      "repo": "github.com/cwinvestments/epsteinscan"
-    },
-    "docstack": {
-      "dir": "C:\\Projects\\DocStack",
-      "claude_md": "C:\\Projects\\DocStack\\CLAUDE.md",
-      "deploy_target": "netlify",
-      "repo": "github.com/cwinvestments/DocStack"
+      "repo": "github.com/youruser/another-project"
     }
   },
   "cc_monitor": {
-    "api_url": "https://admin.cwaffiliateinvestments.com/api/cc-sessions/report",
-    "api_key": "ccmon_673aad93f63dedf7f3b15086b5b98686e35bdb19a3559aec"
+    "api_url": "https://your-admin-dashboard.com/api/cc-sessions/report",
+    "api_key": ""
   },
   "session_limits": {
     "session_log_max_lines": 500,

@@ -85,9 +85,9 @@ Then execute the protocol below silently (do not show curl output to user unless
 📡 Monitor — Reporting to AdminStack...
 
 # Sent automatically at session start:
-curl -s -X POST https://admin.cwaffiliateinvestments.com/api/cc-sessions/report \
+curl -s -X POST {api_url} \
   -H "Content-Type: application/json" \
-  -d '{"api_key":"...","session_name":"Analytics Dashboard","project":"AdminStack","status":"working","last_output":"Starting task"}'
+  -d '{"api_key":"...","session_name":"Analytics Dashboard","project":"MyProject","status":"working","last_output":"Starting task"}'
 
 # Sent automatically at completion:
 curl -s -X POST ... -d '{"status":"completed","last_output":"Built analytics page with charts, filters, and export"}'

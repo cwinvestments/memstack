@@ -1,0 +1,35 @@
+# Database (runtime data, not source code)
+db/memstack.db
+db/memstack.db-wal
+db/memstack.db-shm
+
+# Local config (contains real API keys and project paths)
+config.local.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Session data (personal/private)
+memory/sessions/*.md
+!memory/sessions/.gitkeep
+memory/sessions/archive/*.md
+!memory/sessions/archive/.gitkeep
+memory/projects/*.md
+!memory/projects/.gitkeep
+memory/ideas/*.md
+!memory/ideas/.gitkeep
