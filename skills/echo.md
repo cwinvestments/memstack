@@ -80,3 +80,4 @@ Insights (3):
 - **Lv.1** — Base: Session log search and recall. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite backend as primary source, markdown as fallback, insight search. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
+- **Lv.4** — Native: CC rules integration (`.claude/rules/echo.md`), `/memstack-search` slash command, auto-indexed CLAUDE.md context. (Origin: MemStack v3.0-beta, Feb 2026)

@@ -1,5 +1,81 @@
 # MemStack Changelog
 
+## v3.0.0-beta — 2026-02-22 — Rules Integration, Slash Commands, Auto-Indexing
+
+**Builds on:** v3.0-alpha hook architecture
+
+### New: CC Native Rules for Core Skills
+
+Rules in `.claude/rules/` are loaded automatically every session — no need to read MEMSTACK.md first.
+
+| Rule File | Skill | What It Does |
+|-----------|-------|-------------|
+| `echo.md` | Echo (Lv.4) | Always-on memory recall — search SQLite on past session references |
+| `diary.md` | Diary (Lv.4) | Always-on session logging — log after task completion |
+| `work.md` | Work (Lv.4) | Always-on task planning — activate on plan/todo/task keywords |
+
+### New: Slash Command — `/memstack-search`
+
+- `.claude/commands/memstack-search.md` — Quick memory lookup
+- Invoked with `/memstack-search <query>` in CC
+- Runs `memstack-db.py search` without activating full Echo skill
+- Returns sessions, insights, and project context matching the query
+
+### New: CLAUDE.md Auto-Indexing
+
+- `session-start.sh` now auto-indexes CLAUDE.md into SQLite `project_context` table
+- Extracts headings and first paragraphs from CLAUDE.md (or `*-CLAUDE.md` variants)
+- Stores up to 1500 chars of key facts in `architecture_decisions` field
+- Keeps SQLite memory in sync with project documentation automatically
+- Restructured session-start.sh so auto-indexing runs even without API key
+
+### Updated Skills (Lv.3 → Lv.4)
+
+- **Echo** — Lv.4: CC rules integration + `/memstack-search` slash command + auto-indexed context
+- **Diary** — Lv.4: CC rules integration + always-on session logging awareness
+- **Work** — Lv.4: CC rules integration + always-on task planning awareness
+
+### Architecture: Three Layers
+
+```
+MemStack v3.0-beta
+├── Hooks (deterministic)     — Shell scripts, CC lifecycle events
+│   ├── pre-push.sh           — Seal: build check, secrets scan, blocks bad pushes
+│   ├── post-commit.sh        — Deploy: debug artifacts, format validation
+│   ├── session-start.sh      — Monitor + CLAUDE.md auto-indexer
+│   └── session-end.sh        — Monitor: report "completed" to API
+├── Rules (always-loaded)     — Markdown files, loaded every session
+│   ├── memstack.md           — Global conventions, deprecated skill guard
+│   ├── echo.md               — Memory recall protocol
+│   ├── diary.md              — Session logging protocol
+│   └── work.md               — Task planning protocol
+├── Commands (slash)          — Quick-access utilities
+│   └── memstack-search.md    — /memstack-search <query>
+├── Skills (context-aware)    — Markdown protocols, keyword/contextual triggers
+│   ├── Echo, Diary, Work     — SQLite-backed memory (Lv.4)
+│   ├── Project, Grimoire     — Session lifecycle (Lv.2-3)
+│   ├── Scan, Quill           — Business tools (Lv.2)
+│   └── Forge, Shard, Sight   — Dev tools (Lv.2)
+└── Rules (.claude/rules/)    — Always-loaded behavioral constraints
+```
+
+### Files Added
+- `.claude/rules/echo.md` — Echo memory recall rule
+- `.claude/rules/diary.md` — Diary session logging rule
+- `.claude/rules/work.md` — Work task planning rule
+- `.claude/commands/memstack-search.md` — Slash command for memory search
+
+### Files Modified
+- `.claude/hooks/session-start.sh` — Added CLAUDE.md auto-indexing, restructured flow
+- `MEMSTACK.md` — v3.0-beta: Three-layer architecture, rules table, commands table
+- `CHANGELOG.md` — This entry
+- `config.json` — Version bump to 3.0.0-beta
+- `skills/echo.md` — Lv.4 level history
+- `skills/diary.md` — Lv.4 level history
+- `skills/work.md` — Lv.4 level history
+
+---
+
 ## v3.0.0-alpha — 2026-02-22 — Native CC Hook Architecture
 
 **Inspired by:** CC Best Practices research (see `research/cc-best-practice-comparison.md`)

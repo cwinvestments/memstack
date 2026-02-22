@@ -118,3 +118,4 @@ Recommended next: Task 6 — Build cc-reporter.js
 - **Lv.1** — Base: Single-mode TODO tracking. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Three modes (copy/append/resume), 1K-line limit with auto-summarize, context guard, YAML frontmatter. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite-backed plans with per-task status tracking, no size limits, structured queries. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
+- **Lv.4** — Native: CC rules integration (`.claude/rules/work.md`), always-on task planning awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
