@@ -83,6 +83,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 12 | Sight    | 👁️    | Keyword    | Lv.2     | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
 | 13 | ~~Monitor~~ | 📡 | ~~Passive~~| **Hook** | ~~CC Monitor self-reporting~~ →`.claude/hooks/session-*.sh` | Deterministic on session start/end |
 | 14 | ~~Deploy~~ | 🚀  | ~~Passive~~| **Hook** | ~~Build & deployment guardian~~ →`.claude/hooks/post-commit.sh` | Deterministic on git commit |
+| 15 | KDP Format | 📚  | Keyword    | Lv.2     | Markdown → KDP-ready .docx (local only) | "kdp", "format for kdp", "book format", "manuscript" |
 
 ## Skill Deconfliction
 When multiple skills could activate on the same prompt, use these ownership rules:
