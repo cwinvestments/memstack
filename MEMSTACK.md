@@ -70,7 +70,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | #  | Skill    | Emoji | Type       | Level    | Function                          | Key Triggers                                       |
 |----|----------|-------|------------|----------|-----------------------------------|----------------------------------------------------|
 | 1  | Familiar | 👻    | Keyword    | Lv.2     | Multi-agent dispatch              | "dispatch", "send familiar", "split task"          |
-| 2  | Echo     | 🔊    | Keyword    | **Lv.4** | Memory recall from past sessions  | "recall", "last session", "do you remember" + rule |
+| 2  | Echo     | 🔊    | Keyword    | **Lv.5** | Semantic memory recall (MemSearch + SQLite)  | "recall", "last session", "do you remember" + rule |
 | 3  | ~~Seal~~ | 🔒    | ~~Passive~~| **Hook** | ~~Git commit guardian~~ →`.claude/hooks/pre-push.sh` | Deterministic on git push |
 | 4  | Work     | 📋    | Keyword    | **Lv.4** | Plan execution (copy/append/resume) | "copy plan", "append plan", "resume plan", "todo" + rule |
 | 5  | Project  | 💾    | Contextual | **Lv.3** | Session handoff & lifecycle       | "save project", "handoff", "context running low"   |

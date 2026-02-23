@@ -34,5 +34,8 @@ memory/projects/*.md
 memory/ideas/*.md
 !memory/ideas/.gitkeep
 
+# Vector DB (derived index, rebuildable from markdown)
+memory/vectors/
+
 # Local-only skills (not pushed to remote)
 skills/kdp-format/

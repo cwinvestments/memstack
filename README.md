@@ -13,6 +13,7 @@ MemStack gives Claude Code **persistent memory** across sessions, **automated sa
 - **Claude Code** — Install guide: https://docs.anthropic.com/en/docs/claude-code
 - **Python 3.10+** — Download: https://www.python.org/downloads/
 - **Git** — Download: https://git-scm.com/downloads
+- **MemSearch** (optional, for semantic recall) — `pip install memsearch` + `OPENAI_API_KEY` env var
 
 ## Quick Start
 
@@ -48,7 +49,28 @@ Windows: `Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill fr
 
 Mac/Linux: `Read /home/user/memstack/MEMSTACK.md and follow the MemStack skill framework.`
 
-### Step 5 (Optional): Install Headroom
+### Step 5 (Optional): Install MemSearch
+
+[MemSearch](https://github.com/zilliztech/memsearch) enables semantic vector search for the Echo skill — finding relevant past sessions by meaning, not just keywords.
+
+```bash
+pip install memsearch
+```
+
+Set your OpenAI API key (used for embeddings):
+
+Windows: `setx OPENAI_API_KEY sk-...`
+
+Mac/Linux: `echo 'export OPENAI_API_KEY=sk-...' >> ~/.bashrc && source ~/.bashrc`
+
+Index your existing sessions:
+```bash
+python skills/echo/index-sessions.py
+```
+
+Echo will automatically use semantic search when MemSearch is available, and fall back to SQLite keyword search when it's not.
+
+### Step 6 (Optional): Install Headroom
 
 [Headroom](https://github.com/chopratejas/headroom) compresses tool outputs by ~34%, making sessions last longer.
 ```bash
@@ -101,7 +123,7 @@ MemStack v3.0
 
 | Skill | Emoji | Level | What It Does |
 |-------|-------|-------|-------------|
-| Echo | 🔊 | **Lv.4** | Recalls information from past sessions via SQLite search |
+| Echo | 🔊 | **Lv.5** | Semantic recall via MemSearch vectors + SQLite fallback |
 | Work | 📋 | **Lv.4** | Plan execution with SQLite-backed task tracking |
 | Diary | 📓 | **Lv.4** | Documents sessions to SQLite + auto-extracts insights |
 | Project | 💾 | **Lv.3** | Saves/restores project state via SQLite context |
