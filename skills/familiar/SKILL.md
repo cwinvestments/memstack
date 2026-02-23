@@ -1,7 +1,8 @@
 ---
 name: familiar
-description: "MUST use when dispatching work across multiple CC sessions, splitting a large task into sub-tasks, or coordinating parallel development. Triggers on 'dispatch', 'send familiar', 'split task', 'multi-session'. Use when a task is too large for a single session."
+description: "Multi-agent task dispatch. Generates ready-to-paste prompts for parallel CC sessions. Triggers on dispatch, send familiar, split task."
 ---
+
 
 # 👻 Familiar — Dispatching Sub-Agents...
 *Break large tasks into coordinated CC session prompts for parallel execution.*

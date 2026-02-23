@@ -1,7 +1,8 @@
 ---
 name: echo
-description: "MUST use when the user asks about past sessions, wants to recall previous work, or references earlier context. Triggers on 'recall', 'last session', 'do you remember', 'what did we', 'continue from'. Searches SQLite database (primary) with markdown fallback."
+description: "Memory recall from past sessions. Searches diary logs and project snapshots. Triggers on recall, last session, do you remember."
 ---
+
 
 # 🔊 Echo — Searching the Archives...
 *Recall information from past CC sessions stored in memory.*

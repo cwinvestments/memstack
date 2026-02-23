@@ -1,7 +1,8 @@
 ---
 name: diary
-description: "MUST use when documenting session accomplishments, logging what was built, or at the end of any productive session. Triggers on 'save diary', 'write diary', 'log session'. Auto-activates at session end if auto_diary is true in config.json. Creates searchable logs for Echo."
+description: "Session documentation logger. Auto-logs accomplishments, decisions, and blockers at session end. Triggers on save diary, log session, or end of session."
 ---
+
 
 # 📓 Diary — Logging Session...
 *Document what was accomplished in each CC session for future recall.*

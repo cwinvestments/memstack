@@ -1,7 +1,8 @@
 ---
 name: shard
-description: "MUST use when refactoring large files over 1000 lines, splitting monolithic files into modules, or when a file is becoming unwieldy. Triggers on 'shard this', 'split file', 'refactor', 'files over 1K lines'. Also activates contextually when editing a file over 1000 lines."
+description: "Large file refactoring. Splits files over 1000 lines into clean modules. Triggers on shard this, split file, or files over 1K lines."
 ---
+
 
 # 💎 Shard — Refactoring Large File...
 *Split monolithic files into focused, maintainable modules.*

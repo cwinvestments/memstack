@@ -1,7 +1,8 @@
 ---
 name: quill
-description: "MUST use when generating client quotations, proposals, or pricing documents. Triggers on 'create quotation', 'generate quote', 'write proposal', 'client quote', 'proposal'. Uses templates/client-quote.md and Scan results to produce professional documents."
+description: "Client quotation generator. Creates professional project proposals with pricing. Triggers on create quotation, generate quote, proposal."
 ---
+
 
 # ✒️ Quill — Drafting Quotation...
 *Generate professional client quotations and proposals.*

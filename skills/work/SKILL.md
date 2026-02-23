@@ -1,7 +1,8 @@
 ---
 name: work
-description: "MUST use when managing task lists, tracking plan progress, or resuming work after a session reset. Triggers on 'copy plan', 'append plan', 'resume plan', 'what's next', 'todo', 'priorities'. Supports three modes: copy (full plan capture), append (incremental updates), resume (restore after compact)."
+description: "Plan execution and task tracking. Copy, append, resume plans across sessions. Triggers on copy plan, append plan, resume plan, todo."
 ---
+
 
 # 📋 Work — Plan Execution Engaged
 *Track tasks, manage plans, and survive CC compacts with three operating modes.*

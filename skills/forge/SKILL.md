@@ -1,7 +1,8 @@
 ---
 name: forge
-description: "MUST use when creating new MemStack skills, improving existing skills, or extending the skill framework. Triggers on 'create enchantment', 'forge this', 'new skill', 'improve skill', 'add skill'. Generates properly formatted skill files and updates the master index."
+description: "Skill creation wizard. Builds new MemStack skills from description. Triggers on forge this, new skill, create enchantment."
 ---
+
 
 # 🔨 Forge — Creating New Enchantment...
 *Create new MemStack skills or improve existing ones.*

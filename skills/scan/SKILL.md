@@ -1,7 +1,8 @@
 ---
 name: scan
-description: "MUST use when analyzing a project's scope, counting files/endpoints/tables, or estimating pricing for client work. Triggers on 'scan project', 'analyze project', 'how much should I charge', 'how much to charge', 'estimate'. Produces detailed project metrics and pricing tiers."
+description: "Project scope analysis and pricing estimator. Audits codebase complexity. Triggers on scan project, estimate, how much to charge."
 ---
+
 
 # 🔍 Scan — Analyzing Project Scope...
 *Analyze a project's complexity and generate pricing recommendations.*

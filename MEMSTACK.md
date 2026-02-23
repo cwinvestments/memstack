@@ -1,6 +1,6 @@
 # MemStack v3.0-rc — Skill Framework for Claude Code
 
-You are running with MemStack enabled. Skills in `C:\Projects\memstack\skills\` activate on keyword/contextual triggers. Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
+You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
 ## Global Rules
 See `.claude/rules/memstack.md` for the full rule set. Summary:
@@ -18,7 +18,7 @@ MemStack v3.0-rc uses **three layers**:
 |-------|------|-----|---------|
 | **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor + Headroom + CLAUDE.md indexer (session start/end) |
 | **Rules** | Always-on behavioral guidance | Markdown files loaded every session | Echo recall, Diary logging, Work planning, global conventions |
-| **Skills** | Context-aware workflows | Markdown protocols activated by keywords/conditions | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
+| **Skills** | Context-aware workflows | `skills/{name}/SKILL.md` — official Anthropic format | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
 
 Hooks **always fire** — deterministic. Rules **always load** — persistent behavioral layer. Skills fire when CC detects matching triggers.
 
@@ -102,6 +102,6 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **Commands:** `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`, `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
 
 ## Paths
-- Skills: `C:\Projects\memstack\skills\` | Hooks: `.claude/hooks/` | Rules: `.claude/rules/` | Commands: `.claude/commands/` | DB: `C:\Projects\memstack\db\` | Config: `config.json`
+- Skills: `C:\Projects\memstack\skills\{name}\SKILL.md` | Deprecated: `skills\_deprecated\` | Hooks: `.claude/hooks/` | Rules: `.claude/rules/` | Commands: `.claude/commands/` | DB: `C:\Projects\memstack\db\` | Config: `config.json`
 
 *Architecture inspired by Developer Kaki's MemoryCore (github.com/Kiyoraka/Project-AI-MemoryCore)*

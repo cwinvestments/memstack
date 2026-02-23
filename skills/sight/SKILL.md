@@ -1,7 +1,8 @@
 ---
 name: sight
-description: "MUST use when generating architecture diagrams, visualizing database schema, mapping component hierarchy, or creating any visual representation of code structure. Triggers on 'draw', 'diagram', 'visualize', 'architecture', 'show me the structure'. Produces Mermaid diagrams."
+description: "Architecture visualization. Generates diagrams of project structure. Triggers on draw, diagram, visualize, architecture."
 ---
+
 
 # 👁️ Sight — The Hidden Becomes Clear
 *Generate Mermaid diagrams showing project architecture, schema, and data flow.*

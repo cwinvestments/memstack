@@ -1,7 +1,8 @@
 ---
 name: grimoire
-description: "MUST use when updating a project's CLAUDE.md file, syncing knowledge across projects, or saving new patterns to context. Triggers on 'save library', 'load library', 'update context', 'update claude.md', 'update claude'. Manages persistent project knowledge."
+description: "CLAUDE.md management. Updates project context files after changes. Triggers on update context, update claude, save library."
 ---
+
 
 # 📖 Grimoire — Updating the Knowledge Library
 *Manage and update CLAUDE.md files across all projects.*

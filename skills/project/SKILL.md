@@ -1,7 +1,8 @@
 ---
 name: project
-description: "MUST use when saving project state for session handoff, restoring a previous session, or when context is running low. Triggers on 'save project', 'load project', 'handoff', 'session ending', 'context running low'. Generates ready-to-paste prompts for the next CC session."
+description: "Session handoff and lifecycle snapshots. Saves full project state for next session. Triggers on save project, handoff, context running low."
 ---
+
 
 # 💾 Project — Saving Project State...
 *Save and restore project state between CC sessions for seamless handoffs.*
