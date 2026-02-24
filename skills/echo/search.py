@@ -1,110 +1,131 @@
 #!/usr/bin/env python
 """
 Echo Skill — Semantic Search
-Searches indexed session/plan content using MemSearch vector similarity.
+Searches indexed session/plan content using LanceDB vector similarity.
 
 Usage:
     python skills/echo/search.py "query text" [--top-k 5] [--json]
 
-Requires: pip install memsearch
-Requires: OPENAI_API_KEY environment variable (for embeddings)
+Requires: pip install lancedb sentence-transformers
+Optional: OPENAI_API_KEY for higher-quality OpenAI embeddings (falls back to local)
 
 Output format (default):
-    Source: memory/sessions/2026-02-19-docstack.md
-    Section: Accomplished
-    Score: 0.847
-    Content: Built the document pipeline with...
-    ---
+    **[1] docstack** — 2026-02-19 (session)
+      Section: Accomplished
+      Score: 0.847
+      Built the document pipeline with...
+      Source: memory/sessions/2026-02-19-docstack.md
+      ---
 
 Output format (--json):
-    [{"source": "...", "heading": "...", "score": 0.85, "content": "...", ...}]
+    [{"content": "...", "source": "...", "section_title": "...", "score": 0.85, ...}]
 """
 
-import asyncio
 import argparse
 import json
-import re
+import os
 import sys
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).parent.resolve()
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
-VECTORS_DIR = PROJECT_ROOT / "memory" / "vectors"
-VECTOR_DB = VECTORS_DIR / "memsearch.db"
+VECTORS_DIR = PROJECT_ROOT / "memory" / "vectors" / "lancedb"
+COLLECTION = "memstack_sessions"
 
 
-def extract_metadata(source: str) -> dict:
-    """Extract date and project name from session file path.
+def get_embedder():
+    """Return (embed_fn, provider_name). Tries OpenAI first, falls back to local."""
+    api_key = os.environ.get("OPENAI_API_KEY", "")
+    if api_key:
+        try:
+            import openai
+            client = openai.OpenAI()
 
-    Example: memory/sessions/2026-02-19-docstack.md
-           → {date: "2026-02-19", project: "docstack", type: "session"}
-    """
-    name = Path(source).stem  # e.g. "2026-02-19-docstack"
-    parent = Path(source).parent.name  # e.g. "sessions" or "plans"
+            def openai_embed(texts: list[str]) -> list[list[float]]:
+                resp = client.embeddings.create(input=texts, model="text-embedding-3-small")
+                return [d.embedding for d in resp.data]
 
-    meta = {"type": "plan" if parent == "plans" else "session"}
+            return openai_embed, "openai"
+        except Exception:
+            pass
 
-    # Try to extract date and project from filename pattern: YYYY-MM-DD-project
-    match = re.match(r"(\d{4}-\d{2}-\d{2})-(.+)", name)
-    if match:
-        meta["date"] = match.group(1)
-        meta["project"] = match.group(2)
-    else:
-        meta["date"] = ""
-        meta["project"] = name
+    try:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    return meta
+        def local_embed(texts: list[str]) -> list[list[float]]:
+            return model.encode(texts).tolist()
+
+        return local_embed, "local"
+    except ImportError:
+        return None, "none"
 
 
-async def run_search(query: str, top_k: int = 5) -> list[dict]:
+def run_search(query: str, top_k: int = 5) -> list[dict]:
     """Search indexed sessions/plans for semantically similar content."""
     try:
-        from memsearch import MemSearch
+        import lancedb
     except ImportError:
         print(
-            json.dumps({"ok": False, "error": "memsearch not installed"}),
+            json.dumps({"ok": False, "error": "lancedb not installed. Run: pip install lancedb"}),
             file=sys.stderr,
         )
         return []
 
-    if not VECTOR_DB.exists():
+    if not VECTORS_DIR.exists():
         print(
             json.dumps({"ok": False, "error": "Vector DB not found. Run index-sessions.py first."}),
             file=sys.stderr,
         )
         return []
 
-    try:
-        mem = MemSearch(
-            paths=[],  # no paths needed for search-only
-            milvus_uri=str(VECTOR_DB),
-            collection="memstack_sessions",
-        )
-    except Exception as e:
+    embed_fn, _provider = get_embedder()
+    if embed_fn is None:
         print(
-            json.dumps({"ok": False, "error": f"MemSearch init failed: {e}"}),
+            json.dumps({"ok": False, "error": "No embedding provider. Install sentence-transformers or set OPENAI_API_KEY."}),
             file=sys.stderr,
         )
         return []
 
     try:
-        results = await mem.search(query, top_k=top_k)
-        # Enrich results with extracted metadata
+        db = lancedb.connect(str(VECTORS_DIR))
+        if COLLECTION not in db.list_tables().tables:
+            print(
+                json.dumps({"ok": False, "error": f"Collection '{COLLECTION}' not found. Run index-sessions.py first."}),
+                file=sys.stderr,
+            )
+            return []
+
+        table = db.open_table(COLLECTION)
+
+        # Embed query
+        query_vector = embed_fn([query])[0]
+
+        # Search
+        results = table.search(query_vector).limit(top_k).to_list()
+
         enriched = []
         for r in results:
-            meta = extract_metadata(r.get("source", ""))
+            # LanceDB returns _distance (L2) — convert to similarity score (0-1)
+            distance = r.get("_distance", 0.0)
+            score = max(0.0, 1.0 / (1.0 + distance))
             enriched.append({
                 "content": r.get("content", ""),
                 "source": r.get("source", ""),
-                "heading": r.get("heading", ""),
-                "score": round(r.get("score", 0.0), 4),
-                "date": meta.get("date", ""),
-                "project": meta.get("project", ""),
-                "type": meta.get("type", "session"),
+                "section_title": r.get("section_title", ""),
+                "score": round(score, 4),
+                "date": r.get("date", ""),
+                "project": r.get("project", ""),
+                "type": r.get("type", "session"),
             })
         return enriched
-    finally:
-        mem.close()
+
+    except Exception as e:
+        print(
+            json.dumps({"ok": False, "error": f"Search failed: {e}"}),
+            file=sys.stderr,
+        )
+        return []
 
 
 def format_results(results: list[dict]) -> str:
@@ -115,10 +136,9 @@ def format_results(results: list[dict]) -> str:
     lines = []
     for i, r in enumerate(results, 1):
         lines.append(f"**[{i}] {r['project']}** — {r['date']} ({r['type']})")
-        if r["heading"]:
-            lines.append(f"  Section: {r['heading']}")
+        if r["section_title"]:
+            lines.append(f"  Section: {r['section_title']}")
         lines.append(f"  Score: {r['score']}")
-        # Truncate content for display
         content = r["content"][:300]
         if len(r["content"]) > 300:
             content += "..."
@@ -135,7 +155,7 @@ def main():
     parser.add_argument("--json", action="store_true", help="Output as JSON")
     args = parser.parse_args()
 
-    results = asyncio.run(run_search(args.query, top_k=args.top_k))
+    results = run_search(args.query, top_k=args.top_k)
 
     if args.json:
         print(json.dumps(results, indent=2))

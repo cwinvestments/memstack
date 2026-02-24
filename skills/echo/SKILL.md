@@ -1,6 +1,6 @@
 ---
 name: echo
-description: "Memory recall from past sessions. Uses MemSearch vector-powered semantic search with SQLite fallback. Triggers on recall, last session, do you remember."
+description: "Memory recall from past sessions. Uses LanceDB vector-powered semantic search with SQLite fallback. Triggers on recall, last session, do you remember."
 ---
 
 
@@ -31,7 +31,7 @@ Then execute the protocol below.
 
 ### Step 1: Semantic Vector Search (primary)
 
-Try MemSearch first for best-quality results:
+Try LanceDB vector search first for best-quality results:
 ```bash
 python C:/Projects/memstack/skills/echo/search.py "<keywords>" --top-k 5
 ```
@@ -86,7 +86,7 @@ python C:/Projects/memstack/skills/echo/index-sessions.py --force
 
 ## Inputs
 - Keywords from the user's prompt (project name, feature name, date range)
-- Vector DB: `C:\Projects\memstack\memory\vectors\memsearch.db` (via MemSearch)
+- Vector DB: `C:\Projects\memstack\memory\vectors\lancedb\` (via LanceDB)
 - Database: `C:\Projects\memstack\db\memstack.db` (via memstack-db.py)
 - Fallback: `C:\Projects\memstack\memory\` (legacy markdown files)
 
@@ -131,4 +131,4 @@ SQLite insights (3):
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite backend as primary source, markdown as fallback, insight search. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/echo.md`), `/memstack-search` slash command, auto-indexed CLAUDE.md context. (Origin: MemStack v3.0-beta, Feb 2026)
-- **Lv.5** — Semantic: MemSearch vector-powered recall with hybrid search (dense + BM25 + RRF). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.5** — Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI optional). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)

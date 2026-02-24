@@ -15,7 +15,7 @@ MemStack gives Claude Code **persistent memory** across sessions, **semantic rec
 - **Verify** (#18) — Pre-commit verification reports. Checks build, tests, and requirements before committing.
 - **Seal upgrade** — Commit format now supports conventional commits (`feat(scope): description`) alongside `[ProjectName]` format.
 - **Diary upgrade** (Lv.5) — Structured Session Handoff section for seamless pickup between sessions.
-- **Echo upgrade** (Lv.5) — Semantic vector search via MemSearch with SQLite fallback (added in v3.0.1).
+- **Echo upgrade** (Lv.5) — Semantic vector search via LanceDB with SQLite fallback (added in v3.0.1).
 
 MemStack is a lightweight alternative to heavyweight frameworks like GSD — same capabilities, pure markdown, zero dependencies.
 
@@ -24,7 +24,7 @@ MemStack is a lightweight alternative to heavyweight frameworks like GSD — sam
 - **Claude Code** — Install guide: https://docs.anthropic.com/en/docs/claude-code
 - **Python 3.10+** — Download: https://www.python.org/downloads/
 - **Git** — Download: https://git-scm.com/downloads
-- **MemSearch** (optional, for semantic recall) — `pip install memsearch` + `OPENAI_API_KEY` env var
+- **LanceDB + sentence-transformers** (optional, for semantic recall) — `pip install lancedb sentence-transformers`
 
 ## Quick Start
 
@@ -60,26 +60,26 @@ Windows: `Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill fr
 
 Mac/Linux: `Read /home/user/memstack/MEMSTACK.md and follow the MemStack skill framework.`
 
-### Step 5 (Optional): Install MemSearch
+### Step 5 (Optional): Install Semantic Search
 
-[MemSearch](https://github.com/zilliztech/memsearch) enables semantic vector search for the Echo skill — finding relevant past sessions by meaning, not just keywords.
+LanceDB + sentence-transformers enables semantic vector search for the Echo skill — finding relevant past sessions by meaning, not just keywords.
 
 ```bash
-pip install memsearch
+pip install lancedb sentence-transformers
 ```
-
-Set your OpenAI API key (used for embeddings):
-
-Windows: `setx OPENAI_API_KEY sk-...`
-
-Mac/Linux: `echo 'export OPENAI_API_KEY=sk-...' >> ~/.bashrc && source ~/.bashrc`
 
 Index your existing sessions:
 ```bash
 python skills/echo/index-sessions.py
 ```
 
-Echo will automatically use semantic search when MemSearch is available, and fall back to SQLite keyword search when it's not.
+Echo will automatically use semantic search when LanceDB is available, and fall back to SQLite keyword search when it's not.
+
+For higher-quality embeddings, optionally set an OpenAI API key:
+
+Windows: `setx OPENAI_API_KEY sk-...`
+
+Mac/Linux: `echo 'export OPENAI_API_KEY=sk-...' >> ~/.bashrc && source ~/.bashrc`
 
 ### Step 6 (Optional): Install Headroom
 
@@ -115,7 +115,7 @@ MemStack v3.1
 │   ├── memstack-search.md       — /memstack-search <query>
 │   └── memstack-headroom.md     — /memstack-headroom (proxy stats)
 └── Skills (context-aware)       — Markdown protocols, keyword triggers
-    ├── Echo, Diary, Work        — SQLite + vector-backed memory (Lv.4-5)
+    ├── Echo, Diary, Work        — SQLite + LanceDB vector memory (Lv.4-5)
     ├── State, Verify, Humanize  — Workflow quality (Lv.1) ← NEW in v3.1
     ├── Project, Grimoire        — Session lifecycle (Lv.2-3)
     ├── Scan, Quill              — Business tools (Lv.2)
@@ -135,7 +135,7 @@ MemStack v3.1
 
 | Skill | Emoji | Level | What It Does |
 |-------|-------|-------|-------------|
-| Echo | 🔊 | **Lv.5** | Semantic recall via MemSearch vectors + SQLite fallback |
+| Echo | 🔊 | **Lv.5** | Semantic recall via LanceDB vectors + SQLite fallback |
 | Diary | 📓 | **Lv.5** | Documents sessions to SQLite + structured handoff for seamless pickup |
 | Work | 📋 | **Lv.4** | Plan execution with SQLite-backed task tracking |
 | Project | 💾 | **Lv.3** | Saves/restores project state via SQLite context |

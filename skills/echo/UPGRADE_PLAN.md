@@ -1,8 +1,10 @@
 # Echo Skill Upgrade Plan — Vector-Powered Semantic Recall
 
+> **Migration Note (2026-02-24):** Originally designed for MemSearch/Milvus Lite. Swapped to **LanceDB + sentence-transformers** because milvus-lite and ChromaDB both lack Python 3.14 builds. LanceDB is Apache Arrow-based, zero-config, and Python 3.14 compatible. The architecture below reflects the original design; the actual implementation uses LanceDB.
+
 ## Overview
 
-Upgrade Echo from keyword-based `LIKE` search (Lv.4) to **semantic vector search** (Lv.5) using [MemSearch](https://github.com/zilliztech/memsearch) by Zilliz. This adds semantic similarity matching across all session logs and plans while keeping the existing SQLite search as a fallback.
+Upgrade Echo from keyword-based `LIKE` search (Lv.4) to **semantic vector search** (Lv.5) using **LanceDB** with sentence-transformers embeddings (OpenAI optional). This adds semantic similarity matching across all session logs and plans while keeping the existing SQLite search as a fallback.
 
 ## Architecture
 
