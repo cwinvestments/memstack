@@ -309,3 +309,149 @@ Each Task call runs in an isolated context with its own tools.
 1. **v3.0** — Convert to CC plugin format. Move skills to SKILL.md. Add hooks for Seal/Deploy/Monitor. Replace Familiar with native agent.
 2. **v3.1** — Expose SQLite memory as MCP server. Move rules to `.claude/rules/`. Add agent memory to Echo/Diary.
 3. **v3.2** — Publish to marketplace. Add install/setup commands. Community skills via Forge generating SKILL.md format.
+
+---
+
+## Superpowers Comparison
+
+**Date:** 2026-02-24
+**Superpowers version:** 4.3.1
+**Repo:** https://github.com/obra/superpowers
+**Author:** Jesse Vincent
+
+### What Superpowers Is
+
+A CC plugin focused on **developer discipline enforcement** — structured workflows for brainstorming, TDD, debugging, code review, and multi-agent task execution. Unlike MemStack (which adds memory + safety + business tools), Superpowers adds **process rigor** to Claude Code's creative work.
+
+### Philosophy Difference
+
+| Dimension | MemStack | Superpowers |
+|-----------|----------|-------------|
+| **Core problem** | Claude forgets context across sessions | Claude skips process discipline within sessions |
+| **Approach** | Persistent memory + safety gates + business tools | Anti-rationalization skill design + mandatory workflows |
+| **What it adds** | Data (sessions, insights, plans, vectors) | Behavior (TDD, brainstorming, verification, review loops) |
+| **Architecture metaphor** | Database + recall engine | Behavioral guardrails + decision flowcharts |
+| **Skill count** | 18 skills (diverse domains) | 14 skills (all process/workflow) |
+| **Agents** | None (Familiar deprecated) | 1 (code-reviewer) + subagent templates |
+| **Hooks** | 4 (pre-push, post-commit, session-start/end) | 1 (session-start — injects meta-skill into context) |
+| **Persistence** | SQLite + LanceDB vectors + markdown | None — stateless, pure behavior |
+| **Business tools** | Yes (Scan, Quill, KDP Format) | No — exclusively developer workflow |
+| **Target** | Multi-project freelancer/agency workflow | Single-project development discipline |
+
+### Feature Overlap
+
+| Capability | MemStack | Superpowers | Winner |
+|------------|----------|-------------|--------|
+| **Session memory** | SQLite + LanceDB vectors + markdown diaries | None | MemStack |
+| **Cross-session recall** | Echo (semantic + keyword search) | None | MemStack |
+| **Commit safety** | Pre-push hook (build, secrets, format) | Verification-before-completion skill | MemStack (deterministic) |
+| **Task planning** | Work skill (SQLite-backed plan tracking) | Writing-plans + executing-plans skills | Superpowers (more structured process) |
+| **Code review** | None | code-reviewer agent + 2-stage review (spec then quality) | Superpowers |
+| **Multi-agent dispatch** | Familiar (deprecated, manual paste) | Subagent-driven-development (real Task tool dispatch) | Superpowers |
+| **TDD enforcement** | None | test-driven-development skill with rationalization tables | Superpowers |
+| **Debugging workflow** | None | systematic-debugging skill | Superpowers |
+| **Brainstorming** | None | brainstorming skill with HARD-GATE blocking implementation | Superpowers |
+| **Git worktree isolation** | None | using-git-worktrees (mandatory before feature work) | Superpowers |
+| **Architecture diagrams** | Sight skill (Mermaid) | None | MemStack |
+| **Business tools** | Scan, Quill, KDP Format | None | MemStack |
+| **Session handoffs** | Diary Lv.5 (structured handoff section) | None | MemStack |
+| **State tracking** | State skill (STATE.md) | None | MemStack |
+
+**Verdict:** Near-zero functional overlap. MemStack = memory + safety + business. Superpowers = discipline + process + review. They solve orthogonal problems.
+
+### Unique Patterns Worth Adopting
+
+#### 1. Anti-Rationalization Tables (HIGH VALUE)
+
+Superpowers' most distinctive pattern. Every discipline-enforcing skill includes a two-column table mapping Claude's known excuses to rebuttals:
+
+| Claude thinks... | Reality |
+|---|---|
+| "This is too simple for TDD" | Simple things become complex. Use it. |
+| "I already manually tested it" | Ad-hoc ≠ systematic. No record, can't re-run. |
+| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
+
+These tables were built empirically from baseline testing (watching Claude fail without the skill, logging its rationalizations, then pre-empting them in the skill text).
+
+**MemStack opportunity:** Add rationalization tables to Echo, Diary, and Verify skills. Example for Diary: counter "Nothing important happened this session" and "I'll remember this for next time."
+
+#### 2. The Description Trap Discovery (HIGH VALUE)
+
+Superpowers v4.0.0 discovered that **skill descriptions that summarize the workflow cause Claude to follow the short description instead of reading the full skill content**. When subagent-driven-development's description mentioned "code review between tasks," Claude did ONE review instead of TWO (as the full skill specified).
+
+**Rule:** Descriptions must say ONLY when to invoke the skill, never what the skill does.
+
+**MemStack opportunity:** Audit all 18 SKILL.md descriptions. Several (Echo, Diary, Work) include workflow summaries that may cause Claude to shortcut the full protocol.
+
+#### 3. DOT/GraphViz Flowcharts as Specifications (MEDIUM VALUE)
+
+Instead of prose instructions that Claude can paraphrase or skip steps from, Superpowers embeds raw DOT flowcharts as the authoritative process definition. The prose becomes supporting context. This is unique in the CC plugin ecosystem.
+
+**MemStack opportunity:** Convert Echo's search protocol (vector → SQLite → markdown fallback) and Diary's logging protocol into DOT flowcharts for more reliable execution.
+
+#### 4. Two-Stage Review Loop (MEDIUM VALUE)
+
+Superpowers separates code review into two mandatory stages with enforced ordering:
+1. **Spec compliance** — Does the code match requirements? (skeptical reviewer prompt: "The implementer finished suspiciously quickly")
+2. **Code quality** — Is the code well-written?
+
+Code quality review is explicitly blocked until spec compliance passes.
+
+**MemStack opportunity:** Verify skill currently does a single-pass check. Could adopt the two-stage pattern: requirements check first, then quality check.
+
+#### 5. Session-Start Context Injection via Hook (MEDIUM VALUE)
+
+Superpowers' `using-superpowers` meta-skill is injected into every session via a SessionStart hook, not loaded on demand. This ensures the skill routing logic is present from the very first message. The content is wrapped in `<EXTREMELY_IMPORTANT>` tags.
+
+**MemStack already does this** partially (session-start.sh runs Headroom + CLAUDE.md indexer), but doesn't inject a meta-skill. Could inject a "MemStack routing" context that tells Claude about available skills without requiring the user to paste `Read MEMSTACK.md`.
+
+#### 6. `disable-model-invocation: true` on Commands (LOW VALUE)
+
+Prevents Claude from calling slash commands via the Skill tool (user-only invocation). Added after observing Claude calling commands that just redirect to skills, creating loops.
+
+**MemStack opportunity:** Add this flag to `/memstack-search` and `/memstack-headroom` commands if loop behavior is observed.
+
+#### 7. Polyglot CMD/Bash Hook Wrapper (LOW VALUE — ALREADY SOLVED)
+
+Cross-platform hook that's simultaneously valid CMD batch and bash script. Clever but MemStack already solves this with `.sh` scripts that work under Git Bash on Windows.
+
+#### 8. Subagent Task Text Extraction (LOW VALUE)
+
+Superpowers reads the plan file once, extracts all task text, and passes full task text to each subagent — avoiding per-task file reads. This is an efficiency optimization for multi-agent workflows.
+
+**MemStack opportunity:** If Familiar is ever rebuilt as a real agent, adopt this pattern.
+
+### Patterns MemStack Has That Superpowers Lacks
+
+| MemStack Pattern | Gap in Superpowers |
+|---|---|
+| **Persistent structured memory** (SQLite + vectors) | No persistence — every session starts fresh |
+| **Cross-session recall** (Echo semantic search) | No way to search past sessions |
+| **Deterministic safety hooks** (pre-push, post-commit) | Only 1 hook (session-start); safety is skill-based (non-deterministic) |
+| **Session diaries with insight extraction** | No session logging |
+| **Skill leveling system** (Lv.1→Lv.5) | Skills are versioned only via git |
+| **Context guards with negative patterns** | Relies on description matching only |
+| **Business domain tools** (Scan, Quill, KDP Format) | Exclusively developer workflow |
+| **Commit format enforcement** (hook-based) | No commit format conventions |
+
+### Intellegix
+
+> **Note:** No prior analysis of Intellegix exists in MemStack's research files or session history. If Intellegix is a CC plugin or framework, it hasn't been evaluated yet. A separate comparison would require cloning/accessing the Intellegix repo and analyzing its architecture.
+
+### Combined Adoption Roadmap
+
+| Priority | Pattern from Superpowers | MemStack Integration Point | Effort |
+|----------|--------------------------|---------------------------|--------|
+| **P1** | Anti-rationalization tables | Add to Echo, Diary, Verify SKILL.md files | Low |
+| **P1** | Description Trap audit | Review all 18 SKILL.md descriptions — remove workflow summaries | Low |
+| **P2** | DOT flowcharts for protocols | Convert Echo search + Diary logging to DOT specs | Medium |
+| **P2** | Session-start meta-skill injection | Inject MemStack routing context via hook (eliminate paste-MEMSTACK.md) | Medium |
+| **P3** | Two-stage review in Verify | Split Verify into spec compliance + code quality stages | Medium |
+| **P3** | Brainstorming gate | Add brainstorming skill before Work skill plan creation | Medium |
+| **P4** | Subagent task extraction | Apply if Familiar is rebuilt as native agent | Low |
+
+### Bottom Line
+
+**Superpowers and MemStack are perfect complements.** Superpowers enforces *how* you work (discipline). MemStack remembers *what* you worked on (memory). A developer using both gets structured workflows AND persistent cross-session recall — neither provides the other's core value.
+
+The most valuable steal is **anti-rationalization tables** — a pattern born from empirical testing that directly improves skill compliance rates. The Description Trap discovery is equally important as an architectural invariant to adopt immediately.
