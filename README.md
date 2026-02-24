@@ -1,12 +1,23 @@
-# MemStack v3.0
+# MemStack v3.1
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.0-rc](https://img.shields.io/badge/Version-3.0--rc-green.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.1](https://img.shields.io/badge/Version-3.1-green.svg)](CHANGELOG.md)
 
-A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, deterministic hooks, always-on rules, and slash commands.
+A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, semantic vector search, deterministic hooks, always-on rules, and slash commands.
 
 ## What It Does
 
-MemStack gives Claude Code **persistent memory** across sessions, **automated safety checks** on every commit and push, and **context compression** to make your sessions last longer.
+MemStack gives Claude Code **persistent memory** across sessions, **semantic recall** via vector search, **automated safety checks** on every commit and push, **work verification**, and **context compression** to make your sessions last longer.
+
+## What's New in v3.1
+
+- **Humanize** (#16) — Remove AI writing patterns from text output. Curated pattern table + voice guidelines.
+- **State** (#17) — Living STATE.md document tracking current task, blockers, and next steps. Auto-reads at session start.
+- **Verify** (#18) — Pre-commit verification reports. Checks build, tests, and requirements before committing.
+- **Seal upgrade** — Commit format now supports conventional commits (`feat(scope): description`) alongside `[ProjectName]` format.
+- **Diary upgrade** (Lv.5) — Structured Session Handoff section for seamless pickup between sessions.
+- **Echo upgrade** (Lv.5) — Semantic vector search via MemSearch with SQLite fallback (added in v3.0.1).
+
+MemStack is a lightweight alternative to heavyweight frameworks like GSD — same capabilities, pure markdown, zero dependencies.
 
 ## Prerequisites
 
@@ -85,26 +96,27 @@ Mac/Linux: `echo 'export ANTHROPIC_BASE_URL=http://127.0.0.1:8787' >> ~/.bashrc 
 
 ## Three-Layer Architecture
 
-MemStack v3.0 uses three layers with increasing reliability:
+MemStack v3.1 uses three layers with increasing reliability:
 
 ```
-MemStack v3.0
+MemStack v3.1
 ├── Hooks (deterministic)        — Shell scripts, CC lifecycle events
-│   ├── pre-push.sh              — Build check, secrets scan, blocks bad pushes
+│   ├── pre-push.sh              — Build check, secrets scan, commit format (standard + conventional)
 │   ├── post-commit.sh           — Debug artifacts, format validation
 │   ├── session-start.sh         — Headroom auto-start + CLAUDE.md indexer + API monitor
 │   └── session-end.sh           — Report "completed" to monitoring API
 ├── Rules (always-loaded)        — Markdown files, loaded every session
-│   ├── memstack.md              — Global conventions, deprecated skill guard
-│   ├── echo.md                  — Memory recall protocol
-│   ├── diary.md                 — Session logging protocol
+│   ├── memstack.md              — Global conventions, commit format, deprecated skill guard
+│   ├── echo.md                  — Memory recall protocol (vector + SQLite)
+│   ├── diary.md                 — Session logging protocol (with handoff)
 │   ├── work.md                  — Task planning protocol
 │   └── headroom.md              — Compression proxy awareness
 ├── Commands (slash)             — Quick-access utilities
 │   ├── memstack-search.md       — /memstack-search <query>
 │   └── memstack-headroom.md     — /memstack-headroom (proxy stats)
 └── Skills (context-aware)       — Markdown protocols, keyword triggers
-    ├── Echo, Diary, Work        — SQLite-backed memory (Lv.4)
+    ├── Echo, Diary, Work        — SQLite + vector-backed memory (Lv.4-5)
+    ├── State, Verify, Humanize  — Workflow quality (Lv.1) ← NEW in v3.1
     ├── Project, Grimoire        — Session lifecycle (Lv.2-3)
     ├── Scan, Quill              — Business tools (Lv.2)
     └── Forge, Shard, Sight      — Dev tools (Lv.2)
@@ -124,9 +136,12 @@ MemStack v3.0
 | Skill | Emoji | Level | What It Does |
 |-------|-------|-------|-------------|
 | Echo | 🔊 | **Lv.5** | Semantic recall via MemSearch vectors + SQLite fallback |
+| Diary | 📓 | **Lv.5** | Documents sessions to SQLite + structured handoff for seamless pickup |
 | Work | 📋 | **Lv.4** | Plan execution with SQLite-backed task tracking |
-| Diary | 📓 | **Lv.4** | Documents sessions to SQLite + auto-extracts insights |
 | Project | 💾 | **Lv.3** | Saves/restores project state via SQLite context |
+| Humanize | ✍️ | Lv.1 | Removes AI writing patterns — makes text sound human |
+| State | 📍 | Lv.1 | Living STATE.md — tracks current task, blockers, next steps |
+| Verify | ✅ | Lv.1 | Pre-commit verification — checks build, tests, requirements |
 | Grimoire | 📖 | Lv.2 | Manages CLAUDE.md files across projects |
 | Familiar | 👻 | Lv.2 | Splits tasks across multiple CC sessions |
 | Scan | 🔍 | Lv.2 | Analyzes project scope and suggests pricing |

@@ -61,6 +61,12 @@ Then execute the protocol below.
 
    ## Next Steps
    - What to do next
+
+   ## Session Handoff
+   **In Progress:** [what was actively being worked on when session ended]
+   **Uncommitted Changes:** [list any unstaged/uncommitted work, or "None"]
+   **Pick Up Here:** [exact instruction for next session — specific enough to start cold]
+   **Session Context:** [anything important that isn't captured elsewhere — temp decisions, debugging state, gotchas discovered]
    ```
 
 4. **Save to SQLite database** (primary storage):
@@ -120,3 +126,4 @@ This session is now searchable via Echo.
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, 500-line limit with archive, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite as primary storage, auto-extract insights from decisions, markdown as backup export. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/diary.md`), always-on session logging awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
+- **Lv.5** — Handoff: Added structured Session Handoff section — in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)

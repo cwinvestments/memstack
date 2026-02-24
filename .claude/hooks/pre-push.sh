@@ -49,11 +49,12 @@ elif [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
 fi
 
 # --- Check 3: Commit message format ---
-# Verify last commit follows [ProjectName] format
+# Verify last commit follows [ProjectName] or conventional commit format
+# Valid: [ProjectName] description  OR  type(scope): description  OR  type: description
 LAST_MSG=$(git log -1 --pretty=%s 2>/dev/null || echo "")
 if [ -n "$LAST_MSG" ]; then
-    if ! echo "$LAST_MSG" | grep -qE '^\[.+\]'; then
-        echo "SEAL: Warning — last commit doesn't follow [ProjectName] format: $LAST_MSG"
+    if ! echo "$LAST_MSG" | grep -qE '^\[.+\]|^(feat|fix|docs|refactor|style|test|chore)(\(.+\))?:'; then
+        echo "SEAL: Warning — last commit doesn't follow [ProjectName] or conventional format: $LAST_MSG"
         # Warning only, don't block
     fi
 fi

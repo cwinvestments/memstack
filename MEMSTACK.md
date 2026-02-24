@@ -1,18 +1,18 @@
-# MemStack v3.0-rc — Skill Framework for Claude Code
+# MemStack v3.1 — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
 ## Global Rules
 See `.claude/rules/memstack.md` for the full rule set. Summary:
 1. Read the project's `CLAUDE.md` first if one exists
-2. Commit format: `[ProjectName] Brief description` — Co-authored-by Claude
+2. Commit format: `[ProjectName] description` or `type(scope): description` — Co-authored-by Claude
 3. Always build before push (enforced by hook)
 4. Document decisions in CLAUDE.md
 5. Skill chain: Work → Seal (hook) → Diary → Monitor (hook)
 
-## Architecture (v3.0-rc)
+## Architecture (v3.1)
 
-MemStack v3.0-rc uses **three layers**:
+MemStack v3.1 uses **three layers**:
 
 | Layer | What | How | Examples |
 |-------|------|-----|---------|
@@ -39,9 +39,9 @@ Rules in `.claude/rules/` are loaded automatically every session:
 
 | Rule File | Skill Enhanced | Behavior |
 |-----------|---------------|----------|
-| `memstack.md` | Global | Commit format, build safety, no secrets, deprecated skill guard |
-| `echo.md` | Echo (Lv.4) | Always-on memory recall protocol — search SQLite first |
-| `diary.md` | Diary (Lv.4) | Always-on session logging awareness — log after task completion |
+| `memstack.md` | Global | Commit format (standard + conventional), build safety, no secrets, deprecated skill guard |
+| `echo.md` | Echo (Lv.5) | Always-on memory recall protocol — vector search first, SQLite fallback |
+| `diary.md` | Diary (Lv.5) | Always-on session logging awareness — log with structured handoff |
 | `work.md` | Work (Lv.4) | Always-on task planning protocol — activate on plan/todo/task |
 | `headroom.md` | Headroom | Compression proxy awareness — troubleshooting, stats check |
 
@@ -78,12 +78,15 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 7  | Scan     | 🔍    | Keyword    | Lv.2     | Project analysis & pricing        | "scan project", "estimate", "how much to charge"   |
 | 8  | Quill    | ✒️    | Keyword    | Lv.2     | Client quotation generator        | "create quotation", "generate quote", "proposal"   |
 | 9  | Forge    | 🔨    | Keyword    | Lv.2     | New skill creation                | "forge this", "new skill", "create enchantment"    |
-| 10 | Diary    | 📓    | Contextual | **Lv.4** | Session documentation             | "save diary", "log session", end of session + rule |
+| 10 | Diary    | 📓    | Contextual | **Lv.5** | Session documentation + structured handoff | "save diary", "log session", end of session + rule |
 | 11 | Shard    | 💎    | Contextual | Lv.2     | Large file refactoring (1000+ LOC)| "shard this", "split file", files over 1K lines    |
 | 12 | Sight    | 👁️    | Keyword    | Lv.2     | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
 | 13 | ~~Monitor~~ | 📡 | ~~Passive~~| **Hook** | ~~CC Monitor self-reporting~~ →`.claude/hooks/session-*.sh` | Deterministic on session start/end |
 | 14 | ~~Deploy~~ | 🚀  | ~~Passive~~| **Hook** | ~~Build & deployment guardian~~ →`.claude/hooks/post-commit.sh` | Deterministic on git commit |
 | 15 | KDP Format | 📚  | Keyword    | Lv.2     | Markdown → KDP-ready .docx (local only) | "kdp", "format for kdp", "book format", "manuscript" |
+| 16 | Humanize | ✍️    | Keyword    | Lv.1     | Remove AI writing patterns from text | "humanize", "make it sound natural", "clean up writing" |
+| 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
+| 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |
 
 ## Skill Deconfliction
 When multiple skills could activate on the same prompt, use these ownership rules:
@@ -95,6 +98,9 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **"save project" / "handoff"** →Project only (not Diary)
 - **"todo" / "plan"** →Work only
 - **"/memstack-search"** →Slash command (quick search, no full Echo activation)
+- **"where was I" / "update state"** →State only (not Echo or Project)
+- **"verify" / "check this work"** →Verify only (not Seal hook)
+- **"humanize" / "rewrite"** →Humanize only
 
 ## Storage
 - **Database (primary):** `C:\Projects\memstack\db\memstack.db` — SQLite with WAL mode

@@ -1,12 +1,27 @@
 # MemStack Global Rules
 
 ## Commit Format
-All git commits must follow this format:
+Git commits support two formats. Use whichever fits the context:
+
+**Standard format** (default):
 ```
 [ProjectName] Brief description of change
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
+
+**Conventional format** (for phased projects or when type clarity helps):
+```
+type(scope): description
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+```
+
+Types: `feat` (new feature), `fix` (bug fix), `docs` (documentation), `refactor` (restructure), `style` (formatting), `test` (tests), `chore` (maintenance)
+
+Scope is optional — use project name, module, or phase-task number (e.g., `feat(03-02): add user registration`).
+
+Auto-detect type from changes: new files = `feat`, modifications = `fix`/`refactor`, `.md` files = `docs`.
 
 ## Build Before Push
 Always run `npm run build` (or equivalent) and verify it passes before any `git push`. If the build fails, fix the errors before pushing. Never use `--no-verify` to skip checks.
