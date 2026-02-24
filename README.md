@@ -60,13 +60,23 @@ Everything else works with defaults.
 python db/memstack-db.py init
 ```
 
-### Step 4: Use it
+### Step 4: Install to your project
 
-Add this to the start of every Claude Code prompt:
+Copy the `.claude/` folder into any project you want MemStack to manage:
 
-Windows: `Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.`
+Windows:
+```cmd
+xcopy /E /I /Y C:\Projects\memstack\.claude C:\Projects\yourproject\.claude
+```
 
-Mac/Linux: `Read /home/user/memstack/MEMSTACK.md and follow the MemStack skill framework.`
+Mac/Linux:
+```bash
+cp -r /path/to/memstack/.claude /path/to/yourproject/.claude
+```
+
+That's it. Start Claude Code in your project directory and begin working — hooks fire automatically, rules load every session, and skills activate on matching triggers. No activation line needed.
+
+> **Without `.claude/` installed:** If you're in a project that doesn't have MemStack's `.claude/` folder, you can still use skills manually by adding this to your prompt: `Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.`
 
 ### Step 5 (Optional): Install Semantic Search
 
