@@ -112,6 +112,24 @@ Windows: `setx ANTHROPIC_BASE_URL http://127.0.0.1:8787`
 
 Mac/Linux: `echo 'export ANTHROPIC_BASE_URL=http://127.0.0.1:8787' >> ~/.bashrc && source ~/.bashrc`
 
+## Launcher
+
+MemStack includes one-click launcher scripts that start Headroom, verify it's healthy, and open VS Code.
+
+| Platform | File | How to run |
+|----------|------|------------|
+| Windows | `start-memstack.bat` | Double-click, or right-click → Send to → Desktop (create shortcut) |
+| Mac/Linux | `start-memstack.sh` | `chmod +x start-memstack.sh` then `./start-memstack.sh` |
+
+**What the launcher does:**
+
+1. Checks if Headroom is already running on port 8787 (skips start if so)
+2. Starts the Headroom proxy if needed and waits for initialization
+3. Runs a health check to confirm the proxy is responding
+4. Opens VS Code to your projects directory
+
+If Headroom is not installed, the launcher reports the failure and continues — it's optional.
+
 ## Three-Layer Architecture
 
 MemStack v3.2 uses three layers with increasing reliability:
