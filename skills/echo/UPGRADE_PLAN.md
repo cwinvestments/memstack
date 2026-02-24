@@ -110,4 +110,4 @@ If MemSearch is unavailable (not installed, no API key, vector DB missing):
 
 ## Level History Addition
 
-- **Lv.5** — Semantic: MemSearch vector-powered recall with hybrid search (dense + BM25 + RRF). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.5** — Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI optional). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)

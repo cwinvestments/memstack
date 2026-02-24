@@ -11,7 +11,7 @@ MemStack gives Claude Code **persistent memory** across sessions, **semantic rec
 ## What's New in v3.2
 
 - **Governor** (#19) — Portfolio governance with 3-tier system (Prototype/MVP/Production). Prevents over-engineering by enforcing tier-appropriate complexity.
-- **Description trap audit** — All 16 skill descriptions rewritten to say WHEN to invoke, never HOW the skill works. Prevents Claude from shortcutting full protocols.
+- **Description trap audit** — All 17 skill descriptions rewritten to say WHEN to invoke, never HOW the skill works. Prevents Claude from shortcutting full protocols.
 - **Anti-rationalization tables** — Echo, Diary, and Verify now include tables of known Claude excuses with rebuttals, improving protocol compliance.
 - **Silent context compilation** — Work skill (Lv.5) now silently gathers STATE.md, CLAUDE.md, recent diary, and git state before any plan operation.
 - Patterns adopted from [Intellegix Code Agent Toolkit](https://github.com/intellegix/intellegix-code-agent-toolkit) and [Superpowers](https://github.com/obra/superpowers) plugin research.
@@ -159,6 +159,7 @@ MemStack v3.2
 | Forge | 🔨 | Lv.2 | Creates new MemStack skills |
 | Shard | 💎 | Lv.2 | Refactors large files into smaller modules |
 | Sight | 👁️ | Lv.2 | Generates Mermaid architecture diagrams |
+| Compress | ⚙️ | Lv.1 | Manages Headroom proxy — status, stats, troubleshooting |
 
 Deprecated skills (Seal, Deploy, Monitor) have been replaced by deterministic hooks that always fire — no LLM required.
 

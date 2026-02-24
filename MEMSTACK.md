@@ -90,6 +90,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
 | 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |
 | 19 | Governor | 🏛️    | Contextual | Lv.1     | Portfolio governance (tier/phase constraints) | "new project", "what tier", "scope", "project init" |
+| 20 | Compress | ⚙️    | Keyword    | Lv.1     | Headroom proxy management & stats | "headroom", "compression", "token savings", "proxy status" |
 
 ## Skill Deconfliction
 When multiple skills could activate on the same prompt, use these ownership rules:

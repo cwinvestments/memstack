@@ -1,5 +1,82 @@
 # MemStack Changelog
 
+## v3.2.0 — 2026-02-24 — Description Audit, Anti-Rationalization, Portfolio Governance
+
+**Builds on:** v3.1 skill additions and research analysis
+
+### New: Governor Skill (#19)
+
+- 3-tier portfolio governance: Prototype / MVP / Production
+- Phase constraints per tier — prevents over-engineering
+- Anti-patterns list per tier (19 items total)
+- Triggers on "new project", "what tier", "scope", "project init"
+
+### New: Anti-Rationalization Tables
+
+- Added to Echo, Diary, and Verify SKILL.md files
+- Two-column tables mapping known Claude excuses to rebuttals
+- Pattern adopted from Superpowers plugin research
+
+### Changed: Description Trap Audit
+
+- All 17 active SKILL.md `description:` fields rewritten
+- Descriptions now say WHEN to invoke, never HOW the skill works
+- Prevents Claude from shortcutting full protocols by reading the summary
+
+### Changed: Silent Context Compilation (Work Lv.5)
+
+- Added Step 0 to Work skill protocol
+- Silently reads STATE.md, CLAUDE.md, recent diary, and git state before any plan operation
+- No output — internalizes context without wasting user's time
+
+### Files Added
+- `skills/governor/SKILL.md` — Governor skill
+- `docs/plans/2026-02-24-v3.2-governance-design.md` — Design doc
+
+### Files Modified
+- All 16 existing `skills/*/SKILL.md` — Description field rewritten
+- `skills/echo/SKILL.md` — Anti-rationalization table added
+- `skills/diary/SKILL.md` — Anti-rationalization table added
+- `skills/verify/SKILL.md` — Anti-rationalization table added
+- `skills/work/SKILL.md` — Step 0 + Lv.5 level history
+- `MEMSTACK.md` — v3.2, Governor in index, Work Lv.5
+- `README.md` — v3.2 notes, Governor in skills table
+
+---
+
+## v3.1.0 — 2026-02-24 — Humanize, State, Verify + Diary/Echo Upgrades
+
+**Builds on:** v3.0-rc hooks and rules architecture
+
+### New Skills
+
+- **Humanize** (#16, Lv.1) — Remove AI writing patterns from text. Curated replacement table + voice guidelines
+- **State** (#17, Lv.1) — Living STATE.md tracking current task, blockers, next steps. Auto-reads at session start
+- **Verify** (#18, Lv.1) — Pre-commit verification reports. Checks build, tests, requirements
+
+### Upgraded Skills
+
+- **Diary** (Lv.5) — Structured Session Handoff section: in-progress work, uncommitted changes, exact pickup instructions
+- **Echo** (Lv.5) — LanceDB vector-powered semantic recall with sentence-transformers. Auto-indexes sessions, SQLite fallback
+- **Seal hook** — Commit format now supports conventional commits (`feat(scope): description`) alongside `[ProjectName]`
+
+### Files Added
+- `skills/humanize/SKILL.md` — Humanize skill
+- `skills/state/SKILL.md` — State skill
+- `skills/verify/SKILL.md` — Verify skill
+- `skills/echo/index-sessions.py` — Vector index builder
+- `skills/echo/search.py` — Semantic search CLI
+- `skills/_research/memstack-v31-upgrade-spec.md` — Upgrade spec
+
+### Files Modified
+- `skills/diary/SKILL.md` — Lv.5, Session Handoff section
+- `skills/echo/SKILL.md` — Lv.5, vector search protocol
+- `.claude/hooks/pre-push.sh` — Conventional commit format support
+- `MEMSTACK.md` — v3.1, new skills, level updates
+- `README.md` — v3.1 notes, updated architecture tree
+
+---
+
 ## v3.0.0-rc — 2026-02-22 — Plugin Packaging + Headroom Integration
 
 **Builds on:** v3.0-beta rules and slash commands
