@@ -1,12 +1,20 @@
-# MemStack v3.1
+# MemStack v3.2
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.1](https://img.shields.io/badge/Version-3.1-green.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2](https://img.shields.io/badge/Version-3.2-green.svg)](CHANGELOG.md)
 
 A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, semantic vector search, deterministic hooks, always-on rules, and slash commands.
 
 ## What It Does
 
-MemStack gives Claude Code **persistent memory** across sessions, **semantic recall** via vector search, **automated safety checks** on every commit and push, **work verification**, and **context compression** to make your sessions last longer.
+MemStack gives Claude Code **persistent memory** across sessions, **semantic recall** via vector search, **automated safety checks** on every commit and push, **portfolio governance** to prevent over-engineering, **work verification**, and **context compression** to make your sessions last longer.
+
+## What's New in v3.2
+
+- **Governor** (#19) — Portfolio governance with 3-tier system (Prototype/MVP/Production). Prevents over-engineering by enforcing tier-appropriate complexity.
+- **Description trap audit** — All 16 skill descriptions rewritten to say WHEN to invoke, never HOW the skill works. Prevents Claude from shortcutting full protocols.
+- **Anti-rationalization tables** — Echo, Diary, and Verify now include tables of known Claude excuses with rebuttals, improving protocol compliance.
+- **Silent context compilation** — Work skill (Lv.5) now silently gathers STATE.md, CLAUDE.md, recent diary, and git state before any plan operation.
+- Patterns adopted from [Intellegix Code Agent Toolkit](https://github.com/intellegix/intellegix-code-agent-toolkit) and [Superpowers](https://github.com/obra/superpowers) plugin research.
 
 ## What's New in v3.1
 
@@ -96,10 +104,10 @@ Mac/Linux: `echo 'export ANTHROPIC_BASE_URL=http://127.0.0.1:8787' >> ~/.bashrc 
 
 ## Three-Layer Architecture
 
-MemStack v3.1 uses three layers with increasing reliability:
+MemStack v3.2 uses three layers with increasing reliability:
 
 ```
-MemStack v3.1
+MemStack v3.2
 ├── Hooks (deterministic)        — Shell scripts, CC lifecycle events
 │   ├── pre-push.sh              — Build check, secrets scan, commit format (standard + conventional)
 │   ├── post-commit.sh           — Debug artifacts, format validation
@@ -115,8 +123,9 @@ MemStack v3.1
 │   ├── memstack-search.md       — /memstack-search <query>
 │   └── memstack-headroom.md     — /memstack-headroom (proxy stats)
 └── Skills (context-aware)       — Markdown protocols, keyword triggers
-    ├── Echo, Diary, Work        — SQLite + LanceDB vector memory (Lv.4-5)
-    ├── State, Verify, Humanize  — Workflow quality (Lv.1) ← NEW in v3.1
+    ├── Echo, Diary, Work        — SQLite + LanceDB vector memory (Lv.5)
+    ├── Governor                 — Portfolio governance (Lv.1) ← NEW in v3.2
+    ├── State, Verify, Humanize  — Workflow quality (Lv.1)
     ├── Project, Grimoire        — Session lifecycle (Lv.2-3)
     ├── Scan, Quill              — Business tools (Lv.2)
     └── Forge, Shard, Sight      — Dev tools (Lv.2)
@@ -137,7 +146,8 @@ MemStack v3.1
 |-------|-------|-------|-------------|
 | Echo | 🔊 | **Lv.5** | Semantic recall via LanceDB vectors + SQLite fallback |
 | Diary | 📓 | **Lv.5** | Documents sessions to SQLite + structured handoff for seamless pickup |
-| Work | 📋 | **Lv.4** | Plan execution with SQLite-backed task tracking |
+| Work | 📋 | **Lv.5** | Plan execution with SQLite-backed task tracking + silent context compilation |
+| Governor | 🏛️ | Lv.1 | Portfolio governance — tier/phase constraints prevent over-engineering |
 | Project | 💾 | **Lv.3** | Saves/restores project state via SQLite context |
 | Humanize | ✍️ | Lv.1 | Removes AI writing patterns — makes text sound human |
 | State | 📍 | Lv.1 | Living STATE.md — tracks current task, blockers, next steps |

@@ -1,6 +1,6 @@
 ---
 name: diary
-description: "Session documentation logger. Auto-logs accomplishments, decisions, and blockers at session end. Triggers on save diary, log session, or end of session."
+description: "Use when the user says 'save diary', 'log session', 'wrapping up', or at end of a productive session."
 ---
 
 
@@ -26,6 +26,19 @@ Then execute the protocol below.
 | **User asks to recall past sessions ("what did we do")** | DORMANT — Echo handles recall, not Diary | — |
 | **User says "save project" or "handoff"** | DORMANT — Project skill handles this | — |
 | **Session just started, no work yet** | DORMANT — nothing to log | — |
+
+## Anti-Rationalization
+
+If you're thinking any of these, STOP — you're about to skip the protocol:
+
+| You're thinking... | Reality |
+|---|---|
+| "Nothing important happened this session" | Every session has decisions, even small ones. Log them. |
+| "I'll remember this for next time" | You won't. You don't persist. The database does. Write the diary. |
+| "The user didn't ask me to log this" | The rule says log at session end. You don't need explicit permission. |
+| "This was just a quick fix, not worth logging" | Quick fixes contain decisions ("why this approach?"). Future you needs that context. |
+| "I already committed, so the work is saved" | Commits don't capture decisions, blockers, or next steps. The diary does. |
+| "The Session Handoff section isn't needed" | Handoffs are the most valuable part. Always include in-progress work and pickup instructions. |
 
 ## Protocol
 

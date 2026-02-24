@@ -1,6 +1,6 @@
 ---
 name: familiar
-description: "Multi-agent task dispatch. Generates ready-to-paste prompts for parallel CC sessions. Triggers on dispatch, send familiar, split task."
+description: "Use when the user says 'dispatch', 'send familiar', 'split task', or needs work split across parallel CC sessions."
 ---
 
 

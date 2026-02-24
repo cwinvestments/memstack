@@ -1,6 +1,6 @@
 ---
 name: grimoire
-description: "CLAUDE.md management. Updates project context files after changes. Triggers on update context, update claude, save library."
+description: "Use when the user says 'update context', 'update claude', 'save library', or after significant project changes."
 ---
 
 

@@ -1,6 +1,6 @@
 ---
 name: scan
-description: "Project scope analysis and pricing estimator. Audits codebase complexity. Triggers on scan project, estimate, how much to charge."
+description: "Use when the user says 'scan project', 'estimate', 'how much to charge', or needs codebase complexity analysis."
 ---
 
 

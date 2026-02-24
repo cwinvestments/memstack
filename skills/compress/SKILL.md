@@ -1,6 +1,6 @@
 ---
 name: compress
-description: "Headroom proxy manager. Checks status, stats, and troubleshoots token compression. Triggers on headroom, compression, token savings, proxy status."
+description: "Use when the user says 'headroom', 'compression', 'token savings', 'proxy status', or asks about context window usage."
 ---
 
 

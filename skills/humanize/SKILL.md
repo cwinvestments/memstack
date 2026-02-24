@@ -1,6 +1,6 @@
 ---
 name: humanize
-description: "Remove signs of AI-generated writing from text output. Rewrites content to sound natural and human while preserving meaning. Triggers on humanize, clean up writing, make it sound natural."
+description: "Use when the user says 'humanize', 'clean up writing', 'make it sound natural', or wants text to not sound AI-generated."
 ---
 
 

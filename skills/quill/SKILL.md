@@ -1,6 +1,6 @@
 ---
 name: quill
-description: "Client quotation generator. Creates professional project proposals with pricing. Triggers on create quotation, generate quote, proposal."
+description: "Use when the user says 'create quotation', 'generate quote', 'proposal', or needs a client-facing price document."
 ---
 
 

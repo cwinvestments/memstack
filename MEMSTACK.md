@@ -1,6 +1,8 @@
-# MemStack v3.1 — Skill Framework for Claude Code
+# MemStack v3.2 — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
+
+**v3.2 changes:** Description trap audit (all skill descriptions now say WHEN to invoke, never HOW), anti-rationalization tables (Echo, Diary, Verify), Governor skill (#19, portfolio governance), silent context compilation (Work Step 0).
 
 ## Global Rules
 See `.claude/rules/memstack.md` for the full rule set. Summary:
@@ -10,9 +12,9 @@ See `.claude/rules/memstack.md` for the full rule set. Summary:
 4. Document decisions in CLAUDE.md
 5. Skill chain: Work → Seal (hook) → Diary → Monitor (hook)
 
-## Architecture (v3.1)
+## Architecture (v3.2)
 
-MemStack v3.1 uses **three layers**:
+MemStack v3.2 uses **three layers**:
 
 | Layer | What | How | Examples |
 |-------|------|-----|---------|
@@ -42,7 +44,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | `memstack.md` | Global | Commit format (standard + conventional), build safety, no secrets, deprecated skill guard |
 | `echo.md` | Echo (Lv.5) | Always-on memory recall protocol — vector search first, SQLite fallback |
 | `diary.md` | Diary (Lv.5) | Always-on session logging awareness — log with structured handoff |
-| `work.md` | Work (Lv.4) | Always-on task planning protocol — activate on plan/todo/task |
+| `work.md` | Work (Lv.5) | Always-on task planning protocol — activate on plan/todo/task |
 | `headroom.md` | Headroom | Compression proxy awareness — troubleshooting, stats check |
 
 ### Slash Commands
@@ -72,7 +74,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 1  | Familiar | 👻    | Keyword    | Lv.2     | Multi-agent dispatch              | "dispatch", "send familiar", "split task"          |
 | 2  | Echo     | 🔊    | Keyword    | **Lv.5** | Semantic memory recall (LanceDB + SQLite)  | "recall", "last session", "do you remember" + rule |
 | 3  | ~~Seal~~ | 🔒    | ~~Passive~~| **Hook** | ~~Git commit guardian~~ →`.claude/hooks/pre-push.sh` | Deterministic on git push |
-| 4  | Work     | 📋    | Keyword    | **Lv.4** | Plan execution (copy/append/resume) | "copy plan", "append plan", "resume plan", "todo" + rule |
+| 4  | Work     | 📋    | Keyword    | **Lv.5** | Plan execution (copy/append/resume) | "copy plan", "append plan", "resume plan", "todo" + rule |
 | 5  | Project  | 💾    | Contextual | **Lv.3** | Session handoff & lifecycle       | "save project", "handoff", "context running low"   |
 | 6  | Grimoire | 📖    | Keyword    | Lv.2     | CLAUDE.md management              | "update context", "update claude", "save library"  |
 | 7  | Scan     | 🔍    | Keyword    | Lv.2     | Project analysis & pricing        | "scan project", "estimate", "how much to charge"   |
@@ -87,6 +89,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 16 | Humanize | ✍️    | Keyword    | Lv.1     | Remove AI writing patterns from text | "humanize", "make it sound natural", "clean up writing" |
 | 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
 | 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |
+| 19 | Governor | 🏛️    | Contextual | Lv.1     | Portfolio governance (tier/phase constraints) | "new project", "what tier", "scope", "project init" |
 
 ## Skill Deconfliction
 When multiple skills could activate on the same prompt, use these ownership rules:
@@ -101,6 +104,7 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **"where was I" / "update state"** →State only (not Echo or Project)
 - **"verify" / "check this work"** →Verify only (not Seal hook)
 - **"humanize" / "rewrite"** →Humanize only
+- **"tier" / "scope" / "what's allowed"** →Governor only
 
 ## Storage
 - **Database (primary):** `C:\Projects\memstack\db\memstack.db` — SQLite with WAL mode

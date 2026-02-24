@@ -1,6 +1,6 @@
 ---
 name: kdp-format
-description: "KDP book formatter. Converts markdown manuscripts to KDP-ready .docx files with proper trim, fonts, headers. Triggers on format kdp, format book, kdp."
+description: "Use when the user says 'kdp', 'format for kdp', 'format book', or 'manuscript' and needs print-ready output."
 ---
 
 

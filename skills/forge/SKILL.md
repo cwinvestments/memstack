@@ -1,6 +1,6 @@
 ---
 name: forge
-description: "Skill creation wizard. Builds new MemStack skills from description. Triggers on forge this, new skill, create enchantment."
+description: "Use when the user says 'forge this', 'new skill', 'create enchantment', or wants to create a MemStack skill."
 ---
 
 

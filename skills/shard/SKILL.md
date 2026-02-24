@@ -1,6 +1,6 @@
 ---
 name: shard
-description: "Large file refactoring. Splits files over 1000 lines into clean modules. Triggers on shard this, split file, or files over 1K lines."
+description: "Use when the user says 'shard this', 'split file', or when working with files over 1000 lines."
 ---
 
 

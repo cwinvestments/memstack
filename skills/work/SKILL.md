@@ -1,6 +1,6 @@
 ---
 name: work
-description: "Plan execution and task tracking. Copy, append, resume plans across sessions. Triggers on copy plan, append plan, resume plan, todo."
+description: "Use when the user says 'plan', 'todo', 'copy plan', 'append plan', 'resume plan', 'priorities', or 'what's next'."
 ---
 
 
@@ -24,6 +24,24 @@ Then determine which mode to use based on the trigger.
 | **User provides a task list or plan** | ACTIVE — copy mode |
 | **General discussion about planning concepts** | DORMANT — do not activate |
 | **User is executing a task (not managing the list)** | DORMANT — do not activate |
+
+## Step 0: Silent Context Compilation (MANDATORY)
+
+Before executing ANY mode, silently gather current state. Do NOT present findings. Do NOT ask questions. Just internalize:
+
+1. Read the project's `STATE.md` (if it exists) — current task, blockers, next steps
+2. Read the project's `CLAUDE.md` (if it exists) — conventions, architecture decisions
+3. Check recent diary:
+   ```bash
+   python C:/Projects/memstack/db/memstack-db.py get-sessions <project> --limit 3
+   ```
+4. Check git state:
+   ```bash
+   git log --oneline -5
+   git diff --stat
+   ```
+
+**This is silent.** Synthesize an internal understanding of where the project stands. Then proceed to the triggered mode with full context. The user already knows their project state — don't waste their time repeating it back.
 
 ## Mode 1: Copy Plan
 
@@ -120,3 +138,4 @@ Recommended next: Task 6 — Build cc-reporter.js
 - **Lv.2** — Enhanced: Three modes (copy/append/resume), 1K-line limit with auto-summarize, context guard, YAML frontmatter. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite-backed plans with per-task status tracking, no size limits, structured queries. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/work.md`), always-on task planning awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
+- **Lv.5** — Context-aware: Silent context compilation (Step 0) — reads STATE.md, CLAUDE.md, recent diary, and git state before any operation. Inspired by Intellegix silent pre-flight pattern. (Origin: MemStack v3.2, Feb 2026)

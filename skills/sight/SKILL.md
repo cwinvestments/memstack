@@ -1,6 +1,6 @@
 ---
 name: sight
-description: "Architecture visualization. Generates diagrams of project structure. Triggers on draw, diagram, visualize, architecture."
+description: "Use when the user says 'draw', 'diagram', 'visualize', 'architecture', or needs a visual overview of code structure."
 ---
 
 

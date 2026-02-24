@@ -1,6 +1,6 @@
 ---
 name: echo
-description: "Memory recall from past sessions. Uses LanceDB vector-powered semantic search with SQLite fallback. Triggers on recall, last session, do you remember."
+description: "Use when the user references past sessions, asks 'what did we do', 'do you remember', 'last session', 'recall', or 'continue from'."
 ---
 
 
@@ -26,6 +26,19 @@ Then execute the protocol below.
 | **User mentions "memory" in code context (RAM, variables)** | DORMANT — technical term, not MemStack recall | — |
 | **User mentions a project name in present tense ("work on X")** | DORMANT — forward-looking, not recall | — |
 | **User says "save" or "log" (Diary/Project territory)** | DORMANT — Diary or Project skill handles writing | — |
+
+## Anti-Rationalization
+
+If you're thinking any of these, STOP — you're about to skip the protocol:
+
+| You're thinking... | Reality |
+|---|---|
+| "I remember this from earlier in the conversation" | You don't persist. Earlier context may be compacted. Run the search. |
+| "I can just summarize from what I know" | You know nothing from prior sessions. The database does. Search it. |
+| "The user probably doesn't need exact details" | Users ask Echo for specifics — dates, decisions, file paths. Run all steps. |
+| "Vector search seems slow, I'll skip to SQLite" | Vector search returns the best results. Always try it first. |
+| "I found one result, that's probably enough" | Run ALL steps (vector + SQLite + insights). One source misses context another catches. |
+| "The keywords are too vague to search" | Search anyway. Vague queries still return useful semantic matches. |
 
 ## Protocol
 

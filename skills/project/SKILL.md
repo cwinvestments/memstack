@@ -1,6 +1,6 @@
 ---
 name: project
-description: "Session handoff and lifecycle snapshots. Saves full project state for next session. Triggers on save project, handoff, context running low."
+description: "Use when the user says 'save project', 'handoff', or when context is running low and state must be preserved."
 ---
 
 

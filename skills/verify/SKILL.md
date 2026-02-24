@@ -1,6 +1,6 @@
 ---
 name: verify
-description: "Check completed work against stated goals before committing. Runs build, tests, and requirement checks. Triggers on verify, check this work, does it pass."
+description: "Use when the user says 'verify', 'check this work', 'does it pass', or before committing completed work."
 ---
 
 
@@ -24,6 +24,19 @@ Then execute the protocol below.
 | **User is mid-task, still actively coding** | DORMANT — let them finish first | — |
 | **User asks to commit or push** | DORMANT — Seal hook handles pre-push checks | — |
 | **User asks to review someone else's code** | DORMANT — not a code review tool | — |
+
+## Anti-Rationalization
+
+If you're thinking any of these, STOP — you're about to skip the protocol:
+
+| You're thinking... | Reality |
+|---|---|
+| "I already tested this manually" | Ad-hoc testing leaves no record. Run the automated checks. |
+| "This change is too small to verify" | Small changes cause regressions. Run the full protocol. |
+| "The build passed, so it's fine" | Build passing ≠ requirements met. Always do the manual requirement check (Step 3). |
+| "I'll just commit and fix issues later" | Issues found after commit are 10x harder to fix. Verify first. |
+| "There are no tests for this project" | Skip automated tests, but ALWAYS do the manual requirement check and common issues scan. |
+| "The user seems in a hurry" | Shipping broken code wastes more time than verification takes. |
 
 ## Protocol
 

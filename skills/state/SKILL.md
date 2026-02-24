@@ -1,6 +1,6 @@
 ---
 name: state
-description: "Maintain a living STATE.md document tracking current task, decisions, blockers, and next steps. Auto-reads at session start. Triggers on update state, project state, where was I."
+description: "Use when the user says 'update state', 'project state', 'where was I', or at session start to load current context."
 ---
 
 
