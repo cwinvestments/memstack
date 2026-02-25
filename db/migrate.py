@@ -7,7 +7,6 @@ Safe to run multiple times (uses INSERT OR IGNORE pattern via date+project uniqu
 """
 
 import json
-import os
 import re
 import sqlite3
 import sys
