@@ -42,11 +42,6 @@
             "type": "command",
             "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/session-end.sh",
             "timeout": 10000
-          },
-          {
-            "type": "command",
-            "command": "powershell -c \"[console]::beep(800,300); [console]::beep(1000,300)\"",
-            "timeout": 5000
           }
         ]
       }
