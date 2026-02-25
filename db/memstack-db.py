@@ -34,6 +34,15 @@ DB_PATH = DB_DIR / "memstack.db"
 SCHEMA_PATH = DB_DIR / "schema.sql"
 
 
+def parse_json_arg(raw: str) -> dict:
+    """Parse JSON input with a clean error on failure."""
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError as e:
+        print(json.dumps({"ok": False, "error": f"Invalid JSON input: {e}"}))
+        sys.exit(1)
+
+
 def get_db():
     """Get database connection, initializing schema if needed."""
     is_new = not DB_PATH.exists()
@@ -56,7 +65,7 @@ def cmd_init(_args):
 
 def cmd_add_session(args):
     """Add a session diary entry."""
-    data = json.loads(args.json)
+    data = parse_json_arg(args.json)
     conn = get_db()
     conn.execute(
         """INSERT INTO sessions (project, date, accomplished, files_changed, commits,
@@ -84,7 +93,7 @@ def cmd_add_session(args):
 
 def cmd_add_insight(args):
     """Add an insight or decision."""
-    data = json.loads(args.json)
+    data = parse_json_arg(args.json)
     conn = get_db()
     conn.execute(
         """INSERT INTO insights (project, type, content, context, tags)
@@ -197,7 +206,7 @@ def cmd_get_context(args):
 
 def cmd_set_context(args):
     """Upsert project context."""
-    data = json.loads(args.json)
+    data = parse_json_arg(args.json)
     conn = get_db()
     conn.execute(
         """INSERT INTO project_context (project, status, current_branch, last_session_date,
@@ -229,7 +238,7 @@ def cmd_set_context(args):
 
 def cmd_add_plan_task(args):
     """Add a task to a project plan."""
-    data = json.loads(args.json)
+    data = parse_json_arg(args.json)
     conn = get_db()
     conn.execute(
         """INSERT INTO plans (project, task_number, description, status, blocked_reason)
@@ -265,7 +274,7 @@ def cmd_get_plan(args):
 
 def cmd_update_task(args):
     """Update a plan task's status."""
-    data = json.loads(args.json)
+    data = parse_json_arg(args.json)
     conn = get_db()
     conn.execute(
         """UPDATE plans SET status = :status, blocked_reason = :blocked_reason,
