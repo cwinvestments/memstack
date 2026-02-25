@@ -38,6 +38,8 @@ try:
 except:
     print('8787 true')
 " 2>/dev/null || echo "8787 true")
+    HEADROOM_PORT="${HEADROOM_PORT:-8787}"
+    HEADROOM_AUTO_START="${HEADROOM_AUTO_START:-true}"
 fi
 
 # --- Headroom proxy auto-detection ---
@@ -130,16 +132,15 @@ except:
     print(' ')
 " 2>/dev/null || echo " ")
 
+    API_URL="${API_URL:-}"
+    API_KEY="${API_KEY:-}"
     if [ -n "$API_KEY" ] && [ "$API_KEY" != " " ]; then
+        JSON_BODY=$(printf '{"api_key":"%s","session_name":"CC Session","project":"%s","status":"working","last_output":"Session started"}' \
+            "$(printf '%s' "$API_KEY" | sed 's/["\]/\\&/g')" \
+            "$(printf '%s' "$PROJECT_NAME" | sed 's/["\]/\\&/g')")
         curl -s -m 5 -X POST "$API_URL" \
             -H "Content-Type: application/json" \
-            -d "{
-                \"api_key\": \"$API_KEY\",
-                \"session_name\": \"CC Session\",
-                \"project\": \"$PROJECT_NAME\",
-                \"status\": \"working\",
-                \"last_output\": \"Session started\"
-            }" >/dev/null 2>&1 || true
+            -d "$JSON_BODY" >/dev/null 2>&1 || true
     fi
 fi
 

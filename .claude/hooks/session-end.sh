@@ -36,6 +36,8 @@ try:
 except:
     print(' ')
 " 2>/dev/null || echo " ")
+API_URL="${API_URL:-}"
+API_KEY="${API_KEY:-}"
 
 if [ -z "$API_KEY" ] || [ "$API_KEY" = " " ]; then
     exit 0
@@ -50,14 +52,11 @@ else
 fi
 
 # --- Report session end ---
+JSON_BODY=$(printf '{"api_key":"%s","session_name":"CC Session","project":"%s","status":"completed","last_output":"Session ended"}' \
+    "$(printf '%s' "$API_KEY" | sed 's/["\]/\\&/g')" \
+    "$(printf '%s' "$PROJECT_NAME" | sed 's/["\]/\\&/g')")
 curl -s -m 5 -X POST "$API_URL" \
     -H "Content-Type: application/json" \
-    -d "{
-        \"api_key\": \"$API_KEY\",
-        \"session_name\": \"CC Session\",
-        \"project\": \"$PROJECT_NAME\",
-        \"status\": \"completed\",
-        \"last_output\": \"Session ended\"
-    }" >/dev/null 2>&1 || true
+    -d "$JSON_BODY" >/dev/null 2>&1 || true
 
 exit 0
