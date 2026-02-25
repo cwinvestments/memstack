@@ -43,6 +43,14 @@ def parse_json_arg(raw: str) -> dict:
         sys.exit(1)
 
 
+def require_fields(data: dict, *fields: str) -> None:
+    """Validate required fields exist in data dict."""
+    for f in fields:
+        if f not in data or data[f] is None:
+            print(json.dumps({"ok": False, "error": f"Missing required field: {f}"}))
+            sys.exit(1)
+
+
 def get_db():
     """Get database connection, initializing schema if needed."""
     is_new = not DB_PATH.exists()
@@ -66,6 +74,7 @@ def cmd_init(_args):
 def cmd_add_session(args):
     """Add a session diary entry."""
     data = parse_json_arg(args.json)
+    require_fields(data, "project")
     conn = get_db()
     conn.execute(
         """INSERT INTO sessions (project, date, accomplished, files_changed, commits,
@@ -94,6 +103,7 @@ def cmd_add_session(args):
 def cmd_add_insight(args):
     """Add an insight or decision."""
     data = parse_json_arg(args.json)
+    require_fields(data, "content")
     conn = get_db()
     conn.execute(
         """INSERT INTO insights (project, type, content, context, tags)
@@ -207,6 +217,7 @@ def cmd_get_context(args):
 def cmd_set_context(args):
     """Upsert project context."""
     data = parse_json_arg(args.json)
+    require_fields(data, "project")
     conn = get_db()
     conn.execute(
         """INSERT INTO project_context (project, status, current_branch, last_session_date,
@@ -239,6 +250,7 @@ def cmd_set_context(args):
 def cmd_add_plan_task(args):
     """Add a task to a project plan."""
     data = parse_json_arg(args.json)
+    require_fields(data, "project", "task_number", "description")
     conn = get_db()
     conn.execute(
         """INSERT INTO plans (project, task_number, description, status, blocked_reason)
@@ -275,6 +287,7 @@ def cmd_get_plan(args):
 def cmd_update_task(args):
     """Update a plan task's status."""
     data = parse_json_arg(args.json)
+    require_fields(data, "project", "task_number", "status")
     conn = get_db()
     conn.execute(
         """UPDATE plans SET status = :status, blocked_reason = :blocked_reason,
