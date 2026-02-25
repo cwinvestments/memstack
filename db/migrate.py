@@ -228,6 +228,21 @@ def migrate():
                 )
                 imported_sessions += 1
 
+                # Extract and import insights from archived sessions
+                for insight in extract_insights([entry]):
+                    conn.execute(
+                        """INSERT INTO insights (project, type, content, context, tags)
+                           VALUES (?, ?, ?, ?, ?)""",
+                        (
+                            insight["project"],
+                            insight["type"],
+                            insight["content"],
+                            insight["context"],
+                            insight["tags"],
+                        ),
+                    )
+                    imported_insights += 1
+
     # Seed project context from config.json
     config_path = ROOT / "config.json"
     if config_path.exists():
