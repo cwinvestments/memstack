@@ -77,7 +77,8 @@ def chunk_markdown(text: str, source: str) -> list[dict]:
     sections: list[tuple[int, int, str, int]] = []
     if not headings or headings[0][0] > 0:
         end = headings[0][0] if headings else len(lines)
-        sections.append((0, end, "", 0))
+        default_title = Path(source).stem or "General"
+        sections.append((0, end, default_title, 0))
     for idx, (line_idx, level, title) in enumerate(headings):
         next_start = headings[idx + 1][0] if idx + 1 < len(headings) else len(lines)
         sections.append((line_idx, next_start, title, level))
