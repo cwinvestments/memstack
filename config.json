@@ -19,19 +19,11 @@
     "api_url": "https://your-admin-dashboard.com/api/cc-sessions/report",
     "api_key": ""
   },
-  "session_limits": {
-    "session_log_max_lines": 500,
-    "plan_max_lines": 1000
-  },
   "headroom": {
     "auto_start": true,
     "port": 8787,
-    "health_url": "http://127.0.0.1:8787/health"
-  },
-  "defaults": {
-    "commit_format": "[{project}] {message}",
-    "always_build_before_push": true,
-    "auto_diary": true,
-    "auto_monitor": true
+    "health_url": "http://127.0.0.1:8787/health",
+    "startup_flags": "--llmlingua-device cpu",
+    "required_extras": ["[code]"]
   }
 }
