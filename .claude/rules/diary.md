@@ -11,5 +11,5 @@ After completing any significant task or when the user says "save diary", "log s
 6. Also save markdown backup to `memory/sessions/{date}-{project}.md`
 
 ## Ownership
-- "save diary" / "log session" / "wrapping up" = Diary (not Project, not Echo)
+- "save diary" / "log session" / "wrapping up" = Diary (not the Project skill, not Echo)
 - Do not activate mid-task or at session start when nothing has been done

@@ -114,3 +114,8 @@ Full KDP specifications are in `skills/kdp-format/kdp-format-SKILL.md` including
 - Ebook vs paperback differences
 - KDP upload checklist
 - Pricing and category guidance
+
+## Level History
+
+- **Lv.1** — Base: Core formatting protocol with chapter structure, heading hierarchy, and page break rules. (Origin: MemStack v2.0, Feb 2026)
+- **Lv.2** — Enhanced: Added full KDP specifications reference, ebook vs paperback differences, upload checklist. (Origin: MemStack v3.1, Feb 2026)
