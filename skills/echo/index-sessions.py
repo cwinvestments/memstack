@@ -160,8 +160,8 @@ def run_index(force: bool = False) -> dict:
     if not force and COLLECTION in table_names:
         table = db.open_table(COLLECTION)
         try:
-            existing = table.to_pandas()
-            existing_hashes = set(existing["content_hash"].tolist())
+            existing = table.to_list()
+            existing_hashes = set(r["content_hash"] for r in existing)
         except Exception:
             pass
 
