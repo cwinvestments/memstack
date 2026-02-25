@@ -11,6 +11,12 @@ config.local.json
 .env.local
 .env.*.local
 
+# Node / Build output
+node_modules/
+dist/
+.next/
+out/
+
 # Python
 __pycache__/
 *.pyc
