@@ -349,6 +349,10 @@ def cmd_export_md(args):
     if ctx:
         lines.append("## Project Context\n")
         lines.append(f"- **Status:** {ctx['status']}")
+        if ctx["current_branch"]:
+            lines.append(f"- **Current Branch:** {ctx['current_branch']}")
+        if ctx["architecture_decisions"]:
+            lines.append(f"- **Architecture Decisions:**\n{ctx['architecture_decisions']}")
         if ctx["known_issues"]:
             lines.append(f"- **Known Issues:**\n{ctx['known_issues']}")
         if ctx["backlog"]:
