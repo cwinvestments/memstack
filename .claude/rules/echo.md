@@ -9,7 +9,7 @@ When the user references past sessions, asks "what did we do", "do you remember"
 4. Run: `python C:/Projects/memstack/db/memstack-db.py get-insights <project>` for decisions and patterns
 5. Present findings with similarity scores, dates, accomplishments, and pending items
 6. If vector search fails (not installed, no DB), SQLite results are sufficient
-7. If all sources return nothing, check `C:\Projects\memstack\memory\sessions\` as fallback
+7. If all sources return nothing, check `C:/Projects/memstack/memory/sessions/` as fallback
 
 ## Ownership
 - "recall" / "remember" / "what did we do" = Echo (not Diary, not Project)
