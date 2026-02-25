@@ -118,4 +118,4 @@ This will auto-load next session for seamless pickup.
 
 ## Level History
 
-- **Lv.1** — Base: Living STATE.md creation and update protocol. Session-start auto-read. Deconfliction with Diary/Project/Work. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.1** — Base: Living STATE.md creation and update protocol. Read via Work Step 0 or manual invocation. Deconfliction with Diary/Project/Work. (Origin: MemStack v3.1, Feb 2026)
