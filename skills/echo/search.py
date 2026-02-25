@@ -39,10 +39,10 @@ VECTORS_DIR = PROJECT_ROOT / "memory" / "vectors" / "lancedb"
 COLLECTION = "memstack_sessions"
 
 
-def get_embedder():
-    """Return (embed_fn, provider_name). Tries OpenAI first, falls back to local."""
+def get_embedder(required_provider: str | None = None):
+    """Return (embed_fn, provider_name). Matches index provider to avoid dimension mismatch."""
     api_key = os.environ.get("OPENAI_API_KEY", "")
-    if api_key:
+    if api_key and required_provider != "local":
         try:
             import openai
             client = openai.OpenAI()
@@ -54,6 +54,9 @@ def get_embedder():
             return openai_embed, "openai"
         except Exception:
             pass
+
+    if required_provider == "openai":
+        return None, "none"
 
     try:
         from sentence_transformers import SentenceTransformer
@@ -85,12 +88,22 @@ def run_search(query: str, top_k: int = 5) -> list[dict]:
         )
         return []
 
-    embed_fn, _provider = get_embedder()
+    # Read index metadata to match embedding provider (avoids dimension mismatch)
+    required_provider = None
+    metadata_path = VECTORS_DIR / "metadata.json"
+    if metadata_path.exists():
+        try:
+            meta = json.loads(metadata_path.read_text(encoding="utf-8"))
+            required_provider = meta.get("provider")
+        except Exception:
+            pass
+
+    embed_fn, _provider = get_embedder(required_provider=required_provider)
     if embed_fn is None:
-        print(
-            json.dumps({"ok": False, "error": "No embedding provider. Install sentence-transformers or set OPENAI_API_KEY."}),
-            file=sys.stderr,
-        )
+        msg = f"Index was built with '{required_provider}' embeddings which is unavailable. " \
+              f"Re-index with: python index-sessions.py --force" if required_provider \
+              else "No embedding provider. Install sentence-transformers or set OPENAI_API_KEY."
+        print(json.dumps({"ok": False, "error": msg}), file=sys.stderr)
         return []
 
     try:

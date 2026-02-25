@@ -214,6 +214,12 @@ def run_index(force: bool = False) -> dict:
     else:
         db.create_table(COLLECTION, records)
 
+    # Store embedding metadata so search.py uses the same provider
+    dimension = len(all_vectors[0]) if all_vectors else 0
+    metadata = {"provider": provider, "dimension": dimension}
+    metadata_path = VECTORS_DIR / "metadata.json"
+    metadata_path.write_text(json.dumps(metadata), encoding="utf-8")
+
     return {
         "ok": True,
         "chunks_indexed": len(records),
