@@ -72,10 +72,13 @@ if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iE "(api_key|api_secret
     exit 2
 fi
 
-# --- Check 5: No .env files staged ---
-if git diff --cached --name-only 2>/dev/null | grep -E '\.env'; then
-    echo "SEAL: .env file detected in staged changes. Remove before pushing."
-    exit 2
+# --- Check 5: No .env files in unpushed commits ---
+UPSTREAM=$(git rev-parse --abbrev-ref '@{upstream}' 2>/dev/null || echo "")
+if [ -n "$UPSTREAM" ]; then
+    if git diff "$UPSTREAM"..HEAD --name-only 2>/dev/null | grep -qE '(^|/)\.env'; then
+        echo "SEAL: .env file detected in unpushed commits. Remove before pushing."
+        exit 2
+    fi
 fi
 
 echo "SEAL: All pre-push checks passed."
