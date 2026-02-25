@@ -120,14 +120,14 @@ def run_search(query: str, top_k: int = 5) -> list[dict]:
         # Embed query
         query_vector = embed_fn([query])[0]
 
-        # Search
-        results = table.search(query_vector).limit(top_k).to_list()
+        # Search using cosine distance for meaningful similarity scores
+        results = table.search(query_vector).metric("cosine").limit(top_k).to_list()
 
         enriched = []
         for r in results:
-            # LanceDB returns _distance (L2) — convert to similarity score (0-1)
-            distance = r.get("_distance", 0.0)
-            score = max(0.0, 1.0 / (1.0 + distance))
+            # Cosine distance: 0 = identical, 2 = opposite. Convert to 0-1 similarity.
+            distance = r.get("_distance", 1.0)
+            score = max(0.0, 1.0 - distance)
             enriched.append({
                 "content": r.get("content", ""),
                 "source": r.get("source", ""),
