@@ -15,18 +15,16 @@ echo ""
 echo "  [1/4] Checking Headroom proxy on port 8787..."
 if curl -s -o /dev/null -w "" http://127.0.0.1:8787/health 2>/dev/null; then
     echo ""
-    echo "  Headroom: ALREADY RUNNING"
+    echo "  Headroom: ALREADY RUNNING (skipping steps 2-3)"
 else
     # 2. Start Headroom proxy in background
-    echo "         Starting Headroom proxy..."
+    echo "  [2/4] Starting Headroom proxy..."
     nohup headroom proxy --port 8787 --llmlingua-device cpu > /dev/null 2>&1 &
 
-    # 3. Wait for initialization
-    echo "  [2/4] Waiting for Headroom to initialize..."
+    # 3. Wait and health check
+    echo "  [3/4] Waiting for Headroom to initialize..."
     sleep 2
 
-    # 4. Health check
-    echo "  [3/4] Checking Headroom health..."
     if curl -s -o /dev/null -w "" http://127.0.0.1:8787/health 2>/dev/null; then
         echo ""
         echo "  Headroom: RUNNING"
