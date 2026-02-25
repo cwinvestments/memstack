@@ -24,7 +24,7 @@ fi
 
 if [ -n "$DEBUG_HITS" ]; then
     echo "DEPLOY: Debug artifacts found in committed files:"
-    echo -e "$DEBUG_HITS"
+    printf '%b\n' "$DEBUG_HITS"
     echo "DEPLOY: Consider removing before pushing."
     # Non-blocking warning — exit 0
 fi
@@ -42,7 +42,7 @@ done <<< "$COMMITTED_FILES"
 
 if [ -n "$SECRETS_FOUND" ]; then
     echo "DEPLOY: Possible secrets in committed files:"
-    echo -e "$SECRETS_FOUND"
+    printf '%b\n' "$SECRETS_FOUND"
     echo "DEPLOY: Review before pushing. Use git reset --soft HEAD~1 to undo."
     # Warning only — the commit already happened
 fi
