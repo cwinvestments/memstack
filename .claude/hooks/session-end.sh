@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.0 — Monitor Hook: Session End (replaces skills/monitor.md)
+# MemStack v3.2 — Session End Hook
 # Reports session completion to monitoring API
 # Always exit 0 — monitoring should never block work
 #

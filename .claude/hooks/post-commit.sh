@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.0 — Deploy Hook (replaces skills/deploy.md)
+# MemStack v3.2 — Post-Commit Hook
 # Post-commit verification: debug artifact scan + secrets check
 # Exit 0 = allow, exit 1 = warning (non-blocking)
 #

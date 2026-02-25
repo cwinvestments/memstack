@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.0 — Seal Hook (replaces skills/seal.md)
+# MemStack v3.2 — Pre-Push Hook
 # Deterministic pre-push check: build verification + commit format + secrets scan
 # Exit 0 = allow, exit 2 = block
 #

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.0-rc — Session Start Hook
+# MemStack v3.2 — Session Start Hook
 # 1. Headroom proxy auto-detection and auto-start
 # 2. Auto-indexes CLAUDE.md into SQLite project_context
 # 3. Reports session start to monitoring API
