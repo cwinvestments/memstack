@@ -37,9 +37,20 @@ This skill checks proxy health, reports compression stats, and troubleshoots con
 
 ## Prerequisites
 
-- **Headroom installed:** `pip install headroom-ai`
-- **Proxy running:** `headroom proxy` (defaults to `localhost:8787`)
+- **Headroom installed:** `pip install headroom-ai[code]`
+  - The `[code]` extra installs tree-sitter for AST-based code compression. Without it, Code-Aware compression is disabled and CC sessions get 0% compression.
+- **Proxy running:** `headroom proxy --llmlingua-device cpu` (defaults to `localhost:8787`)
 - **CC configured:** `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`
+
+### Recommended Startup
+
+```bash
+headroom proxy --llmlingua-device cpu
+```
+
+- `--llmlingua-device cpu` — Forces LLMLingua to use CPU (avoids silent CUDA failures on machines without GPU)
+- Default port is 8787, no other flags needed
+- Code-Aware and LLMLingua both load lazily when relevant content is detected
 
 ## Workflow
 
@@ -89,7 +100,15 @@ When triggered at session end or on request, report:
 | Proxy URL | `http://127.0.0.1:8787` | Default port |
 | Dashboard | AdminStack Infrastructure tab | Headroom monitoring panel |
 | Repo | `github.com/chopratejas/headroom` | Apache 2.0 |
-| Python | 3.10–3.12 required | Dependency constraint |
+| Python | 3.14 compatible | Tested Feb 2026 |
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| **0% compression / 0.00x ratio** | `headroom-ai[code]` is not installed. Run: `pip install headroom-ai[code]`. Restart proxy. |
+| **"Code-Aware: NOT INSTALLED" in startup banner** | Same fix — install the `[code]` extra and restart. |
+| **Cost figures don't match Anthropic Console** | Headroom estimates costs at list token prices without accounting for Anthropic's server-side prompt caching discounts. For actual costs, check console.anthropic.com. |
 
 ## Output Format
 
@@ -97,9 +116,9 @@ When triggered at session end or on request, report:
 ⚙️ Headroom Status
 ├── Proxy: ✅ Running on :8787
 ├── Requests: 47 processed
-├── Compression: 34.2% reduction
-├── Tokens saved: ~12,400 tokens
-└── Cost savings: ~$0.19 this session
+├── Compression: 46.2% reduction
+├── Tokens saved: ~18,500 tokens
+└── Cost savings: ~$0.28 this session
 ```
 
 ## Integration
@@ -111,3 +130,4 @@ When triggered at session end or on request, report:
 ## Level History
 
 - **Lv.1** — Base: Health check and stats reporting for Headroom proxy. (Origin: MemStack v3.0, Feb 2026)
+- **Lv.2** — Fixed: Added `[code]` extra for tree-sitter AST compression, updated startup flags (`--llmlingua-device cpu`), added troubleshooting. Compression 0% → 46%. (Feb 24, 2026)

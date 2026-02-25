@@ -19,7 +19,7 @@ if curl -s -o /dev/null -w "" http://127.0.0.1:8787/health 2>/dev/null; then
 else
     # 2. Start Headroom proxy in background
     echo "         Starting Headroom proxy..."
-    nohup headroom proxy --port 8787 > /dev/null 2>&1 &
+    nohup headroom proxy --port 8787 --llmlingua-device cpu > /dev/null 2>&1 &
 
     # 3. Wait for initialization
     echo "  [2/4] Waiting for Headroom to initialize..."
@@ -33,7 +33,7 @@ else
     else
         echo ""
         echo "  Headroom: FAILED - proxy may not be installed"
-        echo "  Install with: pip install headroom-ai"
+        echo "  Install with: pip install headroom-ai[code]"
     fi
 fi
 

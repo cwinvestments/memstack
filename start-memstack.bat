@@ -24,7 +24,7 @@ if %errorlevel% equ 0 (
 
 REM 2. Start Headroom proxy in a minimized window
 echo         Starting Headroom proxy...
-start /min "Headroom Proxy" cmd /c "headroom proxy --port 8787"
+start /min "Headroom Proxy" cmd /c "headroom proxy --port 8787 --llmlingua-device cpu"
 
 REM 3. Wait for initialization
 echo  [2/4] Waiting for Headroom to initialize...
@@ -39,7 +39,7 @@ if %errorlevel% equ 0 (
 ) else (
     echo.
     echo  Headroom: FAILED - proxy may not be installed
-    echo  Install with: pip install headroom-ai
+    echo  Install with: pip install headroom-ai[code]
 )
 
 :headroom_done
