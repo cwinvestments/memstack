@@ -289,7 +289,7 @@ def cmd_update_task(args):
     data = parse_json_arg(args.json)
     require_fields(data, "project", "task_number", "status")
     conn = get_db()
-    conn.execute(
+    cur = conn.execute(
         """UPDATE plans SET status = :status, blocked_reason = :blocked_reason,
            updated_at = datetime('now')
            WHERE project = :project AND task_number = :task_number""",
@@ -302,7 +302,10 @@ def cmd_update_task(args):
     )
     conn.commit()
     conn.close()
-    print(json.dumps({"ok": True}))
+    if cur.rowcount == 0:
+        print(json.dumps({"ok": False, "error": f"Task not found: {data['project']} #{data['task_number']}"}))
+    else:
+        print(json.dumps({"ok": True}))
 
 
 def cmd_export_md(args):
