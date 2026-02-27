@@ -85,7 +85,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 12 | Sight    | 👁️    | Keyword    | Lv.2     | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
 | 13 | ~~Monitor~~ | 📡 | ~~Passive~~| **Hook** | ~~CC Monitor self-reporting~~ →`.claude/hooks/session-*.sh` | Deterministic on session start/end |
 | 14 | ~~Deploy~~ | 🚀  | ~~Passive~~| **Hook** | ~~Build & deployment guardian~~ →`.claude/hooks/post-commit.sh` | Deterministic on git commit |
-| 15 | KDP Format | 📚  | Keyword    | Lv.2     | Markdown → KDP-ready .docx (private — not in repo) | "kdp", "format for kdp", "book format", "manuscript" |
+| 15 | KDP Format | 📚  | Keyword    | Lv.2     | Markdown → KDP-ready .docx | "kdp", "format for kdp", "book format", "manuscript" |
 | 16 | Humanize | ✍️    | Keyword    | Lv.1     | Remove AI writing patterns from text | "humanize", "make it sound natural", "clean up writing" |
 | 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
 | 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |

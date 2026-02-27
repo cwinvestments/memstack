@@ -43,5 +43,3 @@ memory/ideas/*.md
 # Vector DB (derived index, rebuildable from markdown)
 memory/vectors/
 
-# Local-only skills (not pushed to remote)
-skills/kdp-format/
