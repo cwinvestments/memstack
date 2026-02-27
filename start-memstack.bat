@@ -57,7 +57,7 @@ code C:\Projects
 
 echo.
 echo  =========================================
-echo  MemStack v3.2 ready - 16 public skills
+echo  MemStack v3.2 ready - 17 public skills
 echo  =========================================
 echo.
 

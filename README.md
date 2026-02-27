@@ -130,6 +130,43 @@ MemStack includes one-click launcher scripts that start Headroom, verify it's he
 
 If Headroom is not installed, the launcher reports the failure and continues — it's optional.
 
+## Adding MemStack to Your Projects
+
+MemStack's rules, hooks, and commands live in `.claude/`. Link this folder into any project using a junction (Windows) or symlink (macOS/Linux) so updates propagate instantly.
+
+**First-time setup:**
+
+```bash
+git clone https://github.com/cwinvestments/memstack.git C:\Projects\memstack
+```
+
+**Link a project (Windows):**
+
+```bat
+start-memstack.bat link C:\Projects\YourProject
+```
+
+Or manually:
+
+```bat
+mklink /J C:\Projects\YourProject\.claude C:\Projects\memstack\.claude
+```
+
+**Link a project (macOS/Linux):**
+
+```bash
+ln -s /path/to/memstack/.claude /path/to/YourProject/.claude
+```
+
+**How it works:** The junction/symlink makes your project's `.claude/` point to MemStack's `.claude/`. Any updates to rules, hooks, or commands in MemStack instantly apply to all linked projects — no copying or re-syncing needed.
+
+**Removing a link:**
+
+| Platform | Command | Notes |
+|----------|---------|-------|
+| Windows | `rmdir C:\Projects\YourProject\.claude` | Removes the junction only, not the source |
+| macOS/Linux | `rm C:\Projects\YourProject\.claude` | Removes the symlink only, not the source |
+
 ## Three-Layer Architecture
 
 MemStack v3.2 uses three layers with increasing reliability:
