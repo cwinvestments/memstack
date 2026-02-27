@@ -2,9 +2,15 @@
 REM ============================================================
 REM  MemStack v3.2 - Session Launcher
 REM
+REM  Usage: start-memstack.bat              (launch session)
+REM         start-memstack.bat link <path>  (link project)
+REM
 REM  Shortcut: Right-click this file, Send to, Desktop
 REM            (create shortcut). Then double-click to launch.
 REM ============================================================
+
+REM --- Subcommand routing ---
+if /i "%~1"=="link" goto link_project
 
 title MemStack Launcher
 
@@ -56,3 +62,54 @@ echo  =========================================
 echo.
 
 pause
+goto :eof
+
+REM ============================================================
+REM  link <project-path> — Create .claude junction to MemStack
+REM ============================================================
+:link_project
+set "TARGET=%~2"
+
+if "%TARGET%"=="" (
+    echo.
+    echo  ERROR: No project path provided.
+    echo  Usage: start-memstack.bat link C:\Projects\MyProject
+    echo.
+    goto :eof
+)
+
+if not exist "%TARGET%" (
+    echo.
+    echo  ERROR: Directory not found: %TARGET%
+    echo.
+    goto :eof
+)
+
+REM Check if .claude already exists
+if exist "%TARGET%\.claude" (
+    REM Check if it's already a junction (reparse point)
+    dir "%TARGET%" /AL 2>nul | findstr /C:".claude" >nul 2>&1
+    if %errorlevel% equ 0 (
+        echo.
+        echo  SKIP: %TARGET%\.claude is already a junction.
+        echo.
+        goto :eof
+    )
+    echo.
+    echo  WARNING: %TARGET%\.claude exists as a real folder.
+    echo  Removing it and replacing with junction...
+    rmdir /s /q "%TARGET%\.claude"
+)
+
+mklink /J "%TARGET%\.claude" "C:\Projects\memstack\.claude"
+if %errorlevel% equ 0 (
+    echo.
+    echo  SUCCESS: Linked %TARGET%\.claude
+    echo       -^> C:\Projects\memstack\.claude
+    echo.
+) else (
+    echo.
+    echo  ERROR: Failed to create junction.
+    echo.
+)
+goto :eof
