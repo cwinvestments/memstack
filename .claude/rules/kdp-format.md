@@ -263,6 +263,17 @@ This is more reliable than debugging DOCX TOC field codes for eBook specifically
 
 Add to the existing TWIPS/EMU warning: Even with correct unit values, KDP may reject DOCX files where margins were set via raw XML manipulation (direct w:pgMar attributes). Always use python-docx property setters (`section.left_margin = Inches(x)`) which write XML that KDP accepts. If margins must be fine-tuned beyond what python-docx supports, do it in Word's native interface after generation, not in code.
 
+### KDP Spine Text Margins
+
+- Spine text requires minimum 0.0625" (1/16") padding on EACH side
+- At 300 DPI, this equals 19 pixels minimum margin per side
+- Usable spine text area = spine_width - 0.125"
+- Spine width calculation: pages × 0.002252" (white paper)
+- Example: 195-page book has 0.439" spine → usable text area is only 0.314"
+- Font sizing loops should use max_height = spine_width_px - 38 (for 19px margins on each side)
+- KDP will reject covers where spine text extends into the margin zone
+- Always verify margins meet this requirement before outputting final cover PDF
+
 ### Dual Output Guidance
 
 Generate paperback and ebook from the same source manuscript:
@@ -319,4 +330,4 @@ Before generating final output:
 ## Level History
 
 - **Lv.1** — Base: Original spec-based formatting guidelines — trim size, fonts, margins, heading hierarchy, page break rules, KDP specifications reference. (Origin: MemStack v2.0–v3.1, Feb 2026)
-- **Lv.2** — Implementation: Added real-world implementation patterns — TWIPS/EMU unit warning, TOC field codes (PAGEREF + hyperlink XML), mirror margins XML, dual output guidance (paperback vs ebook), markdown table conversion, section break management, pre-export checklist, KDP validation requirements, Kindle Create fallback, margin safety rules. (Origin: MemStack v3.2, Feb 2026)
+- **Lv.2** — Implementation: Added real-world implementation patterns — TWIPS/EMU unit warning, TOC field codes (PAGEREF + hyperlink XML), mirror margins XML, dual output guidance (paperback vs ebook), markdown table conversion, section break management, pre-export checklist, KDP validation requirements, Kindle Create fallback, margin safety rules, spine text margin rules. (Origin: MemStack v3.2, Feb 2026)
