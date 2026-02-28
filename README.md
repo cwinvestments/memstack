@@ -1,6 +1,6 @@
-# MemStack v3.2
+# MemStack v3.2.1
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2](https://img.shields.io/badge/Version-3.2-green.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.1](https://img.shields.io/badge/Version-3.2.1-green.svg)](CHANGELOG.md)
 
 A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, semantic vector search, deterministic hooks, always-on rules, and slash commands.
 
@@ -169,10 +169,10 @@ ln -s /path/to/memstack/.claude /path/to/YourProject/.claude
 
 ## Three-Layer Architecture
 
-MemStack v3.2 uses three layers with increasing reliability:
+MemStack v3.2.1 uses three layers with increasing reliability:
 
 ```
-MemStack v3.2
+MemStack v3.2.1
 ├── Hooks (deterministic)        — Shell scripts, CC lifecycle events
 │   ├── pre-push.sh              — Build check, secrets scan, commit format (standard + conventional)
 │   ├── post-commit.sh           — Debug artifacts, format validation
