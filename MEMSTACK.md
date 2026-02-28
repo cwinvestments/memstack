@@ -1,4 +1,4 @@
-# MemStack v3.2 — Skill Framework for Claude Code
+# MemStack v3.2.1 — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
@@ -12,9 +12,9 @@ See `.claude/rules/memstack.md` for the full rule set. Summary:
 4. Document decisions in CLAUDE.md
 5. Skill chain: Work → Seal (hook) → Diary → Monitor (hook)
 
-## Architecture (v3.2)
+## Architecture (v3.2.1)
 
-MemStack v3.2 uses **three layers**:
+MemStack v3.2.1 uses **three layers**:
 
 | Layer | What | How | Examples |
 |-------|------|-----|---------|
