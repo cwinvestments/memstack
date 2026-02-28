@@ -1,6 +1,6 @@
 {
   "name": "@cwinvestments/memstack",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Structured skill framework for Claude Code with SQLite memory, hooks, and rules",
   "license": "MIT",
   "repository": {
