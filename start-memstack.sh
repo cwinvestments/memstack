@@ -44,6 +44,6 @@ code "$MEMSTACK_DIR"
 
 echo ""
 echo "  ========================================="
-echo "  MemStack v3.2.1 ready - 16 public skills"
+echo "  MemStack v3.2.1 ready - 17 public skills"
 echo "  ========================================="
 echo ""
