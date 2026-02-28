@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================
-REM  MemStack v3.2 - Session Launcher
+REM  MemStack v3.2.1 - Session Launcher
 REM
 REM  Usage: start-memstack.bat              (launch session)
 REM         start-memstack.bat link <path>  (link project)
@@ -19,7 +19,7 @@ if /i "%~1"=="link" goto link_project
 title MemStack Launcher
 
 echo.
-echo  MemStack v3.2 - Starting session...
+echo  MemStack v3.2.1 - Starting session...
 echo  =========================================
 echo.
 
@@ -61,7 +61,7 @@ code "%MEMSTACK_DIR%"
 
 echo.
 echo  =========================================
-echo  MemStack v3.2 ready - 17 public skills
+echo  MemStack v3.2.1 ready - 17 public skills
 echo  =========================================
 echo.
 

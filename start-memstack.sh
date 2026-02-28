@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================
-#  MemStack v3.2 - Session Launcher (Mac/Linux)
+#  MemStack v3.2.1 - Session Launcher (Mac/Linux)
 #
 #  First time: chmod +x start-memstack.sh
 #  Then run:   ./start-memstack.sh
@@ -9,7 +9,7 @@
 MEMSTACK_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo ""
-echo "  MemStack v3.2 - Starting session..."
+echo "  MemStack v3.2.1 - Starting session..."
 echo "  ========================================="
 echo ""
 
@@ -44,6 +44,6 @@ code "$MEMSTACK_DIR"
 
 echo ""
 echo "  ========================================="
-echo "  MemStack v3.2 ready - 16 public skills"
+echo "  MemStack v3.2.1 ready - 16 public skills"
 echo "  ========================================="
 echo ""
