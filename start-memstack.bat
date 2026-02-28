@@ -9,6 +9,10 @@ REM  Shortcut: Right-click this file, Send to, Desktop
 REM            (create shortcut). Then double-click to launch.
 REM ============================================================
 
+REM --- Dynamic path detection ---
+set "MEMSTACK_DIR=%~dp0"
+if "%MEMSTACK_DIR:~-1%"=="\" set "MEMSTACK_DIR=%MEMSTACK_DIR:~0,-1%"
+
 REM --- Subcommand routing ---
 if /i "%~1"=="link" goto link_project
 
@@ -53,7 +57,7 @@ if %errorlevel% equ 0 (
 REM 4. Open VS Code
 echo.
 echo  [4/4] Opening VS Code...
-code C:\Projects
+code "%MEMSTACK_DIR%"
 
 echo.
 echo  =========================================
@@ -101,11 +105,11 @@ if exist "%TARGET%\.claude" (
     rmdir /s /q "%TARGET%\.claude"
 )
 
-mklink /J "%TARGET%\.claude" "C:\Projects\memstack\.claude"
+mklink /J "%TARGET%\.claude" "%MEMSTACK_DIR%\.claude"
 if %errorlevel% equ 0 (
     echo.
     echo  SUCCESS: Linked %TARGET%\.claude
-    echo       -^> C:\Projects\memstack\.claude
+    echo       -^> %MEMSTACK_DIR%\.claude
     echo.
 ) else (
     echo.
