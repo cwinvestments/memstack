@@ -6,6 +6,8 @@
 #  Then run:   ./start-memstack.sh
 # ============================================================
 
+MEMSTACK_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 echo ""
 echo "  MemStack v3.2 - Starting session..."
 echo "  ========================================="
@@ -38,7 +40,7 @@ fi
 # 4. Open VS Code
 echo ""
 echo "  [4/4] Opening VS Code..."
-code "$HOME/Projects"
+code "$MEMSTACK_DIR"
 
 echo ""
 echo "  ========================================="
