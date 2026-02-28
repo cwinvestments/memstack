@@ -1,5 +1,63 @@
 # MemStack Changelog
 
+## v3.2.1 — 2026-02-28 — Portability, KDP Spine Margins, Link Command
+
+**Builds on:** v3.2.0 description audit and governance
+
+### New: Link-Project Command
+
+- `start-memstack.bat link <path>` creates a `.claude` junction from any project to MemStack
+- Junction setup instructions added to README
+
+### New: KDP Spine Text Margin Rules
+
+- Added `### KDP Spine Text Margins` section to KDP Format skill
+- Minimum 0.0625" (1/16") padding per side, 19px at 300 DPI
+- Spine width formula: pages × 0.002252" (white paper)
+- Font sizing constraint: `max_height = spine_width_px - 38`
+- Updated in both `.claude/rules/kdp-format.md` and `skills/kdp-format/SKILL.md`
+
+### Changed: Portable Launchers
+
+- `start-memstack.bat` — replaced hardcoded `C:\Projects` with `%~dp0` dynamic detection
+- `start-memstack.sh` — replaced hardcoded `$HOME/Projects` with `$(dirname "$0")` detection
+- Both launchers now work from any clone location
+
+### Changed: KDP Format Skill Made Public
+
+- `kdp-format.md` added to `.claude/rules/` for always-on loading
+
+### Bug Fixes & Maintenance
+
+- Fixed step numbering in `start-memstack.sh`
+- Fixed Echo search score normalization and vector dimension mismatch
+- Fixed JSON injection and unbound variable risks in session hooks
+- Fixed quoting and dual-format commit check in `post-commit.sh`
+- Fixed dead `.env` leak check in `pre-push.sh`
+- Added WAL and foreign_keys PRAGMAs to `migrate.py`
+- Removed pandas dependency from Echo dedup logic
+- Added input validation and malformed JSON handling in `memstack-db.py`
+- Fixed `export-md` to include `architecture_decisions` and `current_branch`
+- Added standard ignores to `.gitignore`
+- Used `printf` instead of `echo -e` in `post-commit.sh` for portability
+- Cleaned dead config keys, added Headroom startup flags
+- Normalized path separators in `echo.md`
+- Added completion notification beep (WAV playback, always-on rule)
+- Compress skill: added `[code]` extra, updated startup command, added troubleshooting
+- Corrected State skill auto-read claim, Forge example row count, diary.md Project reference
+
+### Files Added
+- `.claude/rules/kdp-format.md` — KDP Format as public rule
+
+### Files Modified
+- `start-memstack.bat` — Portable paths + link command
+- `start-memstack.sh` — Portable paths + step numbering fix
+- `skills/kdp-format/SKILL.md` — Spine text margin rules, Lv.2 history updated
+- `README.md` — Junction setup, launcher docs, quick start update
+- Multiple hook/rule/skill files — Bug fixes listed above
+
+---
+
 ## v3.2.0 — 2026-02-24 — Description Audit, Anti-Rationalization, Portfolio Governance
 
 **Builds on:** v3.1 skill additions and research analysis
