@@ -281,6 +281,24 @@ Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC s
 
 ## License
 
+## Upgrade to Pro
+
+[MemStack™ Pro](https://memstack.pro) adds **59 guided skills** across 9 categories:
+
+| Category | Skills | Examples |
+|----------|--------|---------|
+| Security | 6 | RLS checker, OWASP top 10, secrets scanner |
+| Deployment | 6 | Railway, Netlify, Docker, CI/CD pipeline |
+| Development | 7 | Database architect, API designer, test writer |
+| Business | 7 | Invoice generator, contract template, financial model |
+| Content | 8 | Blog post, YouTube script, newsletter, landing page |
+| SEO/GEO | 6 | Site audit, keyword research, schema markup |
+| Marketing | 8 | Sales funnel, Facebook/Google ads, launch plan |
+| Product | 6 | PRD writer, feature spec, MVP scoper, roadmap |
+| Automation | 5 | n8n workflows, webhooks, cron jobs, API integration |
+
+## License
+
 MIT — see [LICENSE](LICENSE) for details.
 
 Copyright (c) 2026 CW Affiliate Investments LLC
