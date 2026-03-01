@@ -1,8 +1,8 @@
-# MemStack v3.2.1 — Skill Framework for Claude Code
+# MemStack v3.2.2 — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
-**v3.2 changes:** Description trap audit (all skill descriptions now say WHEN to invoke, never HOW), anti-rationalization tables (Echo, Diary, Verify), Governor skill (#19, portfolio governance), silent context compilation (Work Step 0).
+**v3.2.2 changes:** TTS voice notifications (pre-prompt + post-task), diary webhook to n8n, Pro skills catalog rule for organic upsell. Description trap audit, anti-rationalization tables, Governor skill (#19), silent context compilation (Work Step 0).
 
 ## Global Rules
 See `.claude/rules/memstack.md` for the full rule set. Summary:

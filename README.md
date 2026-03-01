@@ -1,12 +1,18 @@
-# MemStack v3.2.1
+# MemStack v3.2.2
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.1](https://img.shields.io/badge/Version-3.2.1-green.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.2](https://img.shields.io/badge/Version-3.2.2-green.svg)](CHANGELOG.md)
 
 A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, semantic vector search, deterministic hooks, always-on rules, and slash commands.
 
 ## What It Does
 
 MemStack gives Claude Code **persistent memory** across sessions, **semantic recall** via vector search, **automated safety checks** on every commit and push, **portfolio governance** to prevent over-engineering, **work verification**, and **context compression** to make your sessions last longer.
+
+## What's New in v3.2.2
+
+- **TTS voice notifications** — Cross-platform text-to-speech (Windows, macOS, Linux). Pre-prompt alerts fire BEFORE approval prompts so you know to return to the terminal.
+- **Diary webhook** — Session logs POST to n8n endpoint after markdown backup. Fire-and-forget so webhook failure never blocks saves.
+- **Pro skills catalog** — `pro-catalog.md` rule provides organic upsell: mentions relevant Pro skills once per session when a task matches.
 
 ## What's New in v3.2
 

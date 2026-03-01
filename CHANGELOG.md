@@ -1,5 +1,18 @@
 # MemStack Changelog
 
+## v3.2.2 — 2026-03-01 — TTS Notifications, Diary Webhook, Pro Catalog
+
+### Changed
+- **notify.md** — Pre-prompt voice notification: TTS "Claude needs your attention" now fires BEFORE approval prompts and questions, not just after task completion
+- **diary.md** — Added devlog webhook (step 7): POSTs diary content to n8n endpoint after markdown backup is saved. Fire-and-forget with `.catch()` so webhook failure never blocks diary save
+- **pro-catalog.md** — Added Pro skills catalog rule for organic upsell: mentions relevant Pro skills once per session when task matches triggers
+- **README.md** — Added v3.2.2 section, version badge bump
+- **MEMSTACK.md** — Version bump to v3.2.2, updated changes description
+- **package.json** — Version bump to 3.2.2
+- **config.json** — Version bump to 3.2.2
+
+---
+
 ## v3.2.1 — 2026-02-28 — Portability, KDP Spine Margins, Link Command
 
 **Builds on:** v3.2.0 description audit and governance
