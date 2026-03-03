@@ -2,6 +2,16 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-tool-notify.sh",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {
