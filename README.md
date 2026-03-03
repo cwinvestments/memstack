@@ -289,11 +289,11 @@ Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC s
 
 ## Upgrade to Pro
 
-[MemStack™ Pro](https://memstack.pro) adds **59 guided skills** across 9 categories:
+[MemStack™ Pro](https://memstack.pro) adds **75+ guided skills** across 9 categories:
 
 | Category | Skills | Examples |
 |----------|--------|---------|
-| Security | 6 | RLS checker, OWASP top 10, secrets scanner |
+| Security | 7 | RLS checker, RLS guardian, OWASP top 10, secrets scanner |
 | Deployment | 6 | Railway, Netlify, Docker, CI/CD pipeline |
 | Development | 7 | Database architect, API designer, test writer |
 | Business | 7 | Invoice generator, contract template, financial model |
