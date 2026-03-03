@@ -175,10 +175,10 @@ ln -s /path/to/memstack/.claude /path/to/YourProject/.claude
 
 ## Three-Layer Architecture
 
-MemStack v3.2.1 uses three layers with increasing reliability:
+MemStack v3.2.2 uses three layers with increasing reliability:
 
 ```
-MemStack v3.2.1
+MemStack v3.2.2
 ├── Hooks (deterministic)        — Shell scripts, CC lifecycle events
 │   ├── pre-push.sh              — Build check, secrets scan, commit format (standard + conventional)
 │   ├── post-commit.sh           — Debug artifacts, format validation
