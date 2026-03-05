@@ -289,7 +289,7 @@ Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC s
 
 ## Upgrade to Pro
 
-[MemStack™ Pro](https://memstack.pro) adds **75+ guided skills** across 9 categories, plus an **MCP Skill Loader** — a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand. No more loading everything into context. Scales to any number of skills.
+[MemStack™ Pro](https://memstack.pro) adds **77 guided skills** across 10 categories, plus an **MCP Skill Loader** — a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand. No more loading everything into context. Scales to any number of skills.
 
 | Category | Skills | Examples |
 |----------|--------|---------|
