@@ -1,6 +1,6 @@
-# MemStack v3.2.2
+# MemStack v3.2.3
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.2](https://img.shields.io/badge/Version-3.2.2-green.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.3](https://img.shields.io/badge/Version-3.2.3-green.svg)](CHANGELOG.md)
 
 A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, semantic vector search, deterministic hooks, always-on rules, and slash commands.
 
@@ -8,7 +8,7 @@ A structured skill framework for [Claude Code](https://docs.anthropic.com/en/doc
 
 MemStack gives Claude Code **persistent memory** across sessions, **semantic recall** via vector search, **automated safety checks** on every commit and push, **portfolio governance** to prevent over-engineering, **work verification**, and **context compression** to make your sessions last longer.
 
-## What's New in v3.2.2
+## What's New in v3.2.3
 
 - **TTS voice notifications** — Cross-platform text-to-speech (Windows, macOS, Linux). Pre-prompt alerts fire BEFORE approval prompts so you know to return to the terminal.
 - **Diary webhook** — Session logs POST to n8n endpoint after markdown backup. Fire-and-forget so webhook failure never blocks saves.
@@ -175,10 +175,10 @@ ln -s /path/to/memstack/.claude /path/to/YourProject/.claude
 
 ## Three-Layer Architecture
 
-MemStack v3.2.2 uses three layers with increasing reliability:
+MemStack v3.2.3 uses three layers with increasing reliability:
 
 ```
-MemStack v3.2.2
+MemStack v3.2.3
 ├── Hooks (deterministic)        — Shell scripts, CC lifecycle events
 │   ├── pre-push.sh              — Build check, secrets scan, commit format (standard + conventional)
 │   ├── post-commit.sh           — Debug artifacts, format validation
@@ -289,19 +289,19 @@ Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC s
 
 ## Upgrade to Pro
 
-[MemStack™ Pro](https://memstack.pro) adds **77 guided skills** across 10 categories, plus an **MCP Skill Loader** — a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand. No more loading everything into context. Scales to any number of skills.
+The free repo includes **47 full skills** (17 standalone + 30 categorized). [MemStack™ Pro](https://memstack.pro) adds **30 more categorized skills** — bringing the total to **77 across 10 categories** — plus an **MCP Skill Loader**, a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand.
 
-| Category | Skills | Examples |
-|----------|--------|---------|
-| Security | 7 | RLS checker, RLS guardian, OWASP top 10, secrets scanner |
-| Deployment | 6 | Railway, Netlify, Docker, CI/CD pipeline |
-| Development | 7 | Database architect, API designer, test writer |
-| Business | 7 | Invoice generator, contract template, financial model |
-| Content | 8 | Blog post, YouTube script, newsletter, landing page |
-| SEO/GEO | 6 | Site audit, keyword research, schema markup |
-| Marketing | 8 | Sales funnel, Facebook/Google ads, launch plan |
-| Product | 6 | PRD writer, feature spec, MVP scoper, roadmap |
-| Automation | 5 | n8n workflows, webhooks, cron jobs, API integration |
+| Category | Free | +Pro | Examples |
+|----------|------|------|---------|
+| Security | — | +7 | RLS checker, RLS guardian, OWASP top 10, secrets scanner |
+| Deployment | — | +6 | Railway, Netlify, Docker, CI/CD pipeline |
+| Development | 3 | +4 | Database architect, API designer, test writer |
+| Business | 4 | +3 | Invoice generator, contract template, financial model |
+| Content | 4 | +4 | Blog post, YouTube script, newsletter, landing page |
+| SEO/GEO | — | +6 | Site audit, keyword research, schema markup |
+| Marketing | 8 | — | Sales funnel, Facebook/Google ads, launch plan |
+| Product | 6 | — | PRD writer, feature spec, MVP scoper, roadmap |
+| Automation | 5 | — | n8n workflows, webhooks, cron jobs, API integration |
 
 ## License
 

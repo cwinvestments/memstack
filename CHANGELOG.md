@@ -1,5 +1,22 @@
 # MemStack Changelog
 
+## [3.2.3] - 2026-03-06
+
+### Changed
+- Clarified free vs. Pro skill tier split in README and docs
+- Free repo now ships 47 full skills: 17 standalone + 30 categorized
+- Pro adds 30 additional categorized skills (stub placeholders in free repo)
+
+### Fixed
+- Removed Pro-exclusive skills that were incorrectly included in free repo (5736e87)
+- Restored 30 free categorized skills that were incorrectly replaced (913eed9)
+
+### Added
+- skill-guard CI + manifest to prevent Pro skill leaks in future releases (5878bcc)
+- MCP Skill Loader documented in Pro features section of README (3fb7a7c)
+
+---
+
 ## v3.2.2 — 2026-03-01 — TTS Notifications, Diary Webhook, Pro Catalog
 
 ### Changed
