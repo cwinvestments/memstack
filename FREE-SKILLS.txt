@@ -1,0 +1,53 @@
+# Free skills manifest — every SKILL.md that should have full content.
+# If a SKILL.md has >20 lines and is NOT listed here, skill-guard CI will block the push.
+#
+# 17 standalone skills
+skills/compress/SKILL.md
+skills/diary/SKILL.md
+skills/echo/SKILL.md
+skills/familiar/SKILL.md
+skills/forge/SKILL.md
+skills/governor/SKILL.md
+skills/grimoire/SKILL.md
+skills/humanize/SKILL.md
+skills/kdp-format/SKILL.md
+skills/project/SKILL.md
+skills/quill/SKILL.md
+skills/scan/SKILL.md
+skills/shard/SKILL.md
+skills/sight/SKILL.md
+skills/state/SKILL.md
+skills/verify/SKILL.md
+skills/work/SKILL.md
+#
+# 30 free categorized skills
+skills/automation/api-integration/SKILL.md
+skills/automation/content-pipeline/SKILL.md
+skills/automation/cron-scheduler/SKILL.md
+skills/automation/n8n-workflow-builder/SKILL.md
+skills/automation/webhook-designer/SKILL.md
+skills/business/client-onboarding/SKILL.md
+skills/business/contract-template/SKILL.md
+skills/business/financial-model/SKILL.md
+skills/business/invoice-generator/SKILL.md
+skills/content/newsletter/SKILL.md
+skills/content/product-description/SKILL.md
+skills/content/tiktok-script/SKILL.md
+skills/content/twitter-thread/SKILL.md
+skills/development/migration-planner/SKILL.md
+skills/development/refactor-planner/SKILL.md
+skills/development/test-writer/SKILL.md
+skills/marketing/competitor-analysis/SKILL.md
+skills/marketing/facebook-ad/SKILL.md
+skills/marketing/google-ad/SKILL.md
+skills/marketing/launch-plan/SKILL.md
+skills/marketing/lead-magnet/SKILL.md
+skills/marketing/pricing-strategy/SKILL.md
+skills/marketing/sales-funnel/SKILL.md
+skills/marketing/webinar-script/SKILL.md
+skills/product/feature-spec/SKILL.md
+skills/product/feedback-analyzer/SKILL.md
+skills/product/mvp-scoper/SKILL.md
+skills/product/prd-writer/SKILL.md
+skills/product/roadmap-builder/SKILL.md
+skills/product/user-story-generator/SKILL.md

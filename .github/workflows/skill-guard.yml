@@ -1,0 +1,22 @@
+name: Skill Guard
+
+on:
+  push:
+    paths:
+      - 'skills/**'
+      - 'FREE-SKILLS.txt'
+  pull_request:
+    paths:
+      - 'skills/**'
+      - 'FREE-SKILLS.txt'
+
+jobs:
+  check-pro-leaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run skill guard verification
+        run: |
+          chmod +x scripts/verify-free-repo.sh
+          bash scripts/verify-free-repo.sh
