@@ -1,6 +1,10 @@
 # MemStack v3.2.3
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.3](https://img.shields.io/badge/Version-3.2.3-green.svg)](CHANGELOG.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Version: 3.2.3](https://img.shields.io/badge/Version-3.2.3-green.svg)](CHANGELOG.md) [![Skills: 77](https://img.shields.io/badge/Skills-77-purple.svg)](MEMSTACK.md) [![Projects: 35%2B](https://img.shields.io/badge/Projects-35%2B-orange.svg)](MEMSTACK.md) [![CI: Passing](https://img.shields.io/badge/CI-Passing-brightgreen.svg)](.github/workflows/skill-guard.yml)
+
+> Not a prompt collection. Not a cheat sheet. A battle-tested methodology for solo founders who ship.
+
+77 specialist skills — each one loaded only when its expertise is needed. Drop in the React expert when building UI. Activate the RLS Guardian when writing migrations. Zero token bloat.
 
 A structured skill framework for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with SQLite-backed persistent memory, semantic vector search, deterministic hooks, always-on rules, and slash commands.
 
@@ -40,9 +44,27 @@ MemStack is a lightweight alternative to heavyweight frameworks like GSD — sam
 - **Git** — Download: https://git-scm.com/downloads
 - **LanceDB + sentence-transformers** (optional, for semantic recall) — `pip install lancedb sentence-transformers`
 
+## How It Works
+
+MemStack™ follows a **Progressive Disclosure** pattern:
+
+- Skills load lean (~80 lines of context)
+- The MCP Skill Loader surgically fetches only what your exact task needs
+- Full expert depth activates on demand — not dumped into every session
+- Result: zero token bloat, full specialist precision
+
 ## Quick Start
 
-### Step 1: Clone the repo
+**One command. Works across every project immediately.**
+
+```bash
+git clone https://github.com/cwinvestments/memstack .claude/skills
+```
+
+### Advanced: Deploy across multiple projects
+
+Clone the full repo, then link it into each project:
+
 ```bash
 git clone https://github.com/cwinvestments/memstack.git
 cd memstack
