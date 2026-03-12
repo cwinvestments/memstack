@@ -311,19 +311,173 @@ Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC s
 
 ## Upgrade to Pro
 
-The free repo includes **47 full skills** (17 standalone + 30 categorized). [MemStack™ Pro](https://memstack.pro) adds **30 more categorized skills** — bringing the total to **77 across 10 categories** — plus an **MCP Skill Loader**, a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand.
+The free repo includes **77 skills** (17 core + 60 categorized). [MemStack™ Pro](https://memstack.pro) adds **3 Pro-exclusive skills** — bringing the total to **80 across 10 categories** — plus an **MCP Skill Loader**, a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand.
 
-| Category | Free | +Pro | Examples |
-|----------|------|------|---------|
-| Security | — | +7 | RLS checker, RLS guardian, OWASP top 10, secrets scanner |
-| Deployment | — | +6 | Railway, Netlify, Docker, CI/CD pipeline |
-| Development | 3 | +4 | Database architect, API designer, test writer |
-| Business | 4 | +3 | Invoice generator, contract template, financial model |
-| Content | 4 | +4 | Blog post, YouTube script, newsletter, landing page |
-| SEO/GEO | — | +6 | Site audit, keyword research, schema markup |
-| Marketing | 8 | — | Sales funnel, Facebook/Google ads, launch plan |
-| Product | 6 | — | PRD writer, feature spec, MVP scoper, roadmap |
-| Automation | 5 | — | n8n workflows, webhooks, cron jobs, API integration |
+### Free Skills (77) — Full List
+
+<details>
+<summary><strong>Core (17)</strong> — Memory, planning, workflow, and utilities</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Diary | Session logging with git integration and SQLite storage |
+| Echo | Past session recall via semantic vector search + SQLite |
+| Work | Task planning and todo list management |
+| State | Load and update project context at session start |
+| Project | Save project state and handoff context |
+| Verify | Verification before committing completed work |
+| Governor | Project maturity assessment and complexity budgeting |
+| Grimoire | Update project context files after significant changes |
+| Compress | Headroom proxy status and token savings |
+| Humanize | Make AI-generated text sound natural |
+| Forge | Create new MemStack skills |
+| Familiar | Dispatch work across parallel CC sessions |
+| Scan | Codebase complexity analysis and project estimation |
+| Quill | Generate client-facing price quotations |
+| Shard | Split and manage files over 1000 lines |
+| Sight | Visual diagrams and architecture overviews |
+| KDP Format | Convert manuscripts to KDP-ready .docx |
+
+</details>
+
+<details>
+<summary><strong>Security (7)</strong> — Audits, policies, vulnerability scanning</summary>
+
+| Skill | Description |
+|-------|-------------|
+| RLS Checker | Supabase Row Level Security policy verification |
+| RLS Guardian | RLS enforcement on new/altered database tables |
+| API Audit | API endpoint protection verification |
+| OWASP Top 10 | Comprehensive web security review against OWASP Top 10 |
+| Secrets Scanner | Exposed secrets detection in source code |
+| Dependency Audit | Vulnerability scanning and abandoned package detection |
+| CSP Headers | HTTP security headers (CSP, HSTS, X-Frame-Options) |
+
+</details>
+
+<details>
+<summary><strong>Deployment (6)</strong> — CI/CD, containers, hosting, DNS</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Railway Deploy | Application deployment to Railway with env vars and domains |
+| Netlify Deploy | Static site and serverless function deployment to Netlify |
+| Docker Setup | Container optimization with Dockerfile and docker-compose |
+| CI/CD Pipeline | Automated build, test, and deployment pipelines (GitHub Actions) |
+| Domain SSL | DNS records, SSL certificates, and custom domain configuration |
+| Hetzner Setup | VPS provisioning, hardening, and deployment |
+
+</details>
+
+<details>
+<summary><strong>Development (7)</strong> — Architecture, testing, performance</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Database Architect | Supabase/Postgres table structures, relationships, and RLS |
+| API Designer | RESTful API route design with request/response schemas |
+| Code Reviewer | Structured code quality, security, and performance reviews |
+| Test Writer | Unit, integration, and component tests with mocking |
+| Migration Planner | Safe schema evolution with zero-downtime strategies |
+| Performance Audit | Frontend and backend performance diagnosis and optimization |
+| Refactor Planner | Systematic code improvement and tech debt reduction |
+
+</details>
+
+<details>
+<summary><strong>Business (6)</strong> — Proposals, contracts, invoicing</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Proposal Writer | Project proposals for client and freelance engagements |
+| Scope of Work | Project boundaries, deliverables, and acceptance criteria |
+| Contract Template | Professional service contracts with legal clauses |
+| Client Onboarding | Structured onboarding process for new clients |
+| Invoice Generator | Professional invoices with line items and payment instructions |
+| Financial Model | Financial projections with scenario modeling and unit economics |
+
+</details>
+
+<details>
+<summary><strong>Content (8)</strong> — Blog, email, video, social</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Blog Post | Long-form written content for blogs and publications |
+| Email Sequence | Multi-email automated campaigns with nurture sequences |
+| Landing Page Copy | Persuasive short-form copy for product landing pages |
+| Newsletter | Newsletter editions with subject lines, content, and growth strategy |
+| Product Description | Conversion-optimized product descriptions for e-commerce |
+| TikTok Script | Scripts with hooks and visual cues for 15–60s vertical videos |
+| Twitter Thread | Multi-tweet narratives with hooks, data points, and CTAs |
+| YouTube Script | Scripted content for YouTube with hooks, chapters, and CTAs |
+
+</details>
+
+<details>
+<summary><strong>SEO & GEO (6)</strong> — Search optimization, structured data</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Site Audit | Website SEO health evaluation |
+| Keyword Research | Target keywords with search volume and difficulty |
+| Meta Tag Optimizer | HTML meta tag optimization for search visibility |
+| Schema Markup | Schema.org structured data (JSON-LD) for rich results |
+| AI Search Visibility | Content optimization for AI-powered search engines |
+| Local SEO | Local search optimization (Google Business Profile, NAP) |
+
+</details>
+
+<details>
+<summary><strong>Marketing (8)</strong> — Funnels, ads, launches, pricing</summary>
+
+| Skill | Description |
+|-------|-------------|
+| Sales Funnel | Complete customer journey from stranger to repeat buyer |
+| Facebook Ad | Social media ad copy with targeting for Meta platforms |
+| Google Ad | Keyword groups, headlines, and Quality Score optimization |
+| Launch Plan | Day-by-day launch timeline with pre/post checklists |
+| Competitor Analysis | Pricing, feature, and messaging comparisons against competitors |
+| Pricing Strategy | Pricing tiers, psychology application, and A/B testing |
+| Lead Magnet | Lead capture assets with landing page copy and nurture sequences |
+| Webinar Script | Timestamped presentation scripts with slide notes |
+
+</details>
+
+<details>
+<summary><strong>Product (6)</strong> — PRDs, specs, roadmaps, backlog</summary>
+
+| Skill | Description |
+|-------|-------------|
+| PRD Writer | Engineering-ready PRD with problem statement and personas |
+| Feature Spec | Detailed feature specifications with user flows and edge cases |
+| User Story Generator | Prioritized stories with Given/When/Then criteria |
+| MVP Scoper | Smallest viable build that validates product hypothesis |
+| Roadmap Builder | Strategic planning with themes, milestones, and resources |
+| Feedback Analyzer | Support ticket and review categorization and prioritization |
+
+</details>
+
+<details>
+<summary><strong>Automation (5)</strong> — Workflows, webhooks, scheduling</summary>
+
+| Skill | Description |
+|-------|-------------|
+| n8n Workflow Builder | Design automated workflows with triggers and data transformations |
+| Webhook Designer | Secure webhook receivers with validation and idempotency |
+| Cron Scheduler | Recurring background jobs with monitoring and failure handling |
+| API Integration | Build reliable connections between systems via their APIs |
+| Content Pipeline | Automate creation, formatting, and publishing across platforms |
+
+</details>
+
+### Pro-Exclusive Skills (3) — 🔒
+
+| Skill | Description | Unlock |
+|-------|-------------|--------|
+| 🔒 Consolidate | Weekly cross-project summaries and pattern detection | [Pro](https://memstack.pro) |
+| 🔒 Context DB | SQLite-backed facts database — query project knowledge instead of reading full CLAUDE.md | [Pro](https://memstack.pro) |
+| 🔒 API Docs | Fetch current API documentation via Context Hub before writing API code | [Pro](https://memstack.pro) |
 
 ## License
 

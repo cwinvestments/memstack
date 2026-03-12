@@ -98,3 +98,10 @@ Do NOT memorize skill content from this catalog — always read the file fresh.
 | cron-scheduler | "cron job", "scheduled task", "run every" | skills/automation/cron-scheduler/SKILL.md |
 | api-integration | "API integration", "connect APIs", "sync data" | skills/automation/api-integration/SKILL.md |
 | content-pipeline | "content pipeline", "content automation", "auto-publish" | skills/automation/content-pipeline/SKILL.md |
+
+## Core
+| Skill | Triggers | Path |
+|-------|----------|------|
+| consolidate | "consolidate", "weekly summary", "cross-project patterns", "consolidate diaries" | skills/consolidate/SKILL.md |
+| context-db | "context-db", "fact store", "project facts", "token savings" | skills/context-db/SKILL.md |
+| api-docs | "api-docs", "fetch docs", "current API", "chub" | skills/api-docs/SKILL.md |
