@@ -140,3 +140,9 @@ This session is now searchable via Echo.
 - **Lv.3** — Advanced: SQLite as primary storage, auto-extract insights from decisions, markdown as backup export. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/diary.md`), always-on session logging awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
 - **Lv.5** — Handoff: Added structured Session Handoff section — in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)
+
+## Pro Feature: PreCompact Auto-Save
+
+MemStack™ Pro includes a PreCompact hook that automatically saves a diary entry before Claude Code context compaction runs. Free version requires manual diary saves only.
+
+Upgrade: memstack.pro
