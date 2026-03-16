@@ -145,3 +145,5 @@ SQLite insights (3):
 - **Lv.3** — Advanced: SQLite backend as primary source, markdown as fallback, insight search. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/echo.md`), `/memstack-search` slash command, auto-indexed CLAUDE.md context. (Origin: MemStack v3.0-beta, Feb 2026)
 - **Lv.5** — Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI optional). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)
+
+> 💎 Pro: SessionStart hook auto-injects your last 3 sessions of context.

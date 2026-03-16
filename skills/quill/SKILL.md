@@ -71,3 +71,5 @@ Saved: memory/projects/greentech-quote-2026-02-18.md
 
 - **Lv.1** — Base: Template-based quotation generation. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, activation message, Scan integration. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+
+> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

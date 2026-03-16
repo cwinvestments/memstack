@@ -87,3 +87,5 @@ Next steps:
 - **Lv.1** — Base: Session state capture and handoff generation. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, activation message, template integration. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite-backed project context, combined restore from DB + sessions + plan. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
+
+> 💎 Pro: SessionStart hook auto-injects your last 3 sessions of context.

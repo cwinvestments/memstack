@@ -141,8 +141,13 @@ This session is now searchable via Echo.
 - **Lv.4** — Native: CC rules integration (`.claude/rules/diary.md`), always-on session logging awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
 - **Lv.5** — Handoff: Added structured Session Handoff section — in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)
 
-## Pro Feature: PreCompact Auto-Save
+## Pro Features: Automatic Hook System
 
-MemStack™ Pro includes a PreCompact hook that automatically saves a diary entry before Claude Code context compaction runs. Free version requires manual diary saves only.
+MemStack™ Pro includes 3 automatic hooks that fire without any user trigger:
+- **PreCompact** — auto-saves diary before context compaction
+- **PostToolUse** — captures an observation log entry after every file write and bash command
+- **SessionStart** — injects a context summary from your last 3 sessions at startup
+
+Free version requires manual diary saves only.
 
 Upgrade: memstack.pro

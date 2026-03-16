@@ -73,3 +73,5 @@ Beacon is ready. Triggers: "health check", "ping", "uptime"
 
 - **Lv.1** — Base: Skill file generation and index updates. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, v2.1 format generation, level tracking. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+
+> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

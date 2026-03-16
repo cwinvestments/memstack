@@ -84,3 +84,5 @@ erDiagram
 
 - **Lv.1** — Base: Mermaid diagram generation from codebase analysis. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, diagram type detection. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+
+> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.
