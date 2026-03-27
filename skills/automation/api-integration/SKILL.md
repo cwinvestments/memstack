@@ -1,6 +1,6 @@
 ---
 name: api-integration
-description: "Use when the user says 'API integration', 'connect APIs', 'sync data', 'API to API', 'integrate with', or needs to build a reliable connection between two systems via their APIs."
+description: "Generates API integration code with authentication (OAuth, API key, JWT), request/response mapping, rate limit handling, error recovery with circuit breakers, and sync monitoring. Use when the user says 'API integration', 'connect APIs', 'sync data', 'API to API', 'integrate with', or needs to build a reliable connection between two systems via their APIs."
 ---
 
 

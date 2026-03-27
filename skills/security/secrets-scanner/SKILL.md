@@ -13,3 +13,5 @@ Scan a codebase for hardcoded secrets, leaked API keys, and credential exposure 
 
 **Upgrade to Pro** to unlock this skill plus 59 others:
 👉 https://memstack.cwaffiliateinvestments.com
+
+💎 Pro: Secrets scanning hooks run automatically before every commit and push — production-grade detection covering 700+ credential formats across every major cloud provider and API service. Free version requires manual scanning only.
