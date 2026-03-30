@@ -311,7 +311,7 @@ Use the **Forge** skill: say `"forge a new skill for [description]"` in any CC s
 
 ## Upgrade to Pro
 
-The free repo includes **77 skills** (17 core + 60 categorized). [MemStack™ Pro](https://memstack.pro) adds **3 Pro-exclusive skills** — bringing the total to **80 across 10 categories** — plus an **MCP Skill Loader**, a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand.
+The free repo includes **77 skills** (17 core + 60 categorized). [MemStack™ Pro](https://memstack.pro) adds **4 Pro-exclusive skills** — bringing the total to **81 across 10 categories** — plus an **MCP Skill Loader**, a semantic search MCP server where Claude Code calls `find_skill("your task")` and loads only the relevant skill on demand.
 
 ### Free Skills (77) — Full List
 
@@ -471,13 +471,30 @@ The free repo includes **77 skills** (17 core + 60 categorized). [MemStack™ Pr
 
 </details>
 
-### Pro-Exclusive Skills (3) — 🔒
+### Pro-Exclusive Skills (4) — 🔒
 
 | Skill | Description | Unlock |
 |-------|-------------|--------|
 | 🔒 Consolidate | Weekly cross-project summaries and pattern detection | [Pro](https://memstack.pro) |
 | 🔒 Context DB | SQLite-backed facts database — query project knowledge instead of reading full CLAUDE.md | [Pro](https://memstack.pro) |
 | 🔒 API Docs | Fetch current API documentation via Context Hub before writing API code | [Pro](https://memstack.pro) |
+| 🔒 Branching | Dev-branch workflow — all work on dev, merge to master only after review | [Pro](https://memstack.pro) |
+
+### Pro License Setup
+
+After purchasing at [memstack.pro](https://memstack.pro), activate your license:
+
+```bash
+claude mcp update memstack-skills -e MEMSTACK_PRO_LICENSE_KEY=your-key-here
+```
+
+Then restart Claude Code. All 4 Pro-exclusive skills unlock automatically.
+
+## Best Practices
+
+- **Save a diary at the end of each session** — say "save diary" or "wrapping up" before closing Claude Code. This logs your accomplishments, decisions, and handoff state so your next session picks up where you left off.
+- **Save a diary after major implementations** — even mid-session, log big completions so nothing is lost.
+- **Use Echo to recall past work** — say "what did we do last time?" or "recall [topic]" to search across all diary entries.
 
 ## License
 
