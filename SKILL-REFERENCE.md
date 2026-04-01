@@ -1,4 +1,4 @@
-# MemStack Pro — Skill Quick Reference
+# MemStack™ — Skill Quick Reference
 
 > **81 skills across 10 categories** (77 free + 4 Pro-exclusive). Say any trigger phrase to activate.
 >
@@ -20,7 +20,7 @@
 | Grimoire | Manages and updates CLAUDE.md files across projects after significant changes | "Update context" or "Update claude" or "Save library" |
 | Compress | Manages Headroom context compression proxy — status, stats, troubleshooting | "Headroom" or "Compression" or "Token savings" |
 | Humanize | Removes AI writing patterns from text — makes output sound natural and human | "Humanize" or "Clean up writing" or "Make it sound natural" |
-| Forge | Creates new MemStack skills with proper YAML frontmatter and registration | "Forge this" or "New skill" or "Create enchantment" |
+| Forge | Creates new MemStack™ skills with proper YAML frontmatter and registration | "Forge this" or "New skill" or "Create enchantment" |
 | Familiar | Splits large tasks into coordinated prompts for parallel CC sessions | "Dispatch" or "Send familiar" or "Split task" |
 | Scan | Analyzes codebase complexity and estimates project scope for pricing | "Scan project" or "Estimate" or "How much to charge?" |
 | Quill | Generates professional client-facing quotation documents | "Create quotation" or "Generate quote" or "Proposal" |
@@ -141,4 +141,4 @@
 
 ---
 
-*MemStack Pro v3.3.4 — 81 skills across 10 categories (77 free + 4 Pro-exclusive), one prompt away.*
+*MemStack™ v3.3.4 — 81 skills across 10 categories (77 free + 4 Pro-exclusive), one prompt away.*

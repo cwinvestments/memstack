@@ -1,4 +1,4 @@
-# MemStack Pro Changelog
+# MemStack™ Changelog
 
 ## v3.3.4 — 2026-03-28 — Git Audit + Docs Update
 

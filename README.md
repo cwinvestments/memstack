@@ -19,7 +19,7 @@ Then link to your project — see [GETTING-STARTED.md](GETTING-STARTED.md) for f
 
 | Tier | Skills | Access |
 |------|--------|--------|
-| **Free** | 77 skills | Included with MemStack base |
+| **Free** | 77 skills | Included with MemStack™ base |
 | **Pro** | 81 total (77 free + 4 exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
 
 **Pro-exclusive skills:** `consolidate`, `context-db`, `api-docs`, `branching` — these require an active Pro license.
@@ -57,7 +57,7 @@ All 81 skills are **fully implemented** with complete protocols, context guards,
 | `compress` | Headroom proxy status and token savings |
 | `token-optimization` | Full 3-layer token stack: Headroom + RTK + Serena |
 | `humanize` | Make AI-generated text sound natural |
-| `forge` | Create new MemStack skills |
+| `forge` | Create new MemStack™ skills |
 | `familiar` | Dispatch work across parallel CC sessions |
 | `scan` | Codebase complexity analysis and project estimation |
 | `quill` | Generate client-facing price quotations |

@@ -1,6 +1,6 @@
-# MemStack v3.3.4 — Skill Framework for Claude Code
+# MemStack™ v3.3.4 — Skill Framework for Claude Code
 
-You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
+You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
 **v3.3.4 changes:** 81 total skills (77 free + 4 Pro-exclusive: consolidate, context-db, api-docs, branching). SessionStart license nudge for missing `MEMSTACK_PRO_LICENSE_KEY`. Production-grade secrets scanning hook. Git audit verified clean. All new skills default to Pro-exclusive, graduating to free after 90 days.
 
@@ -22,7 +22,7 @@ See `.claude/rules/memstack.md` for the full rule set. Summary:
 
 ## Architecture (v3.2.1)
 
-MemStack v3.2.1 uses **three layers**:
+MemStack™ v3.2.1 uses **three layers**:
 
 | Layer | What | How | Examples |
 |-------|------|-----|---------|
