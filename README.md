@@ -1,10 +1,19 @@
-# MemStack Pro
+# MemStack™
 
 [![Version: 3.3.4](https://img.shields.io/badge/Version-3.3.4-green.svg)](CHANGELOG.md)
 
-Private premium extension for [MemStack](https://github.com/cwinvestments/memstack) — the structured skill framework for Claude Code.
+The structured skill framework for Claude Code — **81 professional skills** for deployment, security, databases, content, marketing, and more.
 
-MemStack Pro includes **81 fully implemented skills** across 10 professional categories, **8 starter templates** for common project types, **on-demand skill loading** via MCP catalog, and **diary webhook integration** with n8n.
+Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
+
+### Quick Install
+
+```bash
+git clone https://github.com/cwinvestments/memstack.git
+cd memstack
+```
+
+Then link to your project — see [GETTING-STARTED.md](GETTING-STARTED.md) for full setup instructions.
 
 ### Tier Structure
 
@@ -31,7 +40,7 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 
 ## All Skills (81 total — 77 free + 4 Pro-exclusive)
 
-All 81 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 3 skills (consolidate, context-db, api-docs) are Pro-exclusive and require an active license key.
+All 81 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 4 skills (consolidate, context-db, api-docs, branching) are Pro-exclusive and require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 ### Core (20 skills)
 
@@ -188,7 +197,7 @@ All 81 skills are **fully implemented** with complete protocols, context guards,
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 80 skills
+- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 81 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
@@ -198,28 +207,12 @@ All 81 skills are **fully implemented** with complete protocols, context guards,
 
 ## Installation
 
-### Fresh Install (Full Pro)
-
 ```bash
 git clone https://github.com/cwinvestments/memstack.git
 cd memstack
 ```
 
-Then follow the [MemStack setup instructions](https://github.com/cwinvestments/memstack#quick-start) — Pro is a superset of free.
-
-### Add Pro to Existing MemStack
-
-```bash
-# Linux/macOS
-git clone https://github.com/cwinvestments/memstack.git /tmp/memstack
-/tmp/memstack/install.sh /path/to/your/memstack
-
-# Windows
-git clone https://github.com/cwinvestments/memstack.git %TEMP%\memstack
-%TEMP%\memstack\install.bat C:\path\to\your\memstack
-```
-
-The installer copies Pro skills and templates into your existing MemStack without overwriting free components.
+Then link to your project and set up the MCP Skill Loader — see [GETTING-STARTED.md](GETTING-STARTED.md) for step-by-step instructions.
 
 ## License
 
