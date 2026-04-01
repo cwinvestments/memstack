@@ -1,8 +1,16 @@
-# MemStack v3.2.3 — Skill Framework for Claude Code
+# MemStack v3.3.4 — Skill Framework for Claude Code
 
 You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
-**v3.2.3 changes:** TTS voice notifications (pre-prompt + post-task), diary webhook to n8n, Pro skills catalog rule for organic upsell. Description trap audit, anti-rationalization tables, Governor skill (#19), silent context compilation (Work Step 0).
+**v3.3.4 changes:** 81 total skills (77 free + 4 Pro-exclusive: consolidate, context-db, api-docs, branching). SessionStart license nudge for missing `MEMSTACK_PRO_LICENSE_KEY`. Production-grade secrets scanning hook. Git audit verified clean. All new skills default to Pro-exclusive, graduating to free after 90 days.
+
+## Branch Strategy
+
+- All new work happens on the `dev` branch. Never commit directly to `master`.
+- Merge to `master` only after Reviewer confirms working.
+- Merge commit format: `merge: [description] dev->master`
+- Setup: `git checkout -b dev && git push -u origin dev`
+- Merge: `git checkout master && git merge dev && git push && git checkout dev`
 
 ## Global Rules
 See `.claude/rules/memstack.md` for the full rule set. Summary:
@@ -85,7 +93,6 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 12 | Sight    | 👁️    | Keyword    | Lv.2     | Architecture visualization        | "draw", "diagram", "visualize", "architecture"     |
 | 13 | ~~Monitor~~ | 📡 | ~~Passive~~| **Hook** | ~~CC Monitor self-reporting~~ →`.claude/hooks/session-*.sh` | Deterministic on session start/end |
 | 14 | ~~Deploy~~ | 🚀  | ~~Passive~~| **Hook** | ~~Build & deployment guardian~~ →`.claude/hooks/post-commit.sh` | Deterministic on git commit |
-| 15 | KDP Format | 📚  | Keyword    | Lv.2     | Markdown → KDP-ready .docx | "kdp", "format for kdp", "book format", "manuscript" |
 | 16 | Humanize | ✍️    | Keyword    | Lv.1     | Remove AI writing patterns from text | "humanize", "make it sound natural", "clean up writing" |
 | 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
 | 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |

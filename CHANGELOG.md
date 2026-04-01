@@ -1,427 +1,212 @@
-# MemStack Changelog
+# MemStack Pro Changelog
 
-## [3.2.3] - 2026-03-06
-
-### Changed
-- Clarified free vs. Pro skill tier split in README and docs
-- Free repo now ships 47 full skills: 17 standalone + 30 categorized
-- Pro adds 30 additional categorized skills (stub placeholders in free repo)
-
-### Fixed
-- Removed Pro-exclusive skills that were incorrectly included in free repo (5736e87)
-- Restored 30 free categorized skills that were incorrectly replaced (913eed9)
+## v3.3.4 — 2026-03-28 — Git Audit + Docs Update
 
 ### Added
-- skill-guard CI + manifest to prevent Pro skill leaks in future releases (5878bcc)
-- MCP Skill Loader documented in Pro features section of README (3fb7a7c)
+- **Branching skill** (`skills/branching/SKILL.md`) — Enforces dev-branch workflow: all work on `dev`, merge to `master` only after Reviewer confirms.
+- **Dev branch** — Created `dev` branch as default working branch. All new work happens here; `master` is release-only.
+- **SessionStart license nudge** — Hook fires at session start when `MEMSTACK_PRO_LICENSE_KEY` is not set, guiding users through Pro setup.
+- **Tier structure documentation** — All docs now document the free/Pro tier split: 78 free skills, 81 total (78 free + 3 Pro-exclusive: consolidate, context-db, api-docs).
+- **90-day graduation rule** — All new skills default to Pro-exclusive and drop to the free tier after 90 days unless marked permanent-Pro.
+
+### Changed
+- **Full git audit** — Verified entire git history and working tree are clean: no secrets, no .env files, no grace period files, no hardcoded keys. Repo is safe for public visibility.
+- **Delivery model updated** — Removed private GitHub repo references. New model: one public repo + `MEMSTACK_PRO_LICENSE_KEY` activation. Customer pays Stripe ($29) -> gets key via email -> sets env var -> Pro skills unlock.
+- **Docs updated** — README.md, GETTING-STARTED.md, SKILL-REFERENCE.md, MEMSTACK.md, and docs/MARKETPLACE-PREP.md updated with current version (3.3.4), accurate skill counts (81 total), and Pro tier info.
 
 ---
 
-## v3.2.2 — 2026-03-01 — TTS Notifications, Diary Webhook, Pro Catalog
+## v3.3.3 — 2026-03-24 — Production-Grade Secrets Scanning
+
+### Added
+- **Pre-commit secrets hook** (`pre-commit-secrets.sh`) — Scans all staged files before every `git commit` using production-grade detection covering 700+ credential formats across every major cloud provider and API service. Blocks commits containing secrets with redacted output. Falls back to built-in regex scan if production scanner is not installed.
+- **`.gitleaks.toml`** — Project-level scanner configuration excluding test fixtures, example files, `.claude/diary/`, and `.claude/observations/` directories from scanning.
+
+### Changed
+- **Pre-push hook** (`pre-push.sh`) — Upgraded from 5-keyword regex scan to production-grade detection (700+ credential formats). Full working-tree scan before every push. Silent fallback to regex if scanner is not installed.
+- **secrets-scanner skill (Lv.3)** — Documented automated hook coverage, fallback behavior, and relationship between manual audits and automated scanning.
+
+---
+
+## v3.3.2 — 2026-03-16 — PostToolUse Observations + SessionStart Context Injection
+
+### Added
+- **PostToolUse observation hook** (`post-tool-monitor.sh`) — Captures lightweight observations after every Write, Edit, MultiEdit, and Bash tool call. Logs timestamp, tool name, parsed input summary, and working directory to `.claude/observations/YYYY-MM-DD.md` (daily file, append-only). Uses Python JSON parsing with grep fallback.
+- **SessionStart context loader** (`session-context-load.sh`) — On every new CC session, reads last 3 diary entries and last 3 observation files, writes a condensed summary to `.claude/session-context.md` (max 200 lines). Idempotent — overwrites previous context on each session start. Checks both `.claude/diary/` and `memory/sessions/` for diary sources.
+
+### Changed
+- **settings.json** — Added two new independent hook entries (PostToolUse observation monitor, SessionStart context loader) following Option B architecture — each with its own timeout budget, separate from existing hooks.
+
+---
+
+## v3.3.1 — 2026-03-12 — PreCompact Auto-Diary
+
+### Added
+- **PreCompact hook** — Automatically saves a diary snapshot before Claude Code context compaction runs. Captures uncommitted changes, recent commits, shell history, and modified files. Entries saved to `.claude/diary/{date}-compaction.md` with `COMPACTION_INTERRUPTED` flag. Multiple compactions in one day append to the same file. Fully automatic — no user input required.
+
+### Changed
+- **Diary skill (Lv.6)** — Documented PreCompact hook behavior, comparison with manual diary, and session resume guidance.
+
+---
+
+## v3.3.0 — 2026-03-12 — Context DB & API Docs Skills
+
+### Added
+- **context-db** — New Core skill: SQLite-backed facts database per project (`.claude/context.db`). Stores structured knowledge as key/value pairs across 5 categories (decisions, patterns, components, config, gotchas). CC queries only relevant facts instead of reading full CLAUDE.md — estimates and logs token savings to `.claude/context-db-stats.json`. Includes inbox watcher for auto-ingestion and CLAUDE.md seeding. Inspired by Google ADK Always-On Memory Agent.
+- **api-docs** — New Core skill: fetches current API documentation via Context Hub (`chub`) before CC writes code that calls external APIs. Supports 13 APIs (Supabase, Stripe, SendGrid, Railway, Netlify, Anthropic, OpenAI, Vercel, Cloudflare, Firebase, Resend, Twilio, GitHub). Graceful fallback when chub is not installed. Built on Context Hub by Andrew Ng / AISuite team.
+
+---
+
+## v3.2.2 — 2026-03-01 — Documentation Audit, TTS Notifications, Diary Webhook
+
+### Added
+- **rls-guardian** — New Security skill (7th): auto-generates RLS policies for every new `CREATE TABLE` or `ALTER TABLE` statement, enforcing row-level security by default
 
 ### Changed
 - **notify.md** — Pre-prompt voice notification: TTS "Claude needs your attention" now fires BEFORE approval prompts and questions, not just after task completion
 - **diary.md** — Added devlog webhook (step 7): POSTs diary content to n8n endpoint after markdown backup is saved. Fire-and-forget with `.catch()` so webhook failure never blocks diary save
-- **pro-catalog.md** — Added Pro skills catalog rule for organic upsell: mentions relevant Pro skills once per session when task matches triggers
-- **README.md** — Added v3.2.2 section, version badge bump
-- **MEMSTACK.md** — Version bump to v3.2.2, updated changes description
+- **README.md** — Complete rewrite: removed "DRAFT stubs" status (all 75+ skills are implemented), added Key Features section, documented on-demand loading, TTS, webhook, templates breakdown (8 starters + 3 utilities)
+- **MEMSTACK.md** — Version bump to v3.2.2, updated v3.2 changes description
 - **package.json** — Version bump to 3.2.2
-- **config.json** — Version bump to 3.2.2
+- **CHANGELOG.md** — Full history backfill from project inception
 
 ---
 
-## v3.2.1 — 2026-02-28 — Portability, KDP Spine Margins, Link Command
+## v3.2.1-templates — 2026-03-01 — Starter Templates
 
-**Builds on:** v3.2.0 description audit and governance
-
-### New: Link-Project Command
-
-- `start-memstack.bat link <path>` creates a `.claude` junction from any project to MemStack
-- Junction setup instructions added to README
-
-### New: KDP Spine Text Margin Rules
-
-- Added `### KDP Spine Text Margins` section to KDP Format skill
-- Minimum 0.0625" (1/16") padding per side, 19px at 300 DPI
-- Spine width formula: pages × 0.002252" (white paper)
-- Font sizing constraint: `max_height = spine_width_px - 38`
-- Updated in both `.claude/rules/kdp-format.md` and `skills/kdp-format/SKILL.md`
-
-### Changed: Portable Launchers
-
-- `start-memstack.bat` — replaced hardcoded `C:\Projects` with `%~dp0` dynamic detection
-- `start-memstack.sh` — replaced hardcoded `$HOME/Projects` with `$(dirname "$0")` detection
-- Both launchers now work from any clone location
-
-### Changed: KDP Format Skill Made Public
-
-- `kdp-format.md` added to `.claude/rules/` for always-on loading
-
-### Bug Fixes & Maintenance
-
-- Fixed step numbering in `start-memstack.sh`
-- Fixed Echo search score normalization and vector dimension mismatch
-- Fixed JSON injection and unbound variable risks in session hooks
-- Fixed quoting and dual-format commit check in `post-commit.sh`
-- Fixed dead `.env` leak check in `pre-push.sh`
-- Added WAL and foreign_keys PRAGMAs to `migrate.py`
-- Removed pandas dependency from Echo dedup logic
-- Added input validation and malformed JSON handling in `memstack-db.py`
-- Fixed `export-md` to include `architecture_decisions` and `current_branch`
-- Added standard ignores to `.gitignore`
-- Used `printf` instead of `echo -e` in `post-commit.sh` for portability
-- Cleaned dead config keys, added Headroom startup flags
-- Normalized path separators in `echo.md`
-- Added completion notification beep (WAV playback, always-on rule)
-- Compress skill: added `[code]` extra, updated startup command, added troubleshooting
-- Corrected State skill auto-read claim, Forge example row count, diary.md Project reference
-
-### Files Added
-- `.claude/rules/kdp-format.md` — KDP Format as public rule
-
-### Files Modified
-- `start-memstack.bat` — Portable paths + link command
-- `start-memstack.sh` — Portable paths + step numbering fix
-- `skills/kdp-format/SKILL.md` — Spine text margin rules, Lv.2 history updated
-- `README.md` — Junction setup, launcher docs, quick start update
-- Multiple hook/rule/skill files — Bug fixes listed above
+### Added: 8 Starter Templates
+- `nextjs-supabase` — Next.js + Supabase full-stack starter
+- `react-node-postgres` — React + Node.js + PostgreSQL starter
+- `saas-starter` — SaaS boilerplate with auth, billing, dashboard
+- `landing-page` — Marketing landing page with conversion optimization
+- `api-backend` — REST/GraphQL API backend starter
+- `chrome-extension` — Chrome extension with Manifest V3
+- `electron-app` — Desktop app with Electron
+- `mobile-react-native` — Mobile app with React Native
 
 ---
 
-## v3.2.0 — 2026-02-24 — Description Audit, Anti-Rationalization, Portfolio Governance
+## v3.2.1-catalog — 2026-03-01 — On-Demand Skill Loading
 
-**Builds on:** v3.1 skill additions and research analysis
-
-### New: Governor Skill (#19)
-
-- 3-tier portfolio governance: Prototype / MVP / Production
-- Phase constraints per tier — prevents over-engineering
-- Anti-patterns list per tier (19 items total)
-- Triggers on "new project", "what tier", "scope", "project init"
-
-### New: Anti-Rationalization Tables
-
-- Added to Echo, Diary, and Verify SKILL.md files
-- Two-column tables mapping known Claude excuses to rebuttals
-- Pattern adopted from Superpowers plugin research
-
-### Changed: Description Trap Audit
-
-- All 17 active SKILL.md `description:` fields rewritten
-- Descriptions now say WHEN to invoke, never HOW the skill works
-- Prevents Claude from shortcutting full protocols by reading the summary
-
-### Changed: Silent Context Compilation (Work Lv.5)
-
-- Added Step 0 to Work skill protocol
-- Silently reads STATE.md, CLAUDE.md, recent diary, and git state before any plan operation
-- No output — internalizes context without wasting user's time
-
-### Files Added
-- `skills/governor/SKILL.md` — Governor skill
-- `docs/plans/2026-02-24-v3.2-governance-design.md` — Design doc
-
-### Files Modified
-- All 16 existing `skills/*/SKILL.md` — Description field rewritten
-- `skills/echo/SKILL.md` — Anti-rationalization table added
-- `skills/diary/SKILL.md` — Anti-rationalization table added
-- `skills/verify/SKILL.md` — Anti-rationalization table added
-- `skills/work/SKILL.md` — Step 0 + Lv.5 level history
-- `MEMSTACK.md` — v3.2, Governor in index, Work Lv.5
-- `README.md` — v3.2 notes, Governor in skills table
+### Changed: Architecture Overhaul
+- Moved all 59 Pro skills from `.claude/rules/` (always-loaded) to `skills/` (on-demand)
+- Created `pro-skills.md` catalog rule — skills load only when a task matches their triggers
+- Prevents context window bloat from loading 59 skill protocols at session start
+- Upgraded notification system from chime to cross-platform TTS (Windows, macOS, Linux)
 
 ---
 
-## v3.1.0 — 2026-02-24 — Humanize, State, Verify + Diary/Echo Upgrades
+## v3.2.1-skills — 2026-02-28 to 2026-03-01 — All 59 Skills Implemented
 
-**Builds on:** v3.0-rc hooks and rules architecture
+### Security (6 skills)
+- `rls-checker` — Row Level Security policy auditor for Supabase (first production Pro skill)
+- `api-audit` — API endpoint security analysis
+- `secrets-scanner` — Leaked credentials and env file auditor
+- `owasp-top10` — OWASP Top 10 vulnerability checker
+- `dependency-audit` — Package dependency vulnerability scanner
+- `csp-headers` — Content Security Policy header generator
 
-### New Skills
+All 4 security skills (rls-checker, api-audit, secrets-scanner, owasp-top10) were refined based on AdminStack audit feedback.
 
-- **Humanize** (#16, Lv.1) — Remove AI writing patterns from text. Curated replacement table + voice guidelines
-- **State** (#17, Lv.1) — Living STATE.md tracking current task, blockers, next steps. Auto-reads at session start
-- **Verify** (#18, Lv.1) — Pre-commit verification reports. Checks build, tests, requirements
+### Deployment (6 skills)
+- `railway-deploy` — Railway platform deployment guide
+- `netlify-deploy` — Netlify deployment and configuration
+- `domain-ssl` — Domain DNS and SSL/HTTPS setup
+- `hetzner-setup` — Hetzner VPS provisioning and configuration
+- `ci-cd-pipeline` — CI/CD pipeline design and setup
+- `docker-setup` — Docker containerization guide
 
-### Upgraded Skills
+### Development (7 skills)
+- `database-architect` — Database schema design and optimization
+- `api-designer` — REST/GraphQL API architecture
+- `code-reviewer` — Systematic code review protocol
+- `performance-audit` — Application performance analysis
+- `refactor-planner` — Systematic code improvement planning
+- `test-writer` — Comprehensive test generation (unit, integration, component)
+- `migration-planner` — Safe database schema evolution
 
-- **Diary** (Lv.5) — Structured Session Handoff section: in-progress work, uncommitted changes, exact pickup instructions
-- **Echo** (Lv.5) — LanceDB vector-powered semantic recall with sentence-transformers. Auto-indexes sessions, SQLite fallback
-- **Seal hook** — Commit format now supports conventional commits (`feat(scope): description`) alongside `[ProjectName]`
+### Business (7 skills)
+- `proposal-writer` — Professional proposal and pitch generation
+- `sop-builder` — Standard operating procedure documentation
+- `scope-of-work` — Project scope definition and boundaries
+- `invoice-generator` — Professional invoice builder with calculations
+- `contract-template` — Service agreement generator with legal clauses
+- `client-onboarding` — New client setup system with welcome sequence
+- `financial-model` — Business financial projections and unit economics
 
-### Files Added
-- `skills/humanize/SKILL.md` — Humanize skill
-- `skills/state/SKILL.md` — State skill
-- `skills/verify/SKILL.md` — Verify skill
-- `skills/echo/index-sessions.py` — Vector index builder
-- `skills/echo/search.py` — Semantic search CLI
-- `skills/_research/memstack-v31-upgrade-spec.md` — Upgrade spec
+### Content (8 skills)
+- `blog-post` — SEO-optimized blog article writer
+- `landing-page-copy` — Conversion-focused landing page copy
+- `email-sequence` — Automated email drip sequence builder
+- `youtube-script` — Long-form video script with chapters
+- `twitter-thread` — Viral thread builder with hook formulas
+- `tiktok-script` — Short-form video script with timestamped cues
+- `newsletter` — Email newsletter builder with growth tactics
+- `product-description` — E-commerce listing copy optimizer
 
-### Files Modified
-- `skills/diary/SKILL.md` — Lv.5, Session Handoff section
-- `skills/echo/SKILL.md` — Lv.5, vector search protocol
-- `.claude/hooks/pre-push.sh` — Conventional commit format support
-- `MEMSTACK.md` — v3.1, new skills, level updates
-- `README.md` — v3.1 notes, updated architecture tree
+### SEO & GEO (6 skills)
+- `site-audit` — Technical SEO site health analysis
+- `keyword-research` — Keyword strategy and opportunity mapping
+- `meta-tag-optimizer` — Meta title/description optimization
+- `schema-markup` — JSON-LD structured data generator
+- `ai-search-visibility` — AI search engine optimization (ChatGPT, Perplexity, etc.)
+- `local-seo` — Local business SEO strategy
+
+### Marketing (8 skills)
+- `sales-funnel` — Full-funnel conversion architecture
+- `facebook-ad` — Meta ads copy and targeting strategy
+- `google-ad` — Search campaign builder with RSA format
+- `launch-plan` — Go-to-market calendar with contingencies
+- `competitor-analysis` — Competitive intelligence report
+- `pricing-strategy` — Revenue-optimized pricing design
+- `lead-magnet` — Opt-in asset and delivery system
+- `webinar-script` — Teach-to-sell presentation script
+
+### Product (6 skills)
+- `prd-writer` — Product requirements document generator
+- `feature-spec` — Detailed feature specification with acceptance criteria
+- `user-story-generator` — Backlog-ready story builder with Given/When/Then
+- `mvp-scoper` — Minimum viable product definition
+- `roadmap-builder` — Strategic Now/Next/Later roadmap
+- `feedback-analyzer` — Customer feedback intelligence and prioritization
+
+### Automation (5 skills)
+- `n8n-workflow-builder` — Visual automation workflow design
+- `webhook-designer` — Secure webhook handler with HMAC verification
+- `cron-scheduler` — Scheduled job design with overlap prevention
+- `api-integration` — System-to-system API connector
+- `content-pipeline` — Multi-platform content automation
 
 ---
 
-## v3.0.0-rc — 2026-02-22 — Plugin Packaging + Headroom Integration
+## v3.2.1-init — 2026-02-28 — Project Initialization
 
-**Builds on:** v3.0-beta rules and slash commands
+### Added
+- Initialized MemStack Pro repository with complete free MemStack base
+- Created premium skill directory structure across 9 categories
+- Added 3 utility templates: `client-quote`, `handoff`, `project-snapshot`
+- Headroom startup command fix in rules
+- All free base skills, hooks, rules, commands, and database infrastructure included
 
-### New: Headroom Auto-Integration
-
-- `session-start.sh` now auto-detects and auto-starts the Headroom compression proxy
-- Checks `localhost:8787/health` — if running, does nothing; if installed but stopped, auto-starts it
-- Exports `ANTHROPIC_BASE_URL` when proxy starts successfully
-- Never blocks session start — all Headroom logic is non-blocking with timeouts
-- Configurable via `config.json` `headroom` section (`auto_start`, `port`)
-- New rule: `.claude/rules/headroom.md` — proxy awareness and troubleshooting
-- New command: `/memstack-headroom` — check proxy status and token savings
-
-### New: Plugin Packaging
-
-- `package.json` — NPM-style package manifest for `@cwinvestments/memstack`
-- `files` list includes all distributable assets, excludes `config.local.json`, `memory/`, `db/memstack.db`
-- Future install: `npx skills add cwinvestments/memstack`
-
-### Updated
-
-- `README.md` — Full rewrite for v3.0: installation, three-layer architecture diagram, Headroom section, slash commands, v3.0 badge
-- `MEMSTACK.md` — v3.0-rc: Headroom in hook/rules/commands tables
-- `config.json` — Added `headroom` section, version bump to 3.0.0-rc
-
-### Files Added
-- `package.json` — Plugin package manifest
-- `.claude/rules/headroom.md` — Headroom proxy awareness rule
-- `.claude/commands/memstack-headroom.md` — Slash command for proxy stats
-
-### Files Modified
-- `.claude/hooks/session-start.sh` — Headroom auto-detection and auto-start
-- `MEMSTACK.md` — v3.0-rc architecture tables
-- `CHANGELOG.md` — This entry
-- `README.md` — Full rewrite for v3.0
-- `config.json` — Headroom section, version bump
-
----
-
-## v3.0.0-beta — 2026-02-22 — Rules Integration, Slash Commands, Auto-Indexing
-
-**Builds on:** v3.0-alpha hook architecture
-
-### New: CC Native Rules for Core Skills
-
-Rules in `.claude/rules/` are loaded automatically every session — no need to read MEMSTACK.md first.
-
-| Rule File | Skill | What It Does |
-|-----------|-------|-------------|
-| `echo.md` | Echo (Lv.4) | Always-on memory recall — search SQLite on past session references |
-| `diary.md` | Diary (Lv.4) | Always-on session logging — log after task completion |
-| `work.md` | Work (Lv.4) | Always-on task planning — activate on plan/todo/task keywords |
-
-### New: Slash Command — `/memstack-search`
-
-- `.claude/commands/memstack-search.md` — Quick memory lookup
-- Invoked with `/memstack-search <query>` in CC
-- Runs `memstack-db.py search` without activating full Echo skill
-- Returns sessions, insights, and project context matching the query
-
-### New: CLAUDE.md Auto-Indexing
-
-- `session-start.sh` now auto-indexes CLAUDE.md into SQLite `project_context` table
-- Extracts headings and first paragraphs from CLAUDE.md (or `*-CLAUDE.md` variants)
-- Stores up to 1500 chars of key facts in `architecture_decisions` field
-- Keeps SQLite memory in sync with project documentation automatically
-- Restructured session-start.sh so auto-indexing runs even without API key
-
-### Updated Skills (Lv.3 → Lv.4)
-
-- **Echo** — Lv.4: CC rules integration + `/memstack-search` slash command + auto-indexed context
-- **Diary** — Lv.4: CC rules integration + always-on session logging awareness
-- **Work** — Lv.4: CC rules integration + always-on task planning awareness
-
-### Architecture: Three Layers
-
+### Architecture
 ```
-MemStack v3.0-beta
-├── Hooks (deterministic)     — Shell scripts, CC lifecycle events
-│   ├── pre-push.sh           — Seal: build check, secrets scan, blocks bad pushes
-│   ├── post-commit.sh        — Deploy: debug artifacts, format validation
-│   ├── session-start.sh      — Monitor + CLAUDE.md auto-indexer
-│   └── session-end.sh        — Monitor: report "completed" to API
-├── Rules (always-loaded)     — Markdown files, loaded every session
-│   ├── memstack.md           — Global conventions, deprecated skill guard
-│   ├── echo.md               — Memory recall protocol
-│   ├── diary.md              — Session logging protocol
-│   └── work.md               — Task planning protocol
-├── Commands (slash)          — Quick-access utilities
-│   └── memstack-search.md    — /memstack-search <query>
-├── Skills (context-aware)    — Markdown protocols, keyword/contextual triggers
-│   ├── Echo, Diary, Work     — SQLite-backed memory (Lv.4)
-│   ├── Project, Grimoire     — Session lifecycle (Lv.2-3)
-│   ├── Scan, Quill           — Business tools (Lv.2)
-│   └── Forge, Shard, Sight   — Dev tools (Lv.2)
-└── Rules (.claude/rules/)    — Always-loaded behavioral constraints
+MemStack Pro v3.2.2
+├── Free Base (complete MemStack)
+│   ├── Hooks (deterministic)      — pre-push, post-commit, session-start/end
+│   ├── Rules (always-loaded)      — memstack, echo, diary, work, notify, headroom, pro-skills catalog
+│   ├── Commands (slash)           — /memstack-search
+│   └── Skills (19 core)           — Echo, Diary, Work, Forge, Scan, Governor, etc.
+├── Pro Skills (59, on-demand)     — Loaded via catalog when task matches triggers
+│   ├── Security (6)
+│   ├── Deployment (6)
+│   ├── Development (7)
+│   ├── Business (7)
+│   ├── Content (8)
+│   ├── SEO & GEO (6)
+│   ├── Marketing (8)
+│   ├── Product (6)
+│   └── Automation (5)
+└── Templates (11)
+    ├── Starter (8)                — nextjs-supabase, react-node-postgres, saas-starter, etc.
+    └── Utility (3)                — client-quote, handoff, project-snapshot
 ```
-
-### Files Added
-- `.claude/rules/echo.md` — Echo memory recall rule
-- `.claude/rules/diary.md` — Diary session logging rule
-- `.claude/rules/work.md` — Work task planning rule
-- `.claude/commands/memstack-search.md` — Slash command for memory search
-
-### Files Modified
-- `.claude/hooks/session-start.sh` — Added CLAUDE.md auto-indexing, restructured flow
-- `MEMSTACK.md` — v3.0-beta: Three-layer architecture, rules table, commands table
-- `CHANGELOG.md` — This entry
-- `config.json` — Version bump to 3.0.0-beta
-- `skills/echo.md` — Lv.4 level history
-- `skills/diary.md` — Lv.4 level history
-- `skills/work.md` — Lv.4 level history
-
----
-
-## v3.0.0-alpha — 2026-02-22 — Native CC Hook Architecture
-
-**Inspired by:** CC Best Practices research (see `research/cc-best-practice-comparison.md`)
-
-### Breaking Change: Prompt-Based Skills → Deterministic Hooks
-
-Three passive skills that relied on the LLM remembering to follow protocols are now
-deterministic shell scripts that fire automatically on CC lifecycle events.
-
-| Skill | Replaced By | CC Event | Behavior |
-|-------|-------------|----------|----------|
-| **Seal** (commit safety) | `.claude/hooks/pre-push.sh` | `PreToolUse` on `git push` | Build check, secrets scan, commit format — **blocks push on failure** (exit 2) |
-| **Deploy** (push safety) | `.claude/hooks/post-commit.sh` | `PostToolUse` on `git commit` | Debug artifact scan, secrets check — **warns after commit** |
-| **Monitor** (session reporting) | `.claude/hooks/session-start.sh` + `session-end.sh` | `SessionStart` + `Stop` | Reports status to monitoring API |
-
-**Why:** Hooks are deterministic — they always fire. Prompt-based skills only work if the LLM
-remembers to follow the protocol. For safety-critical operations (blocking a push with secrets,
-verifying builds), deterministic execution is essential.
-
-### New: CC Native Infrastructure
-
-- **`.claude/settings.json`** — Hook configuration wiring events to scripts
-- **`.claude/hooks/`** — 4 shell scripts replacing 3 prompt-based skills
-- **`.claude/rules/memstack.md`** — Global rules as native CC rules (replaces MEMSTACK.md Global Rules section)
-
-### Deprecated Skills
-
-Original skill files are preserved with `deprecated: true` in YAML frontmatter.
-They serve as fallback documentation for CC versions without hook support.
-
-- `skills/seal.md` — Deprecated, replaced by `pre-push.sh`
-- `skills/deploy.md` — Deprecated, replaced by `post-commit.sh`
-- `skills/monitor.md` — Deprecated, replaced by `session-start.sh` + `session-end.sh`
-
-### Updated
-
-- `MEMSTACK.md` — v3.0: Documents two-layer architecture (hooks + skills), updated skill index
-- `config.json` — Version bump to 3.0.0-alpha
-
-### Architecture: Two Layers
-
-```
-MemStack v3.0
-├── Hooks (deterministic)     — Shell scripts, CC lifecycle events
-│   ├── pre-push.sh           — Seal: build check, secrets scan, blocks bad pushes
-│   ├── post-commit.sh        — Deploy: debug artifacts, format validation
-│   ├── session-start.sh      — Monitor: report "working" to API
-│   └── session-end.sh        — Monitor: report "completed" to API
-├── Skills (context-aware)    — Markdown protocols, keyword/contextual triggers
-│   ├── Echo, Diary, Work     — SQLite-backed memory (Lv.3)
-│   ├── Project, Grimoire     — Session lifecycle (Lv.2-3)
-│   ├── Scan, Quill           — Business tools (Lv.2)
-│   └── Forge, Shard, Sight   — Dev tools (Lv.2)
-└── Rules (.claude/rules/)    — Always-loaded behavioral constraints
-```
-
-### Files Added
-- `.claude/settings.json` — Hook wiring configuration
-- `.claude/hooks/pre-push.sh` — Seal hook (build + secrets + format)
-- `.claude/hooks/post-commit.sh` — Deploy hook (debug artifacts + secrets)
-- `.claude/hooks/session-start.sh` — Monitor hook (session start)
-- `.claude/hooks/session-end.sh` — Monitor hook (session end)
-- `.claude/rules/memstack.md` — Global rules as CC native rules
-- `research/cc-best-practice-comparison.md` — CC capabilities comparison report
-
-### Files Modified
-- `MEMSTACK.md` — v3.0: Two-layer architecture, updated skill index
-- `skills/seal.md` — Deprecated, added hook reference
-- `skills/deploy.md` — Deprecated, added hook reference
-- `skills/monitor.md` — Deprecated, added hook reference
-
----
-
-## v2.1.0 — 2026-02-20 — SQLite Memory Backend
-
-**Inspired by:** Accomplish AI research (see `research/accomplish-comparison.md`)
-
-### New: SQLite Memory Backend
-- **`db/memstack.db`** — SQLite database with WAL mode replaces flat markdown files as source of truth
-- **`db/schema.sql`** — Schema with 4 tables: `sessions`, `insights`, `project_context`, `plans`
-- **`db/memstack-db.py`** — Repository pattern CLI helper with 13 commands:
-  `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`,
-  `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
-- **`db/migrate.py`** — One-time migration script (idempotent, safe to re-run)
-  - Imported 2 existing session diaries
-  - Auto-extracted 17 insights from session decisions
-  - Seeded 6 project contexts from config.json
-
-### New: Auto-Extracted Insights
-- Diary skill now automatically extracts decisions from session logs and stores them as
-  searchable insights in the `insights` table
-- Echo skill can search insights independently from full session logs
-- Cross-project insight search enables pattern discovery across all projects
-
-### Improved: Context Guards
-- Added **Priority levels** (P1/P2) to all context guards for deterministic activation
-- Added **explicit negative patterns** to prevent false activations:
-  - Echo: won't fire on "memory" as a code concept, won't fire on "save" (Diary's territory)
-  - Diary: won't fire on "recall" (Echo's territory), won't fire at session start
-  - Seal: won't fire on "push" (Deploy's territory), won't fire during active coding
-  - Deploy: won't fire on "build" for local testing, won't fire on SSH deploys
-
-### New: Skill Deconfliction Rules
-- Added **Skill Deconfliction** section to MEMSTACK.md
-- Clear ownership: "commit" → Seal, "push/deploy" → Deploy, "recall" → Echo, etc.
-- Deploy invokes Seal as a sub-step when needed (no more double activation)
-
-### Updated Skills (Lv.2 → Lv.3)
-- **Echo** — SQLite search as primary source, markdown as fallback, insight search
-- **Diary** — Writes to SQLite + extracts insights + markdown backup
-- **Work** — SQLite-backed plans with per-task status, no size limits
-- **Project** — SQLite project context for save/restore, combined DB+session+plan restore
-
-### Architecture Decision
-Markdown files are preserved as human-readable exports and fallback, but SQLite is the
-source of truth. This matches Accomplish AI's repository pattern while keeping MemStack's
-simplicity — no Node.js runtime, no build step, just Python's built-in sqlite3 module.
-
-### Files Added
-- `db/schema.sql` — Database schema
-- `db/memstack-db.py` — CLI helper (repository pattern)
-- `db/migrate.py` — Markdown → SQLite migration
-- `db/memstack.db` — The database itself
-- `CHANGELOG.md` — This file
-
-### Files Modified
-- `MEMSTACK.md` — v2.1, added Storage section, Deconfliction section, leveling update
-- `config.json` — Version bump to 2.1.0
-- `skills/echo.md` — Lv.3: SQLite backend, improved context guards
-- `skills/diary.md` — Lv.3: SQLite backend, insight extraction, improved guards
-- `skills/work.md` — Lv.3: SQLite plans, structured task tracking
-- `skills/project.md` — Lv.3: SQLite project context, combined restore
-- `skills/seal.md` — Improved context guards, deconfliction with Deploy
-- `skills/deploy.md` — Improved context guards, deconfliction with Seal
-
----
-
-## v2.0.0 — 2026-02-19 — MemoryCore Merge
-
-- Merged Developer Kaki's MemoryCore architecture into MemStack
-- Added YAML frontmatter to all skills
-- Added Context Guards to prevent false activations
-- Added activation messages for skill transparency
-- 14 skills at Lv.2
