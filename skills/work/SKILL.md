@@ -1,6 +1,7 @@
 ---
 name: work
 description: "Use when the user says 'plan', 'todo', 'copy plan', 'append plan', 'resume plan', 'priorities', or 'what's next'."
+version: 1.0.0
 ---
 
 
@@ -139,5 +140,3 @@ Recommended next: Task 6 — Build cc-reporter.js
 - **Lv.3** — Advanced: SQLite-backed plans with per-task status tracking, no size limits, structured queries. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/work.md`), always-on task planning awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
 - **Lv.5** — Context-aware: Silent context compilation (Step 0) — reads STATE.md, CLAUDE.md, recent diary, and git state before any operation. Inspired by Intellegix silent pre-flight pattern. (Origin: MemStack v3.2, Feb 2026)
-
-> 💎 Pro: SessionStart hook auto-injects your last 3 sessions of context.

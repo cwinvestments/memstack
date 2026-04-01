@@ -1,6 +1,7 @@
 ---
 name: shard
 description: "Use when the user says 'shard this', 'split file', or when working with files over 1000 lines."
+version: 1.0.0
 ---
 
 
@@ -88,5 +89,3 @@ Build check: ✓ passed
 
 - **Lv.1** — Base: File analysis and splitting with import updates. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, propose-before-execute, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-
-> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

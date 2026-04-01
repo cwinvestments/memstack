@@ -1,6 +1,7 @@
 ---
 name: grimoire
 description: "Use when the user says 'update context', 'update claude', 'save library', or after significant project changes."
+version: 1.0.0
 ---
 
 
@@ -69,5 +70,3 @@ CLAUDE.md updated ✓
 
 - **Lv.1** — Base: CLAUDE.md read/write with section management. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, activation message, auto-detect what changed. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-
-> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

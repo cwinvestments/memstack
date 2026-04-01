@@ -1,307 +1,397 @@
 ---
-name: webinar-script
-description: "Use when the user says 'webinar script', 'webinar', 'live presentation', 'webinar outline', 'pitch presentation', or wants a structured presentation script that sells."
+name: memstack-marketing-webinar-script
+description: "Use this skill when the user says 'webinar script', 'webinar', 'live presentation', 'teach-to-sell', or needs a timestamped presentation script with slide notes, presenter cues, and replay email sequence. Do NOT use for launch plans or static sales page copy."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-
-# 🎤 Webinar Script — Teach-to-Sell Presentation
-*Generate a timestamped webinar script with slide notes, presenter cues, and replay email sequence.*
+# Webinar Script — Writing presentation script...
+*Produces a full timestamped webinar script with hook, teaching segments, offer transition, Q&A handling, CTA placement, slide suggestions, and replay follow-up email sequence.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🎤 Webinar Script — Writing your teach-to-sell presentation...`
+`Webinar Script — Writing presentation script...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "webinar script", "webinar", "live presentation"** | ACTIVE |
-| **User wants a presentation that teaches and then pitches** | ACTIVE |
-| **User mentions webinar funnels or replay sequences** | ACTIVE |
-| **User wants a launch plan with webinar as one channel** | DORMANT — see launch-plan |
-| **User wants static sales page copy (not live presentation)** | DORMANT |
+| User says "webinar script", "webinar", "live presentation" | ACTIVE |
+| User says "teach-to-sell" or "presentation script" | ACTIVE |
+| User wants a scripted webinar with CTA and offer | ACTIVE |
+| User wants a static sales page | DORMANT — use Landing Page Copy |
+| User wants a launch timeline | DORMANT — use Launch Plan |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Teach everything you know" | Overwhelmed attendees don't buy. Teach ONE framework, leave them wanting more. |
+| "Pitch at the beginning" | Teach first (30+ minutes), then transition to the offer. Trust before transaction. |
+| "Skip the origin story" | People buy from people they relate to. Your story builds connection and credibility. |
+| "Ignore the chat" | Engagement in the first 10 minutes predicts attendance through the offer. Prompt interaction early. |
+| "No urgency on the offer" | Webinar-only bonuses and deadlines create 60%+ of webinar revenue. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Webinar Requirements
 
-Ask the user for:
-- **Topic**: What will you teach?
-- **Product to pitch**: What are you selling at the end?
-- **Target audience**: Who is attending? Their level of expertise?
-- **Duration**: 45 min or 60 min? (default: 60 min)
-- **Webinar platform**: Zoom, WebinarJam, Demio, YouTube Live, etc. (optional)
+If the user hasn't provided details, ask:
 
-### Step 2: Opening — Hook & Frame (0:00-5:00)
+> 1. **Topic** — what will you teach? (one specific transformation)
+> 2. **Offer** — what are you selling? (name, price, format)
+> 3. **Audience** — who is attending? (experience level, pain points)
+> 4. **Duration** — how long? (60 min standard, 90 min for high-ticket)
+> 5. **Format** — live or evergreen (pre-recorded)?
+> 6. **Platform** — Zoom, WebinarJam, Demio, YouTube Live?
 
-**The Hook (0:00-1:00):**
-- Open with a bold statement, surprising stat, or provocative question
-- NOT "Hi, I'm [name] and today we'll talk about..."
-- Example formats:
-  - "What if I told you [counterintuitive claim]?"
-  - "[X%] of [audience] make this mistake — and it costs them [consequence]"
-  - "In the next 45 minutes, you'll learn [specific outcome]"
+### Step 2: Structure the Webinar
 
-**Credibility (1:00-2:00):**
-- 2-3 sentences establishing why you're qualified
-- Results-focused, not resume-focused
-- "I've helped X people do Y" > "I have a degree in Z"
+**Standard 60-minute webinar structure:**
 
-**Promise (2:00-3:00):**
-- State exactly what they'll walk away with
-- "By the end of this session, you'll have [3 specific things]"
-- Set the expectation: teaching first, then an offer (transparency builds trust)
+| Segment | Time | Duration | Purpose |
+|---------|------|----------|---------|
+| Opening hook | 0:00 | 3 min | Grab attention, state the promise |
+| Introduction & credibility | 3:00 | 5 min | Build trust, share origin story |
+| Content pillar 1 | 8:00 | 12 min | Teach framework step 1 |
+| Content pillar 2 | 20:00 | 12 min | Teach framework step 2 |
+| Content pillar 3 | 32:00 | 10 min | Teach framework step 3 |
+| Transition to offer | 42:00 | 3 min | Bridge teaching to selling |
+| The offer | 45:00 | 10 min | Present the product with value stack |
+| Q&A | 55:00 | 5+ min | Handle objections, close sales |
 
-**Agenda (3:00-5:00):**
-- Preview the 3 key teaching points
-- Tell them what NOT to do during the webinar (don't multitask, take notes)
-- Quick engagement: "Type in the chat — what's your biggest challenge with [topic]?"
+**90-minute structure (high-ticket):** Add a 4th content pillar (10 min) and extend Q&A to 15 min.
+
+### Step 3: Write the Opening Hook (0:00-3:00)
 
 ```
-SLIDE 1: Title slide — bold headline, your name, date
-SLIDE 2: "By the end, you'll know..." — 3 bullet outcomes
-SLIDE 3: Agenda — 3 teaching points listed
-CUE: Ask chat question, acknowledge 2-3 responses
+[SLIDE 1: Title slide with webinar name and your name]
+
+"Welcome everyone! I'm so glad you're here.
+
+In the next [60/90] minutes, I'm going to show you
+[specific outcome — be concrete].
+
+By the end of this webinar, you'll know exactly
+[what they'll be able to do].
+
+And I'm going to share [tease a specific tool/framework/secret]
+that [impressive result].
+
+Before we dive in — drop a [emoji/word] in the chat if you're
+[relatable situation that describes their pain point]."
+
+[WAIT for chat responses — acknowledge 2-3 by name]
+
+"Perfect. You're in the right place."
 ```
 
-### Step 3: Content — Three Teaching Points (5:00-30:00)
+**Opening rules:**
+- State the promise in the first 30 seconds
+- Ask a chat question within the first 2 minutes (builds engagement)
+- Don't waste time on "can you see my screen" or housekeeping — energy must be high
 
-**Teaching Point 1 (5:00-13:00):**
-- **What**: Name the concept/strategy/framework
-- **Why**: Why this matters — connect to their pain
-- **How**: High-level steps or framework (enough to understand, not enough to fully implement alone)
-- **Proof**: Example, case study, or data point
-- **Mini-CTA**: "If you want to go deeper on this, I'll show you how later"
+### Step 4: Write Introduction & Credibility (3:00-8:00)
 
 ```
-SLIDES 4-6: Point 1 — concept → framework diagram → proof/example
-CUE: Pause for chat engagement after proof
+[SLIDE 2: Your photo + key credibility points]
+
+"Quick intro — I'm [Name], and I [one-line credibility].
+
+But I didn't start here. [2-3 sentences: your origin story.
+Include the struggle that mirrors their current situation.]
+
+[Key turning point: what changed everything for you]
+
+That's when I discovered [the framework/method you'll teach today].
+
+Since then, [impressive results — numbers, clients helped, etc.]
+
+And today I'm going to hand you the exact same [framework/method],
+step by step. Sound good?"
+
+[ENGAGEMENT: "Type YES in the chat if you're ready to dive in"]
 ```
 
-**Teaching Point 2 (13:00-21:00):**
-- Same structure: What → Why → How → Proof → Mini-CTA
-- This point should address the BIGGEST objection or misconception
-- Use contrast: "Most people think X, but actually Y"
+**Credibility rules:**
+- Keep it under 5 minutes — they came for content, not your life story
+- Include ONE vulnerability (makes you relatable)
+- End with a result that proves the method works
+- Always include a chat prompt before transitioning to content
+
+### Step 5: Write Teaching Segments (8:00-42:00)
+
+**Content pillar template (repeat for each pillar):**
 
 ```
-SLIDES 7-9: Point 2 — misconception → truth → case study
-CUE: Poll or "Type 'yes' if this resonates"
+[SLIDE: Pillar title — "[Step X]: [Action]"]
+
+"The [first/second/third] step is [step name].
+
+Most people [common mistake related to this step].
+Here's why that doesn't work: [brief explanation].
+
+Instead, here's what to do:
+
+[SLIDE: Framework visual or step-by-step]
+
+[Teach the concept — 3-5 minutes of core instruction]
+
+Let me show you an example:
+
+[SLIDE: Real example, case study, or demo]
+
+[Walk through the example — 3-5 minutes]
+
+[Key takeaway: one sentence summary of this step]
+
+[ENGAGEMENT: Quick poll or chat question related to this step]
+"
 ```
 
-**Teaching Point 3 (21:00-30:00):**
-- Same structure: What → Why → How → Proof → Mini-CTA
-- This point should naturally bridge to the paid offer
-- Show the gap: "You now know WHAT to do, but implementing it requires [thing your product provides]"
+**Teaching rules:**
+- Each pillar follows: Concept → Why it matters → How to do it → Example → Takeaway
+- Use stories and examples, not just information
+- Insert engagement prompts every 8-10 minutes (chat questions, polls, "type 1 for X, 2 for Y")
+- Teach the WHAT and WHY, but leave the HOW (implementation details) for the paid offer
+- Show results but don't give the complete system for free
+
+**Engagement prompts between pillars:**
+- "How many of you have experienced [problem]? Drop a number 1-10 in chat for how much."
+- "Quick poll: Are you currently doing [A] or [B]?"
+- "Type your biggest takeaway so far in the chat."
+
+### Step 6: Write the Offer Transition (42:00-45:00)
+
+This is the most critical moment — the bridge from teaching to selling.
 
 ```
-SLIDES 10-12: Point 3 — strategy → results possible → the gap
-CUE: "Are you starting to see how this all connects?"
+[SLIDE: Recap of what they learned]
+
+"So let's recap what you now know:
+- Step 1: [Pillar 1 summary]
+- Step 2: [Pillar 2 summary]
+- Step 3: [Pillar 3 summary]
+
+Now, you have two paths:
+
+Path 1: Take what you learned today, implement it yourself,
+and figure out the details through trial and error.
+That works. And I genuinely hope you do.
+
+Path 2: Let me hand you the complete system — every template,
+every shortcut, every lesson I learned the hard way —
+so you can [achieve the result] in [fraction of the time].
+
+If you're interested in Path 2, let me show you what I've put together."
+
+[SLIDE: Transition to offer — product name + hero image]
 ```
 
-### Step 4: Transition — Bridge to Offer (30:00-35:00)
+**Transition rules:**
+- Validate that the free content alone is valuable (no guilt-tripping)
+- Present two paths — DIY vs. done-with-you
+- Never apologize for selling. The offer is a service, not an imposition.
+- The transition should feel natural, not abrupt
 
-**The Bridge (30:00-32:00):**
-- Recap the 3 teaching points
-- Acknowledge: "You could do all of this on your own — and some of you will"
-- Identify the gap: "But here's what most people struggle with..."
-- Name the struggle: time, complexity, accountability, missing pieces
-
-**Permission (32:00-33:00):**
-- "I've built something that solves exactly this. Can I share it with you?"
-- This is NOT sleazy — it's respectful and honest
-- Wait for chat affirmation
-
-**Qualify (33:00-35:00):**
-- "This is for you if [3 qualifiers]"
-- "This is NOT for you if [2 disqualifiers]"
-- Filters the audience — those who stay are pre-qualified
+### Step 7: Write the Offer Presentation (45:00-55:00)
 
 ```
-SLIDES 13-14: Recap → "The gap" → "Who this is for"
-CUE: Pause, read chat, transition deliberately — don't rush
+[SLIDE: Product name + "Here's what you get"]
+
+"Introducing [Product Name].
+
+[One sentence: what it is and who it's for]
+
+Here's exactly what's included:
+
+[SLIDE: Module/feature breakdown]
+
+Component 1: [Name] — [what it helps them do]
+  (Value: $[X])
+Component 2: [Name] — [what it helps them do]
+  (Value: $[X])
+Component 3: [Name] — [what it helps them do]
+  (Value: $[X])
+
+[SLIDE: Bonuses]
+
+Plus, when you join today, you also get:
+Bonus 1: [Name] — [benefit] (Value: $[X])
+Bonus 2: [Name] — [benefit] (Value: $[X])
+Bonus 3: [Name] — [benefit] (Value: $[X])
+
+[SLIDE: Value stack total]
+
+Total value: $[sum]
+Regular price: $[higher price]
+Today's webinar price: $[offer price]
+
+[SLIDE: Guarantee]
+
+And it's backed by a [30/60]-day money-back guarantee.
+If you go through the material and it doesn't [deliver outcome],
+I'll refund every penny. No questions asked.
+
+[SLIDE: CTA with link/button]
+
+Here's how to get started:
+[Click the link in the chat / Go to URL / Click the button below]
+
+[ENGAGEMENT: "Type READY in the chat if you're grabbing a spot"]
+"
 ```
 
-### Step 5: Offer — Present the Product (35:00-45:00)
+**Value stack rules:**
+- List 5-8 components with individual values
+- Total value should be 5-10x the actual price
+- Include 2-3 webinar-only bonuses (creates urgency)
+- Always include a guarantee (removes risk)
+- Show the link/CTA 3+ times during the offer segment
 
-**Product Reveal (35:00-37:00):**
-- Name the product, show the visual
-- One-sentence description: "It's a [format] that helps you [outcome]"
-- Do NOT start with price
+### Step 8: Write Q&A Segment (55:00+)
 
-**What's Included (37:00-40:00):**
-- Walk through each component
-- For each: name it, explain it, state the value
-- Stack the value visually (running total)
-
-**Bonuses (40:00-42:00):**
-- 2-3 bonuses that complement the core offer
-- Each with stated value
-- "Only available when you sign up during this webinar" (urgency)
-
-**Price Reveal (42:00-43:00):**
-- Show the value stack total first: "Total value: $X,XXX"
-- Then reveal the actual price: "But you're not paying that. Your investment today is $___"
-- If payment plan available, show both options
-
-**Guarantee (43:00-44:00):**
-- Risk reversal: "Try it for 30 days. If you don't [result], I'll refund every penny"
-- Make the guarantee specific and generous
-
-**CTA (44:00-45:00):**
-- Clear, single action: "Click the link below / in the chat to get started"
-- Repeat the link 3 times
-- "I'll keep this open while we do Q&A"
+**Q&A framework:**
 
 ```
-SLIDES 15-20: Product → Inclusions → Bonuses → Value stack → Price → Guarantee → CTA
-CUE: Drop the link in chat, ask "Who's in? Type 'I'm in!'"
+"Let me answer some questions. And while you're asking,
+the link is still live: [URL]
+
+[Answer questions — but always reframe toward the offer]
+
+Q: "Is this right for beginners?"
+A: "Absolutely. Module [X] starts from zero. You don't need
+any prior experience. And if you get stuck, [support feature]."
+
+Q: "What if it doesn't work for me?"
+A: "That's exactly why we have the [X]-day guarantee.
+Try it risk-free. If it doesn't deliver, you get a full refund."
+
+Q: "How long do I have access?"
+A: "Lifetime access. Plus all future updates at no extra cost."
 ```
 
-### Step 6: Q&A — Pre-Planted + Live (45:00-55:00)
+**Q&A rules:**
+- Pre-prepare 5-7 common questions (seed them if needed)
+- Every answer should naturally loop back to a benefit or feature
+- Keep the purchase link visible throughout Q&A
+- End Q&A with a final urgency reminder: "Last chance — the webinar price and bonuses expire at [time]"
 
-**Pre-planted questions** (prepare 5-7 answers):
-1. "Is this right for beginners?" → [answer that includes more people]
-2. "How much time does it take?" → [manageable answer + success story]
-3. "What if it doesn't work for me?" → [restate guarantee]
-4. "When do I get access?" → [immediate, build excitement]
-5. "Can I get support if I'm stuck?" → [describe support included]
-6. "How is this different from [alternative]?" → [differentiation]
-7. "Is there a payment plan?" → [options]
+### Step 9: Write Replay & Follow-Up Emails
 
-Start with 2-3 pre-planted, then open to live questions.
-Answer live questions honestly. Redirect complex questions to DMs or post-purchase.
+**Email 1 — Replay link (sent 1-2 hours after):**
 
 ```
-SLIDE 21: Q&A — show CTA link at bottom of slide throughout
-CUE: "While we do Q&A, the link is still active. Go grab your spot."
+Subject: Replay: [Webinar title] (link expires [date])
+Preview: Watch (or re-watch) before the offer closes
+
+Hi [Name],
+
+Thanks for [attending / registering for] today's webinar on
+[topic].
+
+Here's the replay: [Link]
+(Available until [date] at [time])
+
+Quick recap of what we covered:
+1. [Pillar 1 — key insight]
+2. [Pillar 2 — key insight]
+3. [Pillar 3 — key insight]
+
+If you're ready to [achieve outcome], here's the link
+to grab [Product] at the webinar price: [Offer link]
+
+The webinar-only bonuses expire [date].
+
+[Your name]
 ```
 
-### Step 7: Close — Urgency & Final CTA (55:00-60:00)
-
-**Urgency elements (pick 1-2, be honest):**
-- Bonus expires at midnight
-- Limited spots (if true)
-- Price increase after live event
-- Fast-action bonus for first X buyers
-
-**Final recap:**
-- "Here's what you're getting: [1-sentence summary]"
-- "For just $[price]"
-- "With a [guarantee] guarantee"
-- "Click the link: [URL]"
-
-**Sign-off:**
-- Thank the audience genuinely
-- "Whether you join today or not, go implement what you learned"
-- End on a positive, energetic note
+**Email 2 — Social proof (Day 2):**
 
 ```
-SLIDE 22: Final CTA — product name, price, link, guarantee
-SLIDE 23: Thank you — your photo, social handles, "See you inside"
-CUE: Stay live 2-3 extra minutes for stragglers
+Subject: "[Customer quote about result]"
+
+[Share 2-3 testimonials from people who got results with the product]
+
+[CTA: Join them → offer link]
 ```
 
-### Step 8: Follow-Up — Replay Email Sequence
-
-**Email 1 — Replay available (sent 1 hour after):**
-- Subject: "Replay: [Webinar Title] (watch before it expires)"
-- Body: Replay link, 3 key takeaways bullet list, CTA to offer
-
-**Email 2 — Key insight (Day +1):**
-- Subject: "The #1 takeaway from yesterday's session"
-- Body: Expand on most impactful teaching point, bridge to offer
-
-**Email 3 — Social proof (Day +2):**
-- Subject: "[Name] signed up and already seeing results"
-- Body: Quick testimonial or early win, CTA to offer
-
-**Email 4 — Objection handling (Day +3):**
-- Subject: "Still on the fence? Read this."
-- Body: Address top 3 objections directly, FAQ format
-
-**Email 5 — Last chance (Day +4):**
-- Subject: "Final notice: [offer/bonus] expires tonight"
-- Body: Recap offer, urgency, clear deadline, final CTA
-
-### Step 9: Output
-
-Present the complete webinar package:
+**Email 3 — Last chance (Day 3):**
 
 ```
-━━━ WEBINAR SCRIPT: [Title] ━━━━━━━━━━━━━━━
-Duration: [45/60] minutes
-Product: [name] — $[price]
-Target: [audience]
+Subject: [Product] webinar price ends tonight
 
-── SCRIPT ─────────────────────────────────
-[0:00] OPENING
-  Hook: [text]
-  Credibility: [text]
-  Promise: [text]
-  Slide: [description]
+[Recap the offer, restate the bonuses, remind about the guarantee]
 
-[5:00] TEACHING POINT 1: [title]
-  [script text]
-  Slide: [description]
-  Cue: [engagement prompt]
-
-[13:00] TEACHING POINT 2: [title]
-  [script text]
-  ...
-
-[21:00] TEACHING POINT 3: [title]
-  ...
-
-[30:00] TRANSITION
-  Bridge: [text]
-  ...
-
-[35:00] OFFER
-  Product: [text]
-  Inclusions: [list]
-  Bonuses: [list]
-  Price: [amount]
-  Guarantee: [text]
-  CTA: [link/action]
-
-[45:00] Q&A
-  Pre-planted: [7 questions with answers]
-
-[55:00] CLOSE
-  Urgency: [element]
-  Final CTA: [text]
-
-── SLIDE DECK OUTLINE ─────────────────────
-Slide 1-3: Opening
-Slides 4-12: Teaching (3 points × 3 slides)
-Slides 13-14: Transition
-Slides 15-20: Offer
-Slide 21: Q&A
-Slides 22-23: Close
-
-── REPLAY SEQUENCE ────────────────────────
-Email 1 (+1hr): [subject line]
-Email 2 (+1 day): [subject line]
-Email 3 (+2 days): [subject line]
-Email 4 (+3 days): [subject line]
-Email 5 (+4 days): [subject line]
+[Final CTA: Last chance → offer link]
 ```
 
-## Inputs
-- Webinar topic
-- Product to pitch (name, price, inclusions)
-- Target audience and expertise level
-- Duration preference (45 or 60 minutes)
-- Webinar platform (optional)
+## Output Format
 
-## Outputs
-- Full timestamped script with presenter dialogue
-- 23-slide deck outline with descriptions
-- 7 pre-planted Q&A questions with answers
-- Opening hook, transition bridge, and close scripts
-- 5-email replay sequence for no-shows
-- Presenter cues for engagement and pacing
+```markdown
+# Webinar Script — [Webinar Title]
+
+## Overview
+- **Topic:** [Topic]
+- **Duration:** [X] minutes
+- **Offer:** [Product name] at $[price]
+- **Target audience:** [Description]
+
+## Slide Deck Outline
+[Slide-by-slide list with content notes]
+
+## Full Script
+### Opening Hook (0:00-3:00)
+[Script with slide notes]
+
+### Introduction (3:00-8:00)
+[Script with slide notes]
+
+### Pillar 1: [Title] (8:00-20:00)
+[Script with slide notes and engagement prompts]
+
+### Pillar 2: [Title] (20:00-32:00)
+[Script with slide notes and engagement prompts]
+
+### Pillar 3: [Title] (32:00-42:00)
+[Script with slide notes and engagement prompts]
+
+### Transition (42:00-45:00)
+[Script]
+
+### The Offer (45:00-55:00)
+[Script with value stack and CTA]
+
+### Q&A (55:00+)
+[Pre-seeded questions with answers]
+
+## Follow-Up Email Sequence
+[3 emails: replay, social proof, last chance]
+```
+
+## Completion
+
+```
+Webinar Script — Complete!
+
+Duration: [X] minutes
+Teaching pillars: [Count]
+Offer: [Product] at $[price]
+Slides needed: [Count]
+Follow-up emails: 3
+
+Next steps:
+1. Create slide deck using the outline above
+2. Practice the script 2-3 times (aim for conversational, not robotic)
+3. Set up registration page and reminder emails
+4. Test tech setup (audio, screen share, chat, offer link)
+5. Schedule and promote the webinar
+```
 
 ## Level History
 
-- **Lv.1** — Base: 7-segment timestamped script (hook → 3 teaching points → transition → offer → Q&A → close), 23-slide deck outline, pre-planted Q&A bank, value-stack offer presentation, 5-email replay sequence for no-show conversion. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: 60/90-minute webinar structure with timestamps, scripted segments (hook, intro, 3 teaching pillars, transition, offer, Q&A), engagement prompts every 8-10 min, slide-by-slide outline, value stack presentation, offer transition technique (two paths), Q&A objection handling framework, 3-email replay/follow-up sequence. (Origin: MemStack Pro v3.2, Mar 2026)

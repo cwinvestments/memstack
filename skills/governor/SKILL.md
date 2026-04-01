@@ -1,6 +1,7 @@
 ---
 name: governor
 description: "Use when the user says 'new project', 'project init', 'what tier', 'scope', or discusses project maturity, complexity budget, or what's appropriate to build."
+version: 1.0.0
 ---
 
 

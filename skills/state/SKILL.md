@@ -1,6 +1,7 @@
 ---
 name: state
 description: "Use when the user says 'update state', 'project state', 'where was I', or at session start to load current context."
+version: 1.0.0
 ---
 
 
@@ -119,5 +120,3 @@ This will auto-load next session for seamless pickup.
 ## Level History
 
 - **Lv.1** — Base: Living STATE.md creation and update protocol. Read via Work Step 0 or manual invocation. Deconfliction with Diary/Project/Work. (Origin: MemStack v3.1, Feb 2026)
-
-> 💎 Pro: SessionStart hook auto-injects your last 3 sessions of context.

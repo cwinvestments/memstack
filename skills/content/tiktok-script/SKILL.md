@@ -1,265 +1,260 @@
 ---
-name: tiktok-script
-description: "Use when the user says 'TikTok script', 'TikTok video', 'Reels script', 'Shorts script', 'short-form video', or wants to create a script for vertical short-form video content."
+name: memstack-content-tiktok-script
+description: "Use this skill when the user says 'TikTok script', 'TikTok video', 'Reels script', 'Shorts script', 'short-form video', or needs timestamped scripts with hooks, visual cues, and captions for 15-60 second videos. Do NOT use for Twitter threads or webinar scripts."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🎬 TikTok Script — Short-Form Video Script Builder
-*Generate timestamped scripts for TikTok, Reels, and Shorts with hooks, visual cues, captions, and cross-platform repurposing notes.*
+# TikTok Script — Writing short-form video script...
+*Creates timestamped scripts for TikTok, Reels, and Shorts (15-60 seconds) with hook-in-first-2-seconds, visual cues, caption text, trending audio strategy, and hashtag research.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🎬 TikTok Script — Writing your short-form video script...`
+`TikTok Script — Writing short-form video script...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "TikTok script", "TikTok video", "Reels script"** | ACTIVE |
-| **User wants a short-form video script (15-60 seconds)** | ACTIVE |
-| **User mentions hooks, pattern interrupts, or viral video strategy** | ACTIVE |
-| **User wants a Twitter thread (not video)** | DORMANT — see twitter-thread |
-| **User wants a webinar script (long-form)** | DORMANT — see webinar-script |
-| **User wants a newsletter (written, not video)** | DORMANT — see newsletter |
+| User says "TikTok script", "TikTok video", "Reels script", "Shorts script" | ACTIVE |
+| User says "short-form video" and wants a scripted 15-60 second video | ACTIVE |
+| User wants to create content for TikTok, Instagram Reels, or YouTube Shorts | ACTIVE |
+| User wants a Twitter/X thread | DORMANT — use Twitter Thread |
+| User wants a long-form video (YouTube) | DORMANT — use YouTube Script |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Slow intro" | You have 1-2 seconds to hook. The algorithm judges retention in the first 3 seconds. |
+| "Read from a teleprompter" | Stiff delivery kills engagement. Use bullet points, not word-for-word scripts. |
+| "Ignore trending audio" | Trending sounds get algorithmic boost. Use them even if you're talking over them at low volume. |
+| "No text on screen" | 80%+ watch without sound. On-screen captions and text hooks are essential. |
+| "One take, one angle" | Visual variety (cuts, zooms, angle changes) every 2-3 seconds keeps retention high. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Video Requirements
 
-Ask the user for:
-- **Topic**: What's the video about?
-- **Hook angle**: What will make someone stop scrolling?
-- **Target audience**: Who is this for? (age, interests, niche)
-- **Duration**: 15 seconds, 30 seconds, or 60 seconds?
-- **Format**: Talking head, text overlay, demo/tutorial, skit, storytelling?
-- **CTA**: What should viewers do? (follow, comment, link in bio, share)
-- **Niche**: Business, tech, lifestyle, education, entertainment?
+If the user hasn't provided details, ask:
 
-### Step 2: Write the Hook (First 2 Seconds)
+> 1. **Topic** — what's the video about?
+> 2. **Format** — talking head, tutorial, storytime, POV, or visual showcase?
+> 3. **Platform** — TikTok, Instagram Reels, YouTube Shorts, or all three?
+> 4. **Length** — 15s, 30s, or 60s?
+> 5. **Goal** — views, followers, website traffic, or product sales?
+> 6. **Audience** — who's watching? (age, interests, awareness level)
 
-The hook determines 95% of a video's performance. The viewer decides to stay or swipe in under 2 seconds.
+### Step 2: Choose Video Format
+
+| Format | Best For | Hook Style |
+|--------|---------|-----------|
+| **Talking head** | Tips, hot takes, storytelling | Direct eye contact + bold statement |
+| **Tutorial/how-to** | Teaching a skill, showing a process | "Here's how to [outcome] in [X] seconds" |
+| **Storytime** | Personal experience, relatable content | "The time I [dramatic event]..." |
+| **POV** | Relatable situations, humor | Text overlay: "POV: [situation]" |
+| **Before/After** | Transformations, results | Show the "after" first (pattern interrupt) |
+| **Duet/Stitch** | Reacting to trends, adding commentary | Response to existing content |
+| **Visual showcase** | Products, travel, food | Satisfying visuals + trending audio |
+
+### Step 3: Write the Hook (First 2 Seconds)
+
+**The 2-second rule:** If they don't stop scrolling in 2 seconds, the video fails.
 
 **Hook formulas:**
 
-| Formula | Example | Why It Works |
-|---------|---------|--------------|
-| **Pattern interrupt** | *holds up random object* "This $3 thing made me $10K" | Unexpected visual stops scroll |
-| **Bold statement** | "Stop using ChatGPT like this" | Creates curiosity gap |
-| **Question** | "Want to know why you're always tired?" | Triggers need-to-know |
-| **Direct address** | "If you're a freelancer, watch this" | Filters for target audience |
-| **Controversy** | "College is the worst investment you can make" | Triggers emotional response |
-| **Result tease** | "Here's how I went from 0 to 100K followers" | Promise of transformation |
-| **POV** | "POV: You just found out you can automate this" | Viewer imagines themselves |
+| Formula | Example | On-Screen Text |
+|---------|---------|---------------|
+| **Bold claim** | "This one trick doubled my revenue" | "DOUBLED my revenue" |
+| **Question** | "Why does nobody talk about this?" | "WHY??" |
+| **Challenge** | "I bet you didn't know this" | "BET you didn't know" |
+| **Pattern interrupt** | Start mid-action, unexpected visual | [Eye-catching visual] |
+| **Controversy** | "Unpopular opinion: [take]" | "UNPOPULAR OPINION" |
+| **Result first** | Show the end result immediately | "Here's the result" |
+| **Direct address** | "Stop scrolling if you [situation]" | "STOP SCROLLING" |
 
-**Hook rules:**
-- First words must be spoken within 0.5 seconds (no "Hey guys" intros)
-- Visual movement or change in the first frame
-- Text overlay reinforcing the hook
-- Never start with your logo or name — earn attention first
+**Hook delivery tips:**
+- Start talking IMMEDIATELY (no "hey guys" or "so today")
+- Movement in frame from second 0 (lean in, gesture, reveal)
+- On-screen text appears in first 0.5 seconds
+- Confident energy — uncertainty is a scroll trigger
 
-### Step 3: Write the Body (Main Content)
+### Step 4: Write the Script
 
-Structure by duration:
-
-**15-second script:**
-```
-[0-2s]  Hook — one sentence, visual interrupt
-[2-10s] One point — delivered fast, clear, specific
-[10-15s] CTA — "Follow for more" or "Save this"
-```
-
-**30-second script:**
-```
-[0-2s]  Hook — pattern interrupt
-[2-8s]  Setup — why this matters
-[8-22s] Content — the main point or steps (max 3)
-[22-28s] Payoff — result or transformation
-[28-30s] CTA
-```
-
-**60-second script:**
-```
-[0-2s]  Hook — stop the scroll
-[2-8s]  Context — who this is for and why now
-[8-15s] Point 1 — first insight or step
-[15-25s] Point 2 — second insight or step
-[25-38s] Point 3 — third insight or step
-[38-50s] Key takeaway — the "aha" moment
-[50-55s] Proof — result, stat, or transformation
-[55-60s] CTA — clear single action
-```
-
-**Content rules:**
-- One video = one clear point (never try to teach everything)
-- Speak faster than normal conversation (TikTok pace ≈ 160-180 wpm)
-- Use simple words — 8th grade reading level
-- Show don't tell — demonstrate with screen recording, whiteboard, or hands
-- Cut dead air — every second must add value
-
-### Step 4: Add Visual/Action Cues
-
-Annotate the script with on-screen directions:
+**15-second script template:**
 
 ```
-[0:00] 📱 HOOK: "Stop making this mistake with your code"
-       👁️ VISUAL: Close-up of face, concerned expression
-       📝 TEXT OVERLAY: "The #1 coding mistake" (large, center)
+[0:00-0:02] HOOK
+Visual: [What's on screen]
+Audio: "[Hook line — bold, concise]"
+Text overlay: "[Key phrase in large text]"
 
-[0:02] 📱 SCRIPT: "Every junior developer does this..."
-       👁️ VISUAL: Cut to screen recording of bad code
-       📝 TEXT OVERLAY: "❌ Don't do this"
+[0:02-0:10] BODY
+Visual: [Action / demonstration / explanation]
+Audio: "[Core content — 2-3 key sentences]"
+Text overlay: "[Supporting text or steps]"
 
-[0:08] 📱 SCRIPT: "Instead, do this..."
-       👁️ VISUAL: Screen recording of correct approach
-       📝 TEXT OVERLAY: "✅ Do this instead"
-       🔊 SOUND: Satisfying "ding" sound effect
-
-[0:20] 📱 SCRIPT: "The result? 3x faster performance"
-       👁️ VISUAL: Side-by-side comparison
-       📝 TEXT OVERLAY: "3x faster ⚡"
-
-[0:25] 📱 SCRIPT: "Follow for more dev tips"
-       👁️ VISUAL: Point at follow button area
-       📝 TEXT OVERLAY: "Follow @handle"
+[0:10-0:15] CTA
+Visual: [Face to camera / point at text]
+Audio: "[CTA: follow for more / link in bio / comment below]"
+Text overlay: "[CTA text]"
 ```
 
-**Visual cue icons:**
-- 📱 Spoken script
-- 👁️ Camera/visual direction
-- 📝 Text overlay
-- 🔊 Sound effect or music cue
-- ✋ Hand gesture or physical action
-- 🔄 Transition effect
-
-### Step 5: Suggest Trending Audio/Formats
-
-**Audio strategies:**
-
-| Strategy | When | How |
-|----------|------|-----|
-| **Trending sound** | Entertainment, lifestyle | Use current trending audio, lip-sync or adapt |
-| **Original audio** | Educational, tutorial | Your voice — clear, confident, fast-paced |
-| **Voiceover + music** | Demo, screen recording | Record narration over background lo-fi or trending beat |
-| **Text-only + music** | Story, confession, tips | No voice — text overlays with trending or emotional music |
-
-**Format suggestions based on niche:**
-- **Tech/dev**: Screen recording + voiceover + text overlays
-- **Business**: Talking head + B-roll + stat overlays
-- **Lifestyle**: Vlog style + trending audio + transitions
-- **Education**: Whiteboard/iPad drawing + narration
-- **Product**: Hands-on demo + before/after
-
-### Step 6: Write Caption & Hashtags
-
-**Caption structure:**
-```
-[Hook line — same energy as the video hook]
-[Value add or context — 1-2 sentences]
-[CTA — save, share, comment, link in bio]
-
-#hashtag1 #hashtag2 #hashtag3 ... (20-30 hashtags)
-```
-
-**Hashtag strategy:**
-
-| Category | Count | Examples |
-|----------|-------|---------|
-| **Niche-specific** | 5-8 | #coding #webdev #javascript |
-| **Broad reach** | 3-5 | #techtok #learnontiktok #fyp |
-| **Topic-specific** | 5-8 | #reactjs #codingmistakes #devtips |
-| **Trending** | 2-3 | [check current trending tags] |
-| **Community** | 2-3 | #codingtok #techtwitter #devlife |
-
-**Caption length:**
-- TikTok: up to 2,200 chars (but first 1-2 lines visible before "more")
-- Reels: up to 2,200 chars (same visibility rule)
-- Shorts: up to 100 chars (keep it short)
-
-### Step 7: Cross-Platform Repurposing
-
-How to adapt the same script for each platform:
-
-| Element | TikTok | Instagram Reels | YouTube Shorts |
-|---------|--------|----------------|----------------|
-| **Duration** | 15-60s (up to 3 min) | 15-90s | 15-60s |
-| **Aspect ratio** | 9:16 (1080×1920) | 9:16 (1080×1920) | 9:16 (1080×1920) |
-| **Captions** | Auto-captions ON | Auto-captions ON | Manual or auto |
-| **Watermark** | Remove TikTok logo before reposting | Native upload preferred | Native upload required |
-| **Hashtags** | 20-30 in caption | 15-20 in caption | 3-5 in title/description |
-| **CTA** | "Follow" + "Link in bio" | "Follow" + "Link in bio" | "Subscribe" + "Watch full video" |
-| **Music** | Use TikTok trending | Use Reels trending (separate library) | Use royalty-free |
-| **Best time** | Check analytics | 11am-1pm, 7pm-9pm | Align with channel schedule |
-
-**Repurposing workflow:**
-1. Record natively on TikTok first (or record raw, edit separately)
-2. Export WITHOUT watermark (use SnapTik or record natively)
-3. Re-upload to Reels with Reels-specific trending audio
-4. Re-upload to Shorts with YouTube-optimized title
-5. Stagger posting: TikTok first, Reels 24h later, Shorts 48h later
-
-### Step 8: Output
-
-Present the complete script package:
+**30-second script template:**
 
 ```
-━━━ TIKTOK SCRIPT: [Topic] ━━━━━━━━━━━━━━━
-Duration: [15/30/60] seconds
-Format: [talking head / screen recording / etc.]
-Target: [audience]
-Niche: [category]
+[0:00-0:02] HOOK
+Visual: [Pattern interrupt or result]
+Audio: "[Hook line]"
+Text overlay: "[Hook text — large, bold]"
 
-── SCRIPT ─────────────────────────────────
+[0:02-0:08] CONTEXT
+Visual: [Set up the problem or situation]
+Audio: "[Why this matters — 2 sentences]"
+Text overlay: "[Key phrase]"
 
-[0:00] 📱 "[Hook line]"
-       👁️ [Visual direction]
-       📝 [Text overlay]
+[0:08-0:22] BODY (3 points)
+Visual: [Demonstration, steps, or story beats]
+Audio: "[Point 1] → [Point 2] → [Point 3]"
+Text overlay: "[Step 1] [Step 2] [Step 3]" (change with each point)
+Cut/zoom every 3-4 seconds
 
-[0:02] 📱 "[Body line 1]"
-       👁️ [Visual direction]
-       📝 [Text overlay]
-
-[0:XX] 📱 "[Body continues...]"
-       👁️ [Visual direction]
-       📝 [Text overlay]
-       🔊 [Sound effect if applicable]
-
-[0:XX] 📱 "[CTA]"
-       👁️ [Visual direction]
-       📝 [Text overlay]
-
-── CAPTION ────────────────────────────────
-[Full caption with hashtags]
-
-── AUDIO ──────────────────────────────────
-Recommendation: [original voice / trending sound / voiceover + music]
-Specific suggestion: [audio name or style]
-
-── REPURPOSING ────────────────────────────
-Reels: [adaptation notes]
-Shorts: [adaptation notes]
-Stagger: TikTok Day 1 → Reels Day 2 → Shorts Day 3
-
-── POSTING STRATEGY ───────────────────────
-Best time: [based on niche]
-Engage: Reply to comments in first 30 min
-Boost: Share to Stories, cross-post, collab tag
+[0:22-0:30] CTA
+Visual: [Face to camera, energy up]
+Audio: "[Wrap-up + CTA]"
+Text overlay: "[CTA: Follow + Save]"
 ```
 
-## Inputs
-- Topic and hook angle
-- Target audience and niche
-- Duration (15, 30, or 60 seconds)
-- Format (talking head, demo, skit, etc.)
-- CTA (follow, comment, link in bio, share)
+**60-second script template:**
 
-## Outputs
-- Timestamped script with spoken lines and visual cues
-- Hook (first 2 seconds) using proven scroll-stopping formula
-- Visual/action cue annotations (camera, text overlay, sound effects)
-- Trending audio and format suggestions by niche
-- Caption with strategic hashtag grouping (20-30 tags)
-- Cross-platform repurposing notes (TikTok → Reels → Shorts)
-- Posting and engagement strategy
+```
+[0:00-0:03] HOOK
+[0:03-0:10] CONTEXT (why this matters)
+[0:10-0:45] BODY (5-7 points with visual cuts every 3-5 seconds)
+[0:45-0:55] SUMMARY (key takeaway)
+[0:55-1:00] CTA
+```
+
+### Step 5: Visual Direction
+
+**Shot list template:**
+
+| Timestamp | Shot Type | Description | Text Overlay |
+|-----------|----------|-------------|-------------|
+| 0:00 | Close-up | Face, direct eye contact | Hook text (bold) |
+| 0:02 | Medium | Upper body, gesturing | — |
+| 0:05 | B-roll / screen | Demo or visual | Step 1 text |
+| 0:10 | Close-up | Back to face, different angle | Step 2 text |
+| 0:15 | B-roll / screen | Second demo | Step 3 text |
+| 0:20 | Medium | Wrap-up, high energy | CTA text |
+
+**Visual retention techniques:**
+- Cut or zoom every 2-4 seconds (never hold one shot >5 seconds)
+- Use jump cuts to remove dead air and "um"s
+- Text on screen should appear 0.5s before the speaker says it
+- Use pointing gestures to direct attention to on-screen text
+- Match visual transitions to beat drops in the audio
+
+### Step 6: Audio & Trending Sound Strategy
+
+**Audio approach by format:**
+
+| Format | Audio Strategy |
+|--------|---------------|
+| Talking head | Your voice only, OR voice over trending sound at 10% volume |
+| Tutorial | Voiceover narration + trending sound at low volume |
+| Storytime | Your voice with ambient/emotional background music |
+| POV | Trending sound at full volume (lip sync or background) |
+| Visual showcase | Trending sound at full volume |
+
+**Finding trending sounds:**
+- Check TikTok's Discover page for trending sounds
+- Use sounds with an upward arrow (↑) indicating growth
+- Filter by sounds used in 10K-500K videos (sweet spot for riding the trend)
+- Save sounds to a "favorites" library for quick access
+
+### Step 7: Hashtag & Caption Strategy
+
+**Caption formula:**
+
+```
+[Hook/question that drives comments] + [1-2 sentences of context]
+
+Example:
+"This changed how I work forever. Save this for later. #[niche] #[topic]"
+```
+
+**Hashtag strategy (3-5 per post):**
+
+| Type | Example | Purpose |
+|------|---------|---------|
+| Niche-specific | #saastips #ecommercetips | Reach your target audience |
+| Trending | #fyp #viral #trending | Algorithmic boost |
+| Content-type | #learnontiktok #tutorial | Platform-promoted categories |
+
+**Caption rules:**
+- Keep under 150 characters (most users don't expand)
+- Front-load the hook — first line must create curiosity
+- Ask a question to drive comments (comments boost distribution)
+- Use 3-5 hashtags (more than 5 looks spammy)
+
+## Output Format
+
+```markdown
+# Short-Form Video Script — [Topic]
+
+## Overview
+- **Platform:** [TikTok / Reels / Shorts]
+- **Length:** [15s / 30s / 60s]
+- **Format:** [Talking head / Tutorial / etc.]
+- **Audio:** [Original voice / Trending sound]
+
+## Script
+
+### [0:00-0:02] Hook
+**Visual:** [Shot description]
+**Audio:** "[Spoken text]"
+**Text overlay:** "[On-screen text]"
+
+### [0:02-0:XX] Body
+[Timestamped sections with visual/audio/text]
+
+### [0:XX-End] CTA
+**Visual:** [Shot description]
+**Audio:** "[CTA text]"
+**Text overlay:** "[CTA text]"
+
+## Production Notes
+- **Trending sound:** [Sound name / link]
+- **Hashtags:** [3-5 hashtags]
+- **Caption:** "[Caption text]"
+- **Best posting time:** [Day, Time]
+```
+
+## Completion
+
+```
+TikTok Script — Complete!
+
+Topic: [Topic]
+Length: [X] seconds
+Format: [Type]
+Visual cuts: [Count]
+Audio: [Strategy]
+
+Next steps:
+1. Practice the script 2-3 times (aim for natural, not memorized)
+2. Film in good lighting (natural light or ring light)
+3. Record 3-5 takes and pick the best energy
+4. Edit with cuts every 2-4 seconds
+5. Add text overlays and captions
+6. Post at peak time with trending sound
+```
 
 ## Level History
 
-- **Lv.1** — Base: 7 hook formulas for first-2-second retention, timestamped scripts for 15/30/60s durations, visual cue annotation system (📱👁️📝🔊✋🔄), trending audio strategy by niche, caption + hashtag framework (20-30 tags in 5 categories), cross-platform repurposing workflow (TikTok → Reels → Shorts), posting strategy. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: 7 video formats with hook styles, 7 hook formulas with on-screen text, timestamped script templates (15s/30s/60s), shot list with visual retention techniques, audio strategy by format, trending sound discovery, hashtag strategy (3-type approach), caption formula. (Origin: MemStack Pro v3.2, Mar 2026)

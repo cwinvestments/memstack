@@ -1,6 +1,7 @@
 ---
 name: diary
 description: "Use when the user says 'save diary', 'log session', 'wrapping up', or at end of a productive session."
+version: 1.0.0
 ---
 
 
@@ -133,6 +134,65 @@ Files changed: 8
 This session is now searchable via Echo.
 ```
 
+## PreCompact Hook — Automatic Compaction Diary
+
+The diary system includes an automatic `PreCompact` hook that fires before Claude Code compresses the context window. This closes the gap where session context could be lost during long conversations.
+
+### Behavior
+- **Trigger:** Fires automatically before every CC context compaction — no user action required
+- **Output:** `.claude/diary/{date}-compaction.md` — one file per day, appends on multiple compactions
+- **Flag:** Every entry includes `COMPACTION_INTERRUPTED` so the next session knows context was cut
+- **Timeout:** 15 seconds — fast enough to never block compaction
+
+### What It Captures
+| Data | Source |
+|------|--------|
+| Uncommitted changes | `git status --short` |
+| Recent commits | `git log --oneline -5` |
+| Recent shell commands | Shell history (last 5) |
+| Recently modified files | Files modified since last git operation |
+| Branch and project | Git branch + directory name |
+
+### How It Differs from Manual Diary
+| | Manual Diary | PreCompact Diary |
+|---|---|---|
+| **Trigger** | User says "save diary" | Automatic before compaction |
+| **Content** | Full narrative with decisions, handoff | Snapshot of working state |
+| **Storage** | SQLite + `memory/sessions/` | `.claude/diary/` only |
+| **Purpose** | Session documentation | Context recovery after compaction |
+
+### Session Resume
+When resuming after compaction, check `.claude/diary/` for entries with today's date. The `COMPACTION_INTERRUPTED` flag signals that the previous context was truncated and these files contain the lost state.
+
+### Configuration
+Hook is registered in `.claude/settings.json` under `PreCompact`. Script lives at `.claude/hooks/pre-compact.sh`. Always exits 0 — must never block compaction.
+
+## Full Hook System (v3.3.2)
+
+The Diary skill is part of a broader hook system that automates session lifecycle, security, and observability. All hooks follow the same defensive pattern: `set -uo pipefail`, `SCRIPT_DIR` resolution, all external commands wrapped with fallbacks, guaranteed `exit 0`.
+
+### Hook Registry — 7 hooks across 5 events
+
+| Event | Script | Matcher | Timeout | Purpose |
+|-------|--------|---------|---------|---------|
+| **PreToolUse** | `pre-tool-notify.sh` | `Write\|Edit\|MultiEdit\|Bash` | 10s | TTS voice alert before approval prompts |
+| **PreToolUse** | `pre-push.sh` | `Bash` (git push) | 60s | Build verification + secrets scan before push |
+| **PostToolUse** | `post-commit.sh` | `Bash` (git commit) | 10s | Debug artifact + secrets scan after commit |
+| **PostToolUse** | `post-tool-monitor.sh` | `Write\|Edit\|MultiEdit\|Bash` | 10s | Observation capture — logs tool calls to `.claude/observations/` |
+| **SessionStart** | `session-start.sh` | *(all)* | 10s | Headroom proxy start, CLAUDE.md indexing, monitoring ping |
+| **SessionStart** | `session-context-load.sh` | *(all)* | 15s | Context injection — last 3 diary + observation summaries → `.claude/session-context.md` |
+| **Stop** | `session-end.sh` | *(all)* | 10s | Monitoring API session-complete ping |
+| **PreCompact** | `pre-compact.sh` | *(all)* | 15s | Auto-save diary snapshot before context compaction |
+
+### Architecture Notes
+
+- Each hook is registered as an **independent entry** (Option B) in `settings.json`, giving it its own timeout budget
+- PreToolUse hooks can **block** tool execution (exit 2 = block). All other hooks are non-blocking
+- PostToolUse observation monitor writes to `.claude/observations/YYYY-MM-DD.md` — daily files, append-only
+- SessionStart context loader is **idempotent** — overwrites `.claude/session-context.md` on each new session
+- Both `.claude/observations/` and `.claude/session-context.md` are in `.gitignore` (ephemeral runtime output)
+- All scripts live in `.claude/hooks/` and use `${CLAUDE_PROJECT_DIR}` for portable path resolution
+
 ## Level History
 
 - **Lv.1** — Base: Session logging with git integration. (Origin: MemStack v1.0, Feb 2026)
@@ -140,14 +200,5 @@ This session is now searchable via Echo.
 - **Lv.3** — Advanced: SQLite as primary storage, auto-extract insights from decisions, markdown as backup export. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/diary.md`), always-on session logging awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
 - **Lv.5** — Handoff: Added structured Session Handoff section — in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)
-
-## Pro Features: Automatic Hook System
-
-MemStack™ Pro includes 3 automatic hooks that fire without any user trigger:
-- **PreCompact** — auto-saves diary before context compaction
-- **PostToolUse** — captures an observation log entry after every file write and bash command
-- **SessionStart** — injects a context summary from your last 3 sessions at startup
-
-Free version requires manual diary saves only.
-
-Upgrade: memstack.pro
+- **Lv.6** — PreCompact: Added automatic PreCompact hook — saves working state snapshot before CC context compaction, captures uncommitted changes, recent commands, and modified files with COMPACTION_INTERRUPTED flag. (Origin: MemStack v3.3.1, Mar 2026)
+- **Lv.7** — Hook System: Documented full 7-hook system across 5 CC lifecycle events — PreToolUse (TTS + pre-push), PostToolUse (post-commit + observation monitor), SessionStart (Headroom + context injection), Stop, PreCompact. (Origin: MemStack v3.3.2, Mar 2026)

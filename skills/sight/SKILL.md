@@ -1,6 +1,7 @@
 ---
 name: sight
 description: "Use when the user says 'draw', 'diagram', 'visualize', 'architecture', or needs a visual overview of code structure."
+version: 1.0.0
 ---
 
 
@@ -84,5 +85,3 @@ erDiagram
 
 - **Lv.1** — Base: Mermaid diagram generation from codebase analysis. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, diagram type detection. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-
-> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

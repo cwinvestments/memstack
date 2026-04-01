@@ -1,381 +1,300 @@
 ---
-name: client-onboarding
-description: "Use when the user says 'client onboarding', 'new client', 'onboard client', 'welcome client', 'kickoff', or wants to create a structured onboarding process for new clients."
+name: memstack-business-client-onboarding
+description: "Use this skill when the user says 'client onboarding', 'new client', 'onboard client', 'kickoff meeting', 'intake form', 'welcome email', or needs welcome sequences, questionnaires, and setup checklists for new clients. Do NOT use for contracts or invoicing."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🤝 Client Onboarding — New Client Setup System
-*Design a complete onboarding package with welcome emails, intake questionnaire, access checklists, kickoff agenda, and communication protocol.*
+# Client Onboarding — Setting up new client...
+*Produces a complete client onboarding package with welcome email, intake questionnaire, kickoff meeting agenda, access provisioning checklist, expectations document, and 30/60/90-day check-in schedule.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🤝 Client Onboarding — Designing your client onboarding system...`
+`Client Onboarding — Setting up new client...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "client onboarding", "new client", "onboard client"** | ACTIVE |
-| **User wants to set up a new client engagement** | ACTIVE |
-| **User mentions kickoff meeting, intake form, or welcome email** | ACTIVE |
-| **User wants to draft a contract (not onboarding)** | DORMANT — see contract-template |
-| **User wants to send an invoice** | DORMANT — see invoice-generator |
-| **User wants internal team onboarding (not client)** | DORMANT |
+| User says "client onboarding", "new client", "onboard client" | ACTIVE |
+| User says "kickoff meeting", "intake form", "welcome email" | ACTIVE |
+| User just signed a new client and needs to set up the engagement | ACTIVE |
+| User wants a contract or agreement | DORMANT — use Contract Template |
+| User wants to send an invoice | DORMANT — use Invoice Generator |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Start working immediately" | Without intake and alignment, you'll waste the first 2 weeks on rework. |
+| "Skip the expectations document" | Unclear expectations cause 80% of client conflicts. Document everything upfront. |
+| "No single point of contact" | Multiple client contacts = conflicting feedback. Designate one decision-maker. |
+| "Forget access provisioning" | Waiting for logins and credentials delays the project by days or weeks. |
+| "No check-in schedule" | Without scheduled touchpoints, small issues become big surprises. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Client Information
 
-Ask the user for:
-- **Service type**: What do you offer? (web dev, consulting, design, marketing, SaaS)
-- **Client tier**: Is this a standard or premium engagement?
-- **Project duration**: One-time project or ongoing retainer?
-- **Tools used**: What platforms do you need the client on? (GitHub, Figma, Slack, etc.)
-- **Team size**: Solo or team? Who interacts with the client?
-- **Existing process**: Any current onboarding steps you want to keep?
+If the user hasn't provided details, ask:
 
-### Step 2: Design Welcome Email Sequence
+> 1. **Client** — company name, primary contact, industry
+> 2. **Project** — what was sold? (service type, scope, deliverables)
+> 3. **Timeline** — start date, key milestones, end date
+> 4. **Communication** — preferred channel (email, Slack, calls)?
+> 5. **Access needed** — what systems, accounts, or assets do you need from them?
 
-**Email 1 — Welcome (Day 0, immediately after signing):**
+### Step 2: Send Welcome Email
+
+**Welcome email template:**
+
 ```
-Subject: Welcome to [Your Company]! Here's what happens next
+Subject: Welcome aboard! Here's what happens next — [Your Company]
 
-Hi [Client First Name],
+Hi [Client Name],
 
-Welcome aboard! We're excited to work with you on [project name].
+Welcome to [Your Company]! We're excited to work with you on [Project Name].
 
 Here's what to expect in the next few days:
 
-1. You'll receive an intake questionnaire (please complete
-   within 48 hours)
-2. We'll set up your project tools and send access
-   credentials
-3. We'll schedule our kickoff meeting for [target date range]
+1. **Intake questionnaire** (attached / linked below) — please complete
+   by [date, 2-3 business days]. This helps us understand your goals,
+   preferences, and current setup.
 
-Your primary point of contact is [Name] ([email]).
-Response time: within [X] business hours.
+2. **Access provisioning** — we'll need a few logins and assets from you
+   (details in the questionnaire). The sooner we have access, the sooner
+   we can start.
 
-If you have any immediate questions, reply to this email.
+3. **Kickoff call** — I've sent a calendar invite for [date/time].
+   This is a [30/60]-minute call where we align on goals, timeline, and
+   communication cadence.
+
+Your primary point of contact is [Name] ([email]). For anything urgent,
+you can also reach us at [phone/Slack].
+
+If you have any questions before the kickoff, just reply to this email.
 
 Looking forward to getting started!
 
 [Your Name]
-[Your Company]
+[Title]
+[Company]
+[Phone]
 ```
 
-**Email 2 — Intake Questionnaire (Day 0, sent with welcome):**
+### Step 3: Intake Questionnaire
+
+**Standard intake questions:**
+
+```markdown
+## Client Intake Questionnaire
+
+### About Your Business
+1. What does your business do? (One paragraph)
+2. Who is your target audience?
+3. What makes you different from competitors?
+4. What's your brand voice? (Professional, casual, technical, friendly)
+
+### About This Project
+5. What's the #1 goal for this project?
+6. What does success look like? How will you measure it?
+7. Are there specific deadlines we should know about?
+8. What have you tried before? What worked and what didn't?
+
+### Design & Brand
+9. Do you have brand guidelines? (colors, fonts, logo files)
+10. Share 3 examples of [websites/designs/content] you admire
+11. Share 3 examples of what you DON'T want
+
+### Technical
+12. What platforms/tools do you currently use? (CMS, email, analytics, etc.)
+13. Do you have Google Analytics / Search Console set up?
+14. Who manages your domain and hosting?
+
+### Access (we'll need these before kickoff)
+15. [ ] Website admin login (URL + credentials)
+16. [ ] Google Analytics / Search Console access (add [email] as editor)
+17. [ ] Social media account access (or manager role)
+18. [ ] Brand assets (logo files, brand guide, fonts)
+19. [ ] Any existing content or copy documents
+20. [ ] Current customer list or CRM access (if applicable)
+
+### Communication Preferences
+21. Preferred communication channel: Email / Slack / Phone / Other
+22. Best time for meetings (timezone + availability)
+23. Who is the primary decision-maker on your side?
+24. Who else needs to approve deliverables?
 ```
-Subject: Quick questionnaire to kick things off — [Project Name]
 
-Hi [Client First Name],
+### Step 4: Kickoff Meeting Agenda
 
-To make sure we hit the ground running, please fill out this
-brief questionnaire:
+**Kickoff meeting template (60 minutes):**
 
-[Link to questionnaire]
+```markdown
+## Kickoff Meeting — [Client Name] × [Your Company]
+**Date:** [Date] | **Time:** [Time] | **Duration:** 60 min
 
-It takes about 15-20 minutes and covers:
-• Project goals and success metrics
-• Brand assets and guidelines
-• Technical access and credentials
-• Timeline preferences and deadlines
+### Attendees
+- [Your team: names and roles]
+- [Client team: names and roles]
 
-Please complete by [date — 48 hours from now].
+### Agenda
 
-Thanks!
-[Your Name]
+**1. Introductions (5 min)**
+- Who's on each team and their role in this project
+
+**2. Project overview (10 min)**
+- Recap: what we're building and why
+- Confirm scope and deliverables (reference SOW/contract)
+- Confirm timeline and key milestones
+
+**3. Goals & success metrics (10 min)**
+- Review client's #1 goal (from intake questionnaire)
+- Agree on measurable success criteria
+- Identify any risks or concerns early
+
+**4. Communication & process (10 min)**
+- Communication channel (email / Slack / project tool)
+- Meeting cadence: [weekly / biweekly] check-ins on [day] at [time]
+- How to submit feedback (one document, not scattered emails)
+- Turnaround times: our deliverables [X days], your feedback [X days]
+
+**5. Review intake questionnaire (10 min)**
+- Walk through answers, clarify anything unclear
+- Confirm access items are provided or in progress
+
+**6. Immediate next steps (10 min)**
+- [ ] [Action item 1] — [Owner] — by [Date]
+- [ ] [Action item 2] — [Owner] — by [Date]
+- [ ] [Action item 3] — [Owner] — by [Date]
+
+**7. Questions & close (5 min)**
+- Open floor for any questions
+- Confirm next meeting date
 ```
 
-**Email 3 — Access & Setup (Day 1-2):**
+### Step 5: Access Provisioning Checklist
+
+**Access checklist (customize per project):**
+
+| # | Item | Status | Owner | Notes |
+|---|------|--------|-------|-------|
+| 1 | Website CMS login | [ ] Pending | Client | [URL] |
+| 2 | Google Analytics (Editor access) | [ ] Pending | Client | Add [email] |
+| 3 | Google Search Console | [ ] Pending | Client | Add [email] |
+| 4 | Social media accounts | [ ] Pending | Client | [Platforms] |
+| 5 | Email marketing platform | [ ] Pending | Client | [Platform] |
+| 6 | Brand assets (logo, fonts, guide) | [ ] Pending | Client | Shared drive link |
+| 7 | Hosting / DNS access | [ ] Pending | Client | [Provider] |
+| 8 | Payment processor (if applicable) | [ ] Pending | Client | [Stripe, etc.] |
+| 9 | Project management tool invite | [ ] Pending | You | Add client to [tool] |
+| 10 | Slack / Teams channel setup | [ ] Pending | You | Create shared channel |
+
+### Step 6: Expectations Document
+
+```markdown
+## Working Agreement — [Client Name] × [Your Company]
+
+### Communication
+- **Primary channel:** [Email / Slack]
+- **Response time:** We respond within [1 business day / 4 hours]
+- **Meeting cadence:** [Weekly / Biweekly] on [Day] at [Time]
+- **Urgent issues:** [Phone / text to [number]]
+
+### Deliverable Process
+1. We deliver [drafts/designs/builds] by the agreed date
+2. You provide feedback within [3-5 business days]
+3. Feedback should be consolidated (one person collects all feedback)
+4. We incorporate feedback and deliver the revision
+5. [2-3] revision rounds are included; additional rounds at $[X]/hour
+
+### What We Need From You
+- Timely responses to questions and feedback requests
+- Access to all required systems (see provisioning checklist)
+- One designated decision-maker for approvals
+- Content and assets delivered by agreed deadlines
+
+### What You Can Expect From Us
+- Transparent progress updates at every check-in
+- Proactive communication about any delays or blockers
+- Professional, high-quality deliverables on schedule
+- No scope changes without written agreement and revised estimate
+
+### Revision Policy
+- [2] rounds of revisions included per deliverable
+- Revisions must be requested within [5 business days] of delivery
+- Out-of-scope changes require a change order
+
+### Escalation Path
+If anything feels off, reach out early:
+1. Contact your project lead: [Name, email]
+2. If unresolved: Contact [Manager/Owner name, email]
 ```
-Subject: Your project tools are ready — [Project Name]
 
-Hi [Client First Name],
+### Step 7: 30/60/90-Day Check-In Schedule
 
-Your project environment is set up! Here's your access:
+| Checkpoint | When | Focus | Format |
+|-----------|------|-------|--------|
+| **Week 1** | Day 5 | Quick pulse — any blockers? Access complete? | 15-min call or Slack |
+| **30 days** | Day 30 | Progress review, milestone check, feedback loop | 30-min call |
+| **60 days** | Day 60 | Mid-project review, scope check, quality audit | 30-min call |
+| **90 days** | Day 90 | Results review, project wrap-up or renewal | 45-min call |
 
-[Tool 1]: [access link/instructions]
-[Tool 2]: [access link/instructions]
-[Tool 3]: [access link/instructions]
+**Check-in agenda (30/60/90):**
+1. Progress update: what's been completed, what's next
+2. Metrics review: are we hitting the success criteria?
+3. Client satisfaction: what's working, what could improve?
+4. Scope check: any changes needed? (change order if yes)
+5. Action items for next period
 
-Your kickoff meeting is scheduled for:
-📅 [Date] at [Time] ([timezone])
-📍 [Meeting link]
+## Output Format
 
-Agenda attached. Please review beforehand.
+```markdown
+# Client Onboarding Package — [Client Name]
 
-See you there!
-[Your Name]
+## Welcome Email
+[From Step 2]
+
+## Intake Questionnaire
+[From Step 3]
+
+## Kickoff Meeting Agenda
+[From Step 4]
+
+## Access Provisioning Checklist
+[From Step 5]
+
+## Working Agreement
+[From Step 6]
+
+## Check-In Schedule
+[From Step 7]
 ```
 
-**Email 4 — Post-Kickoff Summary (Day 3-5, after kickoff):**
+## Completion
+
 ```
-Subject: Kickoff summary + next steps — [Project Name]
+Client Onboarding — Complete!
 
-Hi [Client First Name],
-
-Great kickoff! Here's a summary of what we discussed:
-
-Key decisions:
-• [Decision 1]
-• [Decision 2]
-• [Decision 3]
+Client: [Name]
+Project: [Project name]
+Kickoff date: [Date]
+Check-in cadence: [Weekly / Biweekly]
+Documents prepared: 6 (welcome email, questionnaire, kickoff agenda,
+  access checklist, expectations doc, check-in schedule)
 
 Next steps:
-• [Your team] will [action] by [date]
-• [Client] will [action] by [date]
-
-Timeline:
-• Milestone 1: [date]
-• Milestone 2: [date]
-• Final delivery: [date]
-
-Questions? Reply here or message us on [Slack/channel].
-
-[Your Name]
+1. Send the welcome email today
+2. Attach/link the intake questionnaire
+3. Send kickoff meeting calendar invite
+4. Follow up on access provisioning within 48 hours
+5. Share the working agreement at the kickoff meeting
 ```
-
-### Step 3: Create Intake Questionnaire
-
-**Section 1 — Project Overview:**
-- What is the primary goal of this project?
-- How will you measure success? (specific metrics if possible)
-- Who is the target audience/end user?
-- What's the hard deadline, if any?
-- Are there any competitors or examples you admire?
-
-**Section 2 — Brand & Assets:**
-- Do you have brand guidelines? (attach or link)
-- Logo files (SVG, PNG, or vector preferred)
-- Brand colors (hex codes if known)
-- Preferred fonts
-- Tone of voice: formal, casual, playful, authoritative?
-- Existing content to incorporate (copy, images, videos)
-
-**Section 3 — Technical Access:**
-- Domain registrar login (or who manages DNS)
-- Hosting provider and credentials
-- CMS access (WordPress, Webflow, Shopify admin)
-- Analytics accounts (Google Analytics, Search Console)
-- Social media accounts (if relevant)
-- API keys or third-party service credentials
-- Repository access (GitHub org invite)
-
-**Section 4 — Communication Preferences:**
-- Preferred communication channel: Email, Slack, Teams?
-- Best times for meetings (timezone + availability)
-- Who is the primary decision-maker?
-- Who else needs to review/approve deliverables?
-- How often do you want progress updates? (daily, weekly, bi-weekly)
-
-### Step 4: Tool/Platform Access Checklist
-
-| Tool | Purpose | Access Type | Status |
-|------|---------|-------------|--------|
-| **GitHub** | Code repository | Org invite or repo collaborator | ☐ |
-| **Figma** | Design files | Team invite | ☐ |
-| **Slack** | Communication | Channel or shared workspace | ☐ |
-| **Vercel/Netlify** | Hosting | Team member or transfer | ☐ |
-| **Google Analytics** | Analytics | Viewer or editor access | ☐ |
-| **Stripe** | Payments | Dashboard access or API keys | ☐ |
-| **CMS** | Content | Admin or editor role | ☐ |
-| **Email provider** | Marketing | API key or team access | ☐ |
-| **Domain registrar** | DNS | Login or DNS record access | ☐ |
-| **Cloud provider** | Infrastructure | IAM role or service account | ☐ |
-
-**Access request template:**
-```
-Hi [Client Name],
-
-To get your project set up, I need access to the following:
-
-1. [Tool] — [specific access level needed]
-   How to grant: [step-by-step instructions]
-
-2. [Tool] — [specific access level needed]
-   How to grant: [step-by-step instructions]
-
-My email for invites: [your email]
-My GitHub username: [username]
-
-Please share credentials via [secure method — 1Password,
-encrypted email, or dedicated credentials channel].
-
-⚠️ Never send passwords in plain email. Use [recommended
-secure sharing tool].
-```
-
-### Step 5: Kickoff Meeting Agenda
-
-```
-── KICKOFF MEETING AGENDA ─────────────────
-Duration: 60 minutes
-Attendees: [list]
-Date: [date]
-
-0:00 — Introductions (5 min)
-  • Team introductions and roles
-  • Client stakeholders and decision authority
-
-0:05 — Project Overview (10 min)
-  • Review project goals and success metrics
-  • Confirm scope from questionnaire responses
-  • Identify any gaps or open questions
-
-0:15 — Timeline & Milestones (10 min)
-  • Walk through project phases
-  • Confirm key dates and deadlines
-  • Identify dependencies on client (content, feedback, approvals)
-
-0:25 — Communication & Process (10 min)
-  • Communication channels and response times
-  • Meeting cadence (weekly standups, bi-weekly reviews)
-  • Feedback and approval process
-  • How to request changes (change order process)
-
-0:35 — Technical Discussion (15 min)
-  • Review technical requirements
-  • Confirm tool access and environment setup
-  • Discuss integrations and third-party dependencies
-  • Address technical risks or constraints
-
-0:50 — Q&A (5 min)
-  • Open floor for questions
-  • Clarify any concerns
-
-0:55 — Next Steps (5 min)
-  • Confirm immediate action items (with owners + dates)
-  • Schedule next meeting
-  • Share meeting notes within 24 hours
-```
-
-### Step 6: Communication Protocol
-
-```
-── COMMUNICATION PROTOCOL ─────────────────
-
-CHANNELS:
-  Primary: [Slack / Email]
-  Urgent: [Phone / SMS — for emergencies only]
-  Meetings: [Zoom / Google Meet] — always recorded if agreed
-  Documents: [Notion / Google Docs / Confluence]
-  Files: [Google Drive / Dropbox / Figma]
-
-RESPONSE TIMES:
-  Email: Within [4-8] business hours
-  Slack: Within [2-4] business hours
-  Urgent: Within [1] hour during business hours
-
-MEETING CADENCE:
-  Weekly standup: [day] at [time] — 15 min (async option)
-  Bi-weekly review: [day] at [time] — 30 min
-  Monthly retrospective: [day] at [time] — 30 min (retainer only)
-
-FEEDBACK PROCESS:
-  1. Deliverable shared → Client has [48 hours] to review
-  2. Feedback collected in [tool/format]
-  3. One round of revisions included
-  4. Additional revision rounds billed at [rate]
-
-ESCALATION:
-  Level 1: Project lead ([name]) — [email]
-  Level 2: Account manager ([name]) — [email]
-  Level 3: Owner ([name]) — [email]
-
-STATUS UPDATES:
-  Frequency: [weekly]
-  Format: [brief email / Slack message / shared dashboard]
-  Content: What was done, what's next, any blockers
-```
-
-### Step 7: Project Setup Checklist
-
-```
-── PROJECT SETUP CHECKLIST ────────────────
-
-REPOSITORY:
-  ☐ Create repo from template/boilerplate
-  ☐ Set up branch protection rules
-  ☐ Add client as collaborator (if applicable)
-  ☐ Create initial README with project overview
-  ☐ Set up .env.example with required variables
-
-ENVIRONMENTS:
-  ☐ Development environment configured
-  ☐ Staging environment deployed
-  ☐ Production environment provisioned (not deployed)
-  ☐ Environment variables set per environment
-
-CI/CD:
-  ☐ Build pipeline configured
-  ☐ Test pipeline configured
-  ☐ Auto-deploy to staging on merge to develop
-  ☐ Manual deploy to production on release tag
-
-MONITORING:
-  ☐ Error tracking set up (Sentry)
-  ☐ Analytics configured (GA4, Mixpanel, PostHog)
-  ☐ Uptime monitoring (optional for MVP)
-  ☐ Log aggregation (optional for MVP)
-
-PROJECT MANAGEMENT:
-  ☐ Project board created (Linear, GitHub Projects, Notion)
-  ☐ Milestones mapped to board
-  ☐ Client given view access (if shared board)
-  ☐ First sprint/iteration planned
-```
-
-### Step 8: Output
-
-Present the complete onboarding package:
-
-```
-━━━ CLIENT ONBOARDING: [Client Name] ━━━━━━
-
-── WELCOME SEQUENCE ───────────────────────
-Email 1 (Day 0): Welcome + expectations
-Email 2 (Day 0): Intake questionnaire
-Email 3 (Day 1-2): Access & setup
-Email 4 (Day 3-5): Post-kickoff summary
-
-── INTAKE QUESTIONNAIRE ───────────────────
-[4 sections: overview, brand, technical, communication]
-
-── ACCESS CHECKLIST ───────────────────────
-[tool access table with status]
-
-── KICKOFF AGENDA ─────────────────────────
-[60-min structured agenda]
-
-── COMMUNICATION PROTOCOL ─────────────────
-[channels, response times, meeting cadence, escalation]
-
-── PROJECT SETUP ──────────────────────────
-[repo, environments, CI/CD, monitoring checklists]
-
-── TIMELINE ───────────────────────────────
-Day 0: Contract signed → Welcome emails sent
-Day 0-2: Questionnaire completed, access granted
-Day 3-5: Kickoff meeting
-Day 5-7: Project environment set up
-Week 2: First deliverable/milestone
-```
-
-## Inputs
-- Service type and client tier
-- Project duration and scope
-- Tools and platforms used
-- Team structure and roles
-- Existing onboarding process (optional)
-
-## Outputs
-- 4-email welcome sequence with copy templates
-- Intake questionnaire (project, brand, technical, communication sections)
-- Tool/platform access checklist with request template
-- 60-minute kickoff meeting agenda
-- Communication protocol (channels, response times, escalation)
-- Project setup checklist (repo, environments, CI/CD, monitoring)
-- Complete onboarding timeline (Day 0 through Week 2)
 
 ## Level History
 
-- **Lv.1** — Base: 4-email welcome sequence, 4-section intake questionnaire, tool access checklist with secure credential sharing, 60-min kickoff agenda, communication protocol with escalation ladder, project setup checklist (repo/environments/CI-CD/monitoring), onboarding timeline. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: Welcome email template, 24-question intake questionnaire, 60-minute kickoff meeting agenda, 10-item access provisioning checklist, working agreement (communication, deliverables, revisions, escalation), 30/60/90-day check-in schedule with agendas. (Origin: MemStack Pro v3.2, Mar 2026)

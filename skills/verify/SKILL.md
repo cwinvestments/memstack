@@ -1,6 +1,7 @@
 ---
 name: verify
 description: "Use when the user says 'verify', 'check this work', 'does it pass', or before committing completed work."
+version: 1.0.0
 ---
 
 
@@ -158,5 +159,3 @@ Task: Add user registration API endpoint
 ## Level History
 
 - **Lv.1** — Base: Pre-commit verification with automated + manual checks, structured report output, framework-agnostic detection. (Origin: MemStack v3.1, Feb 2026)
-
-> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

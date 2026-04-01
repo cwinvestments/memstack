@@ -1,354 +1,307 @@
 ---
-name: cron-scheduler
-description: "Use when the user says 'cron job', 'scheduled task', 'cron', 'scheduler', 'run every', 'periodic task', or needs a recurring background job with monitoring and failure handling."
+name: memstack-automation-cron-scheduler
+description: "Use this skill when the user says 'cron job', 'scheduled task', 'run every', 'cron expression', 'recurring job', or needs production-grade scheduled jobs with overlap prevention, monitoring, and structured logging. Do NOT use for n8n workflows or event-driven webhooks."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-
-# ⏰ Cron Scheduler — Scheduled Job Design
-*Design production-grade cron jobs with overlap prevention, monitoring, structured logging, and platform-specific deployment.*
+# Cron Scheduler — Building scheduled job...
+*Builds production-grade scheduled jobs with cron syntax, timezone handling, overlap prevention, health checks, monitoring, alerting, and structured logging.*
 
 ## Activation
 
 When this skill activates, output:
 
-`⏰ Cron Scheduler — Designing your scheduled job...`
+`Cron Scheduler — Building scheduled job...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "cron job", "scheduled task", "run every"** | ACTIVE |
-| **User wants a recurring background process** | ACTIVE |
-| **User mentions cron expressions or scheduling** | ACTIVE |
-| **User wants an n8n workflow with a schedule trigger** | DORMANT — see n8n-workflow-builder |
-| **User wants an event-driven webhook (not time-based)** | DORMANT — see webhook-designer |
+| User says "cron job", "scheduled task", "run every" | ACTIVE |
+| User says "cron expression" or "recurring job" | ACTIVE |
+| User needs a time-based scheduled task with monitoring | ACTIVE |
+| User wants a visual n8n workflow | DORMANT — use n8n Workflow Builder |
+| User wants an event-driven webhook | DORMANT — use Webhook Designer |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "No overlap prevention" | If a job takes 10 min and runs every 5 min, you get concurrent executions corrupting data. |
+| "Ignore timezones" | Cron defaults to server timezone. Midnight UTC ≠ midnight local. Always set TZ explicitly. |
+| "No monitoring" | Silent job failures are invisible. You won't know it broke until users complain. |
+| "Log to stdout only" | Stdout disappears on restart. Use structured logging with persistence. |
+| "Run as root" | Principle of least privilege. Run jobs under a dedicated service account. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Job Requirements
 
-Ask the user for:
-- **Task description**: What does the job do?
-- **Frequency**: How often? (every 5 min, hourly, daily, weekly, monthly)
-- **Runtime environment**: Where does it run? (Railway, Netlify, VPS, local server, n8n)
-- **Expected duration**: How long does a typical run take?
-- **Dependencies**: What does it need? (database, external APIs, file system)
-- **Failure severity**: What happens if it doesn't run? (critical / important / low impact)
+If the user hasn't provided details, ask:
 
-### Step 2: Write Cron Expression
+> 1. **Task** — what does the job do? (sync data, send emails, clean up, generate reports)
+> 2. **Schedule** — how often? (every 5 min, hourly, daily at 2 AM, weekly)
+> 3. **Duration** — how long does a typical run take?
+> 4. **Timezone** — which timezone matters? (UTC, user's local, business hours)
+> 5. **Platform** — where does this run? (server crontab, cloud function, Docker, Kubernetes)
+> 6. **Failure mode** — what happens if it fails? (retry, alert, skip until next run)
+
+### Step 2: Write the Cron Expression
+
+**Cron syntax (5-field standard):**
 
 ```
-── SCHEDULE ───────────────────────────────
-
-Cron Expression: [expression]
-Human Readable: "[description]"
-Timezone: [timezone]
-
-┌─── minute (0-59)
-│ ┌─── hour (0-23)
-│ │ ┌─── day of month (1-31)
-│ │ │ ┌─── month (1-12)
-│ │ │ │ ┌─── day of week (0-7, 0 and 7 = Sunday)
+┌───────────── minute (0-59)
+│ ┌───────────── hour (0-23)
+│ │ ┌───────────── day of month (1-31)
+│ │ │ ┌───────────── month (1-12)
+│ │ │ │ ┌───────────── day of week (0-7, 0 and 7 = Sunday)
 │ │ │ │ │
 * * * * *
 ```
 
-**Common expressions:**
+**Common schedule reference:**
 
 | Schedule | Expression | Notes |
 |----------|-----------|-------|
-| Every 5 minutes | `*/5 * * * *` | High frequency — ensure fast execution |
-| Every 15 minutes | `*/15 * * * *` | Good for sync jobs |
-| Every hour | `0 * * * *` | Runs at :00 |
-| Every hour (offset) | `7 * * * *` | Runs at :07 — avoids peak traffic |
-| Daily at 2 AM | `0 2 * * *` | Low-traffic window for heavy jobs |
-| Weekdays at 9 AM | `0 9 * * 1-5` | Business hours only |
-| Weekly Sunday midnight | `0 0 * * 0` | Weekly cleanup/reports |
-| First of month 6 AM | `0 6 1 * *` | Monthly billing/reports |
+| Every minute | `* * * * *` | Testing only — too aggressive for production |
+| Every 5 minutes | `*/5 * * * *` | Good for near-real-time sync |
+| Every 15 minutes | `*/15 * * * *` | Light polling |
+| Every hour | `0 * * * *` | At minute 0 of every hour |
+| Every 6 hours | `0 */6 * * *` | 4x daily |
+| Daily at 2 AM UTC | `0 2 * * *` | Maintenance window |
+| Daily at 9 AM ET | `0 14 * * *` | 14:00 UTC = 9:00 AM ET (EST, adjust for DST) |
+| Weekdays at 8 AM | `0 8 * * 1-5` | Monday through Friday |
+| Weekly (Sunday midnight) | `0 0 * * 0` | Weekly cleanup |
+| Monthly (1st at midnight) | `0 0 1 * *` | Monthly reports |
+| Quarterly (Jan/Apr/Jul/Oct 1st) | `0 0 1 1,4,7,10 *` | Quarterly processing |
 
-### Step 3: Design the Job
+**Timezone handling:**
 
-Structure the job with clear phases:
+```bash
+# System crontab — set TZ per job
+CRON_TZ=America/New_York
+0 9 * * * /path/to/job.sh    # Runs at 9 AM Eastern (handles DST)
 
-```javascript
-async function runJob() {
-  const runId = crypto.randomUUID();
-  const startTime = Date.now();
-
-  console.log(JSON.stringify({
-    event: 'job_started', runId, job: '[job_name]',
-    timestamp: new Date().toISOString()
-  }));
-
-  try {
-    // Phase 1: Acquire lock
-    const lock = await acquireLock('[job_name]');
-    if (!lock) {
-      console.log(JSON.stringify({ event: 'job_skipped', runId, reason: 'lock_held' }));
-      return;
-    }
-
-    // Phase 2: Gather data
-    const data = await gatherData();
-
-    // Phase 3: Process
-    const results = await processData(data);
-
-    // Phase 4: Report
-    await reportResults(results);
-
-    // Phase 5: Cleanup
-    await releaseLock('[job_name]');
-
-    const duration = Date.now() - startTime;
-    console.log(JSON.stringify({
-      event: 'job_completed', runId, job: '[job_name]',
-      duration_ms: duration, items_processed: results.length
-    }));
-  } catch (err) {
-    const duration = Date.now() - startTime;
-    console.error(JSON.stringify({
-      event: 'job_failed', runId, job: '[job_name]',
-      duration_ms: duration, error: err.message
-    }));
-
-    await sendAlert('[job_name] failed', err.message);
-    await releaseLock('[job_name]');
-  }
-}
+# Or set in the crontab header
+TZ=UTC
 ```
 
-### Step 4: Error Handling
+```typescript
+// Node.js (node-cron) — explicit timezone
+import cron from 'node-cron';
 
-Define what happens when the job fails:
-
-| Failure Type | Detection | Response |
-|-------------|-----------|----------|
-| **Crash mid-run** | Process exits | Lock expires, alert sent, next run retries |
-| **Partial data processed** | Check progress markers | Resume from last checkpoint, don't re-process |
-| **External API down** | HTTP timeout/5xx | Retry 3x with backoff, then skip and alert |
-| **Database unreachable** | Connection error | Abort immediately, alert, retry next cycle |
-| **Job takes too long** | Duration > threshold | Log warning, consider killing if lock-breaking |
-
-**Checkpoint pattern for long jobs:**
-
-```javascript
-async function processData(items) {
-  const checkpoint = await getCheckpoint('[job_name]');
-  const startIndex = checkpoint?.lastIndex || 0;
-
-  for (let i = startIndex; i < items.length; i++) {
-    await processItem(items[i]);
-    // Save progress every 100 items
-    if (i % 100 === 0) {
-      await saveCheckpoint('[job_name]', { lastIndex: i });
-    }
-  }
-
-  await clearCheckpoint('[job_name]');
-}
-```
-
-### Step 5: Overlap Prevention
-
-Prevent multiple instances from running simultaneously:
-
-**Database lock (recommended for multi-instance):**
-
-```sql
-CREATE TABLE cron_locks (
-  job_name VARCHAR(100) PRIMARY KEY,
-  locked_by VARCHAR(255),
-  locked_at TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ
-);
-```
-
-```javascript
-async function acquireLock(jobName, ttlMinutes = 30) {
-  const result = await db.query(
-    `INSERT INTO cron_locks (job_name, locked_by, locked_at, expires_at)
-     VALUES ($1, $2, NOW(), NOW() + INTERVAL '${ttlMinutes} minutes')
-     ON CONFLICT (job_name) DO UPDATE
-       SET locked_by = $2, locked_at = NOW(),
-           expires_at = NOW() + INTERVAL '${ttlMinutes} minutes'
-     WHERE cron_locks.expires_at < NOW()
-     RETURNING job_name`,
-    [jobName, os.hostname()]
-  );
-  return result.rows.length > 0;
-}
-
-async function releaseLock(jobName) {
-  await db.query('DELETE FROM cron_locks WHERE job_name = $1', [jobName]);
-}
-```
-
-**Lock TTL**: Set expiration longer than the maximum expected job duration. If a job crashes without releasing the lock, the TTL prevents permanent deadlock.
-
-### Step 6: Monitoring
-
-**Health check endpoint:**
-
-```javascript
-app.get('/api/health/cron', async (req, res) => {
-  const jobs = await db.query(
-    `SELECT job_name, last_run, last_status, last_duration_ms
-     FROM cron_job_runs
-     ORDER BY last_run DESC`
-  );
-
-  const unhealthy = jobs.rows.filter(j => {
-    const minutesSinceRun = (Date.now() - new Date(j.last_run).getTime()) / 60000;
-    return j.last_status === 'failed' || minutesSinceRun > j.expected_interval_minutes * 2;
-  });
-
-  res.status(unhealthy.length > 0 ? 500 : 200).json({
-    status: unhealthy.length > 0 ? 'unhealthy' : 'healthy',
-    jobs: jobs.rows,
-    unhealthy: unhealthy.map(j => j.job_name),
-  });
+cron.schedule('0 9 * * *', () => {
+  runDailyReport();
+}, {
+  timezone: 'America/New_York'
 });
 ```
 
-**Last-run tracking table:**
+### Step 3: Implement Overlap Prevention
 
-```sql
-CREATE TABLE cron_job_runs (
-  id SERIAL PRIMARY KEY,
-  job_name VARCHAR(100) NOT NULL,
-  run_id UUID NOT NULL,
-  started_at TIMESTAMPTZ NOT NULL,
-  completed_at TIMESTAMPTZ,
-  status VARCHAR(20) DEFAULT 'running', -- running, completed, failed
-  duration_ms INTEGER,
-  items_processed INTEGER DEFAULT 0,
-  error_message TEXT,
-  metadata JSONB
-);
+**Lock-based approach (recommended):**
 
-CREATE INDEX idx_cron_runs_job ON cron_job_runs(job_name, started_at DESC);
-```
+```typescript
+import { acquireLock, releaseLock } from './lockService';
 
-**Failure alerts:**
-- Slack notification on failure
-- Email alert if job hasn't run in 2x the expected interval
-- Aggregate: Don't alert on every failure if job fails repeatedly — send one alert, then summarize
+async function runJob() {
+  const lockKey = 'job:daily-report';
+  const lockTTL = 3600; // seconds — must exceed max job duration
 
-### Step 7: Structured Logging
+  const acquired = await acquireLock(lockKey, lockTTL);
+  if (!acquired) {
+    console.log('Job already running — skipping this execution');
+    return;
+  }
 
-Every log entry should include:
-
-```json
-{
-  "event": "job_started|job_completed|job_failed|job_skipped",
-  "job": "job_name",
-  "runId": "uuid",
-  "timestamp": "ISO 8601",
-  "duration_ms": 1234,
-  "items_processed": 50,
-  "error": null
+  try {
+    await executeJobLogic();
+  } finally {
+    await releaseLock(lockKey);
+  }
 }
 ```
 
-**Log at these points:**
-1. Job started (with run ID)
-2. Lock acquired or skipped
-3. Data gathered (count of items to process)
-4. Checkpoint saved (every N items)
-5. Job completed (with duration and item count)
-6. Job failed (with error message and stack trace)
+**Lock implementations by platform:**
 
-### Step 8: Platform-Specific Deployment
+| Platform | Lock Method | TTL Support |
+|----------|-----------|-------------|
+| Redis | `SET key value NX EX ttl` | Yes |
+| PostgreSQL | `pg_advisory_lock(id)` | Session-based |
+| File system | `flock` or PID file | Manual cleanup |
+| DynamoDB | Conditional put with TTL | Yes |
+| Kubernetes | CronJob `concurrencyPolicy: Forbid` | Built-in |
 
-**Railway (recommended for Node.js apps):**
-```json
-// In railway.json or use Railway CLI
-// Set cron schedule in Railway dashboard → Service → Settings → Cron
-// Railway runs the service, triggers the job, then shuts it down
-```
+**PID file approach (simple servers):**
 
-**Netlify Scheduled Functions:**
-```javascript
-// netlify/functions/my-cron-job.mts
-import { Config } from '@netlify/functions';
-
-export default async (req) => {
-  // Job logic here
-  return new Response('OK');
-};
-
-export const config: Config = {
-  schedule: '@daily', // or cron expression
-};
-```
-
-**System crontab (VPS/dedicated):**
 ```bash
-# Edit: crontab -e
-# Format: minute hour day month weekday command
-0 2 * * * cd /app && node jobs/my-job.js >> /var/log/cron/my-job.log 2>&1
+#!/bin/bash
+PIDFILE="/tmp/myjob.pid"
+
+if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2>/dev/null; then
+    echo "Job already running (PID $(cat $PIDFILE))"
+    exit 0
+fi
+
+echo $$ > "$PIDFILE"
+trap "rm -f $PIDFILE" EXIT
+
+# Job logic here
 ```
 
-**n8n (visual):**
-- Use Schedule Trigger node
-- Set cron expression in node config
-- Connect to workflow nodes for processing
+### Step 4: Structured Logging
 
-**node-cron (in-process):**
-```javascript
-const cron = require('node-cron');
-cron.schedule('0 2 * * *', runJob, { timezone: 'America/Chicago' });
+```typescript
+interface JobLog {
+  job: string;
+  runId: string;        // Unique per execution
+  phase: 'start' | 'progress' | 'complete' | 'error';
+  timestamp: string;
+  durationMs?: number;
+  itemsProcessed?: number;
+  error?: string;
+  metadata?: Record<string, any>;
+}
+
+function logJob(entry: JobLog): void {
+  console.log(JSON.stringify(entry));
+}
+
+// Usage
+const runId = crypto.randomUUID();
+const start = Date.now();
+
+logJob({ job: 'daily-report', runId, phase: 'start', timestamp: new Date().toISOString() });
+
+try {
+  const result = await executeJobLogic();
+  logJob({
+    job: 'daily-report', runId, phase: 'complete',
+    timestamp: new Date().toISOString(),
+    durationMs: Date.now() - start,
+    itemsProcessed: result.count
+  });
+} catch (error) {
+  logJob({
+    job: 'daily-report', runId, phase: 'error',
+    timestamp: new Date().toISOString(),
+    durationMs: Date.now() - start,
+    error: error.message
+  });
+  throw error;
+}
 ```
 
-### Step 9: Output
+### Step 5: Monitoring & Alerting
 
-Present the complete cron job specification:
+**Health check pattern — heartbeat:**
 
-```
-━━━ CRON JOB: [Job Name] ━━━━━━━━━━━━━━━━━
+```typescript
+// After successful job completion, ping a health check URL
+async function pingHealthCheck(url: string): Promise<void> {
+  await fetch(url); // Services: Cronitor, Healthchecks.io, Better Uptime
+}
 
-── SCHEDULE ───────────────────────────────
-Expression: [cron]
-Readable: "[description]"
-Timezone: [tz]
-
-── JOB LOGIC ──────────────────────────────
-[complete job function code]
-
-── ERROR HANDLING ─────────────────────────
-[failure types and responses]
-
-── LOCK TABLE ─────────────────────────────
-[SQL migration for cron_locks]
-
-── MONITORING ─────────────────────────────
-[health endpoint + run tracking table]
-
-── DEPLOYMENT ─────────────────────────────
-Platform: [name]
-Config: [deployment-specific setup]
-
-── ALERTS ─────────────────────────────────
-[notification setup for failures]
+// The monitoring service alerts if it doesn't receive a ping within the expected window
 ```
 
-## Inputs
-- Task description and purpose
-- Frequency / schedule
-- Runtime environment
-- Expected duration
-- Dependencies (database, APIs)
-- Failure severity
+**Alert conditions:**
 
-## Outputs
-- Cron expression with human-readable explanation
-- Complete job code with phases (lock, gather, process, report, cleanup)
-- Error handling with checkpoints for long jobs
-- Database lock mechanism for overlap prevention
-- Health check endpoint and run-tracking table
-- Structured logging format
-- Platform-specific deployment instructions
-- Failure alert configuration
+| Condition | Severity | Action |
+|-----------|----------|--------|
+| Job didn't run (missed heartbeat) | Critical | Page on-call |
+| Job failed (error thrown) | High | Slack + email alert |
+| Job duration > 2x normal | Warning | Slack notification |
+| Job processed 0 items (expected >0) | Warning | Review logs |
+| Job overlap detected (lock contention) | Info | Log, investigate if frequent |
+
+**Job history table (for dashboard):**
+
+```sql
+CREATE TABLE job_runs (
+  id           SERIAL PRIMARY KEY,
+  job_name     VARCHAR(100) NOT NULL,
+  run_id       UUID         NOT NULL,
+  status       VARCHAR(20)  NOT NULL, -- 'success' | 'failure' | 'skipped'
+  started_at   TIMESTAMPTZ  NOT NULL,
+  completed_at TIMESTAMPTZ,
+  duration_ms  INTEGER,
+  items_count  INTEGER,
+  error        TEXT,
+  metadata     JSONB
+);
+
+CREATE INDEX idx_job_runs_name_started ON job_runs(job_name, started_at DESC);
+```
+
+### Step 6: Production Checklist
+
+**Before deploying:**
+- [ ] Cron expression tested with [crontab.guru](https://crontab.guru)
+- [ ] Timezone explicitly set (never rely on server default)
+- [ ] Overlap prevention implemented (lock or concurrency policy)
+- [ ] Structured logging with run IDs
+- [ ] Health check / heartbeat URL configured
+- [ ] Alert rules set for: missed run, failure, slow run
+- [ ] Graceful shutdown handling (finish current item, don't corrupt)
+- [ ] Environment variables for all config (no hardcoded values)
+- [ ] Job runs under dedicated service account (not root)
+- [ ] Tested with realistic data volume
+
+**Maintenance:**
+- [ ] Review job duration trends monthly (creeping duration = scaling issue)
+- [ ] Clean up job history older than 90 days
+- [ ] Verify health check alerts with a test failure quarterly
+
+## Output Format
+
+```markdown
+# Cron Job — [Job Name]
+
+## Schedule
+- **Expression:** [cron expression]
+- **Timezone:** [TZ]
+- **Frequency:** [Human-readable]
+- **Expected duration:** [X minutes]
+
+## Job Logic
+[What the job does, step by step]
+
+## Implementation
+[Code with overlap prevention, logging, error handling]
+
+## Monitoring
+- **Health check:** [URL or service]
+- **Alerts:** [Alert conditions]
+- **Dashboard:** [Where to view job history]
+
+## Production Checklist
+[Completed checklist from Step 6]
+```
+
+## Completion
+
+```
+Cron Scheduler — Complete!
+
+Job: [Name]
+Schedule: [Expression] ([timezone])
+Overlap prevention: [Lock method]
+Monitoring: [Health check service]
+Alerts: [Count] conditions configured
+
+Next steps:
+1. Implement the job using the code templates above
+2. Test the cron expression at crontab.guru
+3. Deploy with overlap prevention and structured logging
+4. Set up health check monitoring
+5. Verify the first 3 runs succeed, then check weekly
+```
 
 ## Level History
 
-- **Lv.1** — Base: Cron expression builder, phased job structure, checkpoint-based error recovery, database lock for overlap prevention, health check endpoint, run-tracking table, structured JSON logging, multi-platform deployment (Railway, Netlify, crontab, n8n, node-cron), failure alerting. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: Cron syntax guide with 12 common schedules, timezone handling (crontab + Node.js), overlap prevention (Redis lock, PID file, K8s ConcurrencyPolicy), structured logging with run IDs, heartbeat monitoring pattern, alert conditions (5 severities), job history table, production deployment checklist. (Origin: MemStack Pro v3.2, Mar 2026)

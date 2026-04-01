@@ -1,340 +1,275 @@
 ---
-name: financial-model
-description: "Use when the user says 'financial model', 'projections', 'revenue forecast', 'unit economics', 'break-even', 'cash flow', or wants to build financial projections for a business."
+name: memstack-business-financial-model
+description: "Use this skill when the user says 'financial model', 'projections', 'revenue forecast', 'unit economics', 'break-even', 'cash flow', or mentions MRR, churn, CAC, LTV, or runway. Builds monthly projections with scenario modeling. Do NOT use for pricing strategy or invoice generation."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 📈 Financial Model — Business Financial Projections
-*Build monthly revenue projections, unit economics, break-even analysis, scenario modeling, and cash flow forecasts with key metrics dashboards.*
+# Financial Model — Building financial projections...
+*Builds monthly revenue projections, expense forecasts, unit economics (CAC, LTV, payback), break-even analysis, cash flow tracking, and scenario modeling (best/base/worst).*
 
 ## Activation
 
 When this skill activates, output:
 
-`📈 Financial Model — Building your financial projections...`
+`Financial Model — Building financial projections...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "financial model", "projections", "revenue forecast"** | ACTIVE |
-| **User wants unit economics, break-even, or cash flow analysis** | ACTIVE |
-| **User mentions MRR, churn, CAC, LTV, or runway** | ACTIVE |
-| **User wants to set pricing (not model revenue)** | DORMANT — see pricing-strategy |
-| **User wants to generate an invoice** | DORMANT — see invoice-generator |
-| **User wants to scope an MVP (budget is secondary)** | DORMANT — see mvp-scoper |
+| User says "financial model", "projections", "revenue forecast" | ACTIVE |
+| User mentions MRR, churn, CAC, LTV, runway, or break-even | ACTIVE |
+| User wants to forecast revenue, expenses, or cash flow | ACTIVE |
+| User wants to set pricing tiers | DORMANT — use Pricing Strategy |
+| User wants to generate an invoice | DORMANT — use Invoice Generator |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Hockey stick revenue" | Realistic projections beat optimistic fantasies. Start conservative, model scenarios. |
+| "Forget to model churn" | SaaS without churn modeling is fiction. Even 3% monthly churn compounds fast. |
+| "Revenue only, no expenses" | Revenue without expenses is a dream. Model all costs to see actual profitability. |
+| "One scenario only" | A single forecast is a guess. Model best/base/worst to understand the range. |
+| "Skip unit economics" | If CAC > LTV, growth loses money. Unit economics tell you if the business model works. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Business Data
 
-Ask the user for:
-- **Business type**: SaaS, e-commerce, service business, marketplace, info product?
-- **Revenue streams**: How do you make money? (subscriptions, one-time sales, usage fees, ads)
-- **Pricing**: What do you charge? (per plan, per unit, per transaction)
-- **Current metrics** (if existing): Current MRR, customer count, churn rate
-- **Cost structure**: Major expenses (team, hosting, tools, marketing)
-- **Growth assumptions**: How will you acquire customers? Expected growth rate?
-- **Funding status**: Bootstrapped, pre-seed, seed, Series A?
+If the user hasn't provided details, ask:
 
-### Step 2: Build Monthly Revenue Projections (12 Months)
+> 1. **Business model** — SaaS, e-commerce, service, marketplace, or other?
+> 2. **Revenue streams** — subscriptions, one-time sales, services, ads?
+> 3. **Current numbers** — existing revenue, customers, growth rate?
+> 4. **Pricing** — price points, tiers, average revenue per user?
+> 5. **Costs** — known fixed and variable costs?
+> 6. **Funding** — bootstrapped or funded? Current cash balance?
 
-**SaaS / Subscription Model:**
+### Step 2: Revenue Model
 
-```
-── MONTHLY REVENUE PROJECTION ─────────────
-
-         M1     M2     M3     M4     M5     M6     M7     M8     M9     M10    M11    M12
-New       [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]
-Churned  -[n]   -[n]   -[n]   -[n]   -[n]   -[n]   -[n]   -[n]   -[n]   -[n]   -[n]   -[n]
-Active    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]    [n]
-ARPU     $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]
-MRR      $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]
-ARR      $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]   $[x]
-```
-
-**Revenue formulas:**
-- New customers = marketing spend / CAC (or organic growth rate)
-- Churned customers = previous active × monthly churn rate
-- Active customers = previous active + new − churned
-- MRR = active customers × ARPU
-- ARR = MRR × 12
-
-**E-commerce / Transactional Model:**
-```
-Orders/mo × Average Order Value = Gross Revenue
-Gross Revenue − Returns − Refunds = Net Revenue
-```
-
-**Service Business:**
-```
-Billable Hours × Hourly Rate = Revenue
-— OR —
-Active Clients × Monthly Retainer = Revenue
-```
-
-### Step 3: Monthly Expense Projections
+**SaaS / Subscription revenue:**
 
 ```
-── MONTHLY EXPENSES ───────────────────────
+Month N Revenue = (Previous customers - Churned + New) × ARPU
 
-Category          M1      M2      M3      ...    M12     Type
-──────────────────────────────────────────────────────────────
-PEOPLE
-  Founder salary  $[x]    $[x]    $[x]    ...    $[x]    Fixed
-  Engineer #1     $[x]    $[x]    $[x]    ...    $[x]    Fixed
-  Contractor      $[x]    $[x]    $[x]    ...    $[x]    Variable
-  Benefits/tax    $[x]    $[x]    $[x]    ...    $[x]    % of salary
-
-INFRASTRUCTURE
-  Hosting         $[x]    $[x]    $[x]    ...    $[x]    Scales w/ usage
-  SaaS tools      $[x]    $[x]    $[x]    ...    $[x]    Fixed (step up)
-  Domain/SSL      $[x]    —       —       ...    —       Annual
-
-MARKETING
-  Paid ads        $[x]    $[x]    $[x]    ...    $[x]    Variable
-  Content         $[x]    $[x]    $[x]    ...    $[x]    Fixed
-  Tools           $[x]    $[x]    $[x]    ...    $[x]    Fixed
-
-OPERATIONS
-  Legal/accounting $[x]   $[x]    $[x]    ...    $[x]    Fixed
-  Insurance       $[x]    —       —       ...    —       Annual
-  Office/misc     $[x]    $[x]    $[x]    ...    $[x]    Fixed
-
-──────────────────────────────────────────────────────────────
-TOTAL EXPENSES    $[x]    $[x]    $[x]    ...    $[x]
+Where:
+- Previous customers: end of prior month
+- Churned: Previous × monthly churn rate
+- New: Acquired through marketing/sales
+- ARPU: Average Revenue Per User (monthly)
 ```
 
-**Expense scaling rules:**
-- People: Step function — add hires at specific months
-- Hosting: Linear with customer count (estimate $/customer/mo)
-- Marketing: Set as % of revenue or fixed budget
-- SaaS tools: Step up at tier thresholds
+| Month | Starting | New | Churned | Ending | MRR | ARR |
+|-------|---------|-----|---------|--------|-----|-----|
+| 1 | 0 | [X] | 0 | [X] | $[X] | — |
+| 2 | [X] | [X] | [X] | [X] | $[X] | — |
+| 3 | [X] | [X] | [X] | [X] | $[X] | — |
+| ... | | | | | | |
+| 12 | [X] | [X] | [X] | [X] | $[X] | $[X] |
 
-### Step 4: Unit Economics
+**E-commerce / Transaction revenue:**
 
 ```
-── UNIT ECONOMICS ─────────────────────────
+Monthly Revenue = Visitors × Conversion Rate × Average Order Value
 
-Customer Acquisition Cost (CAC):
-  Total marketing spend / New customers acquired
-  CAC = $[amount]
+Where:
+- Visitors: Monthly unique visitors (organic + paid)
+- Conversion Rate: % of visitors who purchase (target: 1-3%)
+- AOV: Average Order Value
+```
 
-Lifetime Value (LTV):
-  ARPU × (1 / monthly churn rate)
-  LTV = $[ARPU] × [months] = $[amount]
+**Service revenue:**
 
-  — OR detailed —
-  LTV = ARPU × Gross Margin × (1 / churn rate)
-  LTV = $[amount]
+```
+Monthly Revenue = Active Clients × Average Monthly Retainer
+  + Project Revenue (one-time)
+```
+
+### Step 3: Unit Economics
+
+**Key SaaS metrics:**
+
+```
+CAC (Customer Acquisition Cost):
+  = Total Sales & Marketing Spend ÷ New Customers Acquired
+  Target: recover within 12 months
+
+LTV (Customer Lifetime Value):
+  = ARPU × Gross Margin% × (1 ÷ Monthly Churn Rate)
+  Example: $50 × 80% × (1 ÷ 0.05) = $800
 
 LTV:CAC Ratio:
-  $[LTV] / $[CAC] = [X]:1
-  Target: ≥ 3:1 (healthy), ≥ 5:1 (very healthy)
-  Below 3:1 → Acquisition is too expensive or LTV too low
+  = LTV ÷ CAC
+  Target: > 3:1 (every $1 spent acquires $3+ in lifetime value)
 
-CAC Payback Period:
-  CAC / (ARPU × Gross Margin)
-  Payback = [X] months
-  Target: ≤ 12 months (SaaS), ≤ 3 months (e-commerce)
+Payback Period:
+  = CAC ÷ (ARPU × Gross Margin%)
+  Example: $200 ÷ ($50 × 80%) = 5 months
+  Target: < 12 months
+```
 
-Gross Margin:
-  (Revenue − COGS) / Revenue × 100
-  GM = [X]%
-  Target: ≥ 70% (SaaS), ≥ 40% (e-commerce), ≥ 50% (services)
+**Unit economics table:**
 
-Monthly Churn Rate:
-  Lost customers / Total customers at start of month
-  Churn = [X]%
-  Target: ≤ 5% monthly (early stage), ≤ 2% (mature)
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| ARPU (monthly) | $[X] | — | — |
+| Monthly churn rate | [X]% | <5% | [OK / At Risk] |
+| CAC | $[X] | — | — |
+| LTV | $[X] | >3× CAC | [OK / At Risk] |
+| LTV:CAC ratio | [X]:1 | >3:1 | [OK / At Risk] |
+| Payback period | [X] months | <12 months | [OK / At Risk] |
+| Gross margin | [X]% | >70% (SaaS) | [OK / At Risk] |
 
-Net Revenue Retention (NRR):
-  (MRR at end − new MRR) / MRR at start × 100
-  NRR = [X]%
-  Target: ≥ 100% (expansion offsets churn)
+### Step 4: Expense Forecast
+
+**Fixed costs (monthly):**
+
+| Category | Monthly Cost | Annual Cost | Notes |
+|----------|-------------|-------------|-------|
+| Salaries & wages | $[X] | $[X] | [Headcount × avg salary ÷ 12] |
+| Office / co-working | $[X] | $[X] | |
+| Software & tools | $[X] | $[X] | [List: hosting, SaaS tools, etc.] |
+| Insurance | $[X] | $[X] | |
+| Legal & accounting | $[X] | $[X] | |
+| **Total fixed** | **$[X]** | **$[X]** | |
+
+**Variable costs (scales with revenue):**
+
+| Category | Cost Basis | Monthly Estimate | Notes |
+|----------|-----------|-----------------|-------|
+| Hosting / infrastructure | [X]% of revenue | $[X] | Scales with users |
+| Payment processing | 2.9% + $0.30/txn | $[X] | Stripe standard rate |
+| Customer support | $[X] per 100 customers | $[X] | |
+| Sales commissions | [X]% of new revenue | $[X] | |
+| Marketing spend | $[X] fixed + [X]% of revenue | $[X] | |
+| **Total variable** | | **$[X]** | |
+
+**Total monthly burn:**
+```
+Burn Rate = Fixed Costs + Variable Costs - Revenue
+Runway = Cash Balance ÷ Monthly Burn Rate
 ```
 
 ### Step 5: Break-Even Analysis
 
 ```
-── BREAK-EVEN ANALYSIS ────────────────────
+Break-Even Point (customers):
+  = Fixed Costs ÷ (ARPU - Variable Cost per Customer)
 
-Fixed Costs (monthly):       $[amount]
-Variable Cost per Customer:  $[amount]
-Revenue per Customer:        $[amount]
-Contribution Margin:         $[revenue − variable cost]
+Break-Even Point (revenue):
+  = Fixed Costs ÷ Gross Margin%
 
-Break-even Customers = Fixed Costs / Contribution Margin
-Break-even Customers = [number]
-
-Break-even Revenue = Break-even Customers × Revenue per Customer
-Break-even Revenue = $[amount]/month
-
-Current trajectory: Break-even in Month [X]
-
-           Revenue  ─────── Expenses
-    $│     /                   /
-     │    /              ════/═══ Fixed + Variable
-     │   /          ════/
-     │  /      ════/
-     │ /  ════/
-     │/══/──────────────────────── Break-even point
-     │/                            Month [X]
-     └────────────────────────────────
-      M1   M3   M5   M7   M9   M12
+Example:
+  Fixed costs: $10,000/month
+  ARPU: $50/month
+  Variable cost per customer: $10/month
+  Break-even: $10,000 ÷ ($50 - $10) = 250 customers
 ```
+
+**Monthly P&L projection:**
+
+| | Mo 1 | Mo 3 | Mo 6 | Mo 12 |
+|---|---|---|---|---|
+| **Revenue** | $[X] | $[X] | $[X] | $[X] |
+| COGS / variable costs | ($[X]) | ($[X]) | ($[X]) | ($[X]) |
+| **Gross profit** | $[X] | $[X] | $[X] | $[X] |
+| Gross margin % | [X]% | [X]% | [X]% | [X]% |
+| Operating expenses | ($[X]) | ($[X]) | ($[X]) | ($[X]) |
+| **Net income** | ($[X]) | ($[X]) | $[X] | $[X] |
+| Cumulative cash | $[X] | $[X] | $[X] | $[X] |
 
 ### Step 6: Scenario Modeling
 
-Build three scenarios:
+**Three scenarios:**
 
-```
-── SCENARIO COMPARISON ────────────────────
+| Assumption | Worst Case | Base Case | Best Case |
+|-----------|-----------|----------|----------|
+| Monthly new customers | [X] | [X] | [X] |
+| Monthly churn rate | [X]% | [X]% | [X]% |
+| ARPU | $[X] | $[X] | $[X] |
+| Marketing spend | $[X] | $[X] | $[X] |
+| Hiring timeline | Delayed | On time | Accelerated |
 
-                    Conservative   Moderate    Aggressive
-──────────────────────────────────────────────────────────
-ASSUMPTIONS
-Growth rate/mo      [X]%           [X]%        [X]%
-Churn rate/mo       [X]%           [X]%        [X]%
-CAC                 $[X]           $[X]        $[X]
-ARPU                $[X]           $[X]        $[X]
-Marketing spend/mo  $[X]           $[X]        $[X]
+**12-month outcome by scenario:**
 
-MONTH 6 METRICS
-Active customers    [n]            [n]         [n]
-MRR                 $[X]           $[X]        $[X]
-Monthly burn        $[X]           $[X]        $[X]
-Cash position       $[X]           $[X]        $[X]
+| Metric | Worst | Base | Best |
+|--------|-------|------|------|
+| Customers (Mo 12) | [X] | [X] | [X] |
+| MRR (Mo 12) | $[X] | $[X] | $[X] |
+| ARR (Mo 12) | $[X] | $[X] | $[X] |
+| Monthly burn (avg) | $[X] | $[X] | $[X] |
+| Break-even month | Mo [X] | Mo [X] | Mo [X] |
+| Runway remaining | [X] months | [X] months | [X] months |
+| Cash needed | $[X] | $[X] | $0 |
 
-MONTH 12 METRICS
-Active customers    [n]            [n]         [n]
-MRR                 $[X]           $[X]        $[X]
-ARR                 $[X]           $[X]        $[X]
-Cumulative revenue  $[X]           $[X]        $[X]
-Profit/Loss (mo)    $[X]           $[X]        $[X]
-Break-even month    [M]            [M]         [M]
-Runway remaining    [X] months     [X] months  [X] months
-```
+### Step 7: Cash Flow Summary
 
-**Scenario definitions:**
-- **Conservative**: Lower growth, higher churn, higher CAC — what if things go slowly?
-- **Moderate**: Realistic assumptions based on comparable companies
-- **Aggressive**: Higher growth, lower churn, lower CAC — what if things go very well?
+**Monthly cash flow:**
 
-### Step 7: Cash Flow & Runway
+| Month | Revenue | Expenses | Net | Cumulative |
+|-------|---------|----------|-----|------------|
+| 1 | $[X] | $[X] | ($[X]) | $[X] |
+| 2 | $[X] | $[X] | ($[X]) | $[X] |
+| 3 | $[X] | $[X] | ($[X]) | $[X] |
+| ... | | | | |
+| 12 | $[X] | $[X] | $[X] | $[X] |
 
-```
-── CASH FLOW PROJECTION ───────────────────
+**Key dates:**
+- **Cash-flow positive:** Month [X] (when monthly net turns positive)
+- **Break-even (cumulative):** Month [X] (when cumulative losses are recovered)
+- **Runway exhausted:** Month [X] at current burn (worst case)
 
-         M1      M2      M3      ...    M12
-─────────────────────────────────────────────
-Revenue  $[x]    $[x]    $[x]    ...    $[x]
-Expenses $[x]    $[x]    $[x]    ...    $[x]
-─────────────────────────────────────────────
-Net      $[x]    $[x]    $[x]    ...    $[x]
-─────────────────────────────────────────────
-Cash     $[x]    $[x]    $[x]    ...    $[x]
-         (starting cash + cumulative net)
+## Output Format
 
-── RUNWAY CALCULATION ─────────────────────
+```markdown
+# Financial Model — [Business Name]
 
-Starting cash:           $[amount]
-Average monthly burn:    $[amount]
-Months of runway:        [X] months
-Cash-out date:           [month/year]
+## Revenue Model
+[From Step 2 — monthly revenue projections]
 
-If runway < 6 months → URGENT: reduce burn or raise funds
-If runway 6-12 months → START fundraising or path to profit
-If runway > 12 months → COMFORTABLE: focus on growth
-```
+## Unit Economics
+[From Step 3 — CAC, LTV, payback, margins]
 
-### Step 8: Key Metrics Dashboard
+## Expense Forecast
+[From Step 4 — fixed + variable costs]
 
-```
-── KEY METRICS DASHBOARD ──────────────────
+## Break-Even Analysis
+[From Step 5 — break-even point + P&L]
 
-REVENUE
-  MRR:              $[amount]    ([+X]% MoM)
-  ARR:              $[amount]
-  Revenue growth:   [X]% MoM
+## Scenario Analysis
+[From Step 6 — worst/base/best]
 
-CUSTOMERS
-  Total active:     [n]
-  New this month:   [n]
-  Churned:          [n]
-  Net new:          [n]
+## Cash Flow
+[From Step 7 — monthly cash flow + key dates]
 
-UNIT ECONOMICS
-  CAC:              $[amount]
-  LTV:              $[amount]
-  LTV:CAC:          [X]:1
-  Payback period:   [X] months
-
-PROFITABILITY
-  Gross margin:     [X]%
-  Net margin:       [X]%
-  Monthly burn:     $[amount]
-  Runway:           [X] months
-
-EFFICIENCY
-  Revenue per employee:  $[amount]
-  CAC payback:           [X] months
-  NRR:                   [X]%
-  Quick ratio:           [X] (new MRR / lost MRR)
+## Key Assumptions
+[List every assumption with the value used]
 ```
 
-### Step 9: Output
-
-Present the complete financial model:
+## Completion
 
 ```
-━━━ FINANCIAL MODEL: [Business Name] ━━━━━━
+Financial Model — Complete!
 
-── REVENUE PROJECTIONS (12 Mo) ────────────
-[monthly revenue table]
-
-── EXPENSE PROJECTIONS (12 Mo) ────────────
-[monthly expense table by category]
-
-── UNIT ECONOMICS ─────────────────────────
-CAC: $[X]  |  LTV: $[X]  |  LTV:CAC: [X]:1
-Payback: [X] mo  |  Gross Margin: [X]%
-
-── BREAK-EVEN ─────────────────────────────
-Break-even customers: [N]
-Break-even revenue: $[X]/mo
-Projected break-even: Month [X]
-
-── SCENARIOS ──────────────────────────────
-Conservative: ARR $[X] by M12, break-even M[X]
-Moderate:     ARR $[X] by M12, break-even M[X]
-Aggressive:   ARR $[X] by M12, break-even M[X]
-
-── CASH FLOW & RUNWAY ─────────────────────
-Starting cash: $[X]
-Monthly burn: $[X]
+Business model: [Type]
+12-month ARR (base case): $[X]
+Break-even: Month [X]
+LTV:CAC ratio: [X]:1
 Runway: [X] months
+Scenarios modeled: 3 (worst/base/best)
 
-── METRICS DASHBOARD ──────────────────────
-[key metrics summary]
-
-── ASSUMPTIONS & RISKS ────────────────────
-[list of key assumptions with sensitivity notes]
+Next steps:
+1. Validate assumptions with real data (update monthly)
+2. Track actual vs projected monthly
+3. If LTV:CAC < 3:1, reduce CAC or increase ARPU before scaling
+4. If runway < 6 months, raise capital or cut burn
+5. Update the model quarterly with actuals
 ```
-
-## Inputs
-- Business type and revenue model
-- Pricing and current metrics (if existing)
-- Cost structure (people, infrastructure, marketing)
-- Growth and churn assumptions
-- Starting cash and funding status
-
-## Outputs
-- 12-month revenue projection (monthly granularity)
-- 12-month expense projection by category
-- Unit economics (CAC, LTV, LTV:CAC, payback period, gross margin, churn, NRR)
-- Break-even analysis with customer and revenue targets
-- 3-scenario comparison (conservative, moderate, aggressive)
-- Cash flow projection with runway calculation
-- Key metrics dashboard (MRR, ARR, growth, efficiency)
 
 ## Level History
 
-- **Lv.1** — Base: 12-month revenue/expense projections (SaaS, e-commerce, service models), unit economics (CAC, LTV, LTV:CAC, payback, margins, churn, NRR), break-even analysis, 3-scenario modeling (conservative/moderate/aggressive), cash flow with runway calculation, key metrics dashboard. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: Revenue models (SaaS, e-commerce, service), unit economics (CAC, LTV, payback, LTV:CAC, gross margin), expense forecast (fixed + variable), break-even analysis with P&L projection, 3-scenario modeling (worst/base/best), cash flow timeline with key dates (cash-positive, break-even, runway). (Origin: MemStack Pro v3.2, Mar 2026)

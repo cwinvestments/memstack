@@ -1,6 +1,7 @@
 ---
 name: compress
 description: "Use when the user says 'headroom', 'compression', 'token savings', 'proxy status', or asks about context window usage."
+version: 1.0.0
 ---
 
 

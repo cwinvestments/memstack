@@ -1,6 +1,7 @@
 ---
 name: familiar
 description: "Use when the user says 'dispatch', 'send familiar', 'split task', or needs work split across parallel CC sessions."
+version: 1.0.0
 ---
 
 

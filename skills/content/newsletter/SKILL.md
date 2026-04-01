@@ -1,286 +1,252 @@
 ---
-name: newsletter
-description: "Use when the user says 'newsletter', 'email newsletter', 'weekly digest', 'write a newsletter', or wants to create a complete newsletter edition with subject line, content, and growth strategy."
+name: memstack-content-newsletter
+description: "Use this skill when the user says 'newsletter', 'email newsletter', 'weekly digest', 'subscriber growth', 'open rates', or needs subject lines, content structure, sponsorship placement, and growth tactics for email newsletters. Do NOT use for lead magnets or content pipelines."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 📬 Newsletter — Email Newsletter Builder
-*Generate complete newsletter editions with subject lines, structured content, sponsorship placement, growth tactics, and platform-ready formatting.*
+# Newsletter — Writing email newsletter edition...
+*Produces an email newsletter edition with subject line formulas, section structure, personalization, link placement strategy, growth tactics, and engagement optimization.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📬 Newsletter — Writing your newsletter edition...`
+`Newsletter — Writing email newsletter edition...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "newsletter", "email newsletter", "weekly digest"** | ACTIVE |
-| **User wants to write a newsletter edition** | ACTIVE |
-| **User mentions subject lines, open rates, or email growth** | ACTIVE |
-| **User wants a lead magnet with nurture emails** | DORMANT — see lead-magnet |
-| **User wants a content pipeline (newsletter is one channel)** | DORMANT — see content-pipeline |
-| **User wants a Twitter thread (not email)** | DORMANT — see twitter-thread |
+| User says "newsletter", "email newsletter", "weekly digest" | ACTIVE |
+| User says "subscriber growth" or "open rates" | ACTIVE |
+| User wants to write a newsletter edition or start a newsletter | ACTIVE |
+| User wants a lead magnet with email capture | DORMANT — use Lead Magnet |
+| User wants a full content automation pipeline | DORMANT — use Content Pipeline |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Newsletter = company updates" | Nobody cares about your company news. Deliver value: insights, tips, curated content. |
+| "Generic subject line" | "[Company] Monthly Newsletter" gets 10% opens. Curiosity-driven subjects get 35%+. |
+| "No consistent format" | Readers want predictable value. A consistent structure builds habit and trust. |
+| "Too many links" | More than 3-5 links per section dilutes clicks. Feature one primary link prominently. |
+| "No growth strategy" | "Build it and they will come" doesn't work. Actively promote every issue. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Newsletter Requirements
 
-Ask the user for:
-- **Audience**: Who reads this? (developers, marketers, founders, general)
-- **Topic**: What's this edition about? (or main theme)
-- **Frequency**: Daily, weekly, biweekly, monthly?
-- **Brand voice**: Casual, professional, witty, authoritative?
-- **Newsletter name**: What's it called?
-- **Content type**: Original essays, curated links, industry news, tutorials, opinion?
-- **Monetization**: Sponsored? Affiliate links? Paid tier?
-- **Platform**: ConvertKit, Beehiiv, Substack, Mailchimp, SendGrid?
+If the user hasn't provided details, ask:
 
-### Step 2: Write Subject Line & Preview Text
+> 1. **Topic/niche** — what's the newsletter about?
+> 2. **Audience** — who reads it? (role, industry, experience level)
+> 3. **Frequency** — weekly, biweekly, or monthly?
+> 4. **Type** — curated links, original essays, tips, industry news, or mixed?
+> 5. **Current state** — new or existing? (subscriber count, open rates)
+> 6. **Monetization** — free, paid, or sponsored?
 
-**Subject line (50 chars max for full visibility):**
+### Step 2: Write the Subject Line
 
-| Formula | Example | Open Rate Impact |
-|---------|---------|-----------------|
-| **Number + benefit** | "5 tools that saved me 10 hours this week" | High — specific, practical |
-| **Question** | "Are you making this hiring mistake?" | Medium — curiosity gap |
-| **How-to** | "How to write copy that converts (template inside)" | High — clear value |
-| **Contrarian** | "Why I stopped using React" | High — triggers curiosity |
-| **Urgency** | "This deal expires Friday" | High — but use sparingly |
-| **Personal** | "I almost quit last week. Here's why I didn't." | High — emotional connection |
-| **News hook** | "Google just changed SEO forever" | High — timely relevance |
+**Subject line formulas:**
 
-**Generate 3 subject line options** ranked by expected performance.
+| Formula | Template | Example |
+|---------|---------|---------|
+| **Curiosity gap** | [Topic]: The [thing] nobody talks about | "Pricing: The metric nobody tracks" |
+| **Numbered value** | [X] [things] to [outcome] this week | "5 tools to ship faster this week" |
+| **Question** | Why [common practice] [doesn't work / is wrong]? | "Why your landing page isn't converting?" |
+| **Personal** | I [did thing] — here's what happened | "I quit meetings for a month" |
+| **Direct value** | How to [outcome] (in [constraint]) | "How to write copy that converts (in 20 min)" |
+| **Current event** | [Event/trend]: What it means for [audience] | "GPT-5: What it means for developers" |
 
-**Preview text (90 chars, visible after subject in inbox):**
-- Complements the subject, doesn't repeat it
-- Adds context or teases content
-- Example: Subject: "5 tools that saved me 10 hours" → Preview: "Plus: why I'm rebuilding my entire stack"
+**Subject line rules:**
+- 6-10 words (40-50 characters) for mobile display
+- No ALL CAPS, no spam triggers ("FREE", "ACT NOW", "!!!")
+- Preview text (first 90 characters of email) should complement, not repeat the subject
+- A/B test 2 subjects per send (most platforms support this)
+- Track open rates by subject formula — double down on what works
 
-### Step 3: Write Newsletter Content
+### Step 3: Design Section Structure
 
-**Structure template:**
+**Newsletter format template:**
 
-```
-── PERSONAL OPENER (2-3 sentences) ────────
+```markdown
+# [Newsletter Name] — [Edition Title or Number]
 
-[Start with a personal anecdote, observation, or
-timely reference that connects to the main topic.
-This builds connection before the content.]
+## Intro (2-3 sentences)
+[Personal note, context for this edition, or a hook that frames the content]
 
-── MAIN CONTENT ───────────────────────────
+---
 
-[The primary article, tutorial, insight, or essay.
-This is the main value of the newsletter.]
+## [Section 1: Primary Content] (60% of newsletter)
+[Your main value — original insight, deep dive, or featured piece]
+[Include one primary CTA link]
 
-Structure options:
-  A) Original essay (500-800 words)
-  B) Tutorial with steps (300-500 words + code/examples)
-  C) Curated links with commentary (5-7 links, 2-3 sentences each)
-  D) Industry analysis (400-600 words with data)
+---
 
-── SECONDARY CONTENT (optional) ───────────
+## [Section 2: Quick Hits / Curated] (25% of newsletter)
+### [Item 1 title]
+[1-2 sentence summary + link]
 
-[A shorter section with additional value:]
-  • "Quick hits" — 3-5 bullet point links or tips
-  • "Tool of the week" — one recommendation with why
-  • "Quote I'm thinking about" — curated quote + your take
-  • "Ask me anything" — answer a reader question
+### [Item 2 title]
+[1-2 sentence summary + link]
 
-── CTA ────────────────────────────────────
+### [Item 3 title]
+[1-2 sentence summary + link]
 
-[One clear call-to-action:]
-  • Reply to this email with [question]
-  • Check out [product/resource]
-  • Share this newsletter with a friend
-  • Upgrade to premium for [benefit]
+---
+
+## [Section 3: Closer] (15% of newsletter)
+[Personal sign-off, question for readers, or community highlight]
+
+---
+
+[Footer: Unsubscribe | Forward to a friend | [Social links]]
 ```
 
-**Content writing rules:**
-- Write at a conversational level — like emailing a smart friend
-- One main idea per edition — don't try to cover everything
-- Use subheadings every 150-200 words for scannability
-- Bold key phrases — readers scan before reading
-- Keep paragraphs to 2-3 sentences max
-- Include at least one actionable takeaway
-- End sections with a transition or hook to the next
+**Section type options (pick 2-4 per edition):**
 
-### Step 4: Content Curation
+| Section | Content | Purpose |
+|---------|---------|---------|
+| **Deep Dive** | Original essay or analysis (500-800 words) | Demonstrate expertise |
+| **Quick Hits** | 3-5 curated links with one-line summaries | Deliver breadth of value |
+| **Tool/Resource** | Featured tool with your take on it | Practical value |
+| **Tip of the Week** | One actionable tactic they can use today | Quick win |
+| **Community Spotlight** | Reader question, testimonial, or submission | Build community |
+| **Sponsor Section** | Sponsored content (clearly labeled) | Monetization |
+| **Poll/Question** | Ask readers something — drives replies | Engagement signal |
 
-For curated newsletters, how to find and present items:
+### Step 4: Write the Edition
 
-**Finding content:**
-- RSS feeds from industry blogs
-- Twitter/X lists of thought leaders
-- Hacker News, Reddit, Lobsters for tech
-- Product Hunt for tools
-- Google Alerts for niche keywords
-- Personal network and Slack communities
+**Intro paragraph rules:**
+- 2-3 sentences maximum
+- Personal and conversational (not corporate)
+- Frames why THIS edition matters
+- Optional: reference a current event or reader feedback
 
-**Curation format per item:**
-```
-📌 [Headline/Title]
-   [Source] — [reading time]
+**Body content rules:**
+- Write at an 8th-grade reading level (clear, accessible)
+- Use headers, bold, and bullet points for scannability
+- One idea per paragraph (3 sentences max)
+- Link text should describe the destination ("Read the full case study" not "Click here")
+- Primary CTA should appear within the first scroll (above 300 words)
 
-   [2-3 sentence summary in YOUR voice — not just the article abstract.
-   Add your opinion, context, or why it matters to your audience.]
+**Personalization techniques:**
 
-   → [Read the full article](link)
-```
+| Technique | Implementation | Impact |
+|----------|---------------|--------|
+| First name in subject | "Hey {first_name}, [subject]" | +10-15% open rate |
+| Segment by interest | Tag subscribers → send relevant content | +20-30% click rate |
+| Reference past behavior | "Since you read about [topic]..." | Higher engagement |
+| Reader-submitted content | Feature reader questions or wins | Community loyalty |
 
-**Curation rules:**
-- Add YOUR perspective — readers follow you, not the sources
-- 5-7 items per curated edition (more feels like a dump)
-- Mix sources — don't over-index on one publication
-- Include at least one contrarian or surprising piece
-- Date-stamp anything time-sensitive
+### Step 5: Link Placement Strategy
 
-### Step 5: Sponsorship/Ad Placement
+**Link placement hierarchy:**
 
-If the newsletter is monetized:
+| Position | Purpose | Click Priority |
+|----------|---------|---------------|
+| **Above the fold** (first 100 words) | Primary CTA or featured link | Highest |
+| **End of main section** | Deeper reading link | High |
+| **Quick hits section** | Curated resource links | Medium |
+| **Closer** | Social follow or referral link | Low |
 
-**Sponsorship slot types:**
-
-| Slot | Position | Format | Pricing Range |
-|------|----------|--------|---------------|
-| **Header sponsor** | Top, before content | Logo + 1-line mention | $$$$ |
-| **Mid-content ad** | Between sections | 2-3 sentences + link + image | $$$ |
-| **Classified** | Bottom, after content | 1-2 sentences + link | $$ |
-| **Dedicated send** | Entire email is sponsored | Full sponsor content | $$$$$ |
-
-**Sponsor integration template:**
-```
-── SPONSORED ──────────────────────────────
-
-[This edition is brought to you by [Sponsor Name]]
-
-[2-3 sentences about the sponsor's product, written in
-YOUR voice, not corporate copy. Focus on why your readers
-would care.]
-
-→ [Check out Sponsor Name](tracking link)
-
-────────────────────────────────────────────
-```
-
-**Sponsorship rules:**
-- Label sponsored content clearly
-- Write sponsor copy in your voice (not theirs)
-- Max 1 sponsor per edition (2 if header + classified)
-- Never sponsor products you wouldn't genuinely recommend
-- Track click-through rates for sponsor reporting
+**Rules:**
+- 1 primary link per edition (the ONE thing you want them to click)
+- 3-5 secondary links maximum (curated content, resources)
+- No more than 8 total links (including footer) — too many dilutes clicks
+- Use descriptive anchor text, not raw URLs
+- Track clicks with UTM parameters: `?utm_source=newsletter&utm_medium=email&utm_campaign=edition-[N]`
 
 ### Step 6: Growth Tactics
 
-**Organic growth strategies:**
+**Subscriber acquisition channels:**
 
-| Tactic | Effort | Expected Impact |
-|--------|--------|-----------------|
-| **Referral program** | Medium | High — "Refer 3 friends, get [reward]" |
-| **Cross-promotion** | Low | Medium — swap recommendations with similar newsletters |
-| **Lead magnet** | Medium | High — free resource for subscribing |
-| **Social sharing** | Low | Medium — share snippets as threads/posts |
-| **Guest posts** | High | Medium — write for other newsletters |
-| **SEO archive** | Medium | High (long-term) — publish past editions as blog posts |
-| **Giveaways** | Low | High (short-term) — "Subscribe to win [prize]" |
+| Channel | Tactic | Expected Growth |
+|---------|--------|----------------|
+| **Website** | Email capture in header, footer, and exit-intent popup | Steady baseline |
+| **Social media** | Share a highlight from each edition with subscribe link | 5-15 subs/post |
+| **Twitter/X threads** | End threads with "I go deeper in my newsletter: [link]" | 10-50 subs/thread |
+| **Cross-promotion** | Swap recommendations with similar-sized newsletters | 50-200 per swap |
+| **Referral program** | "Refer 3 friends → get [bonus]" | 10-20% of new subs |
+| **Gated content** | Best content behind email signup (lead magnet) | High conversion |
+| **Guest posts** | Write for others, link to newsletter in bio | 20-100 per post |
 
-**Referral program design:**
+**Retention metrics to track:**
 
-| Referrals | Reward |
-|-----------|--------|
-| 1 | Shout-out in next edition |
-| 3 | Exclusive template/resource |
-| 5 | Free month of premium |
-| 10 | 1-on-1 call with you |
-| 25 | Lifetime premium access |
+| Metric | Target | Red Flag |
+|--------|--------|----------|
+| Open rate | >35% | <20% |
+| Click rate | >3% | <1% |
+| Unsubscribe rate | <0.5% per send | >1% |
+| Reply rate | >0.5% | 0% (no engagement) |
+| Growth rate (net) | >5% monthly | Negative (losing subs) |
 
-**Footer CTA template:**
-```
-────────────────────────────────────────────
-📬 Enjoyed this? Share [Newsletter Name] with a friend:
-[Referral link]
+### Step 7: Scheduling & Send Optimization
 
-You've referred [X] people so far. [Y] more for [next reward]!
-────────────────────────────────────────────
-```
+**Optimal send times:**
 
-### Step 7: Analytics Benchmarks
+| Audience | Best Day | Best Time | Why |
+|----------|---------|-----------|-----|
+| Business / B2B | Tuesday-Thursday | 9-10 AM local | Morning inbox check |
+| Creators / Solo | Tuesday or Saturday | 8-9 AM local | Before the day fills up |
+| Developers | Wednesday | 10 AM local | Mid-week engagement peak |
+| General / Consumer | Sunday or Tuesday | 9-10 AM local | Weekend reading or fresh week |
 
-Track these metrics per edition:
+**Pre-send checklist:**
+- [ ] Subject line is 6-10 words, creates curiosity
+- [ ] Preview text complements the subject (not a repeat)
+- [ ] All links work (click-test every one)
+- [ ] UTM parameters on all links
+- [ ] Images have alt text
+- [ ] Mobile preview looks good (60%+ open on mobile)
+- [ ] Unsubscribe link is visible
+- [ ] Spell check passed
+- [ ] Send a test email to yourself first
 
-| Metric | Target | Industry Avg | Action if Below |
-|--------|--------|-------------|-----------------|
-| **Open rate** | 40-50% | 30-35% | Test subject lines, clean list |
-| **Click rate** | 5-8% | 2-4% | Improve CTAs, reduce links |
-| **Unsubscribe rate** | < 0.3% | 0.2-0.5% | Check frequency, content relevance |
-| **Reply rate** | 1-3% | < 1% | Ask more questions, be personal |
-| **Growth rate** | 5-10%/mo | 2-5%/mo | Increase promotion, add lead magnet |
-| **Bounce rate** | < 2% | 2-5% | Clean list, verify emails on signup |
-| **Spam complaint** | < 0.1% | 0.1% | Add clear unsubscribe, set expectations |
+## Output Format
 
-**List hygiene:**
-- Remove unengaged subscribers (no opens in 90 days) quarterly
-- Send re-engagement campaign before removing
-- Use double opt-in for higher quality subscribers
-- Monitor deliverability score monthly
+```markdown
+# [Newsletter Name] — Edition [#]
 
-### Step 8: Output
+**Subject:** [Subject line]
+**Preview text:** [90 characters]
+**Send date:** [Date, Time, Timezone]
 
-Present the complete newsletter edition:
+---
 
-```
-━━━ NEWSLETTER: [Newsletter Name] ━━━━━━━━
-Edition: #[number] — [date]
-Topic: [main topic]
-Audience: [who]
+[Full newsletter content following the structure from Step 3]
 
-── SUBJECT LINES (pick one) ───────────────
-Option A: [subject] — Preview: [preview text]
-Option B: [subject] — Preview: [preview text]
-Option C: [subject] — Preview: [preview text]
+---
 
-── NEWSLETTER BODY ────────────────────────
-
-[Personal opener]
-
-[Main content — essay, tutorial, or curated links]
-
-[Sponsored section — if applicable]
-
-[Secondary content]
-
-[CTA]
-
-[Footer with referral link + unsubscribe]
-
-── GROWTH PLAN ────────────────────────────
-This month's focus: [tactic]
-Referral program: [status]
-Target: [subscriber goal]
-
-── ANALYTICS TARGETS ──────────────────────
-Open rate target: [X]%
-Click rate target: [X]%
-Growth target: [X] new subscribers this month
+## Metrics to Track
+- Open rate target: [X]%
+- Click rate target: [X]%
+- Primary CTA link: [URL]
 ```
 
-## Inputs
-- Audience and niche
-- Topic or theme for this edition
-- Frequency and brand voice
-- Newsletter name
-- Content type (original, curated, hybrid)
-- Monetization strategy (optional)
-- Email platform
+## Completion
 
-## Outputs
-- 3 subject line options with preview text
-- Complete newsletter body (opener, main content, secondary, CTA)
-- Content curation framework with commentary format
-- Sponsorship slot placement with integration template
-- Growth tactics with referral program design
-- Analytics benchmarks with action thresholds
-- Platform-ready formatted edition
+```
+Newsletter — Complete!
+
+Edition: [#/Title]
+Subject line: "[Subject]"
+Sections: [Count]
+Links: [Count] ([1] primary, [X] secondary)
+Word count: [X]
+
+Next steps:
+1. Load into your email platform
+2. Preview on mobile (most opens are mobile)
+3. A/B test the subject line (send 2 variants to 20% each, winner to 60%)
+4. Schedule for [optimal time]
+5. After sending: share a highlight on social media with subscribe CTA
+```
 
 ## Level History
 
-- **Lv.1** — Base: 7 subject line formulas with preview text, structured newsletter template (opener/main/secondary/CTA), content curation format with commentary, sponsorship slot types and integration, growth tactics with referral program tiers, analytics benchmarks with action thresholds, platform-ready output. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: 6 subject line formulas, section structure template (intro, deep dive, quick hits, closer), body writing rules with personalization techniques, link placement hierarchy (primary + secondary), 7 growth channels with expected results, retention metrics with red flags, send time optimization, pre-send checklist. (Origin: MemStack Pro v3.2, Mar 2026)

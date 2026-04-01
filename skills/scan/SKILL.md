@@ -1,6 +1,7 @@
 ---
 name: scan
 description: "Use when the user says 'scan project', 'estimate', 'how much to charge', or needs codebase complexity analysis."
+version: 1.0.0
 ---
 
 
@@ -74,5 +75,3 @@ Premium:  $30,000 — Full + custom integrations + 3mo support
 
 - **Lv.1** — Base: File/LOC counting with complexity assessment. (Origin: MemStack v1.0, Feb 2026)
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, integration pricing. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-
-> 💎 Pro: PostToolUse hook auto-logs this work to your observation history.

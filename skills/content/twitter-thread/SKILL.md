@@ -1,258 +1,222 @@
 ---
-name: twitter-thread
-description: "Use when the user says 'twitter thread', 'tweet thread', 'X thread', 'write a thread', or wants to create a multi-tweet narrative for Twitter/X."
+name: memstack-content-twitter-thread
+description: "Use this skill when the user says 'twitter thread', 'tweet thread', 'X thread', 'viral thread', or wants to create a multi-tweet narrative with hook tweets, data points, and CTAs. Do NOT use for TikTok scripts, newsletters, or LinkedIn posts."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🐦 Twitter Thread — Viral Thread Builder
-*Generate engaging Twitter/X threads with hook tweets, narrative arc, data points, and clear CTAs ready to paste and post.*
+# Twitter Thread — Writing viral thread...
+*Creates multi-tweet threads (5-15 posts) with hook formulas, narrative arc, engagement tactics, data points, CTA placement, and scheduling strategy.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🐦 Twitter Thread — Writing your thread...`
+`Twitter Thread — Writing viral thread...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "twitter thread", "tweet thread", "X thread"** | ACTIVE |
-| **User wants to create a multi-tweet narrative** | ACTIVE |
-| **User mentions viral content or thread strategy** | ACTIVE |
-| **User wants a TikTok script (not Twitter)** | DORMANT — see tiktok-script |
-| **User wants a newsletter (not social)** | DORMANT — see newsletter |
-| **User wants a LinkedIn post (not thread format)** | DORMANT — see content-pipeline for repurposing |
+| User says "twitter thread", "tweet thread", "X thread" | ACTIVE |
+| User says "viral thread" or wants multi-tweet content | ACTIVE |
+| User wants to share insights, stories, or frameworks on Twitter/X | ACTIVE |
+| User wants a TikTok or Reels script | DORMANT — use TikTok Script |
+| User wants a newsletter | DORMANT — use Newsletter |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Weak first tweet" | Tweet 1 is your headline. If it doesn't stop the scroll, no one reads tweets 2-15. |
+| "Wall of text per tweet" | White space matters. Short lines, line breaks, and punchy sentences get read. |
+| "No thread structure" | Random thoughts don't thread well. Use a framework: story, list, or lesson arc. |
+| "Forget the CTA" | Every thread should end with a clear ask: follow, retweet, reply, or click. |
+| "Post at random times" | Twitter engagement peaks at specific hours. Schedule for your audience's timezone. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Thread Requirements
 
-Ask the user for:
-- **Topic**: What's the thread about?
-- **Key insight**: What's the one thing readers should walk away knowing?
-- **Target audience**: Who should care about this?
-- **CTA**: What should readers do after? (follow, reply, visit link, sign up)
-- **Tone**: Educational, provocative, storytelling, data-driven, personal?
-- **Thread length**: Short (5-7 tweets), medium (8-10), long (11-15)?
+If the user hasn't provided details, ask:
 
-### Step 2: Craft the Hook Tweet
+> 1. **Topic** — what's the thread about?
+> 2. **Angle** — personal story, tactical how-to, hot take, data breakdown, or curated list?
+> 3. **Goal** — followers, engagement, traffic to a link, or brand awareness?
+> 4. **Length** — short (5-7 tweets), medium (8-12), or long (13-15)?
+> 5. **Key points** — what are the 3-5 main takeaways?
 
-The hook tweet determines whether anyone reads the rest. It must stop the scroll.
+### Step 2: Choose Thread Structure
+
+| Structure | Best For | Pattern |
+|----------|---------|---------|
+| **Story arc** | Personal experience, case study | Setup → Conflict → Turning point → Resolution → Lesson |
+| **Listicle** | Tips, tools, resources | Hook → Item 1 → Item 2 → ... → Summary → CTA |
+| **Framework** | Teaching a method | Hook → Context → Step 1 → Step 2 → Step 3 → Recap → CTA |
+| **Contrarian** | Hot takes, challenging norms | Bold claim → Evidence 1 → Evidence 2 → Nuance → Reframe → CTA |
+| **Before/After** | Transformations, results | Old way → Problems → Discovery → New way → Results → CTA |
+
+### Step 3: Write the Hook (Tweet 1)
+
+The hook tweet determines 90% of thread performance.
 
 **Hook formulas:**
 
-| Formula | Example | Best For |
-|---------|---------|----------|
-| **Bold claim** | "Most startup advice is wrong. Here's what actually works:" | Contrarian takes |
-| **Surprising stat** | "97% of SaaS startups fail. The 3% that survive all do this one thing:" | Data-driven topics |
-| **Story opener** | "Last year I was broke. This year I crossed $1M. Here's exactly what changed:" | Personal stories |
-| **Question** | "Why do some people learn in 6 months what takes others 6 years?" | Educational content |
-| **List promise** | "10 tools that replaced my entire $500/mo SaaS stack (all free):" | Practical guides |
-| **Controversial** | "Unpopular opinion: You don't need a business plan. You need this instead:" | Debate starters |
+| Formula | Template | Example |
+|---------|---------|---------|
+| **Bold claim** | "[Counter-intuitive statement]:" | "Most marketing advice is wrong:" |
+| **Numbered list** | "[X] [things] that [outcome]:" | "7 pricing mistakes that cost me $50K:" |
+| **Story opener** | "In [year], I [dramatic situation]." | "In 2023, I almost shut down my startup." |
+| **Question** | "Why do [group] always [action]?" | "Why do most SaaS founders underprice?" |
+| **Data hook** | "I analyzed [X] and found [surprising result]." | "I analyzed 500 landing pages. Here's what converts:" |
+| **Time-based** | "[Time period] ago, I [situation]. Today, [result]." | "6 months ago I had 200 followers. Today: 50K." |
 
-**Hook tweet rules:**
-- Must work as a standalone tweet (not "Thread 🧵")
-- First 50 characters are the most important (preview in timeline)
-- No hashtags in the hook tweet
-- End with a colon or implication there's more to read
-- Never start with "I" — start with the insight
+**Hook rules:**
+- Maximum 2 lines visible without expanding (keep under 180 characters)
+- Create a curiosity gap — make them need to read tweet 2
+- End with a colon `:` or "Here's what I learned:" to signal more is coming
+- No links in tweet 1 (links reduce reach by 50%+)
 
-### Step 3: Build Thread Structure
+### Step 4: Write Body Tweets (2 through N-1)
 
-Design the narrative arc:
+**Body tweet rules:**
+- One idea per tweet (never two concepts in one tweet)
+- Use line breaks for readability
+- Short sentences. Punchy paragraphs.
+- Include a mini-hook every 3-4 tweets to retain scrollers
+- Use numbered tweets (`1/`, `2/`) OR natural flow (no numbers) — don't mix
+
+**Formatting patterns:**
 
 ```
-Tweet 1:  HOOK — Stop the scroll, promise value
-Tweet 2:  CONTEXT — Why this matters now
-Tweet 3:  POINT 1 — First key insight or step
-Tweet 4:  EVIDENCE 1 — Data, example, or story supporting Point 1
-Tweet 5:  POINT 2 — Second key insight or step
-Tweet 6:  EVIDENCE 2 — Data, example, or story supporting Point 2
-Tweet 7:  POINT 3 — Third key insight or step
-Tweet 8:  EVIDENCE 3 — Data, example, or story supporting Point 3
-Tweet 9:  INSIGHT — The "aha" moment connecting everything
-Tweet 10: CTA — What to do next + engagement prompt
+[Concept tweet]
+This is the key insight.
+
+Most people think [common belief].
+
+But the reality is [contrarian truth].
+
+Here's why:
 ```
 
-**Structure variations:**
-
-| Type | Pattern | Best For |
-|------|---------|----------|
-| **How-to** | Hook → Step 1 → Step 2 → ... → CTA | Tutorials, guides |
-| **Listicle** | Hook → Item 1 → Item 2 → ... → Summary → CTA | Tools, tips, resources |
-| **Story** | Hook → Setup → Conflict → Resolution → Lesson → CTA | Personal experience |
-| **Analysis** | Hook → Context → Data → Interpretation → Implication → CTA | Industry takes |
-| **Myth-busting** | Hook → Myth 1 → Truth → Myth 2 → Truth → Key takeaway → CTA | Contrarian content |
-
-### Step 4: Write Each Tweet
-
-For each tweet, follow these rules:
-
-**Format rules:**
-- 280 characters max per tweet
-- Short lines (2-5 words) for readability
-- Line breaks between ideas
-- One idea per tweet — never cram two points
-- Each tweet must deliver value standalone
-- End tweets 2-8 with an implied "and..." to pull readers forward
-
-**Power techniques:**
 ```
-• Use numbers:        "3 reasons", "saved $50K", "in 14 days"
-• Use contrast:       "Most people X. Top performers Y."
-• Use specificity:    "$10,847 in revenue" not "lots of money"
-• Use analogies:      "Writing code is like building LEGO"
-• Use white space:    Short paragraphs, line breaks, breathing room
-• Use formatting:     • Bullets for lists
-                      → Arrows for steps
-                      ↳ Nested for sub-points
+[Tactical tweet]
+Step 3: [Action]
+
+→ Do [specific thing]
+→ Then [specific thing]
+→ Result: [outcome]
+
+This alone [impressive result].
 ```
 
-**What NOT to do:**
-- Don't start tweets with "Also," or "Additionally,"
-- Don't number tweets (1/10, 2/10) — the platform does this
-- Don't use 🧵 emoji — it's overdone
-- Don't end every tweet with a question — one or two max
-- Don't stuff hashtags mid-thread — save for last tweet or skip entirely
+```
+[Data tweet]
+I tested this on [X samples].
 
-### Step 5: Include Data Points
+Results:
+• [Finding 1]: [XX]%
+• [Finding 2]: [XX]%
+• [Finding 3]: [XX]%
 
-Each thread needs credibility. Include at least 2-3 of:
+The winner? [Finding].
+```
 
-| Evidence Type | Example | Impact |
-|---------------|---------|--------|
-| **Statistic** | "Companies with blogs get 67% more leads" | High — concrete, shareable |
-| **Case study** | "When Airbnb did X, they grew Y" | High — narrative + proof |
-| **Personal data** | "My email list went from 0 to 10K in 6 months" | Medium — relatable |
-| **Expert quote** | "As Naval says, 'Code and media are permissionless leverage'" | Medium — borrowed authority |
-| **Comparison** | "Tool A costs $500/mo. This free alternative does 90% of it" | High — practical |
-| **Before/after** | "Before: 2 hours/day on email. After: 20 minutes" | High — transformation |
+**Engagement re-hooks (insert at tweets 4, 7, 10):**
+- "But here's where it gets interesting:"
+- "This next one changed everything:"
+- "Most people miss this part:"
+- "(save this one)"
 
-### Step 6: Write the Final CTA Tweet
-
-The last tweet should do two things: summarize and prompt action.
+### Step 5: Write the Closing CTA (Final Tweet)
 
 **CTA formulas:**
 
-```
-── SUMMARY + FOLLOW ───────────────────────
-TL;DR:
+| Goal | CTA Template |
+|------|-------------|
+| Followers | "Follow me @[handle] for more [topic]. I share [value] every [frequency]." |
+| Retweet | "If this was helpful, retweet the first tweet so others can find it." |
+| Reply | "What would you add? Drop your best [topic] tip below." |
+| Link click | "I wrote a full breakdown here: [link]" |
+| Newsletter | "I go deeper on this in my newsletter. Subscribe: [link]" |
+| Engagement | "Which of these was most surprising? Reply with the number." |
 
-• [Point 1]
-• [Point 2]
-• [Point 3]
+**CTA rules:**
+- ONE primary CTA only (multiple CTAs dilute action)
+- If driving to a link, put it in the last tweet (not tweet 1)
+- Add the self-retweet ask: "Retweet tweet 1 to help others find this"
+- Reply to your own thread with the link (keeps link out of main thread)
 
-If you found this useful, follow me @[handle] for more [topic].
+### Step 6: Final Polish
 
-── SUMMARY + LINK ─────────────────────────
-I wrote a complete guide on this.
+**Thread checklist:**
+- [ ] Tweet 1 creates a curiosity gap (would YOU click to read more?)
+- [ ] Each tweet can stand alone (make sense without surrounding context)
+- [ ] No tweet exceeds 280 characters
+- [ ] Line breaks and white space make each tweet scannable
+- [ ] Engagement re-hooks at tweets 4, 7, and 10
+- [ ] CTA in the final tweet is clear and specific
+- [ ] No links in tweet 1 (put links in last tweet or reply)
+- [ ] Thread length matches content depth (don't pad, don't rush)
+- [ ] Read the full thread aloud — does it flow naturally?
 
-[X] pages, [Y] templates, free.
+**Scheduling strategy:**
+- Best times: Weekdays 8-10 AM or 12-1 PM (audience's timezone)
+- Best days: Tuesday through Thursday
+- Post tweet 1, then unroll the rest within 1-2 minutes
+- Self-retweet the thread 6-8 hours later for a second wave
 
-Grab it here: [link]
+## Output Format
 
-── SUMMARY + ENGAGEMENT ───────────────────
-Which of these resonated most?
+```markdown
+# Twitter/X Thread — [Topic]
 
-Reply with the number:
-1. [Point 1]
-2. [Point 2]
-3. [Point 3]
+**Structure:** [Story / Listicle / Framework / etc.]
+**Length:** [X] tweets
+**Goal:** [Followers / Engagement / Traffic]
+**Best posting time:** [Day, Time, Timezone]
 
-── RETWEET + FOLLOW ───────────────────────
-If this thread saved you time, RT the first tweet to help others find it.
+## Thread
 
-Follow @[handle] for a thread like this every [frequency].
-```
+**Tweet 1 (Hook):**
+[Hook tweet — under 180 chars]
 
-### Step 7: Formatting & Readability
+**Tweet 2:**
+[Body tweet]
 
-Apply final formatting:
+**Tweet 3:**
+[Body tweet]
 
-```
-── FORMATTING CHECKLIST ───────────────────
+[...all tweets...]
 
-☐ Hook tweet < 280 chars, no hashtags
-☐ Each tweet standalone-valuable
-☐ Short lines (phone-optimized readability)
-☐ Data points in 2+ tweets
-☐ One idea per tweet
-☐ No filler words ("basically", "actually", "just")
-☐ Active voice throughout
-☐ CTA is clear and single-action
-☐ Thread reads well without images
-☐ Total thread: [5-15] tweets
-```
+**Tweet [N] (CTA):**
+[Closing CTA tweet]
 
-### Step 8: Output
-
-Present the numbered thread ready to paste:
-
-```
-━━━ TWITTER THREAD: [Topic] ━━━━━━━━━━━━━━
-Tweets: [count]
-Target: [audience]
-CTA: [action]
-
-── THREAD ─────────────────────────────────
-
-1/
-[Hook tweet — 280 chars max]
-
-2/
-[Context tweet]
-
-3/
-[Point 1]
-
-4/
-[Evidence 1]
-
-5/
-[Point 2]
-
-6/
-[Evidence 2]
-
-7/
-[Point 3]
-
-8/
-[Evidence 3]
-
-9/
-[Key insight]
-
-10/
-[CTA tweet]
-
-── POSTING NOTES ──────────────────────────
-Best times to post: [day/time recommendations]
-Reply to your own thread to boost engagement
-Pin the thread after posting
-Quote-tweet the hook with a teaser 24 hours later
-
-── ENGAGEMENT STRATEGY ────────────────────
-• Reply to every comment in the first 2 hours
-• Like all quote tweets
-• Follow back engaged accounts in your niche
-• Repost the thread in 30 days with updated data
+**Reply to thread:**
+[Link or bonus content — posted as a reply to tweet 1]
 ```
 
-## Inputs
-- Topic and key insight
-- Target audience
-- CTA (follow, link, reply, sign up)
-- Tone (educational, provocative, storytelling, data-driven)
-- Thread length preference (short/medium/long)
+## Completion
 
-## Outputs
-- Hook tweet using proven scroll-stopping formulas
-- Structured thread with narrative arc (5-15 tweets)
-- Each tweet standalone-valuable with proper formatting
-- Data points, case studies, or evidence integrated
-- Final CTA tweet with engagement prompt
-- Posting and engagement strategy
-- Complete numbered thread ready to paste into Twitter/X
+```
+Twitter Thread — Complete!
+
+Topic: [Topic]
+Structure: [Type]
+Length: [X] tweets
+Hook type: [Formula used]
+CTA: [Primary action]
+
+Next steps:
+1. Read the full thread aloud — trim anything that doesn't flow
+2. Schedule for [optimal time] using a scheduling tool
+3. Self-retweet 6-8 hours after posting
+4. Engage with every reply in the first 2 hours (boosts algorithm)
+5. Track impressions and engagement rate to learn what works
+```
 
 ## Level History
 
-- **Lv.1** — Base: 6 hook tweet formulas, 5 thread structure patterns (how-to/listicle/story/analysis/myth-busting), per-tweet formatting rules (280 chars, short lines, one idea), data point integration, CTA tweet templates, posting strategy with engagement tips, paste-ready numbered output. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: 5 thread structures (story, listicle, framework, contrarian, before/after), 6 hook formulas with examples, body tweet formatting patterns, engagement re-hooks, CTA formulas by goal (6 types), scheduling strategy, full thread checklist. (Origin: MemStack Pro v3.2, Mar 2026)

@@ -1,422 +1,472 @@
 ---
-name: test-writer
-description: "Use when the user says 'write tests', 'add tests', 'test coverage', 'unit tests', 'integration tests', or wants to generate test files for existing code."
+name: memstack-development-test-writer
+description: "Use this skill when the user says 'write tests', 'add tests', 'test coverage', 'unit tests', 'integration tests', 'component tests', 'mocking', 'edge cases', or needs to generate tests with proper mocking and edge case coverage. Do NOT use for refactoring plans or database migrations."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🧪 Test Writer — Comprehensive Test Generation
-*Analyze code for untested paths and generate unit, integration, and component tests with proper mocking and edge case coverage.*
+# Test Writer — Generating test suite...
+*Generates comprehensive test suites with unit, integration, and e2e tests, proper mocking strategies, edge case coverage, naming conventions, and CI integration patterns.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🧪 Test Writer — Generating tests for your codebase...`
+`Test Writer — Generating test suite...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "write tests", "add tests", "test coverage"** | ACTIVE |
-| **User wants unit, integration, or component tests** | ACTIVE |
-| **User mentions mocking, edge cases, or test strategy** | ACTIVE |
-| **User wants to plan a refactor (tests are part of it)** | DORMANT — see refactor-planner |
-| **User wants to plan a database migration** | DORMANT — see migration-planner |
+| User says "write tests", "add tests", "test coverage" | ACTIVE |
+| User says "unit tests", "integration tests", "component tests", "e2e tests" | ACTIVE |
+| User says "mocking", "edge cases", "test this function" | ACTIVE |
+| User wants to refactor existing code | DORMANT — use Refactor Planner |
+| User wants to change database schema | DORMANT — use Migration Planner |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Testing implementation, not behavior" | Tests that break when you refactor internals are brittle. Test WHAT it does, not HOW. |
+| "No edge cases" | Happy path tests catch 20% of bugs. Boundaries, nulls, empty inputs, and error paths catch the rest. |
+| "Mocking everything" | Over-mocking creates tests that pass but don't catch real bugs. Mock boundaries, not internals. |
+| "Test names like test1, test2" | Names should describe behavior: "returns empty array when no items match filter". Self-documenting tests. |
+| "No test isolation" | Tests that depend on each other or shared state create flaky test suites that nobody trusts. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Test Requirements
 
-Ask the user for:
-- **Target code**: Which files, modules, or features need tests?
-- **Language/framework**: What's the tech stack? (Node/Jest, Python/pytest, React/Vitest, etc.)
-- **Test runner**: What test framework is already configured?
-- **Existing tests**: Are there any tests already? What's the coverage?
-- **Priority areas**: What's most critical to test? (business logic, API routes, UI components)
-- **External dependencies**: What needs mocking? (databases, APIs, file system)
+If the user hasn't provided details, ask:
 
-### Step 2: Analyze Critical Paths
+> 1. **Target** — what code needs tests? (function, class, module, API endpoint)
+> 2. **Language/framework** — what tech stack? (JS/TS + Jest/Vitest, Python + pytest, Go, etc.)
+> 3. **Test level** — unit, integration, e2e, or all three?
+> 4. **Current coverage** — any existing tests? What percentage?
+> 5. **Priority** — critical paths first, or comprehensive coverage?
 
-Identify the most important code paths to test:
+### Step 2: Analyze the Code Under Test
 
-| Priority | Code Path | Type | Risk | Coverage |
-|----------|-----------|------|------|----------|
-| 🔴 Critical | [business logic / payment flow / auth] | Unit | High — bugs here lose money | None |
-| 🟡 Important | [API routes / data transforms] | Integration | Medium — breaks user flows | Partial |
-| 🟢 Standard | [utility functions / helpers] | Unit | Low — isolated, simple | None |
-| 🟢 Standard | [UI components / forms] | Component | Medium — user-facing | None |
+Before writing tests, understand the target:
 
-**Critical path detection rules:**
-- Handles money or sensitive data → 🔴 Critical
-- Called by 5+ other modules → 🔴 Critical
-- Has complex branching (3+ conditions) → 🟡 Important
-- Pure function with clear inputs/outputs → 🟢 Standard (but easy to test)
-- Recently had bugs → 🔴 Critical regardless of type
+**Function/method analysis:**
 
-### Step 3: Generate Unit Tests
+| Property | Value |
+|----------|-------|
+| **Inputs** | [Parameters, types, optional/required] |
+| **Outputs** | [Return type, side effects, thrown exceptions] |
+| **Dependencies** | [External calls: DB, API, file system, other modules] |
+| **State changes** | [What mutates: database records, cache, global state] |
+| **Branching paths** | [Number of if/else/switch branches] |
+| **Error conditions** | [What can fail and how it's handled] |
 
-For utility functions and business logic:
+**Dependency map:**
 
-**Test structure:**
-```javascript
+```
+[Target Function]
+  ├── [Dependency 1] — mock? [Yes: external / No: pure]
+  ├── [Dependency 2] — mock? [Yes: external / No: pure]
+  └── [Dependency 3] — mock? [Yes: external / No: pure]
+```
+
+**Mock decision rule:**
+- **Mock** external boundaries: databases, APIs, file system, network, time
+- **Don't mock** pure functions, internal utilities, simple data transformations
+- **Sometimes mock** sibling modules (mock for unit tests, real for integration)
+
+### Step 3: Design Test Cases
+
+**Coverage strategy — identify all test scenarios:**
+
+**Happy path tests:**
+
+| # | Scenario | Input | Expected Output |
+|---|---------|-------|----------------|
+| 1 | [Normal case with typical input] | [Input] | [Output] |
+| 2 | [Normal case with different valid input] | [Input] | [Output] |
+
+**Edge case tests:**
+
+| # | Category | Scenario | Input | Expected Output |
+|---|---------|---------|-------|----------------|
+| 1 | **Boundaries** | Minimum valid value | [Input] | [Output] |
+| 2 | **Boundaries** | Maximum valid value | [Input] | [Output] |
+| 3 | **Boundaries** | Exactly at limit | [Input] | [Output] |
+| 4 | **Empty** | Empty string / array / object | `""` / `[]` / `{}` | [Output] |
+| 5 | **Null/Undefined** | Null input | `null` | [Output or error] |
+| 6 | **Type coercion** | Unexpected type | `"123"` vs `123` | [Output] |
+| 7 | **Large input** | Very large dataset | [X items] | [Output / perf] |
+| 8 | **Unicode** | Special characters | `"café ñ 中文"` | [Output] |
+| 9 | **Concurrent** | Race condition scenario | [Parallel calls] | [Consistent state] |
+
+**Error path tests:**
+
+| # | Error Condition | Input | Expected Behavior |
+|---|----------------|-------|-------------------|
+| 1 | Invalid input | [Bad input] | Throws [ErrorType] with message |
+| 2 | Dependency failure | [DB timeout] | Returns fallback or propagates error |
+| 3 | Permission denied | [Unauthorized] | Returns 403 / throws AuthError |
+| 4 | Not found | [Missing resource] | Returns null or throws NotFoundError |
+
+### Step 4: Write the Tests
+
+**Test file naming conventions:**
+
+| Framework | Convention | Example |
+|-----------|----------|---------|
+| Jest / Vitest | `[name].test.ts` or `[name].spec.ts` | `userService.test.ts` |
+| pytest | `test_[name].py` | `test_user_service.py` |
+| Go | `[name]_test.go` | `user_service_test.go` |
+| JUnit | `[Name]Test.java` | `UserServiceTest.java` |
+
+**Test naming conventions:**
+
+| Style | Pattern | Example |
+|-------|---------|---------|
+| **Behavior-driven** | `should [expected] when [condition]` | `should return empty array when no items match filter` |
+| **Given-When-Then** | `given [state] when [action] then [result]` | `given expired token when authenticating then throws AuthError` |
+| **Method-focused** | `[method] — [scenario] — [expected]` | `calculateTotal — with discount — applies percentage reduction` |
+
+**Test structure template (JavaScript/TypeScript):**
+
+```typescript
 describe('[ModuleName]', () => {
-  describe('[functionName]', () => {
+  // Setup shared across tests in this block
+  let dependency: MockType;
+
+  beforeEach(() => {
+    dependency = createMock();
+    // Reset state before each test
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe('[methodName]', () => {
     // Happy path
-    it('should [expected behavior] when [condition]', () => {
-      const result = functionName(validInput);
+    it('should [expected behavior] when [normal condition]', () => {
+      // Arrange
+      const input = { /* test data */ };
+      dependency.method.mockResolvedValue(expectedData);
+
+      // Act
+      const result = targetMethod(input);
+
+      // Assert
       expect(result).toEqual(expectedOutput);
     });
 
-    // Edge cases
-    it('should handle null input gracefully', () => {
-      expect(() => functionName(null)).not.toThrow();
+    // Edge case
+    it('should [expected behavior] when [edge condition]', () => {
+      // Arrange
+      const input = { /* edge case data */ };
+
+      // Act
+      const result = targetMethod(input);
+
+      // Assert
+      expect(result).toEqual(edgeCaseOutput);
     });
 
-    it('should return empty array when given empty input', () => {
-      const result = functionName([]);
-      expect(result).toEqual([]);
-    });
+    // Error path
+    it('should throw [ErrorType] when [error condition]', () => {
+      // Arrange
+      const input = { /* invalid data */ };
 
-    // Boundary values
-    it('should handle maximum allowed value', () => {
-      const result = functionName(MAX_VALUE);
-      expect(result).toBeDefined();
-    });
-
-    it('should handle minimum allowed value', () => {
-      const result = functionName(MIN_VALUE);
-      expect(result).toBeDefined();
-    });
-
-    // Error states
-    it('should throw ValidationError for invalid input', () => {
-      expect(() => functionName(invalidInput)).toThrow(ValidationError);
+      // Act & Assert
+      expect(() => targetMethod(input)).toThrow(ErrorType);
     });
   });
 });
 ```
 
-**Test naming convention:**
-- `describe` block: Module or class name
-- Nested `describe`: Function or method name
-- `it` block: `should [behavior] when [condition]`
-- Never use `test` as a verb in descriptions
+**Test structure template (Python):**
 
-**Coverage targets per function type:**
-| Function Type | Min Coverage | Key Cases |
-|---------------|-------------|-----------|
-| Pure functions | 100% | All branches, boundary values |
-| Business logic | 90% | Happy path, every error branch |
-| Data transforms | 95% | Null, empty, malformed, large |
-| Validators | 100% | Valid, each invalid case |
+```python
+import pytest
+from unittest.mock import Mock, patch
 
-### Step 4: Generate Integration Tests
+class TestModuleName:
+    """Tests for [ModuleName]."""
 
-For API routes and service interactions:
+    def setup_method(self):
+        """Reset state before each test."""
+        self.dependency = Mock()
 
-```javascript
-describe('[Route/Service] Integration', () => {
-  // Setup
+    # Happy path
+    def test_method_returns_expected_when_normal_input(self):
+        """Should [expected behavior] when [condition]."""
+        # Arrange
+        input_data = {"key": "value"}
+        self.dependency.method.return_value = expected_data
+
+        # Act
+        result = target_method(input_data)
+
+        # Assert
+        assert result == expected_output
+
+    # Edge case
+    def test_method_handles_empty_input(self):
+        """Should [expected behavior] when input is empty."""
+        result = target_method([])
+        assert result == []
+
+    # Error path
+    def test_method_raises_error_when_invalid_input(self):
+        """Should raise ValueError when [condition]."""
+        with pytest.raises(ValueError, match="expected message"):
+            target_method(invalid_input)
+```
+
+### Step 5: Mocking Strategy
+
+**Mock patterns by dependency type:**
+
+| Dependency | Mock Approach | Example |
+|-----------|--------------|---------|
+| **Database** | Mock repository/ORM layer | `jest.spyOn(db, 'query').mockResolvedValue(rows)` |
+| **HTTP API** | Mock HTTP client or use MSW/nock | `nock('https://api.example.com').get('/users').reply(200, data)` |
+| **File system** | Mock fs module or use memfs | `jest.mock('fs/promises')` |
+| **Time/Date** | Fake timers | `jest.useFakeTimers(); jest.setSystemTime(new Date('2026-01-15'))` |
+| **Random** | Seed or mock | `jest.spyOn(Math, 'random').mockReturnValue(0.5)` |
+| **Environment** | Set/restore env vars | `process.env.NODE_ENV = 'test'` in beforeEach |
+| **Third-party SDK** | Mock the client | `jest.mock('stripe', () => mockStripeClient)` |
+
+**Mock verification patterns:**
+
+```typescript
+// Verify a dependency was called correctly
+expect(mockDb.query).toHaveBeenCalledWith(
+  'SELECT * FROM users WHERE id = $1',
+  [userId]
+);
+
+// Verify call count
+expect(mockApi.fetch).toHaveBeenCalledTimes(1);
+
+// Verify NOT called (important for caching tests)
+expect(mockDb.query).not.toHaveBeenCalled();
+
+// Verify call order (important for transaction tests)
+const order = [];
+mockDb.begin.mockImplementation(() => order.push('begin'));
+mockDb.commit.mockImplementation(() => order.push('commit'));
+// ... run test ...
+expect(order).toEqual(['begin', 'commit']);
+```
+
+### Step 6: Integration & E2E Tests
+
+**Integration test patterns:**
+
+```typescript
+describe('[Feature] Integration', () => {
+  // Use real database (test instance), real logic, mock external APIs only
+  let testDb: TestDatabase;
+
   beforeAll(async () => {
-    await setupTestDatabase();
-  });
-
-  afterEach(async () => {
-    await cleanupTestData();
+    testDb = await createTestDatabase();
+    await testDb.migrate();
   });
 
   afterAll(async () => {
-    await teardownTestDatabase();
+    await testDb.destroy();
   });
 
-  describe('POST /api/[resource]', () => {
-    it('should create resource and return 201', async () => {
-      const response = await request(app)
-        .post('/api/resource')
-        .send(validPayload)
-        .set('Authorization', `Bearer ${testToken}`);
+  beforeEach(async () => {
+    await testDb.truncateAll(); // Clean state per test
+  });
 
-      expect(response.status).toBe(201);
-      expect(response.body).toMatchObject({
-        id: expect.any(String),
-        ...validPayload,
-      });
+  it('should create user and send welcome email', async () => {
+    // Arrange — mock only the email service (external boundary)
+    const emailSpy = jest.spyOn(emailService, 'send').mockResolvedValue(true);
+
+    // Act — use real DB, real validation, real business logic
+    const user = await userService.register({
+      email: 'test@example.com',
+      name: 'Test User',
     });
 
-    it('should return 400 for invalid payload', async () => {
-      const response = await request(app)
-        .post('/api/resource')
-        .send(invalidPayload)
-        .set('Authorization', `Bearer ${testToken}`);
-
-      expect(response.status).toBe(400);
-      expect(response.body.error).toBeDefined();
-    });
-
-    it('should return 401 without authentication', async () => {
-      const response = await request(app)
-        .post('/api/resource')
-        .send(validPayload);
-
-      expect(response.status).toBe(401);
-    });
+    // Assert — verify real DB state + external call
+    const dbUser = await testDb.query('SELECT * FROM users WHERE id = $1', [user.id]);
+    expect(dbUser).toBeDefined();
+    expect(emailSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ to: 'test@example.com' })
+    );
   });
 });
 ```
 
-**Integration test categories:**
-| Category | What to Test | Setup Needed |
-|----------|-------------|--------------|
-| API routes | Request/response cycle, status codes, body shape | Test server, auth tokens |
-| Database queries | CRUD operations, constraints, transactions | Test database, seed data |
-| Service-to-service | Function calls across module boundaries | Mocked external services |
-| Middleware | Auth, validation, rate limiting, error handling | Request mocks |
+**E2E test patterns (API):**
 
-### Step 5: Generate Component Tests
+```typescript
+describe('POST /api/users', () => {
+  it('should create a user and return 201', async () => {
+    const response = await request(app)
+      .post('/api/users')
+      .send({ email: 'test@example.com', name: 'Test User' })
+      .expect(201);
 
-For React/UI components (user-event based):
-
-```javascript
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ComponentName } from './ComponentName';
-
-describe('<ComponentName />', () => {
-  const defaultProps = {
-    onSubmit: vi.fn(),
-    initialValue: '',
-  };
-
-  it('renders with default props', () => {
-    render(<ComponentName {...defaultProps} />);
-    expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
-  });
-
-  it('calls onSubmit with form data when submitted', async () => {
-    const user = userEvent.setup();
-    render(<ComponentName {...defaultProps} />);
-
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(defaultProps.onSubmit).toHaveBeenCalledWith({
+    expect(response.body).toMatchObject({
+      id: expect.any(String),
       email: 'test@example.com',
     });
   });
 
-  it('shows validation error for invalid input', async () => {
-    const user = userEvent.setup();
-    render(<ComponentName {...defaultProps} />);
+  it('should return 400 for invalid email', async () => {
+    const response = await request(app)
+      .post('/api/users')
+      .send({ email: 'not-an-email', name: 'Test' })
+      .expect(400);
 
-    await user.type(screen.getByLabelText(/email/i), 'not-an-email');
-    await user.click(screen.getByRole('button', { name: /submit/i }));
-
-    expect(screen.getByText(/valid email/i)).toBeInTheDocument();
-    expect(defaultProps.onSubmit).not.toHaveBeenCalled();
+    expect(response.body.error).toContain('email');
   });
 
-  it('disables submit button while loading', () => {
-    render(<ComponentName {...defaultProps} isLoading={true} />);
-    expect(screen.getByRole('button', { name: /submit/i })).toBeDisabled();
-  });
-});
-```
+  it('should return 409 for duplicate email', async () => {
+    // Create first user
+    await request(app).post('/api/users').send({ email: 'dup@example.com', name: 'First' });
 
-**Component testing rules:**
-- Query by role, label, or text — never by class name or test ID (unless necessary)
-- Use `userEvent` over `fireEvent` — simulates real user behavior
-- Test user-visible behavior, not implementation details
-- Don't test styling — test that elements appear/disappear
-- Mock child components only when they have side effects
-
-### Step 6: Mock External Dependencies
-
-Provide mocking patterns for common services:
-
-**Database (Supabase/Prisma/Drizzle):**
-```javascript
-// Mock Supabase client
-vi.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValue({ data: mockData, error: null }),
-    })),
-    auth: {
-      getUser: vi.fn().mockResolvedValue({ data: { user: mockUser }, error: null }),
-    },
-  },
-}));
-```
-
-**External APIs (Stripe, SendGrid, etc.):**
-```javascript
-// Mock Stripe
-vi.mock('stripe', () => ({
-  default: vi.fn(() => ({
-    customers: {
-      create: vi.fn().mockResolvedValue({ id: 'cus_test' }),
-      retrieve: vi.fn().mockResolvedValue(mockCustomer),
-    },
-    checkout: {
-      sessions: {
-        create: vi.fn().mockResolvedValue({ url: 'https://checkout.stripe.com/test' }),
-      },
-    },
-  })),
-}));
-```
-
-**Fetch/HTTP:**
-```javascript
-// Mock global fetch
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
-
-beforeEach(() => {
-  mockFetch.mockResolvedValue({
-    ok: true,
-    json: async () => mockResponse,
-    status: 200,
+    // Attempt duplicate
+    const response = await request(app)
+      .post('/api/users')
+      .send({ email: 'dup@example.com', name: 'Second' })
+      .expect(409);
   });
 });
 ```
 
-**Mocking principles:**
-- Mock at the boundary — mock the external service, not your wrapper
-- Reset mocks between tests (`vi.clearAllMocks()` in `afterEach`)
-- Test both success and failure responses from mocks
-- Use `mockResolvedValueOnce` for sequence-dependent tests
+### Step 7: Coverage & CI Integration
 
-### Step 7: Edge Case Coverage
+**Coverage targets:**
 
-Systematic edge case checklist per input type:
+| Level | Target | Rationale |
+|-------|--------|-----------|
+| **Critical paths** (auth, payments, data writes) | >90% | Bugs here = revenue loss or security issues |
+| **Business logic** (services, domain) | >80% | Core value — must work correctly |
+| **Utilities / helpers** | >70% | Important but lower risk |
+| **UI components** | >60% | Visual testing often complements |
+| **Overall project** | >75% | Healthy baseline |
 
-| Input Type | Edge Cases to Test |
-|-----------|-------------------|
-| **String** | Empty `""`, whitespace `"  "`, very long (10000 chars), special chars `<>&"'`, unicode `🎉`, SQL injection `'; DROP TABLE--` |
-| **Number** | Zero `0`, negative `-1`, float `0.1 + 0.2`, `NaN`, `Infinity`, max safe integer |
-| **Array** | Empty `[]`, single item `[x]`, very large (10000 items), nested arrays, duplicate items |
-| **Object** | Empty `{}`, missing required keys, extra unknown keys, nested nulls |
-| **Date** | Past date, future date, midnight, DST transition, invalid date string, epoch `0` |
-| **Boolean** | `true`, `false`, truthy `1`, falsy `0`, `null`, `undefined` |
-| **File** | Empty file, very large file, wrong format, corrupted data, missing file |
-| **Auth** | No token, expired token, invalid token, wrong permissions, admin vs user |
+**CI configuration template (GitHub Actions):**
 
-**Error state testing:**
-```javascript
-describe('error handling', () => {
-  it('should handle network timeout', async () => {
-    mockFetch.mockRejectedValue(new Error('ETIMEOUT'));
-    await expect(fetchData()).rejects.toThrow('ETIMEOUT');
-  });
+```yaml
+name: Tests
+on: [push, pull_request]
 
-  it('should handle malformed JSON response', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => { throw new SyntaxError('Unexpected token'); },
-    });
-    await expect(fetchData()).rejects.toThrow();
-  });
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-  it('should handle concurrent access', async () => {
-    const results = await Promise.all([
-      processItem('item-1'),
-      processItem('item-2'),
-      processItem('item-3'),
-    ]);
-    expect(results).toHaveLength(3);
-  });
-});
+      - run: npm ci
+      - run: npm test -- --coverage
+
+      - name: Check coverage thresholds
+        run: |
+          npx jest --coverage --coverageThreshold='{
+            "global": {
+              "branches": 75,
+              "functions": 80,
+              "lines": 80,
+              "statements": 80
+            }
+          }'
 ```
 
-### Step 8: Test File Organization
+**Test runner configuration:**
 
-Structure test files to mirror source code:
-
-```
-src/
-  utils/
-    formatDate.ts         →  __tests__/utils/formatDate.test.ts
-  services/
-    paymentService.ts     →  __tests__/services/paymentService.test.ts
-  api/
-    routes/
-      users.ts            →  __tests__/api/routes/users.test.ts
-  components/
-    UserForm.tsx          →  __tests__/components/UserForm.test.tsx
-```
-
-**Or colocated pattern:**
-```
-src/
-  utils/
-    formatDate.ts
-    formatDate.test.ts
-  components/
-    UserForm.tsx
-    UserForm.test.tsx
+```json
+// jest.config.js / vitest.config.ts
+{
+  "collectCoverageFrom": [
+    "src/**/*.{ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/**/index.ts",
+    "!src/**/*.stories.tsx"
+  ],
+  "coverageThresholds": {
+    "global": {
+      "branches": 75,
+      "functions": 80,
+      "lines": 80,
+      "statements": 80
+    }
+  }
+}
 ```
 
-Follow whichever pattern the project already uses. If no convention exists, recommend colocated.
+**Pre-commit test check:**
 
-### Step 9: Output
-
-Present the complete test suite:
-
-```
-━━━ TEST SUITE: [Module/Feature Name] ━━━━━
-
-── COVERAGE ANALYSIS ──────────────────────
-Critical paths identified: [count]
-Current coverage: [%]
-Target coverage: [%]
-
-── UNIT TESTS ─────────────────────────────
-File: [test file path]
-Tests: [count]
-[complete test file code]
-
-── INTEGRATION TESTS ──────────────────────
-File: [test file path]
-Tests: [count]
-[complete test file code]
-
-── COMPONENT TESTS ────────────────────────
-File: [test file path]
-Tests: [count]
-[complete test file code]
-
-── MOCKS ──────────────────────────────────
-[mock setup files]
-
-── EDGE CASES COVERED ─────────────────────
-[checklist of edge cases per input type]
-
-── RUN INSTRUCTIONS ───────────────────────
-Command: [test run command]
-Watch mode: [watch command]
-Coverage report: [coverage command]
+```bash
+# Only run tests related to changed files (fast feedback)
+npx jest --onlyChanged
+# or
+npx vitest --changed
 ```
 
-## Inputs
-- Target code files or modules
-- Language and test framework
-- Current coverage level
-- Priority areas (business logic, API, UI)
-- External dependencies to mock
+## Output Format
 
-## Outputs
-- Critical path analysis with priority ranking
-- Unit tests for utility functions and business logic
-- Integration tests for API routes with setup/teardown
-- Component tests using user-event patterns
-- Mock configurations for external dependencies (Supabase, Stripe, APIs)
-- Systematic edge case coverage (null, empty, boundary, error states)
-- Complete test files with setup, assertions, and cleanup
-- Test naming convention: describe/it with clear behavior descriptions
+```markdown
+# Test Suite — [Target Module/Function]
+
+## Analysis
+- **Target:** [What's being tested]
+- **Dependencies:** [X] total ([X] mocked, [X] real)
+- **Branching paths:** [X]
+
+## Test Cases
+### Unit Tests ([X] tests)
+[Test code from Step 4]
+
+### Edge Cases ([X] tests)
+[Edge case tests from Step 3]
+
+### Error Cases ([X] tests)
+[Error path tests from Step 3]
+
+### Integration Tests ([X] tests)
+[Integration tests from Step 6, if requested]
+
+## Coverage Summary
+- Lines: [X]%
+- Branches: [X]%
+- Functions: [X]%
+
+## CI Integration
+[CI config from Step 7, if requested]
+```
+
+## Completion
+
+```
+Test Writer — Complete!
+
+Target: [Module/function name]
+Tests written: [X] total
+  - Unit tests: [X]
+  - Edge cases: [X]
+  - Error cases: [X]
+  - Integration tests: [X]
+Mocked dependencies: [X]
+Estimated coverage: [X]%
+
+Next steps:
+1. Run the test suite: [test command]
+2. Check coverage report for uncovered branches
+3. Add tests to CI pipeline (config provided above)
+4. Add pre-commit hook to run related tests on save
+5. Review and adjust coverage thresholds quarterly
+```
 
 ## Level History
 
-- **Lv.1** — Base: Critical path analysis, unit test generation with boundary/edge cases, integration tests with setup/teardown, component tests (user-event based), mock patterns for Supabase/Stripe/fetch, systematic edge case checklist per input type, test file organization, describe/it naming convention. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: Code analysis template (inputs, outputs, dependencies, branches), 3-category test case design (happy path, edge cases, error paths), test templates for JS/TS and Python, 7 mock patterns by dependency type with verification, integration and E2E test patterns, coverage targets by code criticality, CI integration with GitHub Actions. (Origin: MemStack Pro v3.2, Mar 2026)

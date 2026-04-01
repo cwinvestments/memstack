@@ -1,335 +1,343 @@
 ---
-name: api-integration
-description: "Use when the user says 'API integration', 'connect APIs', 'sync data', 'API to API', 'integrate with', or needs to build a reliable connection between two systems via their APIs."
+name: memstack-automation-api-integration
+description: "Use this skill when the user says 'API integration', 'connect APIs', 'sync data', 'data mapping', 'rate limiting', or needs system-to-system connectors with authentication, rate limit handling, and error recovery. Do NOT use for visual n8n workflows or webhook receiving."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-
-# 🔗 API Integration — System-to-System Connector
-*Design reliable API integrations with authentication, rate limiting, data mapping, error recovery, and sync monitoring.*
+# API Integration — Building system connector...
+*Develops system-to-system connectors with REST/GraphQL patterns, authentication flows, rate limit handling, data mapping, error recovery, and SDK wrapper generation.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔗 API Integration — Designing your system integration...`
+`API Integration — Building system connector...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "API integration", "connect APIs", "sync data"** | ACTIVE |
-| **User wants to move data between two systems** | ACTIVE |
-| **User mentions OAuth, rate limits, or data mapping** | ACTIVE |
-| **User wants a visual n8n workflow** | DORMANT — see n8n-workflow-builder |
-| **User wants to receive webhooks (not build a full integration)** | DORMANT — see webhook-designer |
-| **User wants a cron job (the integration is secondary)** | DORMANT — see cron-scheduler |
+| User says "API integration", "connect APIs", "sync data" | ACTIVE |
+| User says "data mapping" or "rate limiting" | ACTIVE |
+| User needs to build a connector between two systems | ACTIVE |
+| User wants a visual n8n workflow | DORMANT — use n8n Workflow Builder |
+| User wants to receive webhooks | DORMANT — use Webhook Designer |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Ignore rate limits" | Getting blocked by the API wastes hours of debugging. Implement rate limiting from day one. |
+| "No retry logic" | APIs have transient failures. Without retry + backoff, your sync silently drops data. |
+| "Store tokens in code" | Use environment variables or a secrets manager. Tokens in code end up in git history. |
+| "Map fields manually every time" | Build a reusable mapping layer. Manual field-by-field transforms are fragile and hard to update. |
+| "No pagination handling" | Most APIs return paginated results. If you only read page 1, you're missing data. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Integration Requirements
 
-Ask the user for:
-- **Source API**: What system provides the data? (name, docs URL)
-- **Target system**: Where should data go? (database, another API, file)
-- **Data to sync**: What specific data? (users, orders, products, events)
-- **Sync frequency**: Real-time, near-real-time, hourly, daily, on-demand?
-- **Volume**: How many records? How often do they change?
-- **Direction**: One-way (source → target) or bidirectional?
+If the user hasn't provided details, ask:
 
-### Step 2: Choose Integration Pattern
+> 1. **Source system** — where does the data come from? (API name, docs URL)
+> 2. **Destination** — where does it go? (your DB, another API, file)
+> 3. **Data** — what entities are synced? (users, orders, products, events)
+> 4. **Direction** — one-way, two-way, or event-driven?
+> 5. **Auth** — how does the API authenticate? (API key, OAuth 2.0, JWT, Basic)
+> 6. **Volume** — how much data? How often? (1K records/day vs 1M)
 
-Evaluate which pattern fits:
+### Step 2: Implement Authentication
 
-| Pattern | Best For | Latency | Complexity | Cost |
-|---------|----------|---------|------------|------|
-| **Polling** | APIs without webhooks, batch sync | Minutes-hours | Low | Higher API calls |
-| **Webhook** | Event-driven, real-time updates | Seconds | Medium | Low API calls |
-| **Event-driven** | High-volume, microservice comms | Milliseconds | High | Infra cost (queue) |
-| **Hybrid** | Webhook for real-time + polling for reconciliation | Seconds + batch | Medium-High | Balanced |
+| Auth Type | Implementation | Token Lifecycle |
+|-----------|---------------|----------------|
+| **API Key** | Header: `X-API-Key: {key}` or query param | Static — rotate manually |
+| **Bearer Token** | Header: `Authorization: Bearer {token}` | Expires — refresh needed |
+| **OAuth 2.0** | Auth code flow → access + refresh tokens | Auto-refresh on 401 |
+| **JWT** | Sign claims → `Authorization: Bearer {jwt}` | Short-lived — re-sign |
+| **Basic Auth** | Header: `Authorization: Basic {base64}` | Static |
+| **HMAC** | Sign request body → custom header | Per-request signing |
 
-**Decision guide:**
-- Source has webhooks? → Webhook-first, poll for reconciliation
-- Source has no webhooks? → Poll at reasonable interval
-- Need real-time? → Webhook or event stream
-- Need guaranteed delivery? → Add queue (SQS, Redis, BullMQ)
-- Bidirectional? → Be very careful about sync loops — use change tokens
+**OAuth 2.0 token refresh pattern:**
 
-Recommend the pattern with justification.
+```typescript
+class ApiClient {
+  private accessToken: string;
+  private refreshToken: string;
+  private expiresAt: number;
 
-### Step 3: Authentication Setup
-
-Provide setup for the source API's auth method:
-
-**API Key:**
-```javascript
-const client = axios.create({
-  baseURL: 'https://api.service.com/v1',
-  headers: { 'Authorization': `Bearer ${process.env.SERVICE_API_KEY}` },
-  timeout: 10000,
-});
-```
-
-**OAuth 2.0:**
-```javascript
-class OAuthClient {
-  constructor(clientId, clientSecret, tokenUrl) {
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.tokenUrl = tokenUrl;
-    this.accessToken = null;
-    this.expiresAt = 0;
-  }
-
-  async getToken() {
-    if (this.accessToken && Date.now() < this.expiresAt - 60000) {
-      return this.accessToken;
+  async request(method: string, path: string, body?: any): Promise<any> {
+    if (Date.now() >= this.expiresAt - 60_000) { // Refresh 60s early
+      await this.refreshAccessToken();
     }
 
-    const response = await axios.post(this.tokenUrl, {
-      grant_type: 'client_credentials',
-      client_id: this.clientId,
-      client_secret: this.clientSecret,
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      method,
+      headers: {
+        'Authorization': `Bearer ${this.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: body ? JSON.stringify(body) : undefined,
     });
 
-    this.accessToken = response.data.access_token;
-    this.expiresAt = Date.now() + (response.data.expires_in * 1000);
-    return this.accessToken;
-  }
+    if (response.status === 401) {
+      await this.refreshAccessToken();
+      return this.request(method, path, body); // Retry once
+    }
 
-  async request(config) {
-    const token = await this.getToken();
-    return axios({ ...config, headers: { ...config.headers, Authorization: `Bearer ${token}` } });
+    return response.json();
   }
 }
 ```
 
-**JWT:**
-```javascript
-const jwt = require('jsonwebtoken');
-const token = jwt.sign({ sub: serviceId }, privateKey, {
-  algorithm: 'RS256',
-  expiresIn: '1h',
-});
+### Step 3: Handle Rate Limiting
+
+**Rate limit detection and backoff:**
+
+```typescript
+async function requestWithRateLimit(
+  fn: () => Promise<Response>,
+  maxRetries = 3
+): Promise<Response> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fn();
+
+    if (response.status === 429) {
+      const retryAfter = parseInt(response.headers.get('Retry-After') || '0');
+      const waitMs = retryAfter > 0
+        ? retryAfter * 1000
+        : Math.min(1000 * Math.pow(2, attempt), 30_000); // Exponential backoff, max 30s
+
+      console.log(`Rate limited. Waiting ${waitMs}ms (attempt ${attempt + 1})`);
+      await sleep(waitMs);
+      continue;
+    }
+
+    return response;
+  }
+  throw new Error('Rate limit exceeded after max retries');
+}
 ```
 
-Store all credentials in environment variables. Document which scopes/permissions are needed.
+**Proactive rate limiting (token bucket):**
 
-### Step 4: Rate Limit Handling
+```typescript
+class RateLimiter {
+  private tokens: number;
+  private lastRefill: number;
 
-Design rate limit respect:
-
-```javascript
-class RateLimitedClient {
-  constructor(client, maxPerSecond = 10) {
-    this.client = client;
-    this.queue = [];
-    this.interval = 1000 / maxPerSecond;
-    this.lastRequest = 0;
+  constructor(
+    private maxTokens: number,    // e.g., 100
+    private refillRate: number,   // tokens per second, e.g., 10
+  ) {
+    this.tokens = maxTokens;
+    this.lastRefill = Date.now();
   }
 
-  async request(config) {
+  async acquire(): Promise<void> {
+    this.refill();
+    if (this.tokens <= 0) {
+      const waitMs = (1 / this.refillRate) * 1000;
+      await sleep(waitMs);
+      this.refill();
+    }
+    this.tokens--;
+  }
+
+  private refill(): void {
     const now = Date.now();
-    const wait = Math.max(0, this.lastRequest + this.interval - now);
+    const elapsed = (now - this.lastRefill) / 1000;
+    this.tokens = Math.min(this.maxTokens, this.tokens + elapsed * this.refillRate);
+    this.lastRefill = now;
+  }
+}
+```
 
-    if (wait > 0) await new Promise(r => setTimeout(r, wait));
-    this.lastRequest = Date.now();
+### Step 4: Build Data Mapper
 
-    try {
-      return await this.client.request(config);
-    } catch (err) {
-      if (err.response?.status === 429) {
-        const retryAfter = parseInt(err.response.headers['retry-after'] || '60', 10);
-        console.warn(`Rate limited. Retrying after ${retryAfter}s`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));
-        return this.request(config); // Retry once
-      }
-      throw err;
+**Mapping layer pattern:**
+
+```typescript
+// Define field mappings declaratively
+interface FieldMapping {
+  source: string;        // Source field path (dot notation)
+  target: string;        // Target field path
+  transform?: (val: any) => any;  // Optional transformation
+  required?: boolean;
+}
+
+const orderMappings: FieldMapping[] = [
+  { source: 'id',              target: 'externalId',  required: true },
+  { source: 'customer.email',  target: 'email',       required: true },
+  { source: 'total_price',     target: 'amount',      transform: (v) => parseFloat(v) * 100 }, // dollars to cents
+  { source: 'created_at',      target: 'createdAt',   transform: (v) => new Date(v).toISOString() },
+  { source: 'line_items',      target: 'items',       transform: mapLineItems },
+];
+
+function mapRecord(source: any, mappings: FieldMapping[]): any {
+  const target: any = {};
+  for (const m of mappings) {
+    const value = getNestedValue(source, m.source);
+    if (value === undefined && m.required) {
+      throw new Error(`Missing required field: ${m.source}`);
+    }
+    if (value !== undefined) {
+      setNestedValue(target, m.target, m.transform ? m.transform(value) : value);
     }
   }
+  return target;
 }
 ```
 
-**Rate limit strategies:**
-- **Pre-emptive**: Track calls, delay to stay under limit
-- **Reactive**: Catch 429s, respect `Retry-After` header
-- **Batch**: Group multiple operations into single API calls where supported
-- **Queue**: Use a job queue (BullMQ) to process at controlled rate
+### Step 5: Handle Pagination
 
-Document the source API's rate limits:
-| Endpoint | Limit | Window | Notes |
-|----------|-------|--------|-------|
-| `GET /items` | 100/min | Rolling | Use pagination cursor |
-| `POST /items` | 20/min | Rolling | Batch endpoint: 100 items/call |
-| Global | 1000/hr | Fixed | Across all endpoints |
+**Common pagination patterns:**
 
-### Step 5: Data Mapping
+| Pattern | How to Detect | Implementation |
+|---------|--------------|----------------|
+| **Offset/limit** | `?offset=0&limit=100` | Increment offset until empty results |
+| **Page number** | `?page=1&per_page=100` | Increment page until last page |
+| **Cursor-based** | `next_cursor` in response | Use cursor until null/empty |
+| **Link header** | `Link: <url>; rel="next"` | Follow the `next` URL |
 
-Define how source fields transform to target fields:
+**Generic paginator:**
 
-```
-── DATA MAPPING ───────────────────────────
+```typescript
+async function* paginate<T>(
+  fetchPage: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+  do {
+    const page = await fetchPage(cursor);
+    for (const item of page.data) {
+      yield item;
+    }
+    cursor = page.nextCursor;
+  } while (cursor);
+}
 
-Source: [API Name]         Target: [System Name]
-─────────────────────────────────────────────
-source.id               →  external_id         String, direct
-source.email             →  email               String, .toLowerCase().trim()
-source.created_at        →  created_date        Date, parse ISO → YYYY-MM-DD
-source.amount_cents      →  amount              Number, / 100
-source.status            →  status              Enum map: { active: 'enabled', inactive: 'disabled' }
-source.metadata.tags     →  tags                Array, .join(', ')
-source.address.line1     →  street_address      String, concat line1 + line2
-[not in source]          →  sync_source         Constant: 'api_name'
-[not in source]          →  last_synced_at      Timestamp: NOW()
-```
-
-**Mapping implementation:**
-```javascript
-function mapRecord(source) {
-  return {
-    external_id: source.id,
-    email: source.email?.toLowerCase().trim(),
-    created_date: source.created_at?.split('T')[0],
-    amount: source.amount_cents / 100,
-    status: { active: 'enabled', inactive: 'disabled' }[source.status] || 'unknown',
-    tags: source.metadata?.tags?.join(', ') || '',
-    street_address: [source.address?.line1, source.address?.line2].filter(Boolean).join(' '),
-    sync_source: 'api_name',
-    last_synced_at: new Date().toISOString(),
-  };
+// Usage
+for await (const order of paginate(fetchOrders)) {
+  await processOrder(order);
 }
 ```
 
-### Step 6: Error Handling
+### Step 6: Error Recovery & Sync State
 
-Design error recovery for each failure mode:
-
-| Failure | Detection | Recovery | Data Impact |
-|---------|-----------|----------|-------------|
-| **Source API down** | Connection timeout / 5xx | Retry 3x, then skip cycle + alert | No data loss — retry next cycle |
-| **Bad data from source** | Validation failure | Log + skip record, process rest | One record skipped |
-| **Target write fails** | Insert/update error | Retry record 3x, then dead-letter | Record queued for manual fix |
-| **Partial sync** | Crash mid-batch | Resume from last cursor/checkpoint | Already-synced records safe |
-| **Rate limit hit** | 429 response | Backoff, resume from where stopped | No data loss |
-| **Auth expired** | 401 response | Refresh token, retry request | No data loss |
-
-**Compensating transactions:**
-If a multi-step sync fails partway through:
-1. Log what was successfully synced
-2. Store the sync cursor/position
-3. On next run, detect partial sync and resume (not restart)
-4. For reversible operations, consider rollback on failure
-
-### Step 7: Caching
-
-When and what to cache:
-
-| Data | Cache? | TTL | Reason |
-|------|--------|-----|--------|
-| Lookup tables (categories, types) | Yes | 1 hour | Rarely changes, called often |
-| User profiles | Yes | 5 min | Moderate change rate |
-| Transaction data | No | — | Must be real-time accurate |
-| API tokens | Yes | Until expiry - 60s | Avoid unnecessary auth calls |
-| Pagination cursors | Yes | Duration of sync | Resume interrupted syncs |
-
-**Cache implementation:**
-```javascript
-const cache = new Map();
-
-async function cachedGet(key, fetchFn, ttlMs = 300000) {
-  const cached = cache.get(key);
-  if (cached && Date.now() < cached.expiresAt) return cached.data;
-
-  const data = await fetchFn();
-  cache.set(key, { data, expiresAt: Date.now() + ttlMs });
-  return data;
-}
-```
-
-### Step 8: Monitoring
-
-**Sync status tracking:**
+**Sync state tracking:**
 
 ```sql
-CREATE TABLE sync_status (
-  id SERIAL PRIMARY KEY,
-  integration_name VARCHAR(100) NOT NULL,
-  last_sync_at TIMESTAMPTZ,
-  last_sync_status VARCHAR(20), -- success, partial, failed
-  records_synced INTEGER DEFAULT 0,
-  records_failed INTEGER DEFAULT 0,
-  last_cursor TEXT, -- for pagination resume
-  error_message TEXT,
-  sync_duration_ms INTEGER
+CREATE TABLE sync_state (
+  integration  VARCHAR(100) PRIMARY KEY,
+  last_cursor  VARCHAR(255),
+  last_sync_at TIMESTAMPTZ  NOT NULL,
+  items_synced INTEGER      NOT NULL DEFAULT 0,
+  status       VARCHAR(20)  NOT NULL DEFAULT 'idle', -- idle | running | failed
+  error        TEXT
 );
 ```
 
-**Metrics to track:**
-- Sync frequency: Is it running on schedule?
-- Data freshness: When was the last successful sync?
-- Error rate: What % of records fail?
-- Throughput: Records per second
-- Latency: Time from source change to target update
+**Incremental sync pattern:**
 
-**Dashboard output:**
-```
-Integration: [name]
-Status: ✅ Healthy | ⚠️ Degraded | ❌ Failed
-Last sync: [timestamp] ([X minutes ago])
-Records: [synced] synced, [failed] failed
-Data freshness: [X minutes]
-Next sync: [timestamp]
-```
+```typescript
+async function incrementalSync(integration: string): Promise<void> {
+  const state = await getSyncState(integration);
+  let cursor = state.lastCursor;
+  let count = 0;
 
-### Step 9: Output
+  try {
+    await updateSyncState(integration, { status: 'running' });
 
-Present the complete integration specification:
+    for await (const item of paginate((c) => fetchItems(c || cursor))) {
+      await processItem(item);
+      cursor = item.id; // Track progress
+      count++;
 
-```
-━━━ API INTEGRATION: [Source] → [Target] ━━
+      // Checkpoint every 100 items (resume from here on failure)
+      if (count % 100 === 0) {
+        await updateSyncState(integration, { lastCursor: cursor, itemsSynced: count });
+      }
+    }
 
-── PATTERN ────────────────────────────────
-Type: [polling/webhook/event-driven/hybrid]
-Frequency: [schedule]
-Direction: [one-way/bidirectional]
-
-── AUTHENTICATION ─────────────────────────
-Source: [auth method + setup]
-Target: [auth method + setup]
-
-── RATE LIMITS ────────────────────────────
-[limit table + handling strategy]
-
-── DATA MAPPING ───────────────────────────
-[field mapping table + transform code]
-
-── ERROR HANDLING ─────────────────────────
-[failure matrix with recovery strategies]
-
-── CACHING ────────────────────────────────
-[what to cache + TTLs]
-
-── MONITORING ─────────────────────────────
-[sync_status table + metrics + dashboard]
-
-── CODE ───────────────────────────────────
-[complete integration implementation]
+    await updateSyncState(integration, {
+      status: 'idle', lastCursor: cursor,
+      lastSyncAt: new Date(), itemsSynced: count
+    });
+  } catch (error) {
+    await updateSyncState(integration, {
+      status: 'failed', lastCursor: cursor, error: error.message
+    });
+    throw error;
+  }
+}
 ```
 
-## Inputs
-- Source API (name, docs, auth method)
-- Target system (database, API, file)
-- Data to sync (entities, fields)
-- Sync frequency and direction
-- Volume estimates
+### Step 7: Production Checklist
 
-## Outputs
-- Integration pattern recommendation with justification
-- Authentication setup (API key, OAuth 2.0, JWT)
-- Rate limit handling with pre-emptive and reactive strategies
-- Data mapping table with transformation functions
-- Error handling matrix with recovery per failure type
-- Caching strategy with TTLs
-- Monitoring dashboard with sync status table and metrics
-- Complete integration code
+- [ ] Authentication handles token refresh (no manual token replacement)
+- [ ] Rate limiter respects API's documented limits
+- [ ] Retry logic with exponential backoff for 429 and 5xx responses
+- [ ] Pagination handles all pages (not just page 1)
+- [ ] Data mapper validates required fields before writing
+- [ ] Sync state persisted — can resume from last checkpoint on failure
+- [ ] Structured logging with correlation IDs
+- [ ] Secrets in environment variables or secrets manager
+- [ ] Error alerts configured (Slack, email, or PagerDuty)
+- [ ] Integration tested with production-volume data
+
+## Output Format
+
+```markdown
+# API Integration — [Source] → [Destination]
+
+## Overview
+- **Direction:** [One-way / Two-way / Event-driven]
+- **Entities:** [What's being synced]
+- **Auth:** [Auth method]
+- **Rate limit:** [X requests/second]
+- **Sync frequency:** [Real-time / Every X minutes / Daily]
+
+## Authentication
+[Implementation from Step 2]
+
+## Rate Limiting
+[Implementation from Step 3]
+
+## Data Mapping
+[Mapping definitions from Step 4]
+
+## Pagination
+[Pattern from Step 5]
+
+## Sync State & Recovery
+[Implementation from Step 6]
+
+## Production Checklist
+[From Step 7]
+```
+
+## Completion
+
+```
+API Integration — Complete!
+
+Integration: [Source] → [Destination]
+Entities synced: [List]
+Auth method: [Method]
+Rate limit handling: [Strategy]
+Pagination: [Pattern]
+Sync state: [Checkpoint-based]
+
+Next steps:
+1. Implement using the code patterns above
+2. Set up credentials in your secrets manager
+3. Run an initial full sync with a small dataset
+4. Verify data mapping accuracy in destination
+5. Enable incremental sync on schedule
+```
 
 ## Level History
 
-- **Lv.1** — Base: Integration pattern selection (polling/webhook/event-driven/hybrid), auth setup (API key, OAuth 2.0, JWT), rate limit handling (pre-emptive + reactive + queue), data mapping with transforms, error recovery matrix with compensating transactions, caching strategy, sync status monitoring with freshness tracking. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: 6 auth patterns (API key, Bearer, OAuth 2.0 with refresh, JWT, Basic, HMAC), reactive + proactive rate limiting (token bucket), declarative data mapper with transformations, 4 pagination patterns with generic async generator, incremental sync with checkpoint-based recovery, sync state table, production checklist. (Origin: MemStack Pro v3.2, Mar 2026)

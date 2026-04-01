@@ -1,6 +1,7 @@
 ---
 name: humanize
 description: "Use when the user says 'humanize', 'clean up writing', 'make it sound natural', or wants text to not sound AI-generated."
+version: 1.0.0
 ---
 
 

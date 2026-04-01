@@ -1,233 +1,298 @@
 ---
-name: feedback-analyzer
-description: "Use when the user says 'analyze feedback', 'feedback analysis', 'customer feedback', 'feature requests', 'support tickets', 'user reviews', or has raw user feedback that needs categorization and prioritization."
+name: memstack-product-feedback-analyzer
+description: "Use this skill when the user says 'analyze feedback', 'feedback analysis', 'what are customers asking for', or has support tickets, reviews, or survey data to categorize, score, and prioritize into actionable reports. Do NOT use for competitor analysis or market research."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-
-# 📊 Feedback Analyzer — Customer Feedback Intelligence
-*Categorize, score, and prioritize raw user feedback into an actionable report with executive summary.*
+# Feedback Analyzer — Analyzing customer feedback...
+*Categorizes, scores, and prioritizes customer feedback from support tickets, reviews, and surveys into actionable reports with feature request rankings, sentiment trends, and action items.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📊 Feedback Analyzer — Analyzing your customer feedback...`
+`Feedback Analyzer — Analyzing customer feedback...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "analyze feedback", "feedback analysis"** | ACTIVE |
-| **User has support tickets, reviews, or survey data to process** | ACTIVE |
-| **User asks "what are customers asking for?"** | ACTIVE |
-| **User wants to build a roadmap from feedback** | Chain: feedback-analyzer → roadmap-builder |
-| **User wants to write feature specs from feedback** | Chain: feedback-analyzer → feature-spec |
-| **User wants competitor analysis (not user feedback)** | DORMANT — see competitor-analysis |
+| User says "analyze feedback", "feedback analysis" | ACTIVE |
+| User says "what are customers asking for" | ACTIVE |
+| User has support tickets, reviews, or survey data to analyze | ACTIVE |
+| User wants competitor pricing or market analysis | DORMANT — use Competitor Analysis |
+| User wants to write a PRD from scratch | DORMANT — use PRD Writer |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "Build what the loudest customer asks for" | Loudest ≠ most valuable. One enterprise client's niche request shouldn't override 500 users' common need. |
+| "Count votes to prioritize" | "Most requested" ignores impact and effort. A rarely requested feature might retain your best customers. |
+| "Ignore negative reviews" | 1-star reviews reveal real pain. Positive reviews confirm what works — negatives reveal what to fix. |
+| "Read feedback literally" | Users describe symptoms, not root causes. "I need an export button" might mean "I can't get data out." |
+| "Analyze once, never again" | Feedback is a continuous signal. Batch-analyze monthly or quarterly to spot trends. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Collect Feedback Data
 
-Ask the user for:
-- **Feedback source**: What kind of feedback? (support tickets, app reviews, NPS surveys, social media, sales call notes, forum posts)
-- **Raw data**: Paste the feedback, provide a file, or describe the themes
-- **Product context**: What product is this feedback about?
-- **Time period**: When was this feedback collected?
-- **User segments**: Any known segmentation? (plan type, tenure, geography)
+If the user hasn't provided feedback data, ask:
 
-### Step 2: Categorize Feedback by Theme
+> 1. **Source** — where is the feedback? (support tickets, app reviews, survey responses, social media, sales call notes)
+> 2. **Volume** — how much feedback? (helps determine analysis approach)
+> 3. **Time range** — what period does this cover?
+> 4. **Format** — text dump, CSV, spreadsheet, or screenshot?
+> 5. **Product context** — any recent launches, changes, or known issues?
+
+**Supported input formats:**
+- Raw text (pasted feedback items)
+- CSV/spreadsheet with feedback column
+- Support ticket exports (Intercom, Zendesk, Help Scout)
+- App store review exports
+- Survey responses (Typeform, Google Forms)
+- Social media mentions or comments
+
+### Step 2: Categorize Feedback
 
 Classify each piece of feedback into categories:
 
-| Category | Icon | Description |
-|----------|------|-------------|
-| **Bug Report** | 🐛 | Something is broken or not working as expected |
-| **Feature Request** | ✨ | User wants new functionality |
-| **UX Issue** | 😤 | Feature exists but is confusing, slow, or frustrating |
-| **Praise** | 💚 | Positive feedback, what users love |
-| **Confusion** | ❓ | User doesn't understand how something works |
-| **Churn Signal** | 🚪 | User is considering leaving or has left |
+**Primary categories:**
 
-For each feedback item:
-```
-[ID] [Category Icon] [One-line summary]
-     Source: [where it came from]
-     Segment: [user type if known]
-     Verbatim: "[exact user quote]"
+| Category | Definition | Example |
+|----------|-----------|---------|
+| **Feature request** | User wants new functionality | "I wish I could export to PDF" |
+| **Bug report** | Something is broken or unexpected | "The save button doesn't work on mobile" |
+| **UX issue** | Works but confusing or frustrating | "I can never find the settings page" |
+| **Performance** | Speed, reliability, or scaling | "The dashboard takes 30 seconds to load" |
+| **Praise** | Positive feedback about what works | "Love the new dark mode!" |
+| **Churn signal** | Indicates potential or actual churn | "I'm switching to [competitor] because..." |
+| **Pricing** | Feedback about cost or value | "Too expensive for what I get" |
+| **Support** | About the support experience itself | "Took 3 days to get a response" |
+
+**Categorization output:**
+
+```markdown
+## Feedback Categorization
+
+| ID | Feedback (summarized) | Category | Sentiment | Source | Date |
+|----|----------------------|----------|-----------|--------|------|
+| F-001 | [Summarized feedback] | Feature request | Neutral | Support | [Date] |
+| F-002 | [Summarized feedback] | Bug report | Negative | App store | [Date] |
+| F-003 | [Summarized feedback] | Praise | Positive | Survey | [Date] |
 ```
 
 ### Step 3: Sentiment Analysis
 
-Score sentiment per category and overall:
+Rate each feedback item and calculate aggregate sentiment:
 
-| Category | Count | Positive | Neutral | Negative | Avg Sentiment |
-|----------|-------|----------|---------|----------|--------------|
-| Bug Reports | [n] | — | — | [n] | -0.8 |
-| Feature Requests | [n] | [n] | [n] | [n] | +0.2 |
-| UX Issues | [n] | — | [n] | [n] | -0.5 |
-| Praise | [n] | [n] | — | — | +0.9 |
-| Confusion | [n] | — | [n] | [n] | -0.3 |
-| Churn Signals | [n] | — | — | [n] | -0.9 |
+**Sentiment scale:**
 
-**Overall sentiment**: [score from -1.0 to +1.0]
-**Trend**: [improving / stable / declining] compared to last period (if available)
+| Score | Label | Indicators |
+|-------|-------|-----------|
+| -2 | Very negative | Anger, threats to cancel, profanity, "terrible", "worst" |
+| -1 | Negative | Frustration, disappointment, "can't", "doesn't work" |
+| 0 | Neutral | Factual request, no emotional language |
+| +1 | Positive | Satisfaction, mild praise, "nice", "helpful" |
+| +2 | Very positive | Enthusiasm, recommendation, "love", "amazing", "game-changer" |
 
-### Step 4: Frequency Ranking
+**Aggregate sentiment dashboard:**
 
-Rank by how often each theme appears:
+```markdown
+## Sentiment Overview
 
-| Rank | Theme | Count | % of Total | Category | Trend |
-|------|-------|-------|-----------|----------|-------|
-| 1 | [most mentioned theme] | [n] | [%] | [type] | ↑↓→ |
-| 2 | [second theme] | [n] | [%] | [type] | ↑↓→ |
-| 3 | [third theme] | [n] | [%] | [type] | ↑↓→ |
-| ... | ... | ... | ... | ... | ... |
+**Overall sentiment score:** [Average across all feedback]
+**Distribution:**
+- Very positive (★★): [X]% ([count])
+- Positive (★): [X]% ([count])
+- Neutral (—): [X]% ([count])
+- Negative (✗): [X]% ([count])
+- Very negative (✗✗): [X]% ([count])
 
-Group related requests: "dark mode", "night theme", and "less bright" = same theme.
-
-### Step 5: Impact Assessment
-
-Score each theme by impact:
-
-| Theme | Users Affected | Revenue Impact | Effort | Priority Score |
-|-------|---------------|----------------|--------|---------------|
-| [theme] | [many/some/few] | [high/med/low] | [high/med/low] | [1-10] |
-| [theme] | [many/some/few] | [high/med/low] | [high/med/low] | [1-10] |
-
-**Impact scoring:**
-- Users Affected: Many (3) / Some (2) / Few (1)
-- Revenue Impact: High (3) / Medium (2) / Low (1)
-- Effort (inverted): Low effort (3) / Medium (2) / High (1)
-- Priority Score = Users × Revenue × Effort (max 27, normalize to 10)
-
-**Revenue impact indicators:**
-- Churn mentions → High revenue impact
-- Upgrade blockers → High revenue impact
-- Nice-to-haves with no urgency → Low revenue impact
-
-### Step 6: Map to Existing Roadmap
-
-If the user has an existing roadmap or backlog:
-
-| Feedback Theme | Existing Roadmap Item | Status | Gap |
-|----------------|----------------------|--------|-----|
-| [theme] | [feature/epic] | Planned Q2 | Aligned ✅ |
-| [theme] | [feature/epic] | In Progress | Already building ✅ |
-| [theme] | — | Not planned | NEW — needs evaluation ⚠️ |
-| [theme] | [feature/epic] | Deprioritized | Users disagree — re-evaluate 🔄 |
-
-Flag items where user demand contradicts roadmap priorities.
-
-### Step 7: Quick Wins
-
-Identify high-impact, low-effort actions:
-
-```
-━━━ QUICK WINS (Do This Week) ━━━━━━━━━━━━
-
-1. [Action] — fixes [theme]
-   Impact: [X users affected]
-   Effort: [hours/days]
-   Why now: [urgency reason]
-
-2. [Action] — fixes [theme]
-   Impact: [X users affected]
-   Effort: [hours/days]
-   Why now: [urgency reason]
-
-3. [Action] — fixes [theme]
-   Impact: [X users affected]
-   Effort: [hours/days]
-   Why now: [urgency reason]
+**Sentiment by category:**
+| Category | Avg Sentiment | Volume | Trend |
+|----------|-------------|--------|-------|
+| Feature requests | [Score] | [Count] | [↑ ↓ →] |
+| Bug reports | [Score] | [Count] | [↑ ↓ →] |
+| UX issues | [Score] | [Count] | [↑ ↓ →] |
+| Praise | [Score] | [Count] | [↑ ↓ →] |
 ```
 
-Quick win criteria: < 1 week of effort, affects > 10% of feedback volume, no dependencies.
+### Step 4: Extract Feature Requests & Themes
 
-### Step 8: Executive Summary
+Group related feature requests into themes:
 
-Write a concise summary for leadership:
+```markdown
+## Feature Request Themes
 
-```
-━━━ EXECUTIVE SUMMARY ━━━━━━━━━━━━━━━━━━━━
+### Theme 1: [Theme Name] — [X mentions]
+**User need:** [What users actually need, not what they asked for]
 
-Feedback analyzed: [X] items from [sources] over [time period]
-Overall sentiment: [score] ([trend])
+| Request | Mentions | Example Quotes |
+|---------|----------|---------------|
+| [Specific request A] | [X] | "[Direct quote]" |
+| [Specific request B] | [X] | "[Direct quote]" |
+| [Specific request C] | [X] | "[Direct quote]" |
 
-TOP 5 ACTION ITEMS:
+**Root need:** [The underlying problem these requests share]
+**Potential solutions:**
+1. [Solution option A — simplest]
+2. [Solution option B — most complete]
 
-1. 🔴 [Critical]: [action] — [X] users affected, [revenue impact]
-   Owner: [suggested team]
-   Timeline: [urgency]
+---
 
-2. 🟡 [Important]: [action] — [X] users affected
-   Owner: [suggested team]
-   Timeline: [urgency]
-
-3. 🟡 [Important]: [action] — [X] users affected
-   Owner: [suggested team]
-   Timeline: [urgency]
-
-4. 🟢 [Nice-to-have]: [action] — [X] users requesting
-   Owner: [suggested team]
-   Timeline: [can wait]
-
-5. 🟢 [Nice-to-have]: [action] — [X] users requesting
-   Owner: [suggested team]
-   Timeline: [can wait]
-
-KEY INSIGHT:
-[One paragraph: the single most important thing this feedback tells you
-about your product direction, user satisfaction, or market position.]
+### Theme 2: [Theme Name] — [X mentions]
+[Same format]
 ```
 
-### Step 9: Output
+**Theme extraction rules:**
+- Merge duplicates — "PDF export", "download as PDF", "save to PDF" = one request
+- Look for the root need behind surface requests
+- Group by problem, not by proposed solution
+- Note the user segment making each request (free vs. paid, new vs. veteran)
 
-Present the complete feedback analysis:
+### Step 5: Prioritize with RICE Framework
+
+Score each theme or major request:
+
+| Theme | Reach | Impact | Confidence | Effort | RICE Score |
+|-------|-------|--------|-----------|--------|-----------|
+| [Theme 1] | [X] | [1-3] | [%] | [person-weeks] | [Score] |
+| [Theme 2] | [X] | [1-3] | [%] | [person-weeks] | [Score] |
+| [Theme 3] | [X] | [1-3] | [%] | [person-weeks] | [Score] |
+
+**RICE scoring:**
 
 ```
-━━━ FEEDBACK ANALYSIS REPORT ━━━━━━━━━━━━━
-Product: [name]
-Period: [date range]
-Sources: [list]
-Total items: [count]
-
-── EXECUTIVE SUMMARY ──────────────────────
-[top 5 action items + key insight]
-
-── CATEGORY BREAKDOWN ─────────────────────
-[category table with counts and sentiment]
-
-── FREQUENCY RANKING ──────────────────────
-[ranked theme list]
-
-── IMPACT ASSESSMENT ──────────────────────
-[prioritized theme scores]
-
-── ROADMAP ALIGNMENT ──────────────────────
-[mapping to existing plans]
-
-── QUICK WINS ─────────────────────────────
-[immediate actions]
-
-── RAW FEEDBACK LOG ───────────────────────
-[categorized individual items]
+Score = (Reach × Impact × Confidence) ÷ Effort
 ```
 
-## Inputs
-- Raw feedback data (pasted, file, or described themes)
-- Feedback source type
-- Product context
-- Time period
-- User segments (optional)
-- Existing roadmap or backlog (optional, for mapping)
+| Factor | How to Score |
+|--------|-------------|
+| **Reach** | How many users per quarter? (estimated or from feedback volume) |
+| **Impact** | 3 = massive, 2 = high, 1 = medium, 0.5 = low, 0.25 = minimal |
+| **Confidence** | 100% = high (data-backed), 80% = medium, 50% = low (gut feel) |
+| **Effort** | Person-weeks to build (smaller = better score) |
 
-## Outputs
-- Categorized feedback (bug, feature request, UX, praise, confusion, churn)
-- Sentiment analysis per category and overall
-- Frequency ranking of themes
-- Impact assessment with priority scoring
-- Roadmap alignment mapping
-- Quick wins list (high impact, low effort)
-- Executive summary with top 5 action items and key insight
+**Priority buckets (after scoring):**
+
+| Priority | RICE Range | Action |
+|----------|-----------|--------|
+| P0 — Do now | Top 20% of scores | Schedule for next sprint/quarter |
+| P1 — Plan | Middle 40% | Add to roadmap for next quarter |
+| P2 — Consider | Lower 30% | Keep in backlog, monitor volume |
+| P3 — Decline | Bottom 10% | Close with explanation, revisit if volume grows |
+
+### Step 6: Identify Churn Signals
+
+Flag feedback that indicates churn risk:
+
+```markdown
+## Churn Risk Signals
+
+| Signal | Severity | Count | Example |
+|--------|----------|-------|---------|
+| Mentions competitor by name | High | [X] | "[Quote]" |
+| "Canceling" or "switching" | High | [X] | "[Quote]" |
+| Pricing complaints from paying users | Medium | [X] | "[Quote]" |
+| Repeated bug reports (same user, same issue) | Medium | [X] | "[Quote]" |
+| Feature request marked as "blocker" | Medium | [X] | "[Quote]" |
+| Declining usage mentioned | Low | [X] | "[Quote]" |
+
+### Churn prevention recommendations:
+1. **Immediate:** [Action for high-severity signals]
+2. **This quarter:** [Action for medium-severity patterns]
+3. **Ongoing:** [Monitoring approach for low-severity]
+```
+
+### Step 7: Generate Action Items
+
+```markdown
+## Action Items
+
+### Immediate (this sprint)
+| # | Action | Owner | Source |
+|---|--------|-------|--------|
+| 1 | [Fix critical bug X] | Engineering | [F-002, F-015] |
+| 2 | [Respond to churn risk Y] | Support | [F-008] |
+
+### This Quarter
+| # | Action | Owner | Source |
+|---|--------|-------|--------|
+| 3 | [Build top RICE-scored feature] | Product + Eng | [Theme 1] |
+| 4 | [Address UX issue pattern] | Design + Eng | [Theme 3] |
+
+### Process Improvements
+| # | Action | Owner | Source |
+|---|--------|-------|--------|
+| 5 | [Set up feedback tagging in support tool] | Support | — |
+| 6 | [Schedule monthly feedback review] | Product | — |
+
+### Communicate Back to Users
+| # | Action | Channel |
+|---|--------|---------|
+| 7 | "We heard you — [feature] is shipping in [timeframe]" | Email / Changelog |
+| 8 | "Known issue: [bug] — fix incoming [date]" | Status page |
+```
+
+## Output Format
+
+```markdown
+# Feedback Analysis — [Product Name]
+
+**Period:** [Date range]
+**Sources:** [List of sources]
+**Total feedback items:** [Count]
+
+## 1. Sentiment Overview
+[Dashboard from Step 3]
+
+## 2. Category Breakdown
+[Categorization summary from Step 2]
+
+## 3. Feature Request Themes
+[Themed groupings from Step 4]
+
+## 4. Priority Rankings (RICE)
+[Scored and ranked table from Step 5]
+
+## 5. Churn Signals
+[Churn risk table from Step 6]
+
+## 6. Action Items
+[Prioritized actions from Step 7]
+
+## 7. Trends & Patterns
+[Any notable trends: increasing complaints in area X, praise for recent change Y]
+
+## Appendix: Raw Data
+[Categorized feedback table — every item with ID, summary, category, sentiment]
+```
+
+## Completion
+
+```
+Feedback Analyzer — Complete!
+
+Feedback items analyzed: [Count]
+Sources: [List]
+Overall sentiment: [Score] ([Label])
+Feature themes identified: [Count]
+Top priority: [Theme name] (RICE: [score])
+Churn signals: [Count] ([severity breakdown])
+Action items: [Count]
+
+Next steps:
+1. Review RICE priorities with product team
+2. Address immediate action items this sprint
+3. Communicate "we heard you" to users on top themes
+4. Schedule monthly feedback analysis cadence
+5. Set up tagging taxonomy in support tool for easier future analysis
+```
 
 ## Level History
 
-- **Lv.1** — Base: 6-category feedback taxonomy, sentiment scoring, frequency ranking with deduplication, impact assessment (users × revenue × effort), roadmap alignment mapping, quick wins identification, executive summary with prioritized action items. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: 8-category feedback classification, sentiment scoring (-2 to +2) with aggregate dashboard, feature request theme extraction with root need analysis, RICE prioritization framework (reach, impact, confidence, effort), churn signal identification with severity levels, action item generation (immediate/quarterly/process/communication), trends and patterns identification. (Origin: MemStack Pro v3.2, Mar 2026)

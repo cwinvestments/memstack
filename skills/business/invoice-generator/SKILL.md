@@ -1,308 +1,258 @@
 ---
-name: invoice-generator
-description: "Use when the user says 'invoice', 'generate invoice', 'billing', 'send invoice', or wants to create a professional invoice with line items and payment instructions."
+name: memstack-business-invoice-generator
+description: "Use this skill when the user says 'invoice', 'generate invoice', 'create invoice', 'bill client', 'line items', 'payment terms', or needs professional invoices with tax calculations and payment instructions. Do NOT use for contracts or financial projections."
+version: 1.0.0
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🧾 Invoice Generator — Professional Invoice Builder
-*Generate complete invoices with line items, tax calculations, payment instructions, and structured data ready for PDF generation or email delivery.*
+# Invoice Generator — Creating professional invoice...
+*Generates professional invoices with line items, tax calculations, payment terms, due dates, and payment instructions — output as structured markdown ready for PDF conversion.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🧾 Invoice Generator — Generating your invoice...`
+`Invoice Generator — Creating professional invoice...`
+
+Then execute the protocol below.
+
+## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "invoice", "generate invoice", "create invoice"** | ACTIVE |
-| **User wants to bill a client for completed work** | ACTIVE |
-| **User mentions line items, payment terms, or invoice numbers** | ACTIVE |
-| **User wants a full contract (not just billing)** | DORMANT — see contract-template |
-| **User wants financial projections (not invoicing)** | DORMANT — see financial-model |
-| **User wants to onboard a new client** | DORMANT — see client-onboarding |
+| User says "invoice", "generate invoice", "create invoice", "bill client" | ACTIVE |
+| User says "line items" or "payment terms" | ACTIVE |
+| User needs a professional invoice for a client | ACTIVE |
+| User wants a contract or service agreement | DORMANT — use Contract Template |
+| User wants financial projections | DORMANT — use Financial Model |
+
+## Common Mistakes
+
+| Mistake | Why It's Wrong |
+|---------|---------------|
+| "No invoice number" | Sequential invoice numbers are required for accounting and tax compliance. |
+| "Vague line items" | "Consulting — $5,000" invites disputes. Itemize by deliverable, hours, or phase. |
+| "No payment terms" | Without explicit terms (Net 30, due on receipt), clients have no obligation to pay on time. |
+| "Skip tax line" | Even if tax is $0, show the tax line. It demonstrates professionalism and compliance. |
+| "No late payment terms" | Without stated consequences, you have no leverage on overdue invoices. |
 
 ## Protocol
 
-### Step 1: Gather Inputs
+### Step 1: Gather Invoice Details
 
-Ask the user for:
-- **Your business info**: Company name, address, email, phone, logo URL (optional)
-- **Client info**: Client name, company, address, email
-- **Line items**: Description, quantity, unit price for each item/service
-- **Payment terms**: Net 15, Net 30, Net 60, due on receipt?
-- **Tax**: Tax rate (%), tax ID/VAT number (optional)
-- **Discounts**: Any discounts to apply? (% or fixed amount)
-- **Payment methods**: Bank transfer, Stripe, PayPal, check?
-- **Invoice number format**: Preference? (e.g., INV-2026-001, or auto-generate)
-- **Currency**: USD, EUR, GBP, etc.
+If the user hasn't provided details, ask:
+
+> 1. **Client** — company name, contact person, billing address
+> 2. **Your business** — business name, address, tax ID / EIN (if applicable)
+> 3. **Line items** — what are you billing for? (description, quantity, rate)
+> 4. **Payment terms** — Net 30, Net 15, due on receipt?
+> 5. **Tax** — applicable tax rate? (state sales tax, VAT, or exempt)
+> 6. **Currency** — USD, EUR, GBP, etc.?
 
 ### Step 2: Generate Invoice Number
 
-**Configurable formats:**
-
-| Format | Example | Best For |
-|--------|---------|----------|
-| Sequential | INV-001 | Simple, solo freelancer |
-| Year-sequential | INV-2026-001 | Annual tracking |
-| Client-prefixed | INV-ACME-001 | Multi-client businesses |
-| Date-based | INV-20260301-001 | High volume, daily tracking |
-| Project-based | INV-PROJ42-001 | Per-project billing |
-
-**Auto-generation logic:**
-```
-Format: [PREFIX]-[YEAR]-[SEQ]
-Example: INV-2026-001
-
-Next invoice: Check last invoice number, increment sequence.
-If new year: reset sequence to 001.
-```
-
-### Step 3: Calculate Totals
-
-Build the invoice calculation:
+**Invoice numbering convention:**
 
 ```
-── LINE ITEMS ─────────────────────────────
-
-#  Description                    Qty    Rate       Amount
-1  [item description]             [qty]  $[rate]    $[amount]
-2  [item description]             [qty]  $[rate]    $[amount]
-3  [item description]             [qty]  $[rate]    $[amount]
-
-───────────────────────────────────────────
-                          Subtotal:  $[subtotal]
-                      Discount (X%): -$[discount]
-                   Subtotal after discount: $[after_discount]
-                          Tax (X%):  $[tax]
-                          ─────────────────
-                            TOTAL:  $[total]
+[PREFIX]-[YEAR][MONTH]-[SEQUENCE]
+Example: INV-202603-001
 ```
 
-**Calculation rules:**
-- Subtotal = Σ (quantity × unit_rate) for each line item
-- Discount applied to subtotal (before tax)
-- Tax calculated on discounted subtotal
-- Total = discounted subtotal + tax
-- Round all amounts to 2 decimal places
-- Display currency symbol consistently
+| Component | Rule |
+|-----------|------|
+| Prefix | `INV` (standard), `PRO` (proforma), `CR` (credit note) |
+| Date | YYYYMM of invoice date |
+| Sequence | 001, 002, 003... (reset yearly or continuous) |
 
-### Step 4: Payment Instructions
+**Alternative formats:**
+- Client-based: `INV-ACME-001`
+- Project-based: `INV-PROJ042-001`
 
-Generate payment details based on selected methods:
+### Step 3: Build Line Items
 
-**Bank Transfer:**
+**Line item table:**
+
+| # | Description | Qty | Unit | Rate | Amount |
+|---|------------|-----|------|------|--------|
+| 1 | [Detailed description of work/deliverable] | [X] | [hours/units/flat] | $[X.XX] | $[X.XX] |
+| 2 | [Detailed description] | [X] | [unit] | $[X.XX] | $[X.XX] |
+| 3 | [Detailed description] | [X] | [unit] | $[X.XX] | $[X.XX] |
+
+**Line item rules:**
+- Each line should describe a specific deliverable or time period
+- Include enough detail to prevent client questions ("Website development" → "Homepage redesign — responsive layout, 3 revision rounds")
+- For hourly work: include date range and total hours
+- For project work: reference the SOW or contract phase
+- For expenses: mark as "Reimbursable expense" with receipt reference
+
+**Totals calculation:**
+
 ```
-── PAYMENT BY BANK TRANSFER ───────────────
-Bank: [bank name]
-Account name: [name]
-Account number: [number]
-Routing number: [number]
-SWIFT/BIC: [code] (for international)
-Reference: [invoice number]
+Subtotal:                    $[sum of line amounts]
+Discount ([X]%):            -$[discount amount]
+Subtotal after discount:     $[adjusted subtotal]
+Tax ([X]% [tax name]):      +$[tax amount]
+──────────────────────────────────
+Total Due:                   $[final total]
 ```
 
-**Stripe Payment Link:**
+### Step 4: Set Payment Terms
+
+**Standard payment terms:**
+
+| Term | Meaning | Best For |
+|------|---------|---------|
+| Due on receipt | Pay immediately | Small amounts, first-time clients |
+| Net 15 | Due within 15 days | Freelance, small projects |
+| Net 30 | Due within 30 days | Standard business term |
+| Net 60 | Due within 60 days | Enterprise, government |
+| 50/50 | 50% upfront, 50% on completion | Projects >$5,000 |
+| Milestone | Payment at each project phase | Large projects |
+
+**Late payment clause:**
+
 ```
-── PAY ONLINE ─────────────────────────────
-Pay securely via credit card:
-[Stripe payment link URL]
+Late Payment: Invoices not paid within [X] days of the due date will
+incur a late fee of [1.5]% per month ([18]% annually) on the outstanding
+balance. All collection costs, including attorney fees, will be the
+responsibility of the client.
 ```
 
-**PayPal:**
+**Early payment discount (optional):**
+
 ```
-── PAYPAL ─────────────────────────────────
-Send payment to: [email]
-Reference: [invoice number]
+2/10 Net 30: 2% discount if paid within 10 days; full amount due in 30 days.
 ```
+
+### Step 5: Add Payment Instructions
+
+```markdown
+## Payment Methods
+
+**Bank Transfer (preferred):**
+Bank: [Bank name]
+Account name: [Business name]
+Routing number: [XXXXXXXXX]
+Account number: [XXXXXXXXX]
+Reference: [Invoice number]
+
+**Online Payment:**
+Pay online: [Payment link — Stripe, PayPal, or Square invoice URL]
 
 **Check:**
-```
-── PAY BY CHECK ───────────────────────────
-Make payable to: [company name]
-Mail to: [address]
-Memo: [invoice number]
-```
+Make payable to: [Business name]
+Mail to: [Mailing address]
+Memo: [Invoice number]
 
-### Step 5: Due Date & Late Fee Terms
-
-**Due date calculation:**
-
-| Terms | Due Date | Late Fee |
-|-------|----------|----------|
-| Due on receipt | Invoice date | 1.5%/month after 7 days |
-| Net 15 | Invoice date + 15 days | 1.5%/month after due date |
-| Net 30 | Invoice date + 30 days | 1.5%/month after due date |
-| Net 60 | Invoice date + 60 days | 1.0%/month after due date |
-| Custom | [specific date] | [custom terms] |
-
-**Late fee clause:**
-```
-A late fee of [X]% per month ([Y]% annually) will be applied to
-balances unpaid after the due date. Partial months are prorated.
+**Wire Transfer (international):**
+SWIFT/BIC: [Code]
+IBAN: [Number]
+Bank address: [Address]
 ```
 
-### Step 6: Professional Layout
+### Step 6: Assemble the Invoice
 
-Define the invoice layout structure:
+**Invoice template:**
 
-```
-┌─────────────────────────────────────────┐
-│  [LOGO]              INVOICE            │
-│  [Your Company]      Invoice #: [num]   │
-│  [Your Address]      Date: [date]       │
-│  [Your Email]        Due: [due date]    │
-│  [Your Phone]        Terms: [terms]     │
-├─────────────────────────────────────────┤
-│  BILL TO:                               │
-│  [Client Name]                          │
-│  [Client Company]                       │
-│  [Client Address]                       │
-│  [Client Email]                         │
-├─────────────────────────────────────────┤
-│  # │ Description    │ Qty │ Rate │ Amt  │
-│  ──┼────────────────┼─────┼──────┼───── │
-│  1 │ [item]         │ [q] │ $[r] │ $[a] │
-│  2 │ [item]         │ [q] │ $[r] │ $[a] │
-│  3 │ [item]         │ [q] │ $[r] │ $[a] │
-│  ──┴────────────────┴─────┴──────┴───── │
-│                    Subtotal:  $[sub]     │
-│                    Discount:  -$[disc]   │
-│                    Tax (X%):  $[tax]     │
-│                    ───────────────────── │
-│                    TOTAL DUE: $[total]   │
-├─────────────────────────────────────────┤
-│  PAYMENT INSTRUCTIONS:                  │
-│  [payment method details]               │
-├─────────────────────────────────────────┤
-│  NOTES:                                 │
-│  [optional notes — thank you message,   │
-│   project reference, etc.]              │
-│                                         │
-│  TERMS:                                 │
-│  [late fee policy]                      │
-└─────────────────────────────────────────┘
-```
+```markdown
+─────────────────────────────────────────────────────────
 
-### Step 7: Structured Data Output
+                        INVOICE
 
-Generate invoice as structured JSON for programmatic use:
+─────────────────────────────────────────────────────────
 
-```json
-{
-  "invoice_number": "INV-2026-001",
-  "date": "2026-03-01",
-  "due_date": "2026-03-31",
-  "terms": "Net 30",
-  "currency": "USD",
-  "from": {
-    "name": "Your Company",
-    "address": "123 Main St, City, State 12345",
-    "email": "billing@company.com",
-    "phone": "+1-555-0100",
-    "tax_id": "XX-XXXXXXX"
-  },
-  "to": {
-    "name": "Client Name",
-    "company": "Client Corp",
-    "address": "456 Oak Ave, City, State 67890",
-    "email": "accounts@client.com"
-  },
-  "line_items": [
-    {
-      "description": "Web Development",
-      "quantity": 40,
-      "unit": "hours",
-      "rate": 150.00,
-      "amount": 6000.00
-    }
-  ],
-  "subtotal": 6000.00,
-  "discount": { "type": "percentage", "value": 10, "amount": 600.00 },
-  "tax": { "rate": 8.25, "amount": 445.50 },
-  "total": 5845.50,
-  "payment_methods": ["bank_transfer", "stripe"],
-  "notes": "Thank you for your business!",
-  "late_fee": "1.5% per month on overdue balances"
-}
+**From:**                          **Invoice #:** [INV-YYYYMM-NNN]
+[Your Business Name]               **Date:** [Invoice date]
+[Your Address]                      **Due Date:** [Due date]
+[City, State ZIP]                   **Terms:** [Net 30 / etc.]
+[Email]
+[Phone]
+[Tax ID: XX-XXXXXXX]
+
+**Bill To:**
+[Client Company Name]
+[Client Contact Name]
+[Client Address]
+[City, State ZIP]
+[Client Email]
+
+─────────────────────────────────────────────────────────
+
+| #  | Description                     | Qty  | Rate      | Amount    |
+|----|---------------------------------|------|-----------|-----------|
+| 1  | [Line item description]         | [X]  | $[X.XX]   | $[X.XX]   |
+| 2  | [Line item description]         | [X]  | $[X.XX]   | $[X.XX]   |
+| 3  | [Line item description]         | [X]  | $[X.XX]   | $[X.XX]   |
+
+─────────────────────────────────────────────────────────
+                              Subtotal:      $[X,XXX.XX]
+                              Tax ([X]%):    $[XXX.XX]
+                              ──────────────────────────
+                              **TOTAL DUE:   $[X,XXX.XX]**
+─────────────────────────────────────────────────────────
+
+## Payment Instructions
+[From Step 5]
+
+## Terms
+- Payment is due within [X] days of invoice date.
+- [Late payment clause from Step 4]
+- [Early payment discount if applicable]
+
+─────────────────────────────────────────────────────────
+Thank you for your business.
+─────────────────────────────────────────────────────────
 ```
 
-### Step 8: Email Template
+### Step 7: Recurring Invoice Setup
 
-Provide email copy for sending the invoice:
+For ongoing retainer or subscription billing:
 
-```
-Subject: Invoice [INV-NUMBER] from [Your Company] — Due [Due Date]
+```markdown
+## Recurring Invoice Schedule
 
-Hi [Client First Name],
-
-Please find attached invoice [INV-NUMBER] for [brief description of work].
-
-Amount due: $[TOTAL]
-Due date: [DUE DATE]
-Payment: [payment method summary]
-
-If you have any questions about this invoice, please reply to this email.
-
-Thank you for your business!
-
-[Your Name]
-[Your Company]
-[Your Phone]
+| Invoice # | Period | Amount | Due Date | Status |
+|-----------|--------|--------|----------|--------|
+| INV-202601-001 | Jan 2026 | $[X] | [Date] | Paid |
+| INV-202602-001 | Feb 2026 | $[X] | [Date] | Paid |
+| INV-202603-001 | Mar 2026 | $[X] | [Date] | Current |
+| INV-202604-001 | Apr 2026 | $[X] | [Date] | Upcoming |
 ```
 
-### Step 9: Output
+**Automation tips:**
+- Use Stripe Invoicing, QuickBooks, or FreshBooks for recurring invoices
+- Set automatic payment reminders: 3 days before due, on due date, 7 days overdue
+- Auto-generate the next invoice on a fixed schedule (1st of month, etc.)
 
-Present the complete invoice package:
+## Output Format
+
+Deliver the complete invoice in the template format from Step 6, ready to be:
+- Converted to PDF (via Pandoc, browser print, or invoicing tool)
+- Pasted into an invoicing platform
+- Sent directly to the client
+
+## Completion
 
 ```
-━━━ INVOICE: [Invoice Number] ━━━━━━━━━━━━
+Invoice Generator — Complete!
 
-── INVOICE DETAILS ────────────────────────
-From: [your company]
-To: [client]
-Date: [date]
-Due: [due date]
-Terms: [payment terms]
+Invoice #: [Number]
+Client: [Name]
+Line items: [Count]
+Subtotal: $[Amount]
+Tax: $[Amount]
+Total due: $[Amount]
+Payment terms: [Terms]
+Due date: [Date]
 
-── LINE ITEMS ─────────────────────────────
-[formatted line item table]
-
-── TOTALS ─────────────────────────────────
-Subtotal: $[amount]
-Discount: -$[amount]
-Tax: $[amount]
-Total: $[amount]
-
-── PAYMENT INSTRUCTIONS ───────────────────
-[payment method details]
-
-── STRUCTURED DATA (JSON) ─────────────────
-[complete JSON for programmatic use]
-
-── EMAIL TEMPLATE ─────────────────────────
-[ready-to-send email copy]
-
-── NOTES ──────────────────────────────────
-[thank you message + late fee terms]
+Next steps:
+1. Review all line items for accuracy
+2. Convert to PDF or enter into your invoicing tool
+3. Send to client with payment instructions
+4. Set a calendar reminder for the due date
+5. Follow up if not paid within 3 days of due date
 ```
-
-## Inputs
-- Business info (name, address, email, phone)
-- Client info (name, company, address, email)
-- Line items (description, quantity, rate)
-- Payment terms and methods
-- Tax rate and discount (optional)
-- Currency and invoice number format (optional)
-
-## Outputs
-- Unique invoice number with configurable format
-- Calculated totals (subtotal, discount, tax, total)
-- Payment instructions for selected methods (bank, Stripe, PayPal, check)
-- Due date with late fee terms
-- Professional layout template
-- Structured JSON data for PDF generation or API integration
-- Email template for invoice delivery
 
 ## Level History
 
-- **Lv.1** — Base: Configurable invoice numbering (5 formats), line item calculation with discount and tax, multi-method payment instructions (bank/Stripe/PayPal/check), due date calculation with late fee terms, professional layout template, structured JSON output, email delivery template. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1** — Base: Invoice numbering convention, detailed line items with totals/tax/discount, 6 payment term options, late payment clause, early payment discount, 4 payment method templates (bank, online, check, wire), complete invoice template, recurring invoice schedule, automation tips. (Origin: MemStack Pro v3.2, Mar 2026)
