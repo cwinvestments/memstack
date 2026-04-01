@@ -120,24 +120,21 @@ Replace `/path/to/memstack-skill-loader` with the actual path.
 A Pro license unlocks 4 additional skills: **consolidate**, **context-db**, **api-docs**, and **branching**.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
-2. Set it as an environment variable:
+2. Set it permanently as an environment variable:
 
 **Windows:**
 ```bat
-set MEMSTACK_PRO_LICENSE_KEY=your-key-here
+setx MEMSTACK_PRO_LICENSE_KEY your-key-here
 ```
 
 **Mac / Linux:**
 ```bash
-export MEMSTACK_PRO_LICENSE_KEY=your-key-here
+echo 'export MEMSTACK_PRO_LICENSE_KEY=your-key-here' >> ~/.bashrc && source ~/.bashrc
 ```
 
-Or configure it in the MCP server:
-```bash
-claude mcp add memstack-skills -e MEMSTACK_PRO_LICENSE_KEY=your-key-here
-```
+This saves your key permanently so you never have to set it again.
 
-A reminder will appear at session start if the key is not set.
+> **Note:** After running this command, close and reopen your terminal for it to take effect.
 
 ## What's Included
 
