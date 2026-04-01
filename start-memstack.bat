@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================
-REM  MemStack v3.2.1 - Session Launcher
+REM  MemStack v3.3.4 - Session Launcher
 REM
 REM  Usage: start-memstack.bat              (launch session)
 REM         start-memstack.bat link <path>  (link project)
@@ -54,14 +54,23 @@ if %errorlevel% equ 0 (
 
 :headroom_done
 
-REM 4. Open VS Code
+REM 4. Count skills
+set /a SKILL_COUNT=0
+for /r "%MEMSTACK_DIR%\skills" %%f in (SKILL.md) do set /a SKILL_COUNT+=1
+
+REM 5. Open VS Code (if available)
 echo.
-echo  [4/4] Opening VS Code...
-code "%MEMSTACK_DIR%"
+where code >nul 2>nul
+if %errorlevel% neq 0 (
+    echo  [5/5] VS Code not found, skipping...
+) else (
+    echo  [5/5] Opening VS Code...
+    code "%MEMSTACK_DIR%"
+)
 
 echo.
 echo  =========================================
-echo  MemStack v3.2.1 ready - 17 public skills
+echo  MemStack v3.3.4 ready - %SKILL_COUNT% skills
 echo  =========================================
 echo.
 
