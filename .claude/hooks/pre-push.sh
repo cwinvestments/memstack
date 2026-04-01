@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.2 — Pre-Push Hook
+# MemStack v3.3.3 — Pre-Push Hook
 # Deterministic pre-push check: build verification + commit format + secrets scan
 # Exit 0 = allow, exit 2 = block
 #
@@ -59,17 +59,37 @@ if [ -n "$LAST_MSG" ]; then
     fi
 fi
 
-# --- Check 4: Secrets scan on recent commits ---
-# Use grep -P (Perl regex) for \s and \x27 support; fall back to -E with POSIX classes
-SECRETS_PATTERN='(api_key|api_secret|password|token|secret)\s*[:=]\s*["\x27][^\s"'\'']{8,}'
-if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iP "$SECRETS_PATTERN" 2>/dev/null | grep -v "config.json" | head -3; then
-    echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
-    exit 2
-fi
-# Fallback: simpler pattern with grep -iE for systems without grep -P
-if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iE "(api_key|api_secret|password|token|secret)[[:space:]]*[:=][[:space:]]*[\"'][A-Za-z0-9_-]{8,}" 2>/dev/null | grep -v "config.json" | head -3; then
-    echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
-    exit 2
+# --- Check 4: Secrets scan (production-grade, 700+ patterns) ---
+GITLEAKS_BIN=""
+for candidate in \
+    "gitleaks" \
+    "$HOME/AppData/Local/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_Microsoft.Winget.Source_8wekyb3d8bbwe/gitleaks.exe" \
+    "$HOME/scoop/shims/gitleaks.exe" \
+    "$HOME/go/bin/gitleaks.exe"; do
+    if command -v "$candidate" &>/dev/null || [ -x "$candidate" ]; then
+        GITLEAKS_BIN="$candidate"
+        break
+    fi
+done
+
+if [ -n "$GITLEAKS_BIN" ]; then
+    GITLEAKS_OUTPUT=$("$GITLEAKS_BIN" detect --source . --no-git --redact --exit-code 1 2>&1) || {
+        echo "SEAL: Secrets detected in working tree:"
+        echo "$GITLEAKS_OUTPUT" | head -30
+        echo "SEAL: Fix the above before pushing."
+        exit 2
+    }
+else
+    # Fallback: basic regex scan if production scanner not installed
+    SECRETS_PATTERN='(api_key|api_secret|password|token|secret)\s*[:=]\s*["\x27][^\s"'\'']{8,}'
+    if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iP "$SECRETS_PATTERN" 2>/dev/null | grep -v "config.json" | head -3; then
+        echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
+        exit 2
+    fi
+    if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iE "(api_key|api_secret|password|token|secret)[[:space:]]*[:=][[:space:]]*[\"'][A-Za-z0-9_-]{8,}" 2>/dev/null | grep -v "config.json" | head -3; then
+        echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
+        exit 2
+    fi
 fi
 
 # --- Check 5: No .env files in unpushed commits ---

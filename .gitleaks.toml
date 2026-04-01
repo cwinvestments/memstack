@@ -1,0 +1,19 @@
+# MemStack Pro — Gitleaks configuration
+# Excludes test fixtures, example files, and non-sensitive directories
+
+title = "MemStack Pro Gitleaks Config"
+
+[allowlist]
+  description = "Global allowlist"
+
+  paths = [
+    '''\.env\.example$''',
+    '''(^|/)fake-[^/]+/''',
+    '''(^|/)fixtures/''',
+    '''\.claude/diary/''',
+    '''\.claude/observations/''',
+    '''(^|/)test[-_]fixtures?/''',
+    '''(^|/)__fixtures__/''',
+    '''node_modules/''',
+    '''\.git/''',
+  ]
