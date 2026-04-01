@@ -10,6 +10,9 @@ config.local.json
 # Backup files (not source-controlled)
 .claude/rules_backup/
 
+# Private local skills (not for public repo)
+skills/kdp-format/
+
 # Environment
 .env
 .env.local
