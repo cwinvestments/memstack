@@ -42,17 +42,13 @@ if [ -n "$DIARY_FILES" ]; then
     while IFS= read -r file; do
         [ -z "$file" ] && continue
         FNAME=$(basename "$file" 2>/dev/null || echo "unknown")
-        # Extract first 30 lines of each diary (enough for summary + handoff)
-        EXCERPT=$(head -30 "$file" 2>/dev/null || echo "(unreadable)")
         DIARY_CONTENT="${DIARY_CONTENT}
-#### ${FNAME}
-\`\`\`
-${EXCERPT}
-\`\`\`
-
-"
+- ${FNAME}"
         DIARY_COUNT=$((DIARY_COUNT + 1))
     done <<< "$DIARY_FILES"
+    DIARY_CONTENT="${DIARY_CONTENT}
+
+> Diary entries available. Use \`cat .claude/diary/<filename>\` to read if needed."
 fi
 
 # --- Collect observation files (last 3, newest first) ---

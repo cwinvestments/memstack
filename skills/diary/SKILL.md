@@ -22,24 +22,28 @@ Then execute the protocol below.
 |---------|--------|----------|
 | **User says "save diary", "log session", "write diary"** | ACTIVE — write diary | P1 |
 | **User explicitly says they're done ("that's it", "wrapping up")** | ACTIVE — suggest diary if work was done | P2 |
+| **Multi-agent session (Builder/Reviewer role)** | DORMANT — Manager handles diary | — |
 | **Mid-session, user is actively coding** | DORMANT — don't interrupt flow | — |
 | **Casual conversation, no code changes made** | DORMANT — nothing to log | — |
 | **User asks to recall past sessions ("what did we do")** | DORMANT — Echo handles recall, not Diary | — |
 | **User says "save project" or "handoff"** | DORMANT — Project skill handles this | — |
 | **Session just started, no work yet** | DORMANT — nothing to log | — |
 
-## Anti-Rationalization
+## When NOT to Fire
 
-If you're thinking any of these, STOP — you're about to skip the protocol:
+- **Do NOT fire autonomously.** Only activate when the user explicitly requests it ("save diary", "log session", "wrapping up").
+- **Multi-agent sessions:** If you are operating as Builder, Reviewer, or any non-Manager agent in a multi-agent session, do NOT fire diary. Only the Manager or a standalone session should trigger diary.
+- **No work done:** If no meaningful changes were made (no commits, no file edits), skip diary.
 
-| You're thinking... | Reality |
+## Reminders
+
+When the user asks to save a diary, keep these in mind:
+
+| Temptation | Why it matters |
 |---|---|
-| "Nothing important happened this session" | Every session has decisions, even small ones. Log them. |
-| "I'll remember this for next time" | You won't. You don't persist. The database does. Write the diary. |
-| "The user didn't ask me to log this" | The rule says log at session end. You don't need explicit permission. |
-| "This was just a quick fix, not worth logging" | Quick fixes contain decisions ("why this approach?"). Future you needs that context. |
-| "I already committed, so the work is saved" | Commits don't capture decisions, blockers, or next steps. The diary does. |
-| "The Session Handoff section isn't needed" | Handoffs are the most valuable part. Always include in-progress work and pickup instructions. |
+| "Nothing important happened" | Even small decisions have context worth capturing. |
+| "Commits capture everything" | Commits don't capture decisions, blockers, or next steps. |
+| "Skip the handoff section" | Handoffs are the most valuable part for session continuity. |
 
 ## Protocol
 

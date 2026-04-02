@@ -18,6 +18,19 @@ OUTFILE="$DIARY_DIR/${DATE}-compaction.md"
 
 mkdir -p "$DIARY_DIR"
 
+# --- Dedup: skip if a compaction entry was saved in the last 5 minutes ---
+MARKER="$DIARY_DIR/.last-compaction"
+if [ -f "$MARKER" ]; then
+    LAST_TS=$(cat "$MARKER" 2>/dev/null || echo "0")
+    NOW_TS=$(date +%s)
+    DIFF=$(( NOW_TS - LAST_TS ))
+    if [ "$DIFF" -lt 300 ]; then
+        # Compaction snapshot already saved recently, skip duplicate
+        exit 0
+    fi
+fi
+date +%s > "$MARKER"
+
 # --- Gather context ---
 
 # Project name
