@@ -2,7 +2,7 @@
 
 You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
-**v3.3.4 changes:** 81 total skills (77 free + 4 Pro-exclusive: consolidate, context-db, api-docs, branching). SessionStart license nudge for missing `MEMSTACK_PRO_LICENSE_KEY`. Production-grade secrets scanning hook. Git audit verified clean. All new skills default to Pro-exclusive, graduating to free after 90 days.
+**v3.3.5 changes:** 82 total skills (77 free + 5 Pro-exclusive: consolidate, context-db, api-docs, branching, multi-agent). Token optimization for find_skill (preview mode). Diary optimization (dedup, prevent autonomous firing). All new skills default to Pro-exclusive, graduating to free after 90 days.
 
 ## Branch Strategy
 

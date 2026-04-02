@@ -56,7 +56,7 @@ If Claude responds with a structured protocol (activation message, context guard
 
 ## Step 4: Set Up the MCP Skill Loader (Recommended)
 
-The MCP Skill Loader connects MemStack™ skills to Claude Code so they activate automatically when you need them. Instead of loading all 81 skills into every session, Claude Code searches for and loads only the relevant skill on demand.
+The MCP Skill Loader connects MemStack™ skills to Claude Code so they activate automatically when you need them. Instead of loading all 82 skills into every session, Claude Code searches for and loads only the relevant skill on demand.
 
 **Clone the loader:**
 
@@ -92,7 +92,7 @@ cd memstack-skill-loader
 PYTHONPATH=src python scripts/index_skills.py
 ```
 
-You should see: `Done! 81 skills indexed`
+You should see: `Done! 82 skills indexed`
 
 **Configure Claude Code to use the loader:**
 

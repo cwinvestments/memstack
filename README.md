@@ -20,7 +20,7 @@ Then link to your project — see [GETTING-STARTED.md](GETTING-STARTED.md) for f
 | Tier | Skills | Access |
 |------|--------|--------|
 | **Free** | 77 skills | Included with MemStack™ base |
-| **Pro** | 81 total (77 free + 4 exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
+| **Pro** | 82 total (77 free + 5 exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
 
 **Pro-exclusive skills:** `consolidate`, `context-db`, `api-docs`, `branching` — these require an active Pro license.
 
@@ -38,9 +38,9 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - Headroom context compression proxy auto-start
 - Always-on rules and slash commands
 
-## All Skills (81 total — 77 free + 4 Pro-exclusive)
+## All Skills (82 total — 77 free + 5 Pro-exclusive)
 
-All 81 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 4 skills (consolidate, context-db, api-docs, branching) are Pro-exclusive and require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 82 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 5 skills (consolidate, context-db, api-docs, branching, multi-agent) are Pro-exclusive and require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 ### Core (20 skills)
 
@@ -197,7 +197,7 @@ All 81 skills are **fully implemented** with complete protocols, context guards,
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 81 skills
+- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 82 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
