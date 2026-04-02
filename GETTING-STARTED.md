@@ -168,6 +168,46 @@ This saves your key permanently so you never have to set it again.
 - **Save a diary after major implementations** — even mid-session, if you completed a big feature or made important decisions, log it.
 - **Use Echo to recall past work** — say "what did we do last time?" or "recall [topic]" to search across all your diary entries.
 
+## Filtering Skills Per Project
+
+Not every project needs every skill. You can hide irrelevant skills to reduce token usage and keep search results focused.
+
+### Using `manage_skills` (recommended)
+
+Disable a skill directly from Claude Code:
+
+```
+manage_skills action="disable" skill="facebook-ad"
+```
+
+Re-enable it later:
+
+```
+manage_skills action="enable" skill="facebook-ad"
+```
+
+See what's currently disabled:
+
+```
+manage_skills action="list_disabled"
+```
+
+### Using `.memstack-ignore` (manual method)
+
+Create a `.memstack-ignore` file in your project root with one skill name per line:
+
+```
+facebook-ad
+google-ad
+webinar-script
+tiktok-script
+```
+
+- Lines starting with `#` are comments
+- Blank lines are ignored
+- Skills are hidden from `find_skill`, `list_skills`, and `get_skill` — but not deleted
+- The file only affects the project it's in
+
 ## Troubleshooting
 
 | Issue | Solution |
