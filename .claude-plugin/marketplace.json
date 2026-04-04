@@ -1,0 +1,17 @@
+{
+  "name": "cwinvestments-memstack",
+  "description": "MemStack™ — 100 battle-tested skills for Claude Code",
+  "plugins": [
+    {
+      "name": "memstack",
+      "description": "100 battle-tested skills for Claude Code. Session memory, git workflows, database migrations, security scanning, deployments, and more.",
+      "source": {
+        "source": "local",
+        "path": "."
+      },
+      "version": "3.4.0",
+      "category": "productivity",
+      "keywords": ["skills", "memory", "context", "session", "productivity", "devops", "security", "database", "deployment"]
+    }
+  ]
+}
