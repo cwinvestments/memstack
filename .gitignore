@@ -6,6 +6,7 @@ db/memstack.db-shm
 # Local config (contains real API keys and project paths)
 config.local.json
 .claude/settings.local.json
+.mcp.json
 
 # Backup files (not source-controlled)
 .claude/rules_backup/
