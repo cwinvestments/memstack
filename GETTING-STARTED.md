@@ -1,8 +1,8 @@
 # Getting Started with MemStack™
 
-MemStack™ gives Claude Code **81 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
+MemStack™ gives Claude Code **100 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
 
-**77 skills are free.** A Pro license key unlocks 4 additional skills (consolidate, context-db, api-docs, branching). Get a key at [memstack.pro](https://memstack.pro).
+**77 skills are free.** A Pro license key unlocks 23 additional exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
 
 ## What You'll Need
 
@@ -138,7 +138,7 @@ This saves your key permanently so you never have to set it again.
 
 ## What's Included
 
-### Skill Categories (81 total)
+### Skill Categories (100 total)
 
 | Category | Skills | Examples |
 |----------|--------|----------|
