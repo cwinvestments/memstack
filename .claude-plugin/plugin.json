@@ -1,0 +1,16 @@
+{
+  "name": "memstack",
+  "version": "3.4.0",
+  "description": "100 battle-tested skills for Claude Code. Session memory, git workflows, database migrations, security scanning, deployments, and more. Auto-trigger commands and project handoffs via markdown-based skills.",
+  "author": {
+    "name": "CW Affiliate Investments, LLC",
+    "url": "https://memstack.pro"
+  },
+  "components": {
+    "skills": ["skills/"]
+  },
+  "homepage": "https://memstack.pro",
+  "repository": "https://github.com/cwinvestments/memstack",
+  "keywords": ["skills", "memory", "context", "session", "productivity", "devops", "security", "database", "deployment", "git", "testing", "marketing"],
+  "license": "MIT"
+}
