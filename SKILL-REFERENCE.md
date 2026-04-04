@@ -1,6 +1,6 @@
 # MemStack™ — Skill Quick Reference
 
-> **82 skills across 10 categories** (77 free + 5 Pro-exclusive). Say any trigger phrase to activate.
+> **100 skills across 10 categories** (77 free + 23 Pro-exclusive). Say any trigger phrase to activate.
 >
 > Pro-exclusive skills are marked with **[PRO]**. Requires `MEMSTACK_PRO_LICENSE_KEY`.
 
@@ -141,4 +141,4 @@
 
 ---
 
-*MemStack™ v3.3.5 — 82 skills across 10 categories (77 free + 5 Pro-exclusive), one prompt away.*
+*MemStack™ v3.4.0 — 100 skills across 10 categories (77 free + 23 Pro-exclusive), one prompt away.*

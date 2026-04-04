@@ -1,8 +1,8 @@
 # MemStack™
 
-[![Version: 3.3.4](https://img.shields.io/badge/Version-3.3.4-green.svg)](CHANGELOG.md)
+[![Version: 3.4.0](https://img.shields.io/badge/Version-3.4.0-green.svg)](CHANGELOG.md)
 
-The structured skill framework for Claude Code — **81 professional skills** for deployment, security, databases, content, marketing, and more.
+The structured skill framework for Claude Code — **100 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
@@ -15,14 +15,25 @@ cd memstack
 
 Then link to your project — see [GETTING-STARTED.md](GETTING-STARTED.md) for full setup instructions.
 
+### Install as Claude Code Plugin
+
+```bash
+claude plugin marketplace add cwinvestments/memstack
+```
+
+Then in Claude Code:
+```
+/plugin install memstack@cwinvestments-memstack
+```
+
 ### Tier Structure
 
 | Tier | Skills | Access |
 |------|--------|--------|
 | **Free** | 77 skills | Included with MemStack™ base |
-| **Pro** | 82 total (77 free + 5 exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
+| **Pro** | 100 total (77 free + 23 Pro-exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
 
-**Pro-exclusive skills:** `consolidate`, `context-db`, `api-docs`, `branching` — these require an active Pro license.
+**Pro-exclusive skills (23):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration` — these require an active Pro license.
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
 
@@ -38,9 +49,9 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - Headroom context compression proxy auto-start
 - Always-on rules and slash commands
 
-## All Skills (82 total — 77 free + 5 Pro-exclusive)
+## All Skills (100 total — 77 free + 23 Pro-exclusive)
 
-All 82 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 5 skills (consolidate, context-db, api-docs, branching, multi-agent) are Pro-exclusive and require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 100 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 23 skills (consolidate, context-db, api-docs, branching, multi-agent, codebase-index, doc-index, diagram-generator, browser-use, session-restore, drift-detection, mcp-builder, claude-api-helper, test-generator, log-analyzer, performance-profiler, dependency-auditor, git-worktrees, error-handler, web-scraper, advanced-security, env-manager-pro, hooks-integration) are Pro-exclusive and require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 ### Core (20 skills)
 
@@ -197,7 +208,7 @@ All 82 skills are **fully implemented** with complete protocols, context guards,
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 82 skills
+- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 100 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
