@@ -89,17 +89,17 @@ When the user asks to save a diary, keep these in mind:
 
 4. **Save to SQLite database** (primary storage):
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py add-session '{"project":"<name>","date":"<YYYY-MM-DD>","accomplished":"<bullets>","files_changed":"<bullets>","commits":"<bullets>","decisions":"<bullets>","problems":"<bullets>","next_steps":"<bullets>","duration":"<estimate>","raw_markdown":"<full text>"}'
+   python "$MEMSTACK_PATH/db/memstack-db.py" add-session '{"project":"<name>","date":"<YYYY-MM-DD>","accomplished":"<bullets>","files_changed":"<bullets>","commits":"<bullets>","decisions":"<bullets>","problems":"<bullets>","next_steps":"<bullets>","duration":"<estimate>","raw_markdown":"<full text>"}'
    ```
 
 5. **Also save decisions as insights** for cross-project search:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py add-insight '{"project":"<name>","type":"decision","content":"<decision>","context":"Session <date>","tags":"<project>"}'
+   python "$MEMSTACK_PATH/db/memstack-db.py" add-insight '{"project":"<name>","type":"decision","content":"<decision>","context":"Session <date>","tags":"<project>"}'
    ```
 
 6. **Update project context** with last session date:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py set-context '{"project":"<name>","last_session_date":"<YYYY-MM-DD>"}'
+   python "$MEMSTACK_PATH/db/memstack-db.py" set-context '{"project":"<name>","last_session_date":"<YYYY-MM-DD>"}'
    ```
 
 7. **Also save markdown copy** to `memory/sessions/{date}-{project}.md` (export format, human-readable backup)

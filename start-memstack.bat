@@ -103,17 +103,28 @@ if exist "%TARGET%\.claude" (
     REM Check if it's already a junction (reparse point)
     dir "%TARGET%" /AL 2>nul | findstr /C:".claude" >nul 2>&1
     if %errorlevel% equ 0 (
+        REM It's a junction — remove it so we can recreate with current path
         echo.
-        echo  SKIP: %TARGET%\.claude is already a junction.
-        echo.
-        goto :eof
+        echo  Updating existing junction...
+        rmdir "%TARGET%\.claude"
+        goto :create_junction
     )
+    REM It's a real directory — merge MemStack rules into it without destroying user files
     echo.
-    echo  WARNING: %TARGET%\.claude exists as a real folder.
-    echo  Removing it and replacing with junction...
-    rmdir /s /q "%TARGET%\.claude"
+    echo  MERGE: %TARGET%\.claude exists as a real folder.
+    echo  Copying MemStack rules into existing .claude directory...
+    if not exist "%TARGET%\.claude\rules" mkdir "%TARGET%\.claude\rules"
+    if not exist "%TARGET%\.claude\hooks" mkdir "%TARGET%\.claude\hooks"
+    xcopy "%MEMSTACK_DIR%\.claude\rules\*" "%TARGET%\.claude\rules\" /Y /Q >nul 2>&1
+    xcopy "%MEMSTACK_DIR%\.claude\hooks\*" "%TARGET%\.claude\hooks\" /Y /Q >nul 2>&1
+    echo.
+    echo  SUCCESS: MemStack rules merged into %TARGET%\.claude
+    echo  Note: Your existing settings, commands, and other files were preserved.
+    echo.
+    goto :eof
 )
 
+:create_junction
 mklink /J "%TARGET%\.claude" "%MEMSTACK_DIR%\.claude"
 if %errorlevel% equ 0 (
     echo.

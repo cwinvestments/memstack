@@ -34,7 +34,7 @@ Then execute the protocol below.
    - Example usage
    - Level history starting at Lv.1
 
-3. **Write the file** to `C:\Projects\memstack\skills\{name}.md`
+3. **Write the file** to `$MEMSTACK_PATH/skills/{name}.md`
 
 4. **Update MEMSTACK.md** — add a new row to the Skill Index table
 

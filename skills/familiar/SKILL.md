@@ -24,7 +24,7 @@ Then execute the protocol below.
    - Working directory path
    - Full task description with acceptance criteria
    - Any shared context (database schema, API contracts, types)
-   - MemStack activation line: `Read C:\Projects\memstack\MEMSTACK.md`
+   - MemStack activation line: `Read $MEMSTACK_PATH/MEMSTACK.md`
    - CC Monitor reporting snippet (if configured in config.json)
 4. **Add coordination notes** — specify what each session should NOT touch to avoid conflicts
 5. **Define merge order** — which session's work should be committed first

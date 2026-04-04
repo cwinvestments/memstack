@@ -437,3 +437,7 @@ This manual skill remains available for **deep audits** — git history analysis
 - **Lv.1** — Base: 7-check scan (hardcoded secrets, .env audit, config/docs, env validation, client exposure, git history, Docker), pattern reference for 14+ secret formats, .env.example generation, remediation guide. Derived from real credential incidents across AdminStack, EpsteinScan, and 10+ production projects. (Origin: MemStack Pro v1.0, Mar 2026)
 - **Lv.2** — Audit feedback: Added deployment platform config scan (Netlify, Vercel, Railway, Render, Fly.io), base64-encoded secret detection, private key block detection (RSA/EC/DSA/OpenSSH PEM), pre-rotation checklist with dependency mapping and priority matrix. (Origin: AdminStack audit, Mar 2026)
 - **Lv.3** — Hook integration: Documented automated pre-commit and pre-push hook coverage (700+ credential formats), fallback behavior, and relationship between manual skill audits and automated hook scanning. (Origin: MemStack Pro v3.3.3, Mar 2026)
+
+## Pro Feature
+
+Pro: Secrets scanning hooks run automatically before every commit and push, covering 700+ credential formats across every major cloud provider and API service. Free version requires manual scanning only.

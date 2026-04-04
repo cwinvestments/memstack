@@ -1,6 +1,6 @@
 ---
 name: memstack-automation-api-integration
-description: "Use this skill when the user says 'API integration', 'connect APIs', 'sync data', 'data mapping', 'rate limiting', or needs system-to-system connectors with authentication, rate limit handling, and error recovery. Do NOT use for visual n8n workflows or webhook receiving."
+description: "Use this skill when the user says 'API integration', 'connect APIs', 'sync data', 'data mapping', 'rate limiting', or needs system-to-system connectors with authentication, rate limit handling, and error recovery. Generates API integration code with authentication (OAuth, API key, JWT), request/response mapping, rate limit handling, error recovery with circuit breakers, and sync monitoring. Do NOT use for visual n8n workflows or webhook receiving."
 version: 1.0.0
 license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---

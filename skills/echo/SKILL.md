@@ -47,7 +47,7 @@ If you're thinking any of these, STOP — you're about to skip the protocol:
 
 Try LanceDB vector search first for best-quality results:
 ```bash
-python C:/Projects/memstack/skills/echo/search.py "<keywords>" --top-k 5
+python "$MEMSTACK_PATH/skills/echo/search.py "<keywords>" --top-k 5
 ```
 
 If this returns results, present them with scores, dates, and source files.
@@ -56,15 +56,15 @@ If this returns results, present them with scores, dates, and source files.
 
 Always run SQLite search to supplement vector results or as fallback if Step 1 fails:
 ```bash
-python C:/Projects/memstack/db/memstack-db.py search "<keywords>" --project <project>
+python "$MEMSTACK_PATH/db/memstack-db.py" search "<keywords>" --project <project>
 ```
 
 ### Step 3: Recent Sessions and Insights
 
 For additional context:
 ```bash
-python C:/Projects/memstack/db/memstack-db.py get-sessions <project> --limit 5
-python C:/Projects/memstack/db/memstack-db.py get-insights <project>
+python "$MEMSTACK_PATH/db/memstack-db.py" get-sessions <project> --limit 5
+python "$MEMSTACK_PATH/db/memstack-db.py" get-insights <project>
 ```
 
 ### Step 4: Markdown Fallback
@@ -90,19 +90,19 @@ If nothing found across all sources — say clearly: "No session logs found for 
 
 To re-index sessions after new diary entries (normally done automatically):
 ```bash
-python C:/Projects/memstack/skills/echo/index-sessions.py
+python "$MEMSTACK_PATH/skills/echo/index-sessions.py
 ```
 
 Use `--force` to re-embed all content (e.g., after changing embedding model):
 ```bash
-python C:/Projects/memstack/skills/echo/index-sessions.py --force
+python "$MEMSTACK_PATH/skills/echo/index-sessions.py --force
 ```
 
 ## Inputs
 - Keywords from the user's prompt (project name, feature name, date range)
-- Vector DB: `C:\Projects\memstack\memory\vectors\lancedb\` (via LanceDB)
-- Database: `C:\Projects\memstack\db\memstack.db` (via memstack-db.py)
-- Fallback: `C:\Projects\memstack\memory\` (legacy markdown files)
+- Vector DB: `$MEMSTACK_PATH/memory\vectors\lancedb\` (via LanceDB)
+- Database: `$MEMSTACK_PATH/db\memstack.db` (via memstack-db.py)
+- Fallback: `$MEMSTACK_PATH/memory\` (legacy markdown files)
 
 ## Outputs
 - Ranked results with semantic similarity scores
