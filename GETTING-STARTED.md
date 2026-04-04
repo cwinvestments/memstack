@@ -58,62 +58,33 @@ If Claude responds with a structured protocol (activation message, context guard
 
 The MCP Skill Loader connects MemStack™ skills to Claude Code so they activate automatically when you need them. Instead of loading all 100 skills into every session, Claude Code searches for and loads only the relevant skill on demand.
 
-**Clone the loader:**
-
-```bash
-git clone https://github.com/cwinvestments/memstack-skill-loader.git
-```
+For the full setup guide, see [memstack.pro/docs/getting-started](https://memstack.pro/docs/getting-started).
 
 **Install dependencies:**
 
-**Windows:**
-```bat
-cd memstack-skill-loader
-pip install -r requirements.txt
-```
-
-**Mac / Linux:**
 ```bash
-cd memstack-skill-loader
+cd memstack/skills
 pip install -r requirements.txt
 ```
 
 **Build the search index:**
 
-**Windows:**
-```bat
-cd memstack-skill-loader
-set PYTHONPATH=src && python scripts/index_skills.py
-```
-
-**Mac / Linux:**
 ```bash
-cd memstack-skill-loader
-PYTHONPATH=src python scripts/index_skills.py
+python build_index.py
 ```
 
 You should see: `Done! 100 skills indexed`
 
-**Configure Claude Code to use the loader:**
+**Register the MCP server with Claude Code:**
 
-On Windows, `start-memstack.bat link` creates the MCP config automatically. On Mac/Linux, add this to your project's `.mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "memstack-skills": {
-      "command": "python",
-      "args": ["-m", "memstack_skill_loader"],
-      "cwd": "/path/to/memstack-skill-loader",
-      "env": {
-        "PYTHONPATH": "src"
-      }
-    }
-  }
-}
+```bash
+claude mcp add memstack-skills -- python skills/mcp_server.py
 ```
 
-Replace `/path/to/memstack-skill-loader` with the actual path.
+**Verify it works:**
+
+In Claude Code, run `/mcp` and confirm `memstack-skills` shows as connected.
+
 
 ## Step 5: Pro License (Optional)
 
@@ -213,7 +184,7 @@ tiktok-script
 | Issue | Solution |
 |-------|----------|
 | Skills don't activate | Check that `.claude/rules` is linked in your project directory |
-| MCP Skill Loader errors | Run `pip install -r requirements.txt` in the skill-loader directory |
+| MCP Skill Loader errors | Run `pip install -r requirements.txt` in the skills directory |
 | "No skills indexed" | Rebuild the index (see Step 4) |
 | Pro skills locked | Set `MEMSTACK_PRO_LICENSE_KEY` environment variable |
 | Diary not saving | Say "save diary" — it requires an explicit trigger |
