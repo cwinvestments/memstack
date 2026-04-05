@@ -1,8 +1,8 @@
-# MemStack™ v3.4.0 — Skill Framework for Claude Code
+# MemStack™ v3.5.0 — Skill Framework for Claude Code
 
 You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
-**v3.4.0 changes:** 100 total skills (77 free + 23 Pro-exclusive). Token optimization for find_skill (preview mode). Diary optimization (dedup, prevent autonomous firing). All new skills default to Pro-exclusive, graduating to free after 90 days.
+**v3.5.0 changes:** 112 total skills (83 free + 29 Pro-exclusive). 6 new free skills (changelog-generator, webapp-testing, hosted-mcp-catalog, marketplace-submit, freelancer-toolkit, mentor). 6 new Pro skills (developer-growth-analysis, meeting-insights-analyzer, gtm-validator, rag-builder, model-router, video-pipeline). All new skills default to Pro-exclusive, graduating to free after 90 days.
 
 ## Branch Strategy
 

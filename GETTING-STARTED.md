@@ -1,8 +1,8 @@
 # Getting Started with MemStack™
 
-MemStack™ gives Claude Code **100 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
+MemStack™ gives Claude Code **112 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
 
-**77 skills are free.** A Pro license key unlocks 23 additional exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
+**83 skills are free.** A Pro license key unlocks 29 additional exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
 
 ## What You'll Need
 
@@ -56,7 +56,7 @@ If Claude responds with a structured protocol (activation message, context guard
 
 ## Step 4: Set Up the MCP Skill Loader (Recommended)
 
-The MCP Skill Loader connects MemStack™ skills to Claude Code so they activate automatically when you need them. Instead of loading all 100 skills into every session, Claude Code searches for and loads only the relevant skill on demand.
+The MCP Skill Loader connects MemStack™ skills to Claude Code so they activate automatically when you need them. Instead of loading all 112 skills into every session, Claude Code searches for and loads only the relevant skill on demand.
 
 For the full setup guide, see [memstack.pro/docs/getting-started](https://memstack.pro/docs/getting-started).
 
@@ -73,7 +73,7 @@ pip install -r requirements.txt
 python build_index.py
 ```
 
-You should see: `Done! 100 skills indexed`
+You should see: `Done! 112 skills indexed`
 
 **Register the MCP server with Claude Code:**
 

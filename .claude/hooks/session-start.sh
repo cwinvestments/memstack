@@ -151,7 +151,7 @@ if [ -z "${MEMSTACK_PRO_LICENSE_KEY:-}" ]; then
 ║  MemStack™ Pro — License Key Required            ║
 ╠══════════════════════════════════════════════════╣
 ║                                                  ║
-║  Pro skills are locked (77 skills available).    ║
+║  Pro skills are locked (83 skills available).    ║
 ║                                                  ║
 ║  To unlock:                                      ║
 ║  1. Get your key at https://memstack.pro         ║
