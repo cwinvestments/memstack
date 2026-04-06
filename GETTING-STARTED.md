@@ -2,7 +2,7 @@
 
 MemStack™ gives Claude Code **112 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
 
-**83 skills are free.** A Pro license key unlocks 29 additional exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
+**83 skills are free.** A Pro license key unlocks all 112 skills including 29 Pro-exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
 
 ## What You'll Need
 
@@ -25,8 +25,6 @@ Run these commands inside Claude Code (not your regular terminal):
 
 That's it. Skills auto-load based on what you're working on. No configuration needed.
 
-Skip to [Try It Out](#try-it-out) to start using skills.
-
 ## Verify It Works
 
 Open your project in Claude Code and try one of these:
@@ -37,36 +35,21 @@ Open your project in Claude Code and try one of these:
 
 If Claude responds with a structured protocol (activation message, context guard, checklist), MemStack™ is working.
 
-## Step 4: Set Up the MCP Skill Loader
+## Pro License (Optional)
 
-If you installed via the plugin marketplace above, this step is already done — skip to Step 5.
-
-For manual clones, register the MCP server with Claude Code:
-
-```bash
-claude mcp add memstack-skills -- python skills/mcp_server.py
-```
-
-**Verify it works:**
-
-In Claude Code, run `/mcp` and confirm `memstack-skills` shows as connected.
-
-
-## Step 5: Pro License (Optional)
-
-A Pro license unlocks 4 additional skills: **consolidate**, **context-db**, **api-docs**, and **branching**.
+A Pro license unlocks all 112 skills including 29 Pro-exclusive skills.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
 2. Set it permanently as an environment variable:
 
 **Windows:**
 ```bat
-setx MEMSTACK_PRO_LICENSE_KEY your-key-here
+setx MEMSTACK_PRO_LICENSE_KEY "MSPRO-XXXXXXXX-XXXX"
 ```
 
 **Mac / Linux:**
 ```bash
-echo 'export MEMSTACK_PRO_LICENSE_KEY=your-key-here' >> ~/.bashrc && source ~/.bashrc
+echo 'export MEMSTACK_PRO_LICENSE_KEY="MSPRO-XXXXXXXX-XXXX"' >> ~/.bashrc && source ~/.bashrc
 ```
 
 This saves your key permanently so you never have to set it again.
@@ -75,16 +58,16 @@ This saves your key permanently so you never have to set it again.
 
 ## What's Included
 
-### Skill Categories (100 total)
+### Skill Categories (112 total: 83 free + 29 Pro)
 
 | Category | Skills | Examples |
 |----------|--------|----------|
-| Security | 7 | rls-checker, api-audit, secrets-scanner, owasp-top10 |
+| Security | 7 | rls-checker, rls-guardian, owasp-top10, secrets-scanner |
 | Deployment | 6 | railway-deploy, netlify-deploy, docker-setup, ci-cd-pipeline |
 | Development | 7 | database-architect, api-designer, code-reviewer, test-writer |
-| Business | 7 | proposal-writer, invoice-generator, contract-template |
-| Content | 8 | blog-post, email-sequence, youtube-script, newsletter |
-| SEO & GEO | 6 | site-audit, keyword-research, schema-markup |
+| Business | 7 | proposal-writer, sop-builder, scope-of-work, financial-model |
+| Content | 8 | blog-post, landing-page-copy, email-sequence, youtube-script |
+| SEO & GEO | 6 | site-audit, keyword-research, schema-markup, ai-search-visibility |
 | Marketing | 8 | sales-funnel, facebook-ad, google-ad, launch-plan |
 | Product | 6 | prd-writer, feature-spec, mvp-scoper, roadmap-builder |
 | Automation | 5 | n8n-workflow-builder, webhook-designer, cron-scheduler |
@@ -96,62 +79,42 @@ This saves your key permanently so you never have to set it again.
 - **Diary system** — logs your accomplishments, decisions, and handoff state between sessions
 - **Echo recall** — search across past diary entries to recall decisions and context
 - **TTS notifications** — voice alerts for task completion, errors, and attention-needed events
-- **Hooks** — automated pre-commit checks, secrets scanning, and session context loading
 
 ## Tips for Best Results
 
-- **Say what you want to do, not which skill to use.** Claude Code finds the right skill automatically. Say "deploy this to Railway" instead of "use the railway-deploy skill."
-- **Save a diary at the end of each session** — say "save diary" or "wrapping up" before closing Claude Code. This logs your work so the next session can pick up where you left off.
+- **Be specific when asking Claude** — say "deploy this to Railway" not "help me deploy". Specific phrases trigger the right skill.
+- **Save a diary at the end of each session** — say "save diary" or "wrapping up" before closing Claude Code. This logs your accomplishments, decisions, and handoff state so your next session can pick up exactly where you left off.
 - **Save a diary after major implementations** — even mid-session, if you completed a big feature or made important decisions, log it.
 - **Use Echo to recall past work** — say "what did we do last time?" or "recall [topic]" to search across all your diary entries.
 
 ## Filtering Skills Per Project
 
-Not every project needs every skill. You can hide irrelevant skills to reduce token usage and keep search results focused.
-
-### Using `manage_skills` (recommended)
-
-Disable a skill directly from Claude Code:
+You can enable or disable skills per project:
 
 ```
 manage_skills action="disable" skill="facebook-ad"
 ```
 
-Re-enable it later:
+This creates a `.memstack/disabled_skills` file in your project. Disabled skills won't appear in searches or suggestions.
 
+To re-enable:
 ```
 manage_skills action="enable" skill="facebook-ad"
 ```
 
-See what's currently disabled:
-
+To see disabled skills:
 ```
 manage_skills action="list_disabled"
 ```
 
-### Using `.memstack-ignore` (manual method)
-
-Create a `.memstack-ignore` file in your project root with one skill name per line:
-
-```
-facebook-ad
-google-ad
-webinar-script
-tiktok-script
-```
-
-- Lines starting with `#` are comments
-- Blank lines are ignored
-- Skills are hidden from `find_skill`, `list_skills`, and `get_skill` — but not deleted
-- The file only affects the project it's in
+The disable file only affects the project it's in.
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| Skills don't activate | Check that `.claude/rules` is linked in your project directory |
-| MCP Skill Loader errors | Reinstall the plugin: `/plugin install memstack@cwinvestments-memstack` |
-| Skills not loading | Run `/mcp` and confirm `memstack-skills` is connected |
+| Skills don't activate | Reinstall the plugin: `/plugin install memstack@cwinvestments-memstack` |
+| Skills not loading | Restart Claude Code |
 | Pro skills locked | Set `MEMSTACK_PRO_LICENSE_KEY` environment variable |
 | Diary not saving | Say "save diary" — it requires an explicit trigger |
 
