@@ -6,25 +6,18 @@ The structured skill framework for Claude Code — **112 professional skills** f
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
-### Quick Install
+### Install as a Claude Code Plugin
 
-```bash
-git clone https://github.com/cwinvestments/memstack.git
-cd memstack
+Run these commands inside Claude Code (not your regular terminal):
+
 ```
-
-Then link to your project — see [GETTING-STARTED.md](GETTING-STARTED.md) for full setup instructions.
-
-### Install as Claude Code Plugin
-
-```bash
-claude plugin marketplace add cwinvestments/memstack
-```
-
-Then in Claude Code:
-```
+/plugin marketplace add cwinvestments/memstack
 /plugin install memstack@cwinvestments-memstack
 ```
+
+That's it. Skills auto-load based on what you're working on.
+
+See [GETTING-STARTED.md](GETTING-STARTED.md) for manual setup or troubleshooting.
 
 ### Tier Structure
 
@@ -218,12 +211,9 @@ All 112 skills are **fully implemented** with complete protocols, context guards
 
 ## Installation
 
-```bash
-git clone https://github.com/cwinvestments/memstack.git
-cd memstack
-```
+The recommended install is via the Claude Code plugin marketplace (see Quick Install above).
 
-Then link to your project and set up the MCP Skill Loader — see [GETTING-STARTED.md](GETTING-STARTED.md) for step-by-step instructions.
+For manual setup or advanced configuration, see [GETTING-STARTED.md](GETTING-STARTED.md).
 
 ## License
 

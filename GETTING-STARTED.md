@@ -7,13 +7,31 @@ MemStack™ gives Claude Code **112 professional skills** — deployment, securi
 ## What You'll Need
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and working
-- Python 3.10 or higher
-- Git installed
 - An existing project you want to enhance
 
-## Step 1: Clone MemStack™
+## Install as a Claude Code Plugin
 
-Open a terminal and run:
+Run these commands inside Claude Code (not your regular terminal):
+
+**Step 1: Add the marketplace**
+```
+/plugin marketplace add cwinvestments/memstack
+```
+
+**Step 2: Install the plugin**
+```
+/plugin install memstack@cwinvestments-memstack
+```
+
+That's it. Skills auto-load based on what you're working on. No configuration needed.
+
+Skip to [Try It Out](#try-it-out) to start using skills.
+
+---
+
+## Manual Setup (Alternative)
+
+If you prefer to clone the repo directly:
 
 ```bash
 git clone https://github.com/cwinvestments/memstack.git
@@ -54,28 +72,11 @@ Open your project in Claude Code and try one of these:
 
 If Claude responds with a structured protocol (activation message, context guard, checklist), MemStack™ is working.
 
-## Step 4: Set Up the MCP Skill Loader (Recommended)
+## Step 4: Set Up the MCP Skill Loader
 
-The MCP Skill Loader connects MemStack™ skills to Claude Code so they activate automatically when you need them. Instead of loading all 112 skills into every session, Claude Code searches for and loads only the relevant skill on demand.
+If you installed via the plugin marketplace above, this step is already done — skip to Step 5.
 
-For the full setup guide, see [memstack.pro/docs/getting-started](https://memstack.pro/docs/getting-started).
-
-**Install dependencies:**
-
-```bash
-cd memstack/skills
-pip install -r requirements.txt
-```
-
-**Build the search index:**
-
-```bash
-python build_index.py
-```
-
-You should see: `Done! 112 skills indexed`
-
-**Register the MCP server with Claude Code:**
+For manual clones, register the MCP server with Claude Code:
 
 ```bash
 claude mcp add memstack-skills -- python skills/mcp_server.py
@@ -184,8 +185,8 @@ tiktok-script
 | Issue | Solution |
 |-------|----------|
 | Skills don't activate | Check that `.claude/rules` is linked in your project directory |
-| MCP Skill Loader errors | Run `pip install -r requirements.txt` in the skills directory |
-| "No skills indexed" | Rebuild the index (see Step 4) |
+| MCP Skill Loader errors | Reinstall the plugin: `/plugin install memstack@cwinvestments-memstack` |
+| Skills not loading | Run `/mcp` and confirm `memstack-skills` is connected |
 | Pro skills locked | Set `MEMSTACK_PRO_LICENSE_KEY` environment variable |
 | Diary not saving | Say "save diary" — it requires an explicit trigger |
 
