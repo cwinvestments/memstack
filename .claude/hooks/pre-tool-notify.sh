@@ -1,8 +1,8 @@
 #!/bin/bash
 # Pre-tool TTS notification — reads config from .claude/tts-config.json
 
-# TTS notifications can be disabled by setting MEMSTACK_DISABLE_TTS=true
-if [ "$MEMSTACK_DISABLE_TTS" = "true" ]; then
+# TTS notifications are opt-in. Set MEMSTACK_ENABLE_TTS=true to enable.
+if [ "$MEMSTACK_ENABLE_TTS" != "true" ]; then
   exit 0
 fi
 

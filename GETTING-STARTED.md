@@ -78,7 +78,7 @@ This saves your key permanently so you never have to set it again.
 - **On-demand loading** — only the skill matching your current task is loaded, saving context tokens
 - **Diary system** — logs your accomplishments, decisions, and handoff state between sessions
 - **Echo recall** — search across past diary entries to recall decisions and context
-- **TTS notifications** — voice alerts for task completion, errors, and attention-needed events
+- **TTS notifications (opt-in)** — voice alerts for task completion, errors, and attention-needed events. Enable with: `setx MEMSTACK_ENABLE_TTS true` (Windows) or `export MEMSTACK_ENABLE_TTS=true` (Mac/Linux)
 
 ## Tips for Best Results
 
