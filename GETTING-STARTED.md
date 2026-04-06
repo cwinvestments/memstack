@@ -27,42 +27,7 @@ That's it. Skills auto-load based on what you're working on. No configuration ne
 
 Skip to [Try It Out](#try-it-out) to start using skills.
 
----
-
-## Manual Setup (Alternative)
-
-If you prefer to clone the repo directly:
-
-```bash
-git clone https://github.com/cwinvestments/memstack.git
-```
-
-This downloads the skills, rules, and hooks to your machine.
-
-## Step 2: Link MemStack™ to Your Project
-
-MemStack™ works by linking its `.claude/rules` and `.claude/hooks` folders into your project.
-
-**Windows:**
-
-```bat
-cd memstack
-start-memstack.bat link C:\Projects\YourProject
-```
-
-Replace `C:\Projects\YourProject` with the actual path to your project.
-
-**Mac / Linux:**
-
-```bash
-cd memstack
-ln -s "$(pwd)/.claude/rules" /path/to/YourProject/.claude/rules
-ln -s "$(pwd)/.claude/hooks" /path/to/YourProject/.claude/hooks
-```
-
-Replace `/path/to/YourProject` with the actual path to your project.
-
-## Step 3: Verify It Works
+## Verify It Works
 
 Open your project in Claude Code and try one of these:
 
