@@ -55,3 +55,4 @@ memory/vectors/
 .playwright-mcp/
 screenshots/
 session-context.md
+.agent-bridge/ 
