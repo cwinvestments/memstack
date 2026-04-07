@@ -4,16 +4,16 @@
     "name": "CW Affiliate Investments, LLC",
     "url": "https://memstack.pro"
   },
-  "description": "MemStack™ — 100 battle-tested skills for Claude Code",
+  "description": "MemStack™ — 112 battle-tested skills for Claude Code",
   "plugins": [
     {
       "name": "memstack",
-      "description": "100 battle-tested skills for Claude Code. Session memory, git workflows, database migrations, security scanning, deployments, and more.",
+      "description": "112 battle-tested skills for Claude Code. Session memory, git workflows, database migrations, security scanning, deployments, and more.",
       "source": {
         "source": "github",
         "repo": "cwinvestments/memstack"
       },
-      "version": "3.4.0",
+      "version": "3.5.0",
       "category": "productivity",
       "keywords": ["skills", "memory", "context", "session", "productivity", "devops", "security", "database", "deployment"]
     }
