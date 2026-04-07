@@ -51,3 +51,7 @@ memory/ideas/*.md
 # Vector DB (derived index, rebuildable from markdown)
 memory/vectors/
 
+# Untracked artifacts
+.playwright-mcp/
+screenshots/
+session-context.md
