@@ -1,45 +1,14 @@
 #!/usr/bin/env bash
 # MemStack v3.2 — Session End Hook
-# Reports session completion to monitoring API
+# Reports session completion to monitoring webhook
 # Always exit 0 — monitoring should never block work
 #
 # Triggered by: Stop hook event
 
 set -uo pipefail
 
-# --- Find config ---
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MEMSTACK_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-
-CONFIG_FILE=""
-if [ -f "$MEMSTACK_ROOT/config.local.json" ]; then
-    CONFIG_FILE="$MEMSTACK_ROOT/config.local.json"
-elif [ -f "$MEMSTACK_ROOT/config.json" ]; then
-    CONFIG_FILE="$MEMSTACK_ROOT/config.json"
-else
-    exit 0
-fi
-
-# --- Read API config ---
-# Convert MSYS paths to Windows paths for Python compatibility
-PYTHON_CONFIG="$CONFIG_FILE"
-if command -v cygpath &>/dev/null; then
-    PYTHON_CONFIG=$(cygpath -w "$CONFIG_FILE")
-fi
-read -r API_URL API_KEY <<< $(python -c "
-import json, sys
-try:
-    with open(r'$PYTHON_CONFIG') as f:
-        cfg = json.load(f)
-    m = cfg.get('cc_monitor', {})
-    print(m.get('api_url', ''), m.get('api_key', ''))
-except:
-    print(' ')
-" 2>/dev/null || echo " ")
-API_URL="${API_URL:-}"
-API_KEY="${API_KEY:-}"
-
-if [ -z "$API_KEY" ] || [ "$API_KEY" = " " ]; then
+# External webhook: opt-in only via MEMSTACK_DEVLOG_WEBHOOK env var
+if [ -z "${MEMSTACK_DEVLOG_WEBHOOK:-}" ]; then
     exit 0
 fi
 
@@ -52,10 +21,9 @@ else
 fi
 
 # --- Report session end ---
-JSON_BODY=$(printf '{"api_key":"%s","session_name":"CC Session","project":"%s","status":"completed","last_output":"Session ended"}' \
-    "$(printf '%s' "$API_KEY" | sed 's/["\]/\\&/g')" \
+JSON_BODY=$(printf '{"session_name":"CC Session","project":"%s","status":"completed","last_output":"Session ended"}' \
     "$(printf '%s' "$PROJECT_NAME" | sed 's/["\]/\\&/g')")
-curl -s -m 5 -X POST "$API_URL" \
+curl -s -m 5 -X POST "$MEMSTACK_DEVLOG_WEBHOOK" \
     -H "Content-Type: application/json" \
     -d "$JSON_BODY" >/dev/null 2>&1 || true
 

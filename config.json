@@ -3,22 +3,19 @@
   "author": "Your Name or Company",
   "projects": {
     "my-app": {
-      "dir": "C:\\Projects\\my-app",
-      "claude_md": "C:\\Projects\\my-app\\CLAUDE.md",
+      "dir": "~/projects/my-app",
+      "claude_md": "~/projects/my-app/CLAUDE.md",
       "deploy_target": "netlify",
       "repo": "github.com/youruser/my-app"
     },
     "another-project": {
-      "dir": "C:\\Projects\\another-project",
-      "claude_md": "C:\\Projects\\another-project\\CLAUDE.md",
+      "dir": "~/projects/another-project",
+      "claude_md": "~/projects/another-project/CLAUDE.md",
       "deploy_target": "railway",
       "repo": "github.com/youruser/another-project"
     }
   },
-  "cc_monitor": {
-    "api_url": "https://your-admin-dashboard.com/api/cc-sessions/report",
-    "api_key": ""
-  },
+  "_note": "External webhooks are opt-in via MEMSTACK_DEVLOG_WEBHOOK env var",
   "headroom": {
     "auto_start": true,
     "port": 8787,

@@ -25,6 +25,7 @@ if [ -f "$CONFIG_FILE" ]; then
   fi
 fi
 
+MSG="${MSG//\'/\'\'}"
 if command -v powershell.exe &>/dev/null; then
     powershell.exe -c "Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('$MSG')"
 elif command -v say &>/dev/null; then

@@ -26,14 +26,13 @@ mkdir -p "$OBS_DIR" 2>/dev/null || true
 SUMMARY=""
 if [ -n "$TOOL_INPUT" ]; then
     # Try python first for safe JSON parsing
-    SUMMARY=$(python -c "
-import json, sys
+    SUMMARY=$(TOOL_NAME="$TOOL_NAME" python -c "
+import json, os, sys
 try:
     data = json.loads(sys.stdin.read())
-    tool = '${TOOL_NAME}'
+    tool = os.environ.get('TOOL_NAME', 'unknown')
     if tool == 'Bash':
         cmd = data.get('command', '')
-        # Truncate long commands
         if len(cmd) > 120:
             cmd = cmd[:117] + '...'
         print(f'Command: {cmd}')
@@ -53,6 +52,7 @@ try:
     else:
         print(f'{tool} call')
 except Exception as e:
+    tool = os.environ.get('TOOL_NAME', 'unknown')
     print(f'{tool} call (parse error)')
 " <<< "$TOOL_INPUT" 2>/dev/null) || true
 

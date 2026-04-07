@@ -115,8 +115,8 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **"tier" / "scope" / "what's allowed"** →Governor only
 
 ## Storage
-- **Database (primary):** `C:\Projects\memstack\db\memstack.db` — SQLite with WAL mode
-- **DB Helper:** `python C:/Projects/memstack/db/memstack-db.py <command>` — repository pattern CLI
+- **Database (primary):** `db/memstack.db` — SQLite with WAL mode
+- **DB Helper:** `python db/memstack-db.py <command>` — repository pattern CLI
 - **Commands:** `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`, `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
 
 ## Paths
