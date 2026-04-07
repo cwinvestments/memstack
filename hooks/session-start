@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# MemStack — SessionStart hook for native CC plugin injection
+# Outputs JSON with hookSpecificOutput.additionalContext
+# so CC injects skill-loading instructions into the system prompt.
+# Always exit 0 — never block work.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# --- Detect project type ---
+DETECTED=""
+HINTS=""
+
+if [ -f "package.json" ]; then
+    if grep -q '"next"' package.json 2>/dev/null; then
+        DETECTED="Next.js"
+        HINTS="deployment, database, security, testing, performance"
+    elif grep -q '"react"' package.json 2>/dev/null; then
+        DETECTED="React"
+        HINTS="deployment, testing, security, performance"
+    else
+        DETECTED="Node.js"
+        HINTS="deployment, testing, security, API design"
+    fi
+elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
+    DETECTED="Python"
+    HINTS="deployment, database, security, testing, API design"
+elif [ -f "Cargo.toml" ]; then
+    DETECTED="Rust"
+    HINTS="deployment, testing, security, CI/CD"
+elif [ -f "go.mod" ]; then
+    DETECTED="Go"
+    HINTS="deployment, testing, security, Docker, CI/CD"
+elif [ -f "Gemfile" ]; then
+    DETECTED="Ruby"
+    HINTS="deployment, database, testing, security"
+elif [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
+    DETECTED="Java/Kotlin"
+    HINTS="deployment, testing, security, CI/CD"
+fi
+
+# --- Build injection content ---
+PROJECT_LINE=""
+if [ -n "$DETECTED" ]; then
+    PROJECT_LINE="Detected project: ${DETECTED}. Relevant skill areas: ${HINTS}.\\n"
+fi
+
+CONTEXT="# MemStack Skills\\n\\nYou have a memstack-skills MCP server with 100+ professional skills covering deployment, database design, security, git workflows, testing, API design, content, marketing, and more.\\n\\n${PROJECT_LINE}\\nALWAYS call find_skill from the memstack-skills MCP server BEFORE starting any task involving: deployment, database work, security, API development, testing, refactoring, infrastructure, content creation, or architecture decisions. This is not optional.\\n\\nWorkflow: find_skill(query) to search → get_skill(name) to load full instructions → follow the skill."
+
+# --- Escape for JSON ---
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+escaped=$(escape_for_json "$CONTEXT")
+
+# --- Output JSON for CC ---
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
+else
+    printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
+fi
+
+exit 0
