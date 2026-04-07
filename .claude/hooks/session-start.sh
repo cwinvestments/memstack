@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# MemStack v3.2 — Session Start Hook
+# MemStack v3.3 — Session Start Hook
 # 1. Headroom proxy auto-detection and auto-start
-# 2. Auto-indexes CLAUDE.md into SQLite project_context
-# 3. Reports session start to monitoring API
+# 2. MemStack™ skill injection (project-type-aware)
+# 3. Auto-indexes CLAUDE.md into SQLite project_context
+# 4. Reports session start to monitoring API
 # Always exit 0 — should never block work
 #
 # Triggered by: SessionStart hook event
@@ -68,6 +69,50 @@ if git remote get-url origin &>/dev/null; then
 else
     PROJECT_NAME=$(basename "$(pwd)")
 fi
+
+# --- MemStack™ Skill Injection ---
+# Detect project type and inject skill-loading guidance into session context
+DETECTED_TYPES=""
+SKILL_HINTS=""
+
+if [ -f "package.json" ]; then
+    DETECTED_TYPES="Node.js"
+    # Check for framework-specific indicators
+    if grep -q '"next"' package.json 2>/dev/null; then
+        DETECTED_TYPES="Next.js"
+        SKILL_HINTS="deployment, database, security, testing, performance-audit"
+    elif grep -q '"react"' package.json 2>/dev/null; then
+        DETECTED_TYPES="React"
+        SKILL_HINTS="deployment, testing, security, performance-audit"
+    else
+        SKILL_HINTS="deployment, testing, security, api-designer"
+    fi
+elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
+    DETECTED_TYPES="Python"
+    SKILL_HINTS="deployment, database, security, testing, api-designer"
+elif [ -f "Cargo.toml" ]; then
+    DETECTED_TYPES="Rust"
+    SKILL_HINTS="deployment, testing, security, ci-cd-pipeline"
+elif [ -f "go.mod" ]; then
+    DETECTED_TYPES="Go"
+    SKILL_HINTS="deployment, testing, security, docker-setup, ci-cd-pipeline"
+elif [ -f "Gemfile" ]; then
+    DETECTED_TYPES="Ruby"
+    SKILL_HINTS="deployment, database, testing, security"
+elif [ -f "pom.xml" ] || [ -f "build.gradle" ]; then
+    DETECTED_TYPES="Java/Kotlin"
+    SKILL_HINTS="deployment, testing, security, ci-cd-pipeline"
+else
+    DETECTED_TYPES="Unknown"
+    SKILL_HINTS="deployment, security, testing"
+fi
+
+# Inject skill context — this output is read by CC as session context
+echo "# MemStack™ Skill Loader"
+echo ""
+echo "MemStack™ skills are available. Before starting any task, call find_skill from the memstack-skills MCP server to load the relevant domain expertise."
+echo ""
+echo "Detected project type: ${DETECTED_TYPES}. Relevant skills: ${SKILL_HINTS}."
 
 # --- Auto-index CLAUDE.md into SQLite ---
 # If CLAUDE.md exists in the working directory, extract key facts and store in project_context
