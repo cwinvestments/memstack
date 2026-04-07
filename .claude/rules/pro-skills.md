@@ -105,3 +105,5 @@ Do NOT memorize skill content from this catalog — always read the file fresh.
 | consolidate | "consolidate", "weekly summary", "cross-project patterns", "consolidate diaries" | skills/consolidate/SKILL.md |
 | context-db | "context-db", "fact store", "project facts", "token savings" | skills/context-db/SKILL.md |
 | api-docs | "api-docs", "fetch docs", "current API", "chub" | skills/api-docs/SKILL.md |
+| token-optimization | "token optimization", "save tokens", "context window", "reduce tokens", "RTK", "Serena", "token stack" | skills/token-optimization/SKILL.md |
+| branching | "branch", "branching", "dev branch", "merge to master", "branch strategy" | skills/branching/SKILL.md |
