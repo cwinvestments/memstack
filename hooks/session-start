@@ -63,12 +63,6 @@ escape_for_json() {
 escaped=$(escape_for_json "$CONTEXT")
 
 # --- Output JSON for CC ---
-if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
-    printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
-elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
-    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
-else
-    printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
-fi
+printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
 
 exit 0
