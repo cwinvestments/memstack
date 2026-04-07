@@ -1,6 +1,6 @@
 # MemStack™ Skill Loader
 
-You have access to a `memstack-skills` MCP server with 81 professional skills covering deployment, security, database design, git workflows, testing, documentation, and more.
+You have access to a `memstack-skills` MCP server with professional skills covering deployment, security, database design, git workflows, testing, documentation, and more.
 
 ## ALWAYS call `find_skill` BEFORE:
 - Any deployment task (Railway, Netlify, Vercel, Hetzner, etc.)
