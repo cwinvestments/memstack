@@ -26,6 +26,8 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for manual setup or troubleshooting
 | **Free** | 83 skills | Included with MemStack™ base |
 | **Pro** | 112 total (83 free + 29 Pro-exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
 
+**Architecture note:** Pro skills are included in the repository but access is gated by the MCP Skill Loader's license check. Free users see free skills only; Pro license holders unlock the full catalog. This design enables a single codebase with no separate repos or branches for Pro content.
+
 **Pro-exclusive skills (29):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration`, `developer-growth-analysis`, `meeting-insights-analyzer`, `gtm-validator`, `rag-builder`, `model-router`, `video-pipeline` — these require an active Pro license.
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
