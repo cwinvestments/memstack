@@ -219,4 +219,4 @@ For manual setup or advanced configuration, see [GETTING-STARTED.md](GETTING-STA
 
 ## License
 
-Proprietary — CW Affiliate Investments LLC. Not for redistribution.
+MIT — see [LICENSE](LICENSE). © 2026 CW Affiliate Investments LLC.
