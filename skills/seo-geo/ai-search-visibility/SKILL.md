@@ -213,6 +213,8 @@ Princeton's 2023 GEO study (Aggarwal et al., arXiv:2311.09735, accepted at KDD 2
 
 **Reference:** Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K., & Deshpande, A. (2023). *GEO: Generative Engine Optimization.* arXiv:2311.09735. Accepted at KDD 2024 (30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining).
 
+**Platform-specific tuning:** For how each AI search engine (ChatGPT, Perplexity, Google AI Overview, Copilot, Claude) actually ranks and cites content — with measured stats on citation share, freshness windows, and per-platform format preferences — see [`../site-audit/references/platform-ranking-factors.md`](../site-audit/references/platform-ranking-factors.md). The Princeton methods above are universal; the platform reference tells you where to spend effort first based on your audience.
+
 ### Step 4: Add llms.txt File
 
 The `llms.txt` file (emerging standard) tells AI systems about your site:

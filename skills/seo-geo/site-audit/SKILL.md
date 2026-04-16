@@ -37,6 +37,8 @@ Then execute the protocol below.
 
 ## Protocol
 
+For how each AI search engine ranks and cites content (ChatGPT, Perplexity, Google AI Overview, Copilot, Claude, and Google traditional as baseline), see [`references/platform-ranking-factors.md`](./references/platform-ranking-factors.md). Use it to prioritize fixes — a client whose audience is primarily on Perplexity benefits most from FAQ schema and PDF-friendly pages, while a ChatGPT-first audience needs backlinks and 30-day-fresh content.
+
 ### Step 0: Live site snapshot (optional, for deployed URLs)
 
 If the site is already deployed, run the bundled stdlib-only audit script for a one-shot snapshot before walking the source-tree checks below:
