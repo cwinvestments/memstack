@@ -167,6 +167,52 @@ task tracking, real-time collaboration, and automated reporting.
 | Free tier | Up to 5 users | Up to 3 users | No free tier |
 ```
 
+### Step 3.5: Apply Princeton GEO Methods to Content
+
+Princeton's 2023 GEO study (Aggarwal et al., arXiv:2311.09735, accepted at KDD 2024) tested nine optimization methods on Perplexity.ai and measured consistent visibility deltas vs. unoptimized baselines. Apply these to any page targeting AI citation — they translate directly into rewrites, not just crawler hygiene.
+
+**The 9 GEO methods — ranked by measured visibility boost:**
+
+| Method | Visibility Δ | What to do | Example rewrite |
+|---|---|---|---|
+| **Cite Sources** | **+40%** | Add authoritative references with attribution | "According to a 2024 Stanford study (Chen et al.), AI tools improved developer productivity by 55%." |
+| **Statistics Addition** | **+37%** | Include specific numbers and data points | "67% of Fortune 500 companies use AI chatbots, handling 85% of routine inquiries." |
+| **Quotation Addition** | **+30%** | Expert quotes with attribution | "'We'll see the first one-person billion-dollar company within years,' said Sam Altman, OpenAI CEO." |
+| **Authoritative Tone** | **+25%** | Confident, expert language | "This demonstrably improves X" — not "This might help with X, I think." |
+| **Simplification** (easy-to-understand) | **+20%** | Rephrase jargon for broader accessibility | "RAG works like a research assistant: it finds relevant info, then writes an answer from it." |
+| **Technical Terms** | **+18%** | Precise domain terminology where it fits | "LCP exceeds 4 seconds, CLS scores 0.3" — not "the page is slow." |
+| **Unique Terminology** | **+15%** | Vary vocabulary; avoid repetition | Use synonyms and contextual variations rather than the same phrase 10 times. |
+| **Fluency Optimization** | **+15–30%** | Clean sentence flow, transitions, short paragraphs | Logical progression, 2–3 sentence paragraphs, transition words between sections. |
+| ~~Keyword Stuffing~~ | **−10%** | **AVOID** — actively reduces AI visibility | ❌ "SEO SEO best SEO for all your SEO SEO needs." |
+
+**Best-performing combinations** (pairs tested in the Princeton research outperform individual methods):
+
+| Combination | Best for |
+|---|---|
+| **Fluency + Statistics** | Highest overall boost across domains — universal starting point |
+| **Citations + Authoritative Tone** | Professional / B2B / thought leadership content |
+| **Simplification + Statistics** | Consumer-facing content and general audiences |
+| **Technical Terms + Citations** | Academic, scientific, and highly technical content |
+
+**Domain-specific method matrix** — which methods to emphasize per vertical (and which to avoid):
+
+| Vertical | Apply | Avoid |
+|---|---|---|
+| **Technology** | Technical Terms + Citations + Statistics | Oversimplification — audience expects depth |
+| **Business / Finance** | Statistics + Authoritative Tone + Citations | Vague claims, superlatives without data |
+| **Healthcare** | Simplification + Statistics + Citations | Jargon overload — accessibility matters |
+| **Legal** | Citations + Quotations + Authoritative Tone | Informal language, hedging |
+| **Education** | Simplification + Examples + Structure | Excessive complexity or abstraction |
+| **E-commerce** | Statistics + Social Proof + Clear Benefits | Feature dumps without outcomes |
+
+#### Anti-pattern: Keyword stuffing actively hurts AI visibility
+
+| Trap | Reality Check |
+|---|---|
+| "More keyword density = more AI visibility" | The Princeton research measured a **−10% visibility drop** when content was keyword-stuffed. Generative engines downweight keyword-dense text because it reads as non-authoritative. Write naturally, add citations and statistics, let the topic come through via context. |
+
+**Reference:** Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K., & Deshpande, A. (2023). *GEO: Generative Engine Optimization.* arXiv:2311.09735. Accepted at KDD 2024 (30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining).
+
 ### Step 4: Add llms.txt File
 
 The `llms.txt` file (emerging standard) tells AI systems about your site:
