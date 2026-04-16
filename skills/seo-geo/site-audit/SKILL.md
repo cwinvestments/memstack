@@ -37,6 +37,20 @@ Then execute the protocol below.
 
 ## Protocol
 
+### Step 0: Live site snapshot (optional, for deployed URLs)
+
+If the site is already deployed, run the bundled stdlib-only audit script for a one-shot snapshot before walking the source-tree checks below:
+
+```bash
+python scripts/live_audit.py https://example.com
+```
+
+No API keys, no pip installs, no external dependencies — pure Python 3 stdlib (`urllib`, `html.parser`, `json`). It fetches the page once and checks title, meta description, heading hierarchy, image alt attributes, JSON-LD structured data, canonical URL, Open Graph tags, robots meta, viewport, `robots.txt` (including AI bot rules), `sitemap.xml`, page load time, and internal vs. external link counts. Output uses the same severity format (🔴 Critical / 🟠 High / 🟡 Medium / 🔵 Low) as the scorecard in Step 9, and the script exit code reflects severity (`0` clean, `1` high, `2` critical) so it can also gate CI.
+
+Use this for deployed-URL audits; use Steps 1-8 below for source-tree scans of unshipped code. The two are complementary — the live script confirms what actually reaches crawlers, the grep steps catch issues before they ship.
+
+---
+
 ### Step 1: Check Meta Tags
 
 Scan every page for required meta tags:
