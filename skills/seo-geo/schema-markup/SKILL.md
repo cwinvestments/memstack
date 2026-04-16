@@ -36,6 +36,8 @@ Then execute the protocol below.
 
 ## Protocol
 
+For ready-to-paste JSON-LD templates covering all 10 common schema types (FAQPage, WebPage, Article, SoftwareApplication, Organization, Product, HowTo, BreadcrumbList, LocalBusiness, SpeakableSpecification) plus a combined `@graph` bundle, see [`references/schema-templates.md`](./references/schema-templates.md). The step-by-step generation logic below still applies — the reference file is a copy-paste library, not a replacement for the per-page-type mapping in Step 1.
+
 ### Step 1: Identify Applicable Schema Types
 
 Map each page type to the correct schema:
