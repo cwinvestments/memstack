@@ -249,13 +249,47 @@ def check_viewport(p):
     return [], vp
 
 
+def _looks_like_html(body):
+    """Return True if body looks like an HTML page (common auth-redirect failure mode)."""
+    if not body:
+        return False
+    head = body[:500].lstrip().lower()
+    return head.startswith("<!doctype html") or head.startswith("<html") or "<!doctype html" in head
+
+
+def _content_type(headers):
+    """Extract content-type value (lowercased, no parameters) from a headers dict."""
+    if not headers:
+        return ""
+    # urllib returns header keys in their original case; match case-insensitively.
+    for key, value in headers.items():
+        if key.lower() == "content-type":
+            return str(value).split(";")[0].strip().lower()
+    return ""
+
+
 def check_robots_txt(base_url):
     parsed = urllib.parse.urlparse(base_url)
     robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
-    status, _, body, _ = fetch(robots_url)
+    status, headers, body, _ = fetch(robots_url)
     if status != 200 or not body:
         return [("HIGH", "robots.txt not found or unreachable")], "missing"
+
+    ctype = _content_type(headers)
+    # Common failure mode: auth middleware intercepts /robots.txt and returns login HTML
+    # with status 200. A naive "status == 200" check would mark this 'present'.
+    if _looks_like_html(body) or ctype == "text/html":
+        return [
+            ("HIGH", f"robots.txt returned HTML instead of plain text (content-type: {ctype or 'unknown'}) — likely an auth redirect or route misconfig intercepting /robots.txt; crawlers cannot read the rules"),
+        ], "broken (HTML response)"
+
+    # Shape check: a real robots.txt has at least one User-agent directive
     lc = body.lower()
+    if "user-agent:" not in lc:
+        return [
+            ("HIGH", "robots.txt reachable but contains no 'User-agent:' directive — not a valid robots.txt response"),
+        ], "broken (no User-agent directive)"
+
     mentioned = [b for b in AI_BOTS if b.lower() in lc]
     issues = []
     if not mentioned:
@@ -266,14 +300,25 @@ def check_robots_txt(base_url):
 def check_sitemap(base_url):
     parsed = urllib.parse.urlparse(base_url)
     sitemap_url = f"{parsed.scheme}://{parsed.netloc}/sitemap.xml"
-    status, _, _, _ = fetch(sitemap_url, method="HEAD")
-    if status == 200:
-        return [], "present"
-    # Some hosts disallow HEAD; fall back to GET
-    status, _, body, _ = fetch(sitemap_url)
-    if status == 200 and body and ("<urlset" in body.lower() or "<sitemapindex" in body.lower()):
-        return [], "present"
-    return [("HIGH", "sitemap.xml not found")], "missing"
+    status, headers, body, _ = fetch(sitemap_url)
+    if status != 200 or not body:
+        return [("HIGH", "sitemap.xml not found")], "missing"
+
+    ctype = _content_type(headers)
+    # Same auth-redirect failure mode as robots.txt
+    if _looks_like_html(body) or ctype == "text/html":
+        return [
+            ("HIGH", f"sitemap.xml returned HTML instead of XML (content-type: {ctype or 'unknown'}) — likely an auth redirect or route misconfig intercepting /sitemap.xml; search engines cannot discover pages"),
+        ], "broken (HTML response)"
+
+    # Shape check: must contain <urlset> or <sitemapindex>
+    body_lc = body.lower()
+    if "<urlset" not in body_lc and "<sitemapindex" not in body_lc:
+        return [
+            ("HIGH", "sitemap.xml reachable but contains no <urlset> or <sitemapindex> — not a valid XML sitemap"),
+        ], "broken (not a valid sitemap)"
+
+    return [], "present"
 
 
 def check_load_time(elapsed):
