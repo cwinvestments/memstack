@@ -1,5 +1,7 @@
 ## When to notify
 
+TTS notifications are opt-in. They only fire when `MEMSTACK_ENABLE_TTS=true` is set in the environment. If unset, skip TTS entirely.
+
 There are two notification triggers:
 
 ### 1. Before any approval prompt
@@ -10,11 +12,9 @@ When you are about to run a command that will trigger an approval prompt (file w
 
 Run the TTS command as its own isolated tool call. Do not combine it with any other tool call in the same response.
 
-Read the message from `.claude/tts-config.json` (field: `messages.approval_prompt`). If the file is missing or `enabled` is false, skip TTS entirely.
-
-- **Windows:** `powershell -c "Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('<message>')"`
-- **macOS:** `say "<message>"`
-- **Linux:** `spd-say "<message>" || espeak "<message>" || echo -e '\a'`
+- **Windows:** `powershell -c "Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('Claude needs your attention')"`
+- **macOS:** `say "Claude needs your attention"`
+- **Linux:** `spd-say "Claude needs your attention" || espeak "Claude needs your attention" || echo -e '\a'`
 
 **Step 2 — Actual command:**
 
@@ -28,18 +28,14 @@ After completing any task, run the appropriate notification as a standalone Bash
 
 ## Message selection
 
-Read messages from `.claude/tts-config.json` under the `messages` key:
-- **Task complete** (work finished, no input needed): `messages.task_complete`
-- **Needs attention** (about to ask a question, need approval, waiting for input): `messages.approval_prompt`
-- **Error occurred** (something failed, build broke, command errored): `messages.error`
+Use one of these three fixed messages depending on context:
 
-If the config file is missing, use these defaults:
-- `"Claude needs your attention"`
-- `"Task complete"`
-- `"Something went wrong"`
+- **Task complete** (work finished, no input needed): `"Task complete"`
+- **Needs attention** (about to ask a question, need approval, waiting for input): `"Claude needs your attention"`
+- **Error occurred** (something failed, build broke, command errored): `"Something went wrong"`
 
 ## Rules
 
-- Do not skip notifications. Run them every time (unless `enabled` is false in tts-config.json).
+- Skip notifications entirely when `MEMSTACK_ENABLE_TTS` is not set to `true`.
 - TTS and approval-triggering tool calls must NEVER be in the same response. Two separate steps, two separate responses.
 - For task completion: notification runs AFTER the final output.
