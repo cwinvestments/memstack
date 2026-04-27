@@ -40,7 +40,17 @@ If Claude responds with a structured protocol (activation message, context guard
 A Pro license unlocks all 114 skills including 29 Pro-exclusive skills.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
-2. Set it permanently as an environment variable:
+2. In Claude Code, ask Claude to run:
+
+```
+activate_license(key="MSPRO-XXXXXXXX-XXXX", email="you@example.com")
+```
+
+That's it. Your key is saved to `~/.memstack/license.json` permanently. No environment variables needed.
+
+### Alternative: Environment Variable
+
+For advanced users who prefer setting an environment variable instead of using `activate_license`:
 
 **Windows:**
 ```bat
@@ -52,9 +62,7 @@ setx MEMSTACK_PRO_LICENSE_KEY "MSPRO-XXXXXXXX-XXXX"
 echo 'export MEMSTACK_PRO_LICENSE_KEY="MSPRO-XXXXXXXX-XXXX"' >> ~/.bashrc && source ~/.bashrc
 ```
 
-This saves your key permanently so you never have to set it again.
-
-> **Note:** After running this command, close and reopen your terminal for it to take effect.
+> **Note:** After running this command, close and reopen your terminal **and restart Claude Code** for it to take effect.
 
 ## What's Included
 
@@ -115,7 +123,7 @@ The disable file only affects the project it's in.
 |-------|----------|
 | Skills don't activate | Reinstall the plugin: `/plugin install memstack@cwinvestments-memstack` |
 | Skills not loading | Restart Claude Code |
-| Pro skills locked | Set `MEMSTACK_PRO_LICENSE_KEY` environment variable |
+| Pro skills locked | In Claude Code, run `activate_license(key="your-key", email="you@example.com")` |
 | Diary not saving | Say "save diary" — it requires an explicit trigger |
 
 ## Getting Help
