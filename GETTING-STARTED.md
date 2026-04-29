@@ -40,29 +40,21 @@ If Claude responds with a structured protocol (activation message, context guard
 A Pro license unlocks all 114 skills including 29 Pro-exclusive skills.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
-2. In Claude Code, ask Claude to run:
+2. Install the Pro Skill Loader:
+   ```bash
+   pip install memstack-skill-loader
+   ```
+3. Register the MCP server:
+   ```bash
+   claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader
+   ```
+4. Restart Claude Code and activate your license:
+   ```
+   activate_license(key="MSPRO-XXXXXXXX-XXXX", email="you@example.com")
+   ```
+5. Pro skills download automatically. You should see all 114 skills (85 free + 29 Pro).
 
-```
-activate_license(key="MSPRO-XXXXXXXX-XXXX", email="you@example.com")
-```
-
-That's it. Your key is saved to `~/.memstack/license.json` permanently. No environment variables needed.
-
-### Alternative: Environment Variable
-
-For advanced users who prefer setting an environment variable instead of using `activate_license`:
-
-**Windows:**
-```bat
-setx MEMSTACK_PRO_LICENSE_KEY "MSPRO-XXXXXXXX-XXXX"
-```
-
-**Mac / Linux:**
-```bash
-echo 'export MEMSTACK_PRO_LICENSE_KEY="MSPRO-XXXXXXXX-XXXX"' >> ~/.bashrc && source ~/.bashrc
-```
-
-> **Note:** After running this command, close and reopen your terminal **and restart Claude Code** for it to take effect.
+> **Advanced Alternative:** You can also set the `MEMSTACK_PRO_LICENSE_KEY` environment variable instead of using `activate_license`. Use `setx` on Windows or add to `~/.bashrc` on Mac/Linux, then restart your terminal and Claude Code.
 
 ## What's Included
 
