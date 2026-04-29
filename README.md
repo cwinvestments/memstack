@@ -24,7 +24,7 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for manual setup or troubleshooting
 | Tier | Skills | Access |
 |------|--------|--------|
 | **Free** | 85 skills | Included with MemStack™ base |
-| **Pro** | 114 total (85 free + 29 Pro-exclusive) | Requires `MEMSTACK_PRO_LICENSE_KEY` |
+| **Pro** | 114 total (85 free + 29 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are included in the repository but access is gated by the MCP Skill Loader's license check. Free users see free skills only; Pro license holders unlock the full catalog. This design enables a single codebase with no separate repos or branches for Pro content.
 
@@ -32,7 +32,24 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for manual setup or troubleshooting
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
 
-**License key:** Set `MEMSTACK_PRO_LICENSE_KEY` as an environment variable or store it in `~/.memstack/license.json`. A SessionStart hook will nudge you to set up your license key if it's missing.
+### Unlock Pro Skills
+
+1. Install the Pro Skill Loader:
+   ```bash
+   pip install memstack-skill-loader
+   ```
+2. Register the MCP server:
+   ```bash
+   claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader
+   ```
+3. Restart Claude Code, then ask Claude to run:
+   ```
+   activate_license(key="your-key", email="you@example.com")
+   ```
+
+Pro skills download automatically. Your key is saved permanently — no environment variables needed.
+
+> **Alternative:** You can also set `MEMSTACK_PRO_LICENSE_KEY` as an environment variable instead of using `activate_license`. Use `setx` on Windows or add to `~/.bashrc` on Mac/Linux, then restart your terminal and Claude Code.
 
 ## Free Base (Included)
 
