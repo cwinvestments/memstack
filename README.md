@@ -2,7 +2,7 @@
 
 [![Version: 3.5.0](https://img.shields.io/badge/Version-3.5.0-green.svg)](CHANGELOG.md)
 
-The structured skill framework for Claude Code — **114 professional skills** for deployment, security, databases, content, marketing, and more.
+The structured skill framework for Claude Code — **127 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
@@ -24,11 +24,11 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for manual setup or troubleshooting
 | Tier | Skills | Access |
 |------|--------|--------|
 | **Free** | 85 skills | Included with MemStack™ base |
-| **Pro** | 114 total (85 free + 29 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
+| **Pro** | 127 total (85 free + 42 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are included in the repository but access is gated by the MCP Skill Loader's license check. Free users see free skills only; Pro license holders unlock the full catalog. This design enables a single codebase with no separate repos or branches for Pro content.
 
-**Pro-exclusive skills (29):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration`, `developer-growth-analysis`, `meeting-insights-analyzer`, `gtm-validator`, `rag-builder`, `model-router`, `video-pipeline` — these require an active Pro license.
+**Pro-exclusive skills (42):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration`, `developer-growth-analysis`, `meeting-insights-analyzer`, `gtm-validator`, `rag-builder`, `model-router`, `video-pipeline`, `governor-pro`, `config-audit`, `burn`, `frontend-design`, `us-privacy-compliance`, `ios-app-store`, `database-migration`, `api-load-tester`, `social-media`, `council`, `checkpoint`, `nextjs-conventions`, `python-conventions` — these require an active Pro license.
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
 
@@ -61,9 +61,9 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - Headroom context compression proxy auto-start
 - Always-on rules and slash commands
 
-## All Skills (114 total — 85 free + 29 Pro-exclusive)
+## All Skills (127 total — 85 free + 42 Pro-exclusive)
 
-All 114 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 29 skills (consolidate, context-db, api-docs, branching, multi-agent, codebase-index, doc-index, diagram-generator, browser-use, session-restore, drift-detection, mcp-builder, claude-api-helper, test-generator, log-analyzer, performance-profiler, dependency-auditor, git-worktrees, error-handler, web-scraper, advanced-security, env-manager-pro, hooks-integration, developer-growth-analysis, meeting-insights-analyzer, gtm-validator, rag-builder, model-router, video-pipeline) are Pro-exclusive and require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 127 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 42 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 ### Core (20 skills)
 
@@ -220,7 +220,7 @@ All 114 skills are **fully implemented** with complete protocols, context guards
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 114 skills
+- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 127 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
