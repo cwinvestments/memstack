@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "voice": "default",
+  "messages": {
+    "approval_prompt": "MemStack needs your attention",
+    "task_complete": "Task complete",
+    "error": "Something went wrong"
+  }
+}
