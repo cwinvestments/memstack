@@ -234,6 +234,28 @@ The recommended install is via the Claude Code plugin marketplace (see Quick Ins
 
 For manual setup or advanced configuration, see [GETTING-STARTED.md](GETTING-STARTED.md).
 
+## Dashboard
+
+MemStack includes a localhost dashboard for managing skills, monitoring token usage, and running multi-agent tasks.
+
+```bash
+pip install memstack-skill-loader
+python -m memstack_skill_loader dashboard
+```
+
+Then open [http://localhost:3333](http://localhost:3333).
+
+| Page | Description |
+|------|-------------|
+| **Overview** | Skill fire stats, recent projects, session diary |
+| **Skills Manager** | Toggle skills on/off, set modes |
+| **Burn Report** | Token usage analytics |
+| **Memory Browser** | Browse project memories |
+| **Agent Monitor** | Launch 3-agent tasks (Manager/Builder/Reviewer) with real-time streaming |
+| **Settings** | Agent names, model selection, MCP tools defaults, profile |
+
+The dashboard is free for all users. Pro skills require a [license](https://memstack.pro).
+
 ## License
 
 MIT — see [LICENSE](LICENSE). © 2026 CW Affiliate Investments LLC.
