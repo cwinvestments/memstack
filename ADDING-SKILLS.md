@@ -71,14 +71,12 @@ After adding, run `reindex_skills` via the MCP tool, then confirm:
 - Skill appears in `find_skill` results for relevant queries
 - Correct tier label (MemStack vs MemStack Pro)
 
-## Known Issue: Cache Staleness
+## Troubleshooting: New Skills Not Appearing
 
-The skill-loader auto-discovers skills by scanning directories in priority order. When users run `/plugin update`, the `marketplaces/` clone is refreshed via git pull, but a separate `cache/` copy may exist from initial install or PyPI upgrade.
+After adding a new skill and pushing to GitHub, users need to:
 
-**Impact**: Users on a stale cache won't see newly added skills until:
+1. Upgrade the skill loader: `pip install --upgrade memstack-skill-loader`
+2. Run `reindex_skills` in Claude Code to rebuild the vector index
+3. Restart Claude Code
 
-1. The cache is invalidated (delete `~/.claude/plugins/cache/cwinvestments-memstack/`), or
-2. The skill-loader is upgraded via PyPI (which refreshes the cache), or
-3. The auto-discovery priority fix lands (marketplaces/ checked before cache/)
-
-When communicating new skill additions, note that users may need to clear their cache if the skill doesn't appear after `/plugin update` + `reindex_skills`.
+If the skill still doesn't appear, check that the SKILL.md frontmatter is valid YAML and the file is in the correct directory.

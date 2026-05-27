@@ -1,8 +1,8 @@
 # MemStack™ — Skill Quick Reference
 
-> **127 skills across 10 categories** (85 free + 42 Pro-exclusive). Say any trigger phrase to activate.
+> **127 skills across 10 categories** (84 free + 43 Pro-exclusive). Say any trigger phrase to activate.
 >
-> Pro-exclusive skills are marked with **[PRO]**. Requires `MEMSTACK_PRO_LICENSE_KEY`.
+> Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key — activate via Dashboard Settings or `activate_license()` in Claude Code.
 
 ---
 
@@ -18,7 +18,7 @@
 | Verify | Pre-commit verification — checks build, tests, and requirements before committing | "Verify" or "Check this work" or "Does it pass?" |
 | Governor | Portfolio governance with tier system (Prototype/MVP/Production) to prevent over-engineering | "New project" or "What tier?" or "Scope this" |
 | Grimoire | Manages and updates CLAUDE.md files across projects after significant changes | "Update context" or "Update claude" or "Save library" |
-| Compress | Manages Headroom context compression proxy — status, stats, troubleshooting | "Headroom" or "Compression" or "Token savings" |
+| Compress | Manages TokenStack™ context compression proxy — status, stats, troubleshooting | "Compression" or "Token savings" or "TokenStack" |
 | Humanize | Removes AI writing patterns from text — makes output sound natural and human | "Humanize" or "Clean up writing" or "Make it sound natural" |
 | Forge | Creates new MemStack™ skills with proper YAML frontmatter and registration | "Forge this" or "New skill" or "Create enchantment" |
 | Familiar | Splits large tasks into coordinated prompts for parallel CC sessions | "Dispatch" or "Send familiar" or "Split task" |
@@ -29,7 +29,7 @@
 | Consolidate | **[PRO]** Cross-project weekly summaries and pattern extraction from diary entries | "Consolidate" or "Weekly summary" or "Cross-project patterns" |
 | Context DB | **[PRO]** Lightweight fact store for project context with token-efficient retrieval | "Context-db" or "Fact store" or "Project facts" |
 | API Docs | **[PRO]** Fetches current API documentation for libraries to prevent stale knowledge | "Api-docs" or "Fetch docs" or "Current API" |
-| Token Optimization | 3-layer token savings guide covering Headroom, RTK, and Serena | "Token optimization" or "Save tokens" or "RTK" |
+| Token Optimization | 3-layer token savings guide covering TokenStack™, RTK, and Serena | "Token optimization" or "Save tokens" or "RTK" |
 | Branching | **[PRO]** Dev-branch workflow — all work on dev, merge to master only after review | "Branch" or "Dev branch" or "Merge to master" |
 
 ---
@@ -141,4 +141,4 @@
 
 ---
 
-*MemStack™ v3.5.0 — 127 skills across 10 categories (85 free + 42 Pro-exclusive), one prompt away.*
+*MemStack™ v4.3.0 — 127 skills across 10 categories (84 free + 43 Pro-exclusive), one prompt away.*

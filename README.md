@@ -1,34 +1,35 @@
 # MemStack™
 
-[![Version: 4.1.0](https://img.shields.io/badge/Version-4.1.0-green.svg)](CHANGELOG.md)
+[![Version: 4.3.0](https://img.shields.io/badge/Version-4.3.0-green.svg)](CHANGELOG.md)
 
 The structured skill framework for Claude Code — **127 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
-### Install as a Claude Code Plugin
+### Install
 
-Run these commands inside Claude Code (not your regular terminal):
+1. Install from PyPI:
+   ```bash
+   pip install memstack-skill-loader
+   ```
+2. Register the MCP server:
+   ```bash
+   claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader
+   ```
+3. Restart Claude Code, then type `list skills` to verify.
 
-```
-/plugin marketplace add cwinvestments/memstack
-/plugin install memstack@cwinvestments-memstack
-```
-
-That's it. Skills auto-load based on what you're working on.
-
-See [GETTING-STARTED.md](GETTING-STARTED.md) for manual setup or troubleshooting.
+See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup or troubleshooting.
 
 ### Tier Structure
 
 | Tier | Skills | Access |
 |------|--------|--------|
-| **Free** | 85 skills | Included with MemStack™ base |
-| **Pro** | 127 total (85 free + 42 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
+| **Free** | 84 skills | Included with MemStack™ base |
+| **Pro** | 127 total (84 free + 43 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are included in the repository but access is gated by the MCP Skill Loader's license check. Free users see free skills only; Pro license holders unlock the full catalog. This design enables a single codebase with no separate repos or branches for Pro content.
 
-**Pro-exclusive skills (42):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration`, `developer-growth-analysis`, `meeting-insights-analyzer`, `gtm-validator`, `rag-builder`, `model-router`, `video-pipeline`, `governor-pro`, `config-audit`, `burn`, `frontend-design`, `us-privacy-compliance`, `ios-app-store`, `database-migration`, `api-load-tester`, `social-media`, `council`, `checkpoint`, `nextjs-conventions`, `python-conventions` — these require an active Pro license.
+**Pro-exclusive skills (43):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration`, `developer-growth-analysis`, `meeting-insights-analyzer`, `gtm-validator`, `rag-builder`, `model-router`, `video-pipeline`, `governor-pro`, `config-audit`, `burn`, `frontend-design`, `us-privacy-compliance`, `ios-app-store`, `database-architect`, `database-migration`, `api-load-tester`, `social-media`, `council`, `checkpoint`, `nextjs-conventions`, `python-conventions` — these require an active Pro license.
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
 
@@ -58,12 +59,12 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - Deterministic hooks (commit safety, build verification, secret scanning)
 - 17 core skills (Echo, Diary, Work, Forge, Scan, Governor, etc.)
 - TTS voice notifications (task complete, needs attention, error alerts)
-- Headroom context compression proxy auto-start
+- TokenStack™ context compression
 - Always-on rules and slash commands
 
-## All Skills (127 total — 85 free + 42 Pro-exclusive)
+## All Skills (127 total — 84 free + 43 Pro-exclusive)
 
-All 127 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 42 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 127 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 43 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 ### Core (20 skills)
 
@@ -77,8 +78,8 @@ All 127 skills are **fully implemented** with complete protocols, context guards
 | `verify` | Verification before committing completed work |
 | `governor` | Project maturity assessment and complexity budgeting |
 | `grimoire` | Update project context files after significant changes |
-| `compress` | Headroom proxy status and token savings |
-| `token-optimization` | Full 3-layer token stack: Headroom + RTK + Serena |
+| `compress` | TokenStack™ proxy status and token savings |
+| `token-optimization` | Full 3-layer token stack: TokenStack™ + RTK + Serena |
 | `humanize` | Make AI-generated text sound natural |
 | `forge` | Create new MemStack™ skills |
 | `familiar` | Dispatch work across parallel CC sessions |
@@ -226,11 +227,11 @@ All 127 skills are **fully implemented** with complete protocols, context guards
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
 - **PostToolUse observation capture**: Auto-logs every file write and bash command to `.claude/observations/` with timestamps and parsed summaries
 - **SessionStart context injection**: Injects last 3 diary + observation summaries into `.claude/session-context.md` at session start for instant recall
-- **Headroom integration**: Context compression proxy auto-starts with sessions
+- **TokenStack™ integration**: Context compression proxy for token savings
 
 ## Installation
 
-The recommended install is via the Claude Code plugin marketplace (see Quick Install above).
+The recommended install is via PyPI (see Install section above).
 
 For manual setup or advanced configuration, see [GETTING-STARTED.md](GETTING-STARTED.md).
 

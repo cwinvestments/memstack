@@ -1,8 +1,8 @@
-# MemStack™ v3.5.0 — Skill Framework for Claude Code
+# MemStack™ v4.3.0 — Skill Framework for Claude Code
 
 You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
-**v3.5.0 changes:** 127 total skills (85 free + 42 Pro-exclusive). Recent additions include governor-pro, config-audit, burn, council, checkpoint, us-privacy-compliance, frontend-design, database-migration, api-load-tester, nextjs-conventions, python-conventions, ios-app-store, social-media. All new skills default to Pro-exclusive, graduating to free after 90 days.
+**v4.3.0 changes:** 127 total skills (84 free + 43 Pro-exclusive). Dashboard with 6 pages, Agent Runner, TokenStack™ context compression, 17 MCP tools. All new skills default to Pro-exclusive, graduating to free after 90 days.
 
 ## Branch Strategy
 
@@ -26,7 +26,7 @@ MemStack™ v3.2.1 uses **three layers**:
 
 | Layer | What | How | Examples |
 |-------|------|-----|---------|
-| **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor + Headroom + CLAUDE.md indexer (session start/end) |
+| **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor + TokenStack™ + CLAUDE.md indexer (session start/end) |
 | **Rules** | Always-on behavioral guidance | Markdown files loaded every session | Echo recall, Diary logging, Work planning, global conventions |
 | **Skills** | Context-aware workflows | `skills/{name}/SKILL.md` — official Anthropic format | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
 
@@ -40,7 +40,7 @@ Hooks are wired in `.claude/settings.json`:
 |-------------|----------|----------|
 | `pre-push.sh` | `PreToolUse` (git push) | Build check, secrets scan, commit format — **blocks push on failure** |
 | `post-commit.sh` | `PostToolUse` (git commit) | Debug artifact scan, secrets check — **warns after commit** |
-| `session-start.sh` | `SessionStart` | **Headroom auto-start** + **CLAUDE.md auto-index** + reports "working" to API |
+| `session-start.sh` | `SessionStart` | **TokenStack™ auto-start** + **CLAUDE.md auto-index** + reports "working" to API |
 | `session-end.sh` | `Stop` | Reports "completed" status to monitoring API |
 
 ### Rules Configuration
@@ -53,14 +53,14 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | `echo.md` | Echo (Lv.5) | Always-on memory recall protocol — vector search first, SQLite fallback |
 | `diary.md` | Diary (Lv.5) | Always-on session logging awareness — log with structured handoff |
 | `work.md` | Work (Lv.5) | Always-on task planning protocol — activate on plan/todo/task |
-| `headroom.md` | Headroom | Compression proxy awareness — troubleshooting, stats check |
+| `tokenstack.md` | TokenStack™ | Compression proxy awareness — troubleshooting, stats check |
 
 ### Slash Commands
 
 | Command | File | Behavior |
 |---------|------|----------|
 | `/memstack-search <query>` | `.claude/commands/memstack-search.md` | Quick memory search — runs `memstack-db.py search` |
-| `/memstack-headroom` | `.claude/commands/memstack-headroom.md` | Headroom proxy status and token savings |
+| `/memstack-headroom` | `.claude/commands/memstack-headroom.md` | TokenStack™ proxy status and token savings |
 
 ### Hook Exit Codes
 
@@ -97,7 +97,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
 | 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |
 | 19 | Governor | 🏛️    | Contextual | Lv.1     | Portfolio governance (tier/phase constraints) | "new project", "what tier", "scope", "project init" |
-| 20 | Compress | ⚙️    | Keyword    | Lv.2     | Headroom proxy management & stats | "headroom", "compression", "token savings", "proxy status" |
+| 20 | Compress | ⚙️    | Keyword    | Lv.2     | TokenStack™ proxy management & stats | "tokenstack", "compression", "token savings", "proxy status" |
 
 ## Skill Deconfliction
 When multiple skills could activate on the same prompt, use these ownership rules:

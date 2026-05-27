@@ -1,5 +1,16 @@
 # MemStack™ Changelog
 
+## v4.3.0 — 2026-05-27 — Documentation Audit
+
+### Changed
+- **Skill counts updated** — 127 total (84 free + 43 Pro-exclusive). `database-architect` moved to Pro.
+- **Install method** — Removed deprecated `plugin install` references. Install is now `pip install memstack-skill-loader` + `claude mcp add`.
+- **TokenStack™ branding** — All Headroom references updated to TokenStack™ across README, GETTING-STARTED, SKILL-REFERENCE, and MEMSTACK.
+- **Version bumps** — All docs updated to v4.3.0.
+- **Pro skill list** — Updated to 43 skills (added `database-architect`).
+
+---
+
 ## v3.3.4 — 2026-03-28 — Git Audit + Docs Update
 
 ### Added
