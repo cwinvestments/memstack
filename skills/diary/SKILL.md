@@ -47,6 +47,10 @@ When the user asks to save a diary, keep these in mind:
 
 ## Protocol
 
+**Always use Bash for all memstack-db.py commands. Do not use PowerShell or CMD -- PowerShell mangles JSON arguments.**
+
+**All JSON field values must be plain strings. Never pass arrays or objects. If multiple items (files, commits, decisions), join them as a comma-separated string.**
+
 1. **Summarize the session:**
    - Project name and working directory
    - Date and approximate duration
@@ -96,6 +100,8 @@ When the user asks to save a diary, keep these in mind:
    ```bash
    python "$MEMSTACK_PATH/db/memstack-db.py" add-insight '{"project":"<name>","type":"decision","content":"<decision>","context":"Session <date>","tags":"<project>"}'
    ```
+
+   **CRITICAL: The field name is "content", NOT "insight". Using "insight" will fail with a missing required field error.**
 
 6. **Update project context** with last session date:
    ```bash
