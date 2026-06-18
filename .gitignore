@@ -52,6 +52,12 @@ memory/ideas/*.md
 .claude/observations/
 .claude/session-context.md
 
+# Internal research and planning docs (not for public repo)
+skills/_research/
+research/
+docs/plans/
+skills/echo/UPGRADE_PLAN.md
+
 # Vector DB (derived index, rebuildable from markdown)
 memory/vectors/
 
