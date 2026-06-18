@@ -90,12 +90,12 @@ If nothing found across all sources — say clearly: "No session logs found for 
 
 To re-index sessions after new diary entries (normally done automatically):
 ```bash
-python "$MEMSTACK_PATH/skills/echo/index-sessions.py
+python "$MEMSTACK_PATH/skills/echo/index-sessions.py"
 ```
 
 Use `--force` to re-embed all content (e.g., after changing embedding model):
 ```bash
-python "$MEMSTACK_PATH/skills/echo/index-sessions.py --force
+python "$MEMSTACK_PATH/skills/echo/index-sessions.py" --force
 ```
 
 ### Embedding provider
