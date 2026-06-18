@@ -5,10 +5,13 @@ Indexes memory/sessions/*.md and memory/plans/*.md into a local LanceDB
 vector database for semantic search.
 
 Usage:
-    python skills/echo/index-sessions.py [--force]
+    python skills/echo/index-sessions.py [--force] [--provider local|openai]
 
 Requires: pip install lancedb sentence-transformers
-Optional: OPENAI_API_KEY for higher-quality OpenAI embeddings (falls back to local)
+Embeddings default to LOCAL (sentence-transformers). OpenAI is strictly opt-in:
+it is used only when explicitly selected via --provider openai or the
+MEMSTACK_EMBED_PROVIDER=openai environment variable, AND an OPENAI_API_KEY is set.
+A bare OPENAI_API_KEY in the environment never triggers OpenAI on its own.
 """
 
 import hashlib
@@ -30,10 +33,29 @@ COLLECTION = "memstack_sessions"
 
 # --- Embedding ---
 
-def get_embedder():
-    """Return (embed_fn, provider_name). Tries OpenAI first, falls back to local."""
-    api_key = os.environ.get("OPENAI_API_KEY", "")
-    if api_key:
+def _wants_openai(explicit: str | None = None) -> bool:
+    """Whether OpenAI embeddings are explicitly opted into.
+
+    Precedence: explicit value (e.g. --provider) > MEMSTACK_EMBED_PROVIDER env > "local".
+    LOCAL is always the default; a bare OPENAI_API_KEY in the environment does NOT
+    select OpenAI. OpenAI requires a deliberate "openai" opt-in.
+    """
+    val = (explicit or os.environ.get("MEMSTACK_EMBED_PROVIDER", "local")).strip().lower()
+    return val == "openai"
+
+
+def get_embedder(provider_override: str | None = None):
+    """Return (embed_fn, provider_name).
+
+    Provider precedence: provider_override (--provider) > MEMSTACK_EMBED_PROVIDER > local.
+    OpenAI is strictly opt-in and never silently substituted: an explicit OpenAI opt-in
+    with a missing key or a failing API call is a hard error (distinct provider_name
+    sentinel), never a quiet downgrade to local.
+    """
+    if _wants_openai(provider_override):
+        api_key = os.environ.get("OPENAI_API_KEY", "")
+        if not api_key:
+            return None, "openai-missing-key"
         try:
             import openai
             client = openai.OpenAI()
@@ -46,7 +68,7 @@ def get_embedder():
 
             return openai_embed, "openai"
         except Exception:
-            pass  # Fall through to local
+            return None, "openai-failed"
 
     try:
         from sentence_transformers import SentenceTransformer
@@ -121,18 +143,33 @@ def get_indexable_files() -> list[Path]:
     return files
 
 
-def run_index(force: bool = False) -> dict:
+def run_index(force: bool = False, provider_override: str | None = None) -> dict:
     """Index all session and plan markdown files into the vector DB."""
     try:
         import lancedb
     except ImportError:
         return {"ok": False, "error": "lancedb not installed. Run: pip install lancedb"}
 
-    embed_fn, provider = get_embedder()
+    embed_fn, provider = get_embedder(provider_override=provider_override)
     if embed_fn is None:
+        if provider == "openai-missing-key":
+            return {
+                "ok": False,
+                "error": "OpenAI embeddings were explicitly requested "
+                         "(--provider openai or MEMSTACK_EMBED_PROVIDER=openai) but OPENAI_API_KEY "
+                         "is not set. Set the key, or switch to local (the default).",
+            }
+        if provider == "openai-failed":
+            return {
+                "ok": False,
+                "error": "OpenAI embeddings were explicitly requested but the OpenAI API call failed "
+                         "(missing 'openai' package, bad key, or network). Refusing to silently fall "
+                         "back to local. Fix the key/package or switch to local.",
+            }
         return {
             "ok": False,
-            "error": "No embedding provider available. Install sentence-transformers or set OPENAI_API_KEY.",
+            "error": "No embedding provider available. Install sentence-transformers "
+                     "(pip install sentence-transformers).",
         }
 
     files = get_indexable_files()
@@ -231,8 +268,24 @@ def run_index(force: bool = False) -> dict:
 
 def main():
     force = "--force" in sys.argv
+
+    # --provider local|openai (convenience override; precedence over MEMSTACK_EMBED_PROVIDER)
+    provider_override = None
+    if "--provider" in sys.argv:
+        i = sys.argv.index("--provider")
+        if i + 1 >= len(sys.argv):
+            print(json.dumps({"ok": False, "error": "--provider requires a value: local or openai"}, indent=2))
+            sys.exit(1)
+        provider_override = sys.argv[i + 1].strip().lower()
+        if provider_override not in ("local", "openai"):
+            print(json.dumps(
+                {"ok": False, "error": f"Invalid --provider '{provider_override}'. Use 'local' or 'openai'."},
+                indent=2,
+            ))
+            sys.exit(1)
+
     try:
-        result = run_index(force=force)
+        result = run_index(force=force, provider_override=provider_override)
     except Exception as e:
         result = {"ok": False, "error": str(e)}
     print(json.dumps(result, indent=2))

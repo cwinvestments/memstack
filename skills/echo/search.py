@@ -7,7 +7,9 @@ Usage:
     python skills/echo/search.py "query text" [--top-k 5] [--json]
 
 Requires: pip install lancedb sentence-transformers
-Optional: OPENAI_API_KEY for higher-quality OpenAI embeddings (falls back to local)
+Embeddings default to LOCAL. The search provider matches the index it queries
+(recorded in metadata.json). OpenAI is only used when the index was built with it
+(opt-in via MEMSTACK_EMBED_PROVIDER=openai at index time), and then needs OPENAI_API_KEY.
 
 Output format (default):
     **[1] docstack** — 2026-02-19 (session)
@@ -39,10 +41,37 @@ VECTORS_DIR = PROJECT_ROOT / "memory" / "vectors" / "lancedb"
 COLLECTION = "memstack_sessions"
 
 
+def _wants_openai(explicit: str | None = None) -> bool:
+    """Whether OpenAI embeddings are explicitly opted into.
+
+    Precedence: explicit value > MEMSTACK_EMBED_PROVIDER env > "local".
+    LOCAL is always the default; a bare OPENAI_API_KEY does NOT select OpenAI.
+    """
+    val = (explicit or os.environ.get("MEMSTACK_EMBED_PROVIDER", "local")).strip().lower()
+    return val == "openai"
+
+
 def get_embedder(required_provider: str | None = None):
-    """Return (embed_fn, provider_name). Matches index provider to avoid dimension mismatch."""
+    """Return (embed_fn, provider_name). Matches the index provider to avoid dimension mismatch.
+
+    Precedence: the index's recorded provider (required_provider, from metadata.json) wins,
+    then MEMSTACK_EMBED_PROVIDER, then the "local" default. A local index always searches
+    local regardless of the environment; an OpenAI-built index requires OpenAI (and a key).
+    """
     api_key = os.environ.get("OPENAI_API_KEY", "")
-    if api_key and required_provider != "local":
+
+    # Decide whether OpenAI is needed. Metadata wins over env; with no metadata, fall back
+    # to the opt-in env var / local default.
+    if required_provider == "openai":
+        want_openai = True
+    elif required_provider == "local":
+        want_openai = False
+    else:
+        want_openai = _wants_openai()
+
+    if want_openai:
+        if not api_key:
+            return None, "none"
         try:
             import openai
             client = openai.OpenAI()
@@ -53,10 +82,7 @@ def get_embedder(required_provider: str | None = None):
 
             return openai_embed, "openai"
         except Exception:
-            pass
-
-    if required_provider == "openai":
-        return None, "none"
+            return None, "none"
 
     try:
         from sentence_transformers import SentenceTransformer
