@@ -4,13 +4,14 @@ verify_lint_tuning.py
 Proof harness for the tuned SKILL.md linter (scripts/lint_skill_docs.py).
 
 Two jobs:
-  1. Golden-defect regression guard (always): assert the known-real defects
-     still flag in the CURRENT linter. Exits non-zero if any is missing.
+  1. Golden-defect regression guard (always): assert that MUST_FLAG defects
+     still flag and MUST_NOT_FLAG (already-fixed) bugs do NOT flag in the
+     CURRENT linter. Exits non-zero on any regression in either direction.
   2. Before/after suppression audit (optional, --before <old_script>): run an
      OLD copy of the linter and the current one, diff the flag sets, and prove
      that:
-       - all golden defects are present in BOTH runs (caught before, survived),
-       - no golden defect is in the suppressed set,
+       - all must-flag golden defects are present in BOTH runs (caught, survived),
+       - no must-flag golden defect is in the suppressed set,
        - every suppressed item belongs to a known false-positive class
          (only UNBALANCED_QUOTES / SHELL_MISMATCH are ever removed; the
          STALE_VERSION / CODE_FENCE / SUSPICIOUS_FLAGS logic is untouched).
@@ -32,12 +33,27 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CURRENT_LINTER = REPO_ROOT / "scripts" / "lint_skill_docs.py"
 
-# The known-real defects that MUST keep flagging after tuning.
-GOLDEN = [
-    ("skills/echo/SKILL.md", 50, "UNBALANCED_QUOTES"),
+# Golden assertions, split by expectation:
+#   MUST_FLAG     -- issues the linter must keep catching (regression if they vanish)
+#   MUST_NOT_FLAG -- bugs we have FIXED; the linter must NOT flag them again
+#                    (regression if they reappear)
+GOLDEN_MUST_FLAG = [
+    # Intentional illustrative content (a sample THIRD_PARTY_LICENSES.md entry).
+    # We deliberately do not "fix" it; it also proves STALE_VERSION still fires.
     ("skills/business/licensing/SKILL.md", 181, "STALE_VERSION"),
-    ("skills/deployment/hetzner-setup/SKILL.md", 202, "STALE_VERSION"),
 ]
+GOLDEN_MUST_NOT_FLAG = [
+    # echo:50 unclosed-quote bug, fixed in commit b2e5da4. Guard against a re-break.
+    ("skills/echo/SKILL.md", 50, "UNBALANCED_QUOTES"),
+]
+
+# REMOVED from the golden list: ("skills/deployment/hetzner-setup/SKILL.md", 202,
+# "STALE_VERSION"). It was golden only while the nvm pin was genuinely behind.
+# STALE_VERSION matches ANY vMAJOR.MINOR.PATCH string (regex \bv\d+\.\d+\.\d+\b) with
+# no comparison to a latest release -- it is a "version present, human-review it"
+# advisory, not an "outdated" detector. The pin was refreshed to the current v0.40.5,
+# so the line is no longer a defect; it just trips the presence advisory. licensing:181
+# above retains STALE_VERSION detection coverage.
 
 # Types the tuning is allowed to suppress. Anything else removed is a regression.
 SUPPRESSIBLE_TYPES = {"UNBALANCED_QUOTES", "SHELL_MISMATCH"}
@@ -116,11 +132,16 @@ def main():
     print("=" * 70)
     print("GOLDEN-DEFECT ASSERTIONS (current linter)")
     print("=" * 70)
-    for g in GOLDEN:
+    for g in GOLDEN_MUST_FLAG:
         ok = g in after
-        print(f"  [{'PASS' if ok else 'FAIL'}] {g[2]:18s} {g[0]}:{g[1]}")
+        print(f"  [{'PASS' if ok else 'FAIL'}] MUST FLAG     {g[2]:18s} {g[0]}:{g[1]}")
         if not ok:
-            failures.append(f"golden defect missing after tuning: {g}")
+            failures.append(f"golden defect no longer flagged: {g}")
+    for g in GOLDEN_MUST_NOT_FLAG:
+        ok = g not in after
+        print(f"  [{'PASS' if ok else 'FAIL'}] MUST NOT FLAG {g[2]:18s} {g[0]}:{g[1]}")
+        if not ok:
+            failures.append(f"fixed bug reappeared (must not flag): {g}")
     print()
 
     # ---- Job 2: before/after suppression audit -----------------------------
@@ -148,9 +169,9 @@ def main():
         print(f"  {'TOTAL':20s} {len(before):>7d} {len(after):>7d} {len(after) - len(before):>+7d}")
         print()
 
-        # Assertion A: golden defects present in BOTH runs.
-        print("ASSERTION: golden defects caught before AND survived after")
-        for g in GOLDEN:
+        # Assertion A: must-flag golden defects present in BOTH runs.
+        print("ASSERTION: must-flag golden defects caught before AND survived after")
+        for g in GOLDEN_MUST_FLAG:
             in_b, in_a = g in before, g in after
             ok = in_b and in_a
             print(f"  [{'PASS' if ok else 'FAIL'}] before={in_b} after={in_a}  {g[2]} {g[0]}:{g[1]}")
@@ -158,9 +179,9 @@ def main():
                 failures.append(f"golden defect not in both before/after: {g}")
         print()
 
-        # Assertion B: no golden defect was suppressed.
-        print("ASSERTION: no golden defect in the suppressed set")
-        gold_suppressed = [g for g in GOLDEN if g in suppressed]
+        # Assertion B: no must-flag golden defect was suppressed.
+        print("ASSERTION: no must-flag golden defect in the suppressed set")
+        gold_suppressed = [g for g in GOLDEN_MUST_FLAG if g in suppressed]
         if gold_suppressed:
             for g in gold_suppressed:
                 print(f"  [FAIL] suppressed golden defect: {g}")
