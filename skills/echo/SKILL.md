@@ -98,6 +98,18 @@ Use `--force` to re-embed all content (e.g., after changing embedding model):
 python "$MEMSTACK_PATH/skills/echo/index-sessions.py --force
 ```
 
+### Embedding provider
+
+Echo uses LOCAL embeddings by default: sentence-transformers (`all-MiniLM-L6-v2`, 384-dim). No API key is needed and nothing leaves the machine.
+
+OpenAI embeddings (`text-embedding-3-small`, 1536-dim) are strictly OPT-IN. Enable them either way:
+- set `MEMSTACK_EMBED_PROVIDER=openai` in the environment (also requires an `OPENAI_API_KEY` to be set), or
+- pass `--provider openai` to the indexer.
+
+A bare `OPENAI_API_KEY` in the environment does NOT switch Echo to OpenAI on its own; the opt-in above is required. An explicit OpenAI opt-in with no key present is a hard error, not a silent downgrade to local, so an index is never built with a provider you did not choose.
+
+Switching providers requires a `--force` re-index, because the vector dimensions differ (local 384 vs OpenAI 1536) and the two cannot be mixed in one index. Search automatically matches whatever provider the current index was built with (recorded in `metadata.json`).
+
 ## Inputs
 - Keywords from the user's prompt (project name, feature name, date range)
 - Vector DB: `$MEMSTACK_PATH/memory\vectors\lancedb\` (via LanceDB)
@@ -145,4 +157,4 @@ SQLite insights (3):
 - **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
 - **Lv.3** — Advanced: SQLite backend as primary source, markdown as fallback, insight search. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
 - **Lv.4** — Native: CC rules integration (`.claude/rules/echo.md`), `/memstack-search` slash command, auto-indexed CLAUDE.md context. (Origin: MemStack v3.0-beta, Feb 2026)
-- **Lv.5** — Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI optional). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.5** — Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI opt-in). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)
