@@ -48,6 +48,10 @@ memory/projects/*.md
 memory/ideas/*.md
 !memory/ideas/.gitkeep
 
+# Claude Code session artifacts (personal/private)
+.claude/observations/
+.claude/session-context.md
+
 # Vector DB (derived index, rebuildable from markdown)
 memory/vectors/
 
