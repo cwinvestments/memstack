@@ -199,7 +199,7 @@ See docker-setup skill for Dockerfile and docker-compose.yml generation.
 ```bash
 # Install Node.js via nvm
 su - deploy
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh | bash
 source ~/.bashrc
 nvm install --lts
 

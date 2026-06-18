@@ -46,13 +46,13 @@ Find all Supabase tables referenced in the project. Search in priority order:
    Parse the `Tables` interface for all table names.
 
 3. **Client usage** — catches tables missed by above:
-   ```
+   ```bash
    grep -r "\.from(['\"]" --include="*.ts" --include="*.tsx" --include="*.js"
    ```
    Extract table names from `.from('table_name')` calls.
 
 4. **Storage buckets** — separate RLS surface:
-   ```
+   ```bash
    grep -r "storage\.from\|createBucket\|storage-api" --include="*.ts" --include="*.tsx" --include="*.sql"
    ```
 
@@ -101,7 +101,7 @@ Verify policies filter by authenticated user:
 - No `auth.uid()` reference — overly permissive (WARNING)
 - Hardcoded UUIDs instead of `auth.uid()` — security risk (CRITICAL)
 - `current_setting('app.*')` instead of `auth.uid()` — anti-pattern (WARNING). This relies on the application explicitly setting a PostgreSQL session variable before every query. If the variable is unset, the policy may fail open or closed unpredictably. Prefer `auth.uid()` which Supabase populates automatically from the JWT. Flag with:
-  ```
+  ```bash
   grep -rn "current_setting" --include="*.sql"
   ```
 
@@ -120,7 +120,7 @@ For tables with `organization_id` or `team_id` columns:
 
 **Check 4 — Service Role Bypass:**
 Search codebase for service role usage that bypasses RLS:
-```
+```bash
 grep -r "service_role\|serviceRole\|supabaseAdmin\|SUPABASE_SERVICE_ROLE" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.env*"
 ```
 - Server-side API routes using service role — acceptable if intentional (INFO)

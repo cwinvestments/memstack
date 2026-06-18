@@ -47,7 +47,7 @@ If you're thinking any of these, STOP — you're about to skip the protocol:
 
 Try LanceDB vector search first for best-quality results:
 ```bash
-python "$MEMSTACK_PATH/skills/echo/search.py "<keywords>" --top-k 5
+python "$MEMSTACK_PATH/skills/echo/search.py" "<keywords>" --top-k 5
 ```
 
 If this returns results, present them with scores, dates, and source files.

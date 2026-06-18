@@ -52,7 +52,7 @@ Find all API route files in the project:
    Check if global auth middleware exists (reduces per-route auth requirements).
 
 4. **Server Actions (Next.js 14+):**
-   ```
+   ```bash
    grep -r "'use server'" --include="*.ts" --include="*.tsx" -l
    ```
    Server actions are also attack surface — treat as API routes. For each server action function, verify it performs authentication before accessing data. Server actions are callable from any client component and receive no automatic auth — they are functionally identical to unauthenticated POST endpoints unless the function explicitly calls `getSession()`, `getAuthContext()`, or equivalent.
@@ -241,7 +241,7 @@ Search each route file for these field names, then check if they appear in retur
 - `next.config.js` headers configuration for CORS
 
 **Check `next.config.js` or `next.config.mjs`:**
-```
+```bash
 grep -A5 "Access-Control\|headers\(\)" next.config.*
 ```
 
