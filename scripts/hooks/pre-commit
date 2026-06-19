@@ -1,0 +1,351 @@
+#!/usr/bin/env bash
+#
+# GIT-GUARD pre-commit hook
+# -------------------------------------------------------------------------
+# Blocks any commit that contains (a) a secret or (b) an internal/private file.
+# Designed to be installed machine-wide via:  git config --global core.hooksPath
+# which means it runs on EVERY commit in EVERY repo on this machine.
+#
+#   Exit 0 = allow the commit
+#   Exit 1 = block the commit
+#
+# FAIL-SAFE POLICY
+#   - The SECRET-SCAN stage fails CLOSED (blocks + explains) if it cannot run,
+#     because allowing an unscanned commit could leak a secret.
+#   - gitleaks merely being ABSENT is NOT an error: it degrades to a regex
+#     fallback and prints a loud WARNING so you know coverage is reduced.
+#   - Any unexpected bash error trips the ERR trap, which also fails CLOSED.
+# Every block / warning / error prints a clearly delimited "GIT-GUARD:" block
+# to stderr stating WHAT was blocked, WHY, and HOW to proceed.
+# -------------------------------------------------------------------------
+
+set -uo pipefail
+
+SEP="================================================================"
+
+# --- Fail-closed trap for any unexpected error -------------------------------
+fail_closed() {
+    local rc=$?
+    {
+        echo ""
+        echo "$SEP"
+        echo "GIT-GUARD: INTERNAL ERROR - FAILING CLOSED (commit blocked)"
+        echo "$SEP"
+        echo "WHAT: The git-guard pre-commit hook hit an unexpected error (rc=$rc)"
+        echo "      and stopped before finishing its checks."
+        echo "WHY:  Failing CLOSED on purpose - a half-run check must NOT silently"
+        echo "      allow a commit that could contain a secret or an internal file."
+        echo "HOW:  Re-run the commit. If the error repeats, the hook needs fixing:"
+        echo "          ${BASH_SOURCE[0]}"
+        echo "      To bypass intentionally (ONLY if you are certain it is safe):"
+        echo "          git commit --no-verify"
+        echo "$SEP"
+        echo ""
+    } >&2
+    exit 1
+}
+trap fail_closed ERR
+
+# Repo root - used by the gitleaks smart-enforce check and the deny-list stage.
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+
+# =============================================================================
+# STAGE A - SECRET SCAN (gitleaks, with regex fallback)
+# =============================================================================
+
+# Locate gitleaks via PATH or known WinGet/scoop/go install paths.
+# TEST/DIAGNOSTIC override: set GITGUARD_FORCE_NO_GITLEAKS=1 to force the
+# "gitleaks missing" degraded path. This can ONLY downgrade to the regex
+# fallback (which still scans and still blocks); it cannot disable any check.
+GITLEAKS_BIN=""
+if [ -z "${GITGUARD_FORCE_NO_GITLEAKS:-}" ]; then
+    for candidate in \
+        "gitleaks" \
+        "$HOME/AppData/Local/Microsoft/WinGet/Packages/Gitleaks.Gitleaks_Microsoft.Winget.Source_8wekyb3d8bbwe/gitleaks.exe" \
+        "$HOME/scoop/shims/gitleaks.exe" \
+        "$HOME/go/bin/gitleaks.exe"; do
+        if command -v "$candidate" &>/dev/null || [ -x "$candidate" ]; then
+            GITLEAKS_BIN="$candidate"
+            break
+        fi
+    done
+fi
+
+# Basic-regex fallback scanner. Used when gitleaks is unavailable or has no
+# usable staged-scan subcommand. Still BLOCKS on a regex match; warns loudly
+# that coverage is degraded. $1 = reason string for the warning.
+regex_fallback_scan() {
+    {
+        echo ""
+        echo "$SEP"
+        echo "GIT-GUARD: WARNING - DEGRADED SECRET SCANNING"
+        echo "$SEP"
+        echo "WHAT: $1"
+        echo "WHY:  Secret scanning has fallen back to a BASIC regex scan, which"
+        echo "      catches far less than gitleaks. Coverage is reduced."
+        echo "HOW:  Install/upgrade gitleaks to restore full coverage:"
+        echo "          winget install Gitleaks.Gitleaks"
+        echo "$SEP"
+        echo ""
+    } >&2
+
+    local STAGED_DIFF HITS REGEX_RC SECRETS_PATTERN
+    STAGED_DIFF="$(git diff --cached --unified=0 2>/dev/null || true)"
+    [ -z "$STAGED_DIFF" ] && return 0
+
+    SECRETS_PATTERN='(api_key|api_secret|secret_key|access_key|password|passwd|token|bearer|private_key|client_secret)[[:space:]]*[:=][[:space:]]*["'\''][A-Za-z0-9_/+.-]{8,}'
+    if HITS="$(printf '%s' "$STAGED_DIFF" | grep -iE "$SECRETS_PATTERN" 2>/dev/null | head -5)"; then
+        REGEX_RC=0
+    else
+        REGEX_RC=$?
+    fi
+
+    if [ "$REGEX_RC" -gt 1 ]; then
+        # grep itself errored AND gitleaks unusable = no working scanner -> fail closed
+        {
+            echo ""
+            echo "$SEP"
+            echo "GIT-GUARD: COMMIT BLOCKED - NO WORKING SECRET SCANNER (failing closed)"
+            echo "$SEP"
+            echo "WHAT: gitleaks unusable AND the regex fallback errored (grep rc=$REGEX_RC)."
+            echo "WHY:  Failing CLOSED - with no working scanner an unscanned commit"
+            echo "      could leak secrets."
+            echo "HOW:  Install gitleaks (winget install Gitleaks.Gitleaks), then commit."
+            echo "      To bypass intentionally: git commit --no-verify"
+            echo "$SEP"
+            echo ""
+        } >&2
+        exit 1
+    fi
+
+    if [ -n "$HITS" ]; then
+        {
+            echo ""
+            echo "$SEP"
+            echo "GIT-GUARD: COMMIT BLOCKED - POSSIBLE SECRET (regex fallback)"
+            echo "$SEP"
+            echo "WHAT: A staged line matched a credential pattern."
+            echo "WHY:  Coverage is DEGRADED (gitleaks unavailable) but this looks"
+            echo "      like a secret and is being blocked to be safe."
+            echo "HOW:  Remove the secret and re-stage (git reset HEAD <file>)."
+            echo "      Install gitleaks for accurate scanning if this is a false positive."
+            echo ""
+            echo "  --- matched lines (review manually) ---"
+            echo "$HITS"
+            echo "$SEP"
+            echo ""
+        } >&2
+        exit 1
+    fi
+    return 0
+}
+
+# Build an ephemeral gitleaks config that force-enables the default ruleset.
+# Used only when a repo's .gitleaks.toml is "neutering" (no [[rules]] and no
+# useDefault=true), which would otherwise make gitleaks scan with ZERO rules.
+# When the repo config has no [extend] table, we copy it (to KEEP its allowlist)
+# and append [extend] useDefault=true; otherwise we emit a standalone forced
+# config. Echoes the temp config path. $1 = repo .gitleaks.toml path.
+build_forced_config() {
+    local repocfg="$1" tmp
+    tmp="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp}/gitguard-forced.$$.toml")"
+    if [ -n "$repocfg" ] && [ -f "$repocfg" ] && ! grep -qE '^[[:space:]]*\[extend\]' "$repocfg"; then
+        cat "$repocfg" > "$tmp"
+        printf '\n[extend]\nuseDefault = true\n' >> "$tmp"
+    else
+        printf '[extend]\nuseDefault = true\n' > "$tmp"
+    fi
+    printf '%s' "$tmp"
+}
+
+if [ -n "$GITLEAKS_BIN" ]; then
+    # Choose the staged-scan subcommand. Prefer the modern "git --staged";
+    # fall back to the deprecated "protect --staged" on older gitleaks that
+    # lacks the "git" subcommand. Probing --help first avoids the exit-code
+    # ambiguity where an unknown-subcommand error (rc=1) would look identical
+    # to a found secret (rc=1) and falsely block every commit.
+    GL_MODE=""
+    if "$GITLEAKS_BIN" git --help >/dev/null 2>&1; then
+        GL_MODE="git"
+    elif "$GITLEAKS_BIN" protect --help >/dev/null 2>&1; then
+        GL_MODE="protect"
+    fi
+
+    if [ -z "$GL_MODE" ]; then
+        # gitleaks present but neither subcommand usable -> degrade (do NOT
+        # fail-closed on every commit just because a command name changed).
+        regex_fallback_scan "gitleaks was found but has no usable staged-scan subcommand (tried 'git' and 'protect')."
+    else
+        # Smart-enforce: if this repo has a .gitleaks.toml that defines NO
+        # [[rules]] and does NOT extend the defaults (useDefault=true), gitleaks
+        # would scan with zero rules and silently miss real secrets. Detect that
+        # and force-enable the default ruleset for this commit (keeping the
+        # repo's allowlist), then warn loudly so the root cause gets fixed.
+        FORCED_CFG=""
+        GLCFG=""
+        [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/.gitleaks.toml" ] && GLCFG="$REPO_ROOT/.gitleaks.toml"
+        if [ -n "$GLCFG" ] \
+           && ! grep -qE '^[[:space:]]*\[\[rules\]\]' "$GLCFG" \
+           && ! grep -qiE 'useDefault[[:space:]]*=[[:space:]]*true' "$GLCFG"; then
+            FORCED_CFG="$(build_forced_config "$GLCFG")"
+            {
+                echo ""
+                echo "$SEP"
+                echo "GIT-GUARD: WARNING - repo gitleaks config disables detection (auto-corrected)"
+                echo "$SEP"
+                echo "WHAT: $GLCFG has no [[rules]] and no 'useDefault = true', so gitleaks"
+                echo "      would scan with ZERO rules and miss real secrets. For THIS commit,"
+                echo "      git-guard force-enabled gitleaks default detection."
+                echo "WHY:  A rules-less gitleaks config silently disables all secret scanning"
+                echo "      (this affects every tool that uses it, not just git-guard)."
+                echo "HOW:  Fix the root cause - add this to $GLCFG:"
+                echo "          [extend]"
+                echo "          useDefault = true"
+                echo "      That restores gitleaks' built-in rules while keeping your allowlist."
+                echo "$SEP"
+                echo ""
+            } >&2
+        fi
+
+        if [ -n "$FORCED_CFG" ]; then
+            if GL_OUT="$("$GITLEAKS_BIN" "$GL_MODE" --staged --redact --exit-code 1 --config "$FORCED_CFG" 2>&1)"; then
+                GL_RC=0
+            else
+                GL_RC=$?
+            fi
+            rm -f "$FORCED_CFG"
+        else
+            if GL_OUT="$("$GITLEAKS_BIN" "$GL_MODE" --staged --redact --exit-code 1 2>&1)"; then
+                GL_RC=0
+            else
+                GL_RC=$?
+            fi
+        fi
+
+        if [ "$GL_RC" -eq 1 ]; then
+            # rc 1 = gitleaks found a secret
+            {
+                echo ""
+                echo "$SEP"
+                echo "GIT-GUARD: COMMIT BLOCKED - SECRET DETECTED"
+                echo "$SEP"
+                echo "WHAT: gitleaks ($GL_MODE) matched one or more secrets in your staged changes."
+                echo "WHY:  Committing credentials/keys/tokens leaks them into git history."
+                echo "HOW:  Remove the secret, then re-stage and commit. To unstage a file:"
+                echo "          git reset HEAD <file>"
+                echo "      False positive? Add an allowlist rule to .gitleaks.toml."
+                echo ""
+                echo "  --- gitleaks findings (redacted) ---"
+                echo "$GL_OUT" | head -30
+                echo "$SEP"
+                echo ""
+            } >&2
+            exit 1
+        elif [ "$GL_RC" -ne 0 ]; then
+            # rc neither 0 (clean) nor 1 (secret) = gitleaks errored -> fail closed
+            {
+                echo ""
+                echo "$SEP"
+                echo "GIT-GUARD: COMMIT BLOCKED - SECRET SCAN FAILED (failing closed)"
+                echo "$SEP"
+                echo "WHAT: gitleaks ($GL_MODE) exited with an error (rc=$GL_RC); the scan did not complete."
+                echo "WHY:  Failing CLOSED - an unscanned commit could leak secrets."
+                echo "HOW:  Fix the gitleaks error below, then commit again. To bypass"
+                echo "      intentionally (ONLY if certain there are no secrets):"
+                echo "          git commit --no-verify"
+                echo ""
+                echo "  --- gitleaks output ---"
+                echo "$GL_OUT" | head -30
+                echo "$SEP"
+                echo ""
+            } >&2
+            exit 1
+        fi
+        # rc 0 = clean, fall through to STAGE B
+    fi
+else
+    # gitleaks NOT found - degrade to regex fallback, but WARN loudly
+    regex_fallback_scan "gitleaks was not found on this machine."
+fi
+
+# =============================================================================
+# STAGE B - INTERNAL / PRIVATE FILE DENY LIST
+# =============================================================================
+
+# Load additive per-repo patterns from .gitguard-deny (extends, never replaces).
+# REPO_ROOT is computed once near the top of this hook.
+EXTRA_PATTERNS=()
+if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/.gitguard-deny" ]; then
+    while IFS= read -r line || [ -n "$line" ]; do
+        line="$(printf '%s' "$line" | tr -d '\r')"
+        # trim leading/trailing whitespace
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%"${line##*[![:space:]]}"}"
+        case "$line" in
+            ''|'#'*) continue ;;   # skip blanks and comment lines
+        esac
+        EXTRA_PATTERNS+=("$line")
+    done < "$REPO_ROOT/.gitguard-deny"
+fi
+
+STAGED_FILES="$(git diff --cached --name-only 2>/dev/null || true)"
+
+BLOCKED=()
+while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    reason=""
+
+    # --- built-in default deny patterns (root + any nested depth) ---
+    case "$f" in
+        research/*|*/research/*)                      reason="research/ (internal research dir)" ;;
+        _research/*|*/_research/*)                    reason="_research/ (internal research dir)" ;;
+        docs/plans/*|*/docs/plans/*)                  reason="docs/plans/ (internal planning dir)" ;;
+        *.internal.*)                                 reason="*.internal.* (internal file)" ;;
+        INTERNAL_*|*/INTERNAL_*)                      reason="INTERNAL_* (internal file)" ;;
+        UPGRADE_PLAN.md|*/UPGRADE_PLAN.md)            reason="UPGRADE_PLAN.md (internal plan)" ;;
+        memory/sessions/*|*/memory/sessions/*)        reason="memory/sessions/ (session logs)" ;;
+        memory/projects/*|*/memory/projects/*)        reason="memory/projects/ (project memory)" ;;
+        .claude/observations/*|*/.claude/observations/*) reason=".claude/observations/ (internal observations)" ;;
+        .claude/session-context.md|*/.claude/session-context.md) reason=".claude/session-context.md (session context)" ;;
+    esac
+
+    # --- additive per-repo patterns from .gitguard-deny ---
+    if [ -z "$reason" ] && [ "${#EXTRA_PATTERNS[@]}" -gt 0 ]; then
+        for p in "${EXTRA_PATTERNS[@]}"; do
+            case "$f" in
+                $p) reason="$p (from .gitguard-deny)"; break ;;
+            esac
+        done
+    fi
+
+    if [ -n "$reason" ]; then
+        BLOCKED+=("$f    <-- $reason")
+    fi
+done <<< "$STAGED_FILES"
+
+if [ "${#BLOCKED[@]}" -gt 0 ]; then
+    {
+        echo ""
+        echo "$SEP"
+        echo "GIT-GUARD: COMMIT BLOCKED - INTERNAL FILE(S) STAGED"
+        echo "$SEP"
+        echo "WHAT: ${#BLOCKED[@]} internal/private file(s) are staged and must not be committed:"
+        for b in "${BLOCKED[@]}"; do
+            echo "          $b"
+        done
+        echo "WHY:  Each matched a GIT-GUARD deny pattern (internal docs / memory /"
+        echo "      session / planning files that should never reach a remote)."
+        echo "HOW:  Unstage the file(s) and commit again:"
+        echo "          git reset HEAD <file>"
+        echo "      Add more repo-specific patterns via a .gitguard-deny file."
+        echo "      To bypass intentionally (ONLY if certain): git commit --no-verify"
+        echo "$SEP"
+        echo ""
+    } >&2
+    exit 1
+fi
+
+# =============================================================================
+# CLEAN - allow the commit
+# =============================================================================
+exit 0

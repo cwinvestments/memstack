@@ -3,6 +3,12 @@
 
 title = "MemStack Pro Gitleaks Config"
 
+# Load gitleaks' built-in default ruleset. WITHOUT this, gitleaks uses ONLY the
+# rules defined in this file - and there are none, which silently disables ALL
+# secret detection (the allowlist below then filters an already-empty result).
+[extend]
+useDefault = true
+
 [allowlist]
   description = "Global allowlist"
 

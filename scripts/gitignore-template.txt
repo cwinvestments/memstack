@@ -1,0 +1,83 @@
+# ============================================================
+# Standard .gitignore template (git-guard companion)
+# Drop this into a repo BEFORE its first commit.
+# Covers: secrets, dependencies, build output, OS/editor cruft,
+# and MemStack session/memory/internal files.
+# ============================================================
+
+# --- Secrets / environment (NEVER commit) -------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+service-account*.json
+.gitguard-deny           # repo-specific deny list is local-only by default
+
+# --- Dependencies -------------------------------------------
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+vendor/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# --- Build / output -----------------------------------------
+dist/
+build/
+out/
+.next/
+.nuxt/
+.svelte-kit/
+.turbo/
+.cache/
+coverage/
+*.tsbuildinfo
+*.log
+
+# --- OS / editor cruft --------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# --- MemStack: session / memory / internal (NEVER commit) ---
+memory/
+memory/sessions/
+memory/projects/
+.claude/sessions/
+.claude/observations/
+.claude/session-context.md
+.claude/diary/
+.claude/indexes/
+.claude/drift-report.md
+.serena/
+.agent-bridge/
+
+# --- Internal docs / planning (NEVER commit) ----------------
+research/
+_research/
+docs/plans/
+*.internal.*
+INTERNAL_*
+UPGRADE_PLAN.md
+
+# --- Debug output -------------------------------------------
+screenshots/
+*.png
+*.jpg
+!docs/**/*.png
+!docs/**/*.jpg
+debug/
+tmp/
