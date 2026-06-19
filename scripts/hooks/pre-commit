@@ -288,7 +288,10 @@ if [ -n "$REPO_ROOT" ] && [ -f "$REPO_ROOT/.gitguard-deny" ]; then
     done < "$REPO_ROOT/.gitguard-deny"
 fi
 
-STAGED_FILES="$(git diff --cached --name-only 2>/dev/null || true)"
+# --diff-filter=ACMR: only Added/Copied/Modified/Renamed paths are checked.
+# Deletions (D) are EXCLUDED on purpose: `git rm --cached` of an internal file
+# is the cleanup we want, and must never be blocked by the deny-pattern check.
+STAGED_FILES="$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || true)"
 
 BLOCKED=()
 while IFS= read -r f; do
