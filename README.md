@@ -79,7 +79,7 @@ All 127 skills are **fully implemented** with complete protocols, context guards
 | `governor` | Project maturity assessment and complexity budgeting |
 | `grimoire` | Update project context files after significant changes |
 | `compress` | TokenStack™ proxy status and token savings |
-| `token-optimization` | Full 3-layer token stack: TokenStack™ + RTK + Serena |
+| `token-optimization` | Built-in TokenStack™ compression proxy: enable, tiers, and savings |
 | `humanize` | Make AI-generated text sound natural |
 | `forge` | Create new MemStack™ skills |
 | `familiar` | Dispatch work across parallel CC sessions |

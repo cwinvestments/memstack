@@ -189,7 +189,7 @@ The Diary skill is part of a broader hook system that automates session lifecycl
 | **PreToolUse** | `pre-push.sh` | `Bash` (git push) | 60s | Build verification + secrets scan before push |
 | **PostToolUse** | `post-commit.sh` | `Bash` (git commit) | 10s | Debug artifact + secrets scan after commit |
 | **PostToolUse** | `post-tool-monitor.sh` | `Write\|Edit\|MultiEdit\|Bash` | 10s | Observation capture — logs tool calls to `.claude/observations/` |
-| **SessionStart** | `session-start.sh` | *(all)* | 10s | Headroom proxy start, CLAUDE.md indexing, monitoring ping |
+| **SessionStart** | `session-start.sh` | *(all)* | 10s | CLAUDE.md indexing, monitoring ping |
 | **SessionStart** | `session-context-load.sh` | *(all)* | 15s | Context injection — last 3 diary + observation summaries → `.claude/session-context.md` |
 | **Stop** | `session-end.sh` | *(all)* | 10s | Monitoring API session-complete ping |
 | **PreCompact** | `pre-compact.sh` | *(all)* | 15s | Auto-save diary snapshot before context compaction |

@@ -1,134 +1,128 @@
 ---
 name: compress
-description: "Use when the user says 'headroom', 'compression', 'token savings', 'proxy status', or asks about context window usage."
-version: 1.0.0
+description: "Use when the user says 'tokenstack', 'compression', 'token savings', 'proxy status', or asks about context window usage."
+version: 2.0.0
 ---
 
 
-# ⚙️ Compress — Headroom Proxy Manager
-*Monitor and manage Headroom context compression for CC sessions.*
+# Compress - TokenStack Proxy Manager
+*Monitor and troubleshoot the built-in TokenStack compression proxy for CC sessions.*
 
 ## Activation
 
 When this skill activates, output:
 
-`⚙️ Compress — Checking Headroom status...`
+`Compress - Checking TokenStack status...`
 
 Then execute the protocol below.
 
-- **Keywords:** headroom, compression stats, token savings, proxy status, check headroom
-- **Contextual:** When user asks about token usage, context window limits, or session cost optimization
+- **Keywords:** tokenstack, compression stats, token savings, proxy status, check proxy
+- **Contextual:** When user asks about token usage, context window limits, or session cost
 - **Level:** 2 (explicit trigger only)
 
 ## Context Guard
 
 | Context | Status |
 |---------|--------|
-| **User says "headroom", "compression stats", "check proxy"** | ACTIVE — run status check |
-| **User asks about token savings or context window** | ACTIVE — run session report |
-| **Proxy errors or API connection failures appear** | ACTIVE — run health diagnostics |
-| **General discussion about CC features** | DORMANT — do not activate |
-| **User is actively coding (no proxy issues)** | DORMANT — do not activate |
+| **User says "tokenstack", "compression stats", "check proxy"** | ACTIVE - run status check |
+| **User asks about token savings or context window** | ACTIVE - point to dashboard report |
+| **Proxy errors or API connection failures appear** | ACTIVE - run health diagnostics |
+| **General discussion about CC features** | DORMANT - do not activate |
+| **User is actively coding (no proxy issues)** | DORMANT - do not activate |
 
 ## What It Does
 
-Headroom is a transparent proxy between Claude Code and the Anthropic API that compresses tool outputs by removing redundant boilerplate. It extends effective context window by 30–40%.
+TokenStack is a transparent proxy between Claude Code and the Anthropic API. It compresses tool output before it reaches the API, extending effective context and lowering token cost.
 
-This skill checks proxy health, reports compression stats, and troubleshoots connection issues.
+This skill checks that the proxy is running and routing, and troubleshoots connection issues. For the full feature overview, enable steps, and transform tables, use the Token Optimization skill.
 
 ## Prerequisites
 
-- **Headroom installed:** `pip install headroom-ai[code]`
-  - The `[code]` extra installs tree-sitter for AST-based code compression. Without it, Code-Aware compression is disabled and CC sessions get 0% compression.
-- **Proxy running:** `headroom proxy --llmlingua-device cpu` (defaults to `localhost:8787`)
-- **CC configured:** `ANTHROPIC_BASE_URL=http://127.0.0.1:8787`
+TokenStack ships inside the `memstack-skill-loader` package. There is no separate install.
 
-### Recommended Startup
-
-```bash
-headroom proxy --llmlingua-device cpu
-```
-
-- `--llmlingua-device cpu` — Forces LLMLingua to use CPU (avoids silent CUDA failures on machines without GPU)
-- Default port is 8787, no other flags needed
-- Code-Aware and LLMLingua both load lazily when relevant content is detected
+- **Start with the dashboard (recommended):** `python -m memstack_skill_loader dashboard --with-proxy`
+  - Starts the proxy on `127.0.0.1:8787` and sets `ANTHROPIC_BASE_URL` automatically.
+- **Run only the proxy:** `python -m memstack_skill_loader proxy`
 
 ## Workflow
 
-### 1. Status Check
+### 1. Health Check
 
-Run:
-```bash
-curl -s http://127.0.0.1:8787/stats | python -m json.tool
+```cmd
+curl http://127.0.0.1:8787/health
 ```
 
-Report: proxy up/down, requests processed, compression ratio, tokens saved, estimated cost savings.
+A healthy proxy responds on `/health`. If there is no response, the proxy is not running.
 
-### 2. Health Diagnostics
+Note: the proxy has no `/stats` endpoint. Live savings are reported in the dashboard, not over curl. See "Reading Savings" below.
 
-If proxy is unreachable:
+### 2. Confirm Routing
 
-1. Check if process is running:
-   ```bash
-   # Windows
-   tasklist | findstr headroom
-   # Linux/macOS
-   ps aux | grep headroom
-   ```
-2. Check port binding:
-   ```bash
-   netstat -ano | findstr 8787
-   ```
-3. Verify `ANTHROPIC_BASE_URL` is set:
-   ```bash
-   echo $ANTHROPIC_BASE_URL
-   ```
-4. Restart: `headroom proxy` in a separate terminal
+Open the dashboard and look at the proxy indicator. A live **PRO** or **FREE** badge means Claude Code traffic is routing through TokenStack. If the badge reads "not detected," the dashboard was started without `--with-proxy`; restart it with the flag.
 
-### 3. Session Report
+### 3. Diagnose "not running"
 
-When triggered at session end or on request, report:
+Check the port:
 
-- Requests this session
-- Tokens before/after compression
-- Compression ratio (target: 30–40%)
-- Estimated dollar savings (at $15/MTok input, $75/MTok output for Opus)
+```cmd
+netstat -ano | findstr 8787
+```
 
-### 4. Configuration Reference
+If nothing is listening, start it:
 
-| Setting | Value | Notes |
-|---------|-------|-------|
-| Proxy URL | `http://127.0.0.1:8787` | Default port |
-| Dashboard | AdminStack Infrastructure tab | Headroom monitoring panel |
-| Repo | `github.com/chopratejas/headroom` | Apache 2.0 |
-| Python | 3.14 compatible | Tested Feb 2026 |
+```cmd
+python -m memstack_skill_loader dashboard --with-proxy
+```
+
+### 4. Reading Savings
+
+Savings live in the dashboard (default `http://localhost:3333`):
+
+- **Proxy indicator:** PRO or FREE badge with session and 30-day percentages
+- **Overview header:** session and lifetime tokens saved
+- **Burn Report:** per-transform breakdown, estimated cost, time filters (all-time, daily, weekly, monthly), and a per-agent split for the Manager, Builder, and Reviewer
+
+## Tier Behavior
+
+| Tier | Transforms |
+|------|-----------|
+| Free | Six lossless text reductions, always applied |
+| Pro | Adds seven transforms including AST truncation (license-gated) |
+
+A valid Pro license switches the proxy to Pro tier automatically. The dashboard badge shows the active tier.
 
 ## Troubleshooting
 
 | Symptom | Fix |
 |---------|-----|
-| **0% compression / 0.00x ratio** | `headroom-ai[code]` is not installed. Run: `pip install headroom-ai[code]`. Restart proxy. |
-| **"Code-Aware: NOT INSTALLED" in startup banner** | Same fix — install the `[code]` extra and restart. |
-| **Cost figures don't match Anthropic Console** | Headroom estimates costs at list token prices without accounting for Anthropic's server-side prompt caching discounts. For actual costs, check console.anthropic.com. |
+| **No response on `/health`** | Proxy not running. Start with `python -m memstack_skill_loader dashboard --with-proxy`. |
+| **Proxy indicator shows "not detected"** | Dashboard was started without `--with-proxy`. Restart with the flag. |
+| **Badge shows FREE but you hold Pro** | License cache may be stale. The proxy revalidates the license on next start. |
+| **Cost figures differ from Anthropic Console** | Estimates use list token prices and do not model server-side prompt caching. For billed cost, check console.anthropic.com. |
 
 ## Output Format
 
 ```
-⚙️ Headroom Status
-├── Proxy: ✅ Running on :8787
-├── Requests: 47 processed
-├── Compression: 46.2% reduction
-├── Tokens saved: ~18,500 tokens
-└── Cost savings: ~$0.28 this session
+TokenStack Status
+  Proxy: Running on :8787
+  Tier: PRO
+  Savings: read in the dashboard (Overview header and Burn Report)
 ```
 
 ## Integration
 
-- **AdminStack:** Infrastructure page has Headroom tab with live dashboard
-- **CC Sessions:** Auto-routed when `ANTHROPIC_BASE_URL` is set
-- **Monitoring:** Stats endpoint polled every 30s with visibility-aware polling
+- **Dashboard:** proxy indicator, Overview header, and Burn Report
+- **CC sessions:** auto-routed when the dashboard is started with `--with-proxy`
+- **Standalone proxy:** `python -m memstack_skill_loader proxy`
+
+## Relationship to Other Skills
+
+| Skill | Scope | When to Use |
+|-------|-------|-------------|
+| **Token Optimization** | Full TokenStack overview, enable steps, transform tables | Understanding or turning on compression |
+| **Compress** (this) | Health, routing, troubleshooting | Proxy not running or not routing |
 
 ## Level History
 
-- **Lv.1** — Base: Health check and stats reporting for Headroom proxy. (Origin: MemStack v3.0, Feb 2026)
-- **Lv.2** — Fixed: Added `[code]` extra for tree-sitter AST compression, updated startup flags (`--llmlingua-device cpu`), added troubleshooting. Compression 0% → 46%. (Feb 24, 2026)
+- **Lv.1** - Base: health check and stats reporting for the legacy Headroom proxy. (Origin: MemStack, Feb 2026)
+- **Lv.2** - Rewrite: retargeted to the built-in TokenStack proxy. Removed the external Headroom install and the `/stats` curl; savings are now read from the dashboard. (Jun 2026)

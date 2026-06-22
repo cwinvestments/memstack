@@ -1,22 +1,19 @@
-Check Headroom proxy status and token savings.
+Check TokenStack proxy status.
 
-First check if Headroom is running:
+First check if the TokenStack proxy is running:
 
 ```bash
 curl -s -m 2 http://127.0.0.1:8787/health
 ```
 
-If running, show detailed stats:
+If it responds, the proxy is up and routing Claude Code traffic.
 
-```bash
-curl -s http://127.0.0.1:8787/stats | python -m json.tool
-```
+The proxy does not expose a stats endpoint. Report token savings from the dashboard instead:
 
-Present the results showing:
-- Token savings (input/output)
-- Compression ratio
-- Estimated cost savings
-- Uptime
+- Proxy indicator: PRO or FREE badge with session and 30-day percentages
+- Overview header: session and lifetime tokens saved
+- Burn Report: per-transform breakdown, estimated cost, and per-agent split
 
-If Headroom is not running, respond with:
-"Headroom is offline. To install and start: `pip install headroom-ai && headroom proxy`"
+If the proxy is not running, respond with:
+
+"TokenStack is offline. Start it with: python -m memstack_skill_loader dashboard --with-proxy"

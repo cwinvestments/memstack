@@ -29,7 +29,7 @@
 | Consolidate | **[PRO]** Cross-project weekly summaries and pattern extraction from diary entries | "Consolidate" or "Weekly summary" or "Cross-project patterns" |
 | Context DB | **[PRO]** Lightweight fact store for project context with token-efficient retrieval | "Context-db" or "Fact store" or "Project facts" |
 | API Docs | **[PRO]** Fetches current API documentation for libraries to prevent stale knowledge | "Api-docs" or "Fetch docs" or "Current API" |
-| Token Optimization | 3-layer token savings guide covering TokenStack™, RTK, and Serena | "Token optimization" or "Save tokens" or "RTK" |
+| Token Optimization | Built-in TokenStack™ compression proxy: enable, free vs Pro transforms, savings | "Token optimization" or "Save tokens" or "TokenStack" |
 | Branching | **[PRO]** Dev-branch workflow — all work on dev, merge to master only after review | "Branch" or "Dev branch" or "Merge to master" |
 
 ---

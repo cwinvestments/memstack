@@ -23,36 +23,35 @@ echo  MemStack v3.2.1 - Starting session...
 echo  =========================================
 echo.
 
-REM 1. Check if Headroom is already running
-echo  [1/4] Checking Headroom proxy on port 8787...
+REM 1. Check if the TokenStack proxy is already running
+echo  [1/4] Checking TokenStack proxy on port 8787...
 curl -s -o nul -w "" http://127.0.0.1:8787/health >nul 2>&1
 if %errorlevel% equ 0 (
     echo.
-    echo  Headroom: ALREADY RUNNING
-    goto headroom_done
+    echo  TokenStack: ALREADY RUNNING
+    goto tokenstack_done
 )
 
-REM 2. Start Headroom proxy in a minimized window
-echo         Starting Headroom proxy...
-start /min "Headroom Proxy" cmd /c "headroom proxy --port 8787 --llmlingua-device cpu"
+REM 2. Start the dashboard with the TokenStack proxy in a minimized window
+echo         Starting TokenStack (dashboard --with-proxy)...
+start /min "TokenStack" cmd /c "python -m memstack_skill_loader dashboard --with-proxy"
 
 REM 3. Wait for initialization
-echo  [2/4] Waiting for Headroom to initialize...
+echo  [2/4] Waiting for TokenStack to initialize...
 timeout /t 2 /nobreak >nul
 
 REM 4. Health check
-echo  [3/4] Checking Headroom health...
+echo  [3/4] Checking TokenStack health...
 curl -s -o nul -w "" http://127.0.0.1:8787/health >nul 2>&1
 if %errorlevel% equ 0 (
     echo.
-    echo  Headroom: RUNNING
+    echo  TokenStack: RUNNING
 ) else (
     echo.
-    echo  Headroom: FAILED - proxy may not be installed
-    echo  Install with: pip install headroom-ai[code]
+    echo  TokenStack: not detected yet (it may still be starting)
 )
 
-:headroom_done
+:tokenstack_done
 
 REM 4. Count skills
 set /a SKILL_COUNT=0

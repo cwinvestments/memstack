@@ -15,12 +15,5 @@
       "repo": "github.com/youruser/another-project"
     }
   },
-  "_note": "External webhooks are opt-in via MEMSTACK_DEVLOG_WEBHOOK env var",
-  "headroom": {
-    "auto_start": true,
-    "port": 8787,
-    "health_url": "http://127.0.0.1:8787/health",
-    "startup_flags": "--llmlingua-device cpu",
-    "required_extras": ["[code]"]
-  }
+  "_note": "External webhooks are opt-in via MEMSTACK_DEVLOG_WEBHOOK env var"
 }
