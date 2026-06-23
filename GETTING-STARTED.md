@@ -11,17 +11,23 @@ MemStack™ gives Claude Code **128 professional skills** — deployment, securi
 
 ## Install
 
-**Step 1: Install from PyPI**
-```bash
-pip install memstack-skill-loader
+MemStack comes in two parts — the **skills** (Claude Code plugin marketplace) and the **engine** (PyPI loader). Install both.
+
+**Step 1: Install the free skills** — in Claude Code, run:
+```
+/plugin marketplace add cwinvestments/memstack
+/plugin install memstack@cwinvestments-memstack
 ```
 
-**Step 2: Register the MCP server**
+**Step 2: Install the engine** — in your terminal, run:
 ```bash
+pip install memstack-skill-loader
 claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader
 ```
 
-**Step 3: Restart Claude Code**, then type `list skills` to verify. Skills auto-load based on what you're working on.
+**Step 3: Restart Claude Code**, then type `list skills` to verify. You should see the 85 free skills. Skills auto-load based on what you're working on.
+
+**Step 4 (Pro only):** activate your license to unlock the 43 Pro skills — see [Pro License](#pro-license-optional) below.
 
 ## Verify It Works
 
@@ -38,14 +44,26 @@ If Claude responds with a structured protocol (activation message, context guard
 A Pro license unlocks all 128 skills including 43 Pro-exclusive skills.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
-2. If you haven't already, install and register (see Install section above)
+2. Complete the Install steps above first (marketplace + engine)
 3. Restart Claude Code and activate your license:
    ```
    activate_license(key="MSPRO-XXXXXXXX-XXXX", email="you@example.com")
    ```
-4. Pro skills download automatically. You should see all 128 skills (85 free + 43 Pro).
+4. Pro skills download automatically from our server to `~/.memstack/pro-skills` (no separate marketplace step for Pro). You should see all 128 skills (85 free + 43 Pro).
 
 > **Advanced Alternative:** You can also set the `MEMSTACK_PRO_LICENSE_KEY` environment variable instead of using `activate_license`. Use `setx` on Windows or add to `~/.bashrc` on Mac/Linux, then restart your terminal and Claude Code.
+
+## Updating MemStack
+
+MemStack has three parts that update independently. Restart Claude Code after any update.
+
+| Part | What it covers | How to update |
+|------|----------------|---------------|
+| **Free skills** | the 85 free skills, including new releases | In Claude Code: `/plugin marketplace update cwinvestments-memstack`, then `/reload-plugins` (or restart) |
+| **Pro skills** | the 43 Pro skills | Auto-updates within 24h; force an immediate refresh by running the `refresh_pro_skills` tool |
+| **Engine** | the skill loader itself | In terminal: `pip install --upgrade memstack-skill-loader` |
+
+**If a new free skill doesn't show up** after a marketplace update (version detection can be unreliable), re-run `/plugin install memstack@cwinvestments-memstack`. As a last resort, clear the cached plugin and reinstall it.
 
 ## What's Included
 
@@ -104,7 +122,7 @@ The disable file only affects the project it's in.
 
 | Issue | Solution |
 |-------|----------|
-| Skills don't activate | Reinstall: `pip install --upgrade memstack-skill-loader` then restart Claude Code |
+| Skills don't activate | Refresh the right channel, then restart Claude Code (see [Updating MemStack](#updating-memstack)): **free skills** → `/plugin marketplace update cwinvestments-memstack` + `/reload-plugins` (if a new skill is still missing, re-run `/plugin install memstack@cwinvestments-memstack`); **Pro skills** → run `refresh_pro_skills`; **engine** → `pip install --upgrade memstack-skill-loader` |
 | Skills not loading | Restart Claude Code |
 | Pro skills locked | In Claude Code, run `activate_license(key="your-key", email="you@example.com")` |
 | Diary not saving | Say "save diary" — it requires an explicit trigger |
