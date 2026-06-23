@@ -1,6 +1,25 @@
 # MemStack™ Changelog
 
-## v4.3.0 — 2026-05-27 — Documentation Audit
+## v3.5.4 — 2026-06-23 — Documentation Alignment + Skill-Change Guardrails
+
+### Added
+- **git-guard skill** (free) — installer + verifier for the secret-blocking git setup (gitleaks + pre-commit/pre-push hooks). Added to all skill catalogs with conformed naming.
+- **ADDING-SKILLS.md** — canonical maintainer checklist for adding, removing, renaming, or re-counting skills: 16 count locations, the two-tier free/Pro scheme, and the 3-channel update architecture (marketplace plugin, PyPI loader, Pro site).
+- **CLAUDE.md pointer** — mandatory reference to ADDING-SKILLS.md before any skill add/remove/rename/recount, so the checklist can't be skipped.
+
+### Changed
+- **Skill counts corrected to 128** — 128 total (85 free + 43 Pro-exclusive) across README, MEMSTACK, SKILL-REFERENCE, and catalogs.
+- **Install docs** — restored the marketplace install step and documented the 3-channel update path.
+- **Compression proxy** — removed deprecated Headroom; TokenStack™ is now the sole context-compression proxy.
+- **Doc version alignment** — README badge, MEMSTACK title + changes-line, and SKILL-REFERENCE footer set to v3.5.4 (see versioning note below).
+- **Version bumps** — plugin manifests advanced to 3.5.2, then 3.5.3.
+- **Skill-count drift enforcement** (cross-repo) — `check_skill_drift.py` now fails on skill-count drift. Primary changelog entry lives in the memstack-skill-loader repo; noted here because it guards this repo's counts.
+
+---
+
+> **Versioning note.** The entry below was originally labeled **v4.3.0**, but the plugin manifest read **3.5.0** on 2026-05-27 — the "4.3.0" was an aspirational label that never shipped. It has been re-homed as **v3.5.0-docs** with its body preserved verbatim (including the now-superseded "plugin install" and "all docs updated to v4.3.0" lines) as the honest record of that day's documentation audit. No separate changelog entries exist for v3.5.1–v3.5.3 (release-only version bumps); versioning resumes at v3.5.4 above.
+
+## v3.5.0-docs — 2026-05-27 — Documentation Audit
 
 ### Changed
 - **Skill counts updated** — 127 total (84 free + 43 Pro-exclusive). `database-architect` moved to Pro.

@@ -142,4 +142,4 @@
 
 ---
 
-*MemStack™ v4.3.0 — 128 skills across 10 categories (85 free + 43 Pro-exclusive), one prompt away.*
+*MemStack™ v3.5.4 — 128 skills across 10 categories (85 free + 43 Pro-exclusive), one prompt away.*
