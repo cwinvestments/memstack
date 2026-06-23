@@ -6,7 +6,7 @@
 
 ---
 
-## Core (22)
+## Core (21)
 
 | Skill | What It Does | Say This to Activate |
 |-------|-------------|----------------------|
@@ -58,19 +58,22 @@
 | CI/CD Pipeline | Detects project type and generates a complete CI/CD pipeline with GitHub Actions | "Set up CI/CD" or "Create a GitHub Actions pipeline" |
 | Docker Setup | Generates optimized Dockerfiles and docker-compose configs with health checks | "Dockerize this project" or "Create a Dockerfile" |
 
-## Development (7)
+## Development (9 free + 1 Pro)
 
 | Skill | What It Does | Say This to Activate |
 |-------|-------------|----------------------|
-| Database Architect | Produces production-ready Postgres/Supabase schemas with relationships, indexes, and RLS | "Design the database for this" or "Create a schema" |
+| Database Architect | **[PRO]** Produces production-ready Postgres/Supabase schemas with relationships, indexes, and RLS | "Design the database for this" or "Create a schema" |
 | API Designer | Produces Next.js App Router API routes with auth guards, Zod validation, and typed responses | "Design the API for this" or "Plan my endpoints" |
 | Code Reviewer | Systematic code review across security, performance, maintainability, and error handling | "Review this code" or "What's wrong with this?" |
 | Performance Audit | Identifies and prioritizes performance bottlenecks across frontend, backend, and network | "Why is this slow?" or "Run a performance audit" |
 | Refactor Planner | Identifies refactoring targets, assesses risk, and builds incremental execution plans | "Plan a refactor for this" or "Help me clean up this code" |
 | Test Writer | Generates unit, integration, and component tests with proper mocking and edge case coverage | "Write tests for this" or "Add test coverage" |
 | Migration Planner | Plans safe database schema changes with zero-downtime strategies and rollback plans | "Plan a database migration" or "I need to change this table" |
+| Changelog Generator | Generates a formatted CHANGELOG.md from git commit history, grouped by type and release-ready | "Generate a changelog" or "Write release notes" |
+| Mentor | Narrates decisions, tradeoffs, and reasoning in plain language as you build so you learn alongside | "Teach me as you go" or "Mentor mode" or "Walk me through this" |
+| Webapp Testing | Produces Playwright end-to-end tests that verify real user flows in a browser | "Write browser tests" or "Add an e2e test" or "Test this page" |
 
-## Business (7)
+## Business (10)
 
 | Skill | What It Does | Say This to Activate |
 |-------|-------------|----------------------|
@@ -81,6 +84,9 @@
 | Contract Template | Provides service agreements with IP ownership, payment terms, and termination clauses | "Draft a contract" or "Create a service agreement" |
 | Client Onboarding | Produces welcome sequences, intake questionnaires, and setup checklists for new clients | "Set up client onboarding" or "Create a welcome sequence" |
 | Financial Model | Builds monthly projections with scenario modeling for revenue, cash flow, and runway | "Build a financial model" or "Forecast my revenue" |
+| Freelancer Toolkit | Produces time tracking sheets, invoice calculations, and project analytics for freelancers | "Track my billable hours" or "Freelance finances" |
+| GDPR | Scans a repo for personal data, classifies sensitivity, and reports GDPR obligations and remediation | "Do I need GDPR for this repo?" or "Run a privacy audit" |
+| Licensing | Audits every dependency and asset license into a per-package commercial-use verdict table | "Can I use this commercially?" or "Run a license audit" |
 
 ## Content (8)
 
@@ -106,7 +112,7 @@
 | AI Search Visibility | Optimizes content for citation by AI search engines like ChatGPT, Perplexity, and Google AI Overview | "Optimize for AI search" or "Improve my AI visibility" |
 | Local SEO | Evaluates Google Business Profile, NAP consistency, local schema, and citation health | "Audit my local SEO" or "Improve my Google Maps ranking" |
 
-## Marketing (8)
+## Marketing (9)
 
 | Skill | What It Does | Say This to Activate |
 |-------|-------------|----------------------|
@@ -118,6 +124,7 @@
 | Pricing Strategy | Designs pricing tiers, applies pricing psychology, and plans A/B price tests | "Help me price this" or "Design my pricing tiers" |
 | Lead Magnet | Creates lead capture assets with landing page copy, delivery emails, and nurture sequence | "Create a lead magnet" or "Help me grow my email list" |
 | Webinar Script | Produces timestamped presentation scripts with slide notes and replay email sequence | "Write a webinar script" or "Script my live presentation" |
+| Marketplace Submit | Step-by-step guide to submit a skill, plugin, or tool to a community marketplace via PR | "Submit to marketplace" or "Publish my skill" |
 
 ## Product (6)
 
@@ -130,7 +137,7 @@
 | Roadmap Builder | Creates strategic roadmaps with themes, milestones, and stakeholder-ready views | "Build a product roadmap" or "Plan the next quarter" |
 | Feedback Analyzer | Categorizes and prioritizes customer feedback from tickets, reviews, or surveys | "Analyze this feedback" or "What are customers asking for?" |
 
-## Automation (5)
+## Automation (6)
 
 | Skill | What It Does | Say This to Activate |
 |-------|-------------|----------------------|
@@ -139,6 +146,7 @@
 | Cron Scheduler | Builds production-grade scheduled jobs with overlap prevention and monitoring | "Set up a cron job" or "Run this every hour" |
 | API Integration | Develops system-to-system connectors with auth, rate limiting, and error recovery | "Connect these two APIs" or "Sync data between services" |
 | Content Pipeline | Automates end-to-end content workflows from ideation through cross-platform publishing | "Automate my content pipeline" or "Auto-publish across platforms" |
+| Hosted MCP Catalog | Reference catalog of zero-setup hosted MCP servers requiring no API keys or local install | "What MCP servers are available?" or "Find an MCP for this" |
 
 ---
 

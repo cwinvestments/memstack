@@ -58,11 +58,11 @@ There are **two** valid frontmatter shapes. Pick by where the skill lives.
 name: memstack-<category>-<slug>   # category-prefixed
 description: "Use this skill when the user says '...'. Do NOT use for ..."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"  # PRO ONLY
+license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"  # required on Pro; optional/cosmetic on free
 ---
 ```
-- **Pro** categorized skill → **include** the `license` line above.
-- **Free** categorized skill (e.g. `git-guard` → `memstack-security-git-guard`) → **same prefixed name, but NO `license` field.**
+- **Pro** categorized skill → **include** the `license` line above. This is the correct label for a Pro skill.
+- **Free** categorized skill (e.g. `git-guard` → `memstack-security-git-guard`) → same prefixed name; the `license` field is **optional**. It does **not** determine free/Pro status — the `PRO_EXCLUSIVE_SKILLS` frozenset (Step 3) does — so its presence or absence on a free skill is purely cosmetic and not load-bearing. **Most existing free categorized skills carry this field** (historical convention); newer ones (like `git-guard`) omit it. Either is acceptable. Do not add or strip it to "fix" anything — it gates nothing.
 
 **B. Core / standalone skill** (top-level `skills/<slug>/`, e.g. `echo`):
 ```yaml
@@ -74,7 +74,7 @@ version: 1.0.0
 ```
 - No `license` field.
 
-> The frontmatter `license` field is a **label only**. It does **not** gate access. The actual free/Pro gate is the registry in Step 3 — the two are independent.
+> The frontmatter `license` field is a **label only**. It does **not** gate access. The actual free/Pro gate is the `PRO_EXCLUSIVE_SKILLS` registry in Step 3 — the two are independent. A free skill with the `license` field is still free; a free skill without it is still free. Status is decided solely by membership in the frozenset, never by this field.
 
 ---
 

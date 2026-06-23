@@ -34,7 +34,7 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup or troubleshooti
 
 | Tier | Skills | Access |
 |------|--------|--------|
-| **Free** | 84 skills | Included with MemStack™ base |
+| **Free** | 85 skills | Included with MemStack™ base |
 | **Pro** | 128 total (85 free + 43 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are license-gated — when you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
@@ -137,19 +137,22 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `domain-ssl` | DNS records, SSL certificates, and custom domain configuration |
 | `hetzner-setup` | VPS provisioning, hardening, and deployment |
 
-### Development (7 skills)
+### Development (9 free + 1 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `database-architect` | Supabase/Postgres table structures, relationships, and RLS |
+| `database-architect` | **[PRO]** Supabase/Postgres table structures, relationships, and RLS |
 | `api-designer` | RESTful API route design with request/response schemas |
 | `code-reviewer` | Structured code quality, security, and performance reviews |
 | `test-writer` | Unit, integration, and component tests with mocking |
 | `migration-planner` | Safe schema evolution with zero-downtime strategies |
 | `performance-audit` | Frontend and backend performance diagnosis and optimization |
 | `refactor-planner` | Systematic code improvement and tech debt reduction |
+| `changelog-generator` | Formatted CHANGELOG.md generated from git commit history, grouped by type |
+| `mentor` | Real-time plain-language narration of decisions and tradeoffs while building |
+| `webapp-testing` | Playwright end-to-end browser tests that verify real user flows |
 
-### Business (7 skills)
+### Business (10 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -160,6 +163,9 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `invoice-generator` | Professional invoices with line items and payment instructions |
 | `financial-model` | Financial projections with scenario modeling and unit economics |
 | `sop-builder` | Step-by-step documentation for repeatable processes |
+| `freelancer-toolkit` | Time tracking, billable hours, and project analytics for freelancers |
+| `gdpr` | Scans a repo for personal data; reports GDPR applicability, obligations, and remediation |
+| `licensing` | Audits dependency and asset licenses for commercial-use readiness with a per-package verdict |
 
 ### Content (8 skills)
 
@@ -185,7 +191,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `ai-search-visibility` | Content optimization for AI-powered search engines |
 | `local-seo` | Local search optimization (Google Business Profile, NAP) |
 
-### Marketing (8 skills)
+### Marketing (9 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -197,6 +203,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `pricing-strategy` | Pricing tiers, psychology application, and A/B testing |
 | `lead-magnet` | Lead capture assets with landing page copy and nurture sequences |
 | `webinar-script` | Timestamped presentation scripts with slide notes |
+| `marketplace-submit` | Submit skills, plugins, or tools to community marketplaces via pull request |
 
 ### Product (6 skills)
 
@@ -209,7 +216,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `roadmap-builder` | Strategic planning with themes, milestones, and resources |
 | `feedback-analyzer` | Support ticket and review categorization and prioritization |
 
-### Automation (5 skills)
+### Automation (6 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -218,6 +225,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `cron-scheduler` | Recurring background jobs with monitoring and failure handling |
 | `api-integration` | Build reliable connections between systems via their APIs |
 | `content-pipeline` | Automate creation, formatting, and publishing across platforms |
+| `hosted-mcp-catalog` | Discover zero-setup hosted MCP servers that need no API keys or local install |
 
 ## Pro Templates
 
