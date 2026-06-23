@@ -1,5 +1,5 @@
 ---
-name: git-guard
+name: memstack-security-git-guard
 description: "Use when the user says 'git-guard', 'check git protection', 'is this repo protected', 'verify gitleaks', 'set up git hooks', 'install git-guard', or wants to confirm a repo blocks secrets and internal files before commit. This is an installer and verifier, NOT a scanner (gitleaks does the actual scanning). Do NOT use for deep secret audits or RLS work."
 version: 1.0.0
 ---

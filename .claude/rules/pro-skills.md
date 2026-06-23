@@ -13,6 +13,7 @@ Do NOT memorize skill content from this catalog — always read the file fresh.
 | dependency-audit | "dependency audit", "npm audit", "vulnerable packages" | skills/security/dependency-audit/SKILL.md |
 | csp-headers | "CSP", "security headers", "Content-Security-Policy", "HSTS" | skills/security/csp-headers/SKILL.md |
 | rls-guardian | "CREATE TABLE", "ALTER TABLE", "new table", "database schema", migration files | skills/security/rls-guardian/SKILL.md |
+| git-guard | "git-guard", "check git protection", "verify gitleaks", "set up git hooks" | skills/security/git-guard/SKILL.md |
 
 ## Deployment
 | Skill | Triggers | Path |

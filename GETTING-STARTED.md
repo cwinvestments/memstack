@@ -1,8 +1,8 @@
 # Getting Started with MemStack™
 
-MemStack™ gives Claude Code **127 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
+MemStack™ gives Claude Code **128 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
 
-**84 skills are free.** A Pro license key unlocks all 127 skills including 43 Pro-exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
+**85 skills are free.** A Pro license key unlocks all 128 skills including 43 Pro-exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
 
 ## What You'll Need
 
@@ -35,7 +35,7 @@ If Claude responds with a structured protocol (activation message, context guard
 
 ## Pro License (Optional)
 
-A Pro license unlocks all 127 skills including 43 Pro-exclusive skills.
+A Pro license unlocks all 128 skills including 43 Pro-exclusive skills.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
 2. If you haven't already, install and register (see Install section above)
@@ -43,13 +43,13 @@ A Pro license unlocks all 127 skills including 43 Pro-exclusive skills.
    ```
    activate_license(key="MSPRO-XXXXXXXX-XXXX", email="you@example.com")
    ```
-4. Pro skills download automatically. You should see all 127 skills (84 free + 43 Pro).
+4. Pro skills download automatically. You should see all 128 skills (85 free + 43 Pro).
 
 > **Advanced Alternative:** You can also set the `MEMSTACK_PRO_LICENSE_KEY` environment variable instead of using `activate_license`. Use `setx` on Windows or add to `~/.bashrc` on Mac/Linux, then restart your terminal and Claude Code.
 
 ## What's Included
 
-### Skill Categories (127 total: 84 free + 43 Pro)
+### Skill Categories (128 total: 85 free + 43 Pro)
 
 | Category | Skills | Examples |
 |----------|--------|----------|

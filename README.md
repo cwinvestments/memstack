@@ -2,7 +2,7 @@
 
 [![Version: 4.3.0](https://img.shields.io/badge/Version-4.3.0-green.svg)](CHANGELOG.md)
 
-The structured skill framework for Claude Code — **127 professional skills** for deployment, security, databases, content, marketing, and more.
+The structured skill framework for Claude Code — **128 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
@@ -25,7 +25,7 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup or troubleshooti
 | Tier | Skills | Access |
 |------|--------|--------|
 | **Free** | 84 skills | Included with MemStack™ base |
-| **Pro** | 127 total (84 free + 43 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
+| **Pro** | 128 total (85 free + 43 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are included in the repository but access is gated by the MCP Skill Loader's license check. Free users see free skills only; Pro license holders unlock the full catalog. This design enables a single codebase with no separate repos or branches for Pro content.
 
@@ -62,9 +62,9 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - TokenStack™ context compression
 - Always-on rules and slash commands
 
-## All Skills (127 total — 84 free + 43 Pro-exclusive)
+## All Skills (128 total — 85 free + 43 Pro-exclusive)
 
-All 127 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 43 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 128 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 43 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 ### Core (20 skills)
 
@@ -91,7 +91,7 @@ All 127 skills are **fully implemented** with complete protocols, context guards
 | `context-db` | SQLite-backed facts database — query project knowledge instead of full CLAUDE.md |
 | `api-docs` | Fetch current API docs via Context Hub before writing API code |
 
-### Security (7 skills)
+### Security (8 skills)
 
 | Skill | Description |
 |-------|-------------|
@@ -102,6 +102,7 @@ All 127 skills are **fully implemented** with complete protocols, context guards
 | `secrets-scanner` | Exposed secrets detection in source code |
 | `dependency-audit` | Vulnerability scanning and abandoned package detection |
 | `csp-headers` | HTTP security headers (CSP, HSTS, X-Frame-Options) |
+| `git-guard` | Pre-commit secret-blocking install & verification (global hook, .gitignore, gitleaks config) |
 
 ### Deployment (6 skills)
 
@@ -221,7 +222,7 @@ All 127 skills are **fully implemented** with complete protocols, context guards
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 127 skills
+- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 128 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation

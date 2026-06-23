@@ -1,6 +1,6 @@
 # MemStack™ — Skill Quick Reference
 
-> **127 skills across 10 categories** (84 free + 43 Pro-exclusive). Say any trigger phrase to activate.
+> **128 skills across 10 categories** (85 free + 43 Pro-exclusive). Say any trigger phrase to activate.
 >
 > Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key — activate via Dashboard Settings or `activate_license()` in Claude Code.
 
@@ -34,7 +34,7 @@
 
 ---
 
-## Security (7)
+## Security (8)
 
 | Skill | What It Does | Say This to Activate |
 |-------|-------------|----------------------|
@@ -45,6 +45,7 @@
 | OWASP Top 10 | Audits your app against the OWASP Top 10 vulnerability categories with remediation steps | "Run an OWASP audit" or "Check for security vulnerabilities" |
 | Dependency Audit | Scans project dependencies for known vulnerabilities, outdated packages, and supply chain risks | "Audit my dependencies" or "Are any packages vulnerable?" |
 | CSP Headers | Audits security headers and generates production-ready Content-Security-Policy configs | "Check my security headers" or "Generate a CSP policy" |
+| Git-Guard | Installs and verifies a repo's pre-commit secret-blocking setup — global hook, .gitignore coverage, and an armed gitleaks config (it verifies; gitleaks does the scanning) | "Set up git-guard" or "Is this repo protected?" |
 
 ## Deployment (6)
 
@@ -141,4 +142,4 @@
 
 ---
 
-*MemStack™ v4.3.0 — 127 skills across 10 categories (84 free + 43 Pro-exclusive), one prompt away.*
+*MemStack™ v4.3.0 — 128 skills across 10 categories (85 free + 43 Pro-exclusive), one prompt away.*
