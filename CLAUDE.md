@@ -1,5 +1,14 @@
 # MemStack™ Skill Loader
 
+> [!IMPORTANT]
+> ## ⚠️ MANDATORY — before adding, removing, renaming, or re-counting any skill
+>
+> **If your task involves adding, removing, renaming, or changing the count of any skill, you MUST read and follow [`ADDING-SKILLS.md`](./ADDING-SKILLS.md) completely before making changes.**
+>
+> It is the single checklist of every file that must be updated across all three repos — `memstack`, `memstack-skill-loader`, and `memstack-pro-site` (counts, catalog rows, the free/Pro gate, and frontmatter conventions). Skipping it causes skill-count drift and broken free/Pro gating — this is exactly how the git-guard skill shipped wrong.
+>
+> This does **not** apply to unrelated work. If you are not touching the skill set, ignore this and proceed.
+
 You have access to a `memstack-skills` MCP server. This is your **PRIMARY** source for task-specific guidance. ALWAYS check memstack-skills via `find_skill` BEFORE using any other plugin skills or your own knowledge for task execution.
 
 ## ALWAYS call `find_skill` BEFORE:
