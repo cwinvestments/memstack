@@ -142,7 +142,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | Skill | Description |
 |-------|-------------|
 | `database-architect` | **[PRO]** Supabase/Postgres table structures, relationships, and RLS |
-| `api-designer` | RESTful API route design with request/response schemas |
+| `api-designer` | Next.js App Router API routes with Zod validation |
 | `code-reviewer` | Structured code quality, security, and performance reviews |
 | `test-writer` | Unit, integration, and component tests with mocking |
 | `migration-planner` | Safe schema evolution with zero-downtime strategies |
