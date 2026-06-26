@@ -99,11 +99,27 @@ Bumping a number is not enough — the skill must appear as a **row/entry** in e
 
 | Catalog | Repo | What to add |
 |---------|------|-------------|
-| `README.md` — the per-category skill table | `memstack` | A table row under the right category heading |
-| `SKILL-REFERENCE.md` — full skill list | `memstack` | A row in the matching section |
+| `README.md` — catalog tables + Pro-exclusive list | `memstack` | **GENERATED — do not hand-edit.** Lives between `<!-- BEGIN/END GENERATED … -->` markers; regenerate via Step 4b. |
+| `SKILL-REFERENCE.md` — full skill list | `memstack` | **GENERATED — do not hand-edit.** Fully regenerated via Step 4b. |
 | `pro-skills.md` / Pro skill list | (Pro docs) | A row, **Pro skills only** |
-| `src/data/skills.ts` — catalog array | `memstack-pro-site` | A new object in the skills array |
-| `src/memstack_skill_loader/skill_descriptions.json` | `memstack-skill-loader` | A description entry for the new slug (the loader serves descriptions from here) |
+| `src/data/skills.ts` — catalog array | `memstack-pro-site` | **GENERATED** from vendored data + overlay (`npm run gen:skills`); add the overlay entry, not the array object |
+| `src/memstack_skill_loader/skill_descriptions.json` | `memstack-skill-loader` | A `what`/`not_for` entry for the new slug — **source** for the loader AND the memstack/site catalogs |
+| `src/memstack_skill_loader/categories.py` `CATEGORY_MAP` | `memstack-skill-loader` | The skill's category — **authoritative source** (F-3 blocks if missing) |
+
+> [!IMPORTANT] The memstack catalogs are now single-sourced from the loader.
+> `README.md`'s catalog tables, its Pro-exclusive list, and **all of `SKILL-REFERENCE.md`** are **generated** from the loader's authoritative data — the same single-source pipeline the website uses. Never hand-edit them: hand edits are overwritten on the next regenerate and will fail `check:catalogs`. You edit the **sources** (above); the catalogs follow via Step 4b.
+
+### Step 4b — Regenerate the memstack catalogs (after editing the sources)
+
+Once the loader sources are updated (category in `categories.py`, tier in `PRO_EXCLUSIVE_SKILLS`, `what`/`not_for` in `skill_descriptions.json`) and `skills.public.json` is **re-exported**, regenerate in `memstack`:
+
+```bash
+npm run vendor:skills    # byte-for-byte copy loader sources -> scripts/_generated/ (+ SOURCE.md provenance)
+npm run gen:catalogs     # regenerate README regions + SKILL-REFERENCE.md from the vendored data
+npm run check:catalogs   # must exit 0 (committed == regenerated); EOL-robust, safe in CI / fresh checkout
+```
+
+`gen:catalogs` is **fail-loud**: it aborts if the data isn't exactly 128 (85 free + 43 Pro), any skill has no `what`, a category is unknown, or the local-only `kdp-format` leaks in. Per-category counts **and every count in the generated docs are derived** — there is nothing to hand-bump inside the generated regions.
 
 ---
 
@@ -121,8 +137,8 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 **`memstack` repo:**
 | File | What holds the count |
 |------|----------------------|
-| `README.md` | Total **and** the per-category section headers (Security/etc.) |
-| `SKILL-REFERENCE.md` | Total **and** per-category headers |
+| `README.md` | **Per-category headers are GENERATED** (Step 4b) — do not edit them. Still hand-edit the prose totals **outside** the markers: the `## All Skills (N total …)` heading, the **Tier Structure** table, and the intro paragraph. |
+| `SKILL-REFERENCE.md` | **Fully GENERATED** (Step 4b) — title, intro, per-section, and footer counts all self-derive. Nothing to hand-edit. |
 | `GETTING-STARTED.md` | Total |
 | `MEMSTACK.md` | Total |
 | `.claude-plugin/plugin.json` | Count in description/metadata |

@@ -1,0 +1,514 @@
+{
+  "advanced-security": {
+    "what": "Perform deep security analysis covering authentication, authorization, input validation, API security, dependency CVEs, and infrastructure hardening with proof-of-concept examples and remediation guides.",
+    "not_for": "Basic OWASP scanning or dependency-only audits."
+  },
+  "ai-search-visibility": {
+    "what": "Evaluate and optimize content for citation by AI search engines like ChatGPT, Perplexity, Google AI Overview, and Claude by checking crawler access, content structure, llms.txt, and AI-friendly patterns.",
+    "not_for": "Traditional SEO audits or Google Ads."
+  },
+  "api-audit": {
+    "what": "Audit Next.js API routes for authentication, authorization, input validation, and common vulnerabilities with a prioritized findings report.",
+    "not_for": "Frontend security headers or dependency scanning."
+  },
+  "api-designer": {
+    "what": "Produce production-ready Next.js App Router API routes with auth guards, Zod validation, typed responses, and consistent error handling.",
+    "not_for": "API security audits or database design."
+  },
+  "api-docs": {
+    "what": "Fetch current API documentation via Context Hub before writing code that calls external APIs, ensuring code targets the latest API surface instead of stale training data.",
+    "not_for": "Internal project APIs or code explanation."
+  },
+  "api-integration": {
+    "what": "Build system-to-system connectors with REST/GraphQL patterns, authentication flows (OAuth, API key, JWT), rate limit handling, data mapping, error recovery with circuit breakers, and sync monitoring.",
+    "not_for": "Visual n8n workflows or webhook receiving."
+  },
+  "api-load-tester": {
+    "what": "Design and run load tests to measure API throughput, find bottlenecks under stress, and validate scalability using tools like k6 and Artillery.",
+    "not_for": "Unit testing, code profiling, query optimization, or CDN configuration."
+  },
+  "blog-post": {
+    "what": "Produce a complete, publish-ready blog post with SEO metadata, structured sections, readability optimization, and internal linking suggestions.",
+    "not_for": "Landing page copy, email sequences, or social media posts."
+  },
+  "branching": {
+    "what": "Enforce a dev-branch workflow where all work happens on dev and merges to master only after review.",
+    "not_for": null
+  },
+  "browser-use": {
+    "what": "Automate browser interactions for QA testing, deploy verification, form filling, and link checking using Playwright from within Claude Code.",
+    "not_for": "Unit testing or API testing."
+  },
+  "burn": {
+    "what": "Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts.",
+    "not_for": "Choosing a model, proxy-level compression, or billing/subscription changes."
+  },
+  "changelog-generator": {
+    "what": "Generate a formatted CHANGELOG.md from git commit history, grouped by type and ready for release.",
+    "not_for": "Diary entries, git log viewing, or commit message writing."
+  },
+  "checkpoint": {
+    "what": "Capture state and context before risky changes so you can roll back if things go wrong, creating structured save points with decision context and file states.",
+    "not_for": "End-of-session diary, cross-session restore, or git commits."
+  },
+  "ci-cd-pipeline": {
+    "what": "Detect the project type and generate a complete CI/CD pipeline with lint, test, build, and deploy stages plus rollback strategy and environment management.",
+    "not_for": "One-time manual deployments."
+  },
+  "claude-api-helper": {
+    "what": "Generate correct Anthropic API integration code for Python and TypeScript covering messages, streaming, tool use, batches, vision, and prompt caching with proper error handling.",
+    "not_for": "Claude Code CLI usage or MCP server development."
+  },
+  "client-onboarding": {
+    "what": "Produce a complete client onboarding package with welcome email, intake questionnaire, kickoff meeting agenda, access provisioning checklist, and check-in schedule.",
+    "not_for": "Contracts or invoicing."
+  },
+  "code-reviewer": {
+    "what": "Conduct a systematic code review across security, performance, maintainability, error handling, testing, and accessibility with severity-ranked findings and specific fixes.",
+    "not_for": "Refactoring plans or test generation."
+  },
+  "codebase-index": {
+    "what": "Generate compact markdown index files from the codebase so Claude Code can skip the exploration phase, saving approximately 50K tokens per session.",
+    "not_for": "One-off file searches or symbol lookups."
+  },
+  "competitor-analysis": {
+    "what": "Produce a structured competitive analysis covering pricing, features, positioning, traffic sources, and weaknesses as a comparison matrix with strategic recommendations.",
+    "not_for": "Setting your own pricing strategy."
+  },
+  "compress": {
+    "what": "Monitor and manage TokenStack™ context compression for Claude Code sessions, tracking proxy status and token savings.",
+    "not_for": null
+  },
+  "config-audit": {
+    "what": "Scan Claude Code project configuration (.claude/, hooks, MCP servers, .gitignore, .env) for secrets, dangerous patterns, and misconfigurations before they cause problems.",
+    "not_for": "Runtime security scanning, penetration testing, network security, or production monitoring."
+  },
+  "consolidate": {
+    "what": "Compress a week of diary entries into actionable insights and cross-project pattern summaries.",
+    "not_for": null
+  },
+  "content-pipeline": {
+    "what": "Automate end-to-end content workflows from ideation through draft, review, approval, cross-platform formatting, scheduling, and publishing with CMS integration.",
+    "not_for": "Single social media posts or individual blog posts."
+  },
+  "context-db": {
+    "what": "Store and query structured project knowledge in a per-project SQLite database, reducing token usage by returning only relevant facts instead of reading full CLAUDE.md.",
+    "not_for": "Session logging or memory recall."
+  },
+  "contract-template": {
+    "what": "Generate service agreement, NDA, and subcontractor templates with scope, payment, IP ownership, confidentiality, termination, and liability clauses.",
+    "not_for": "Invoicing or client onboarding."
+  },
+  "council": {
+    "what": "Run a structured multi-perspective debate with four voices analyzing tradeoffs before making significant technical decisions.",
+    "not_for": "Simple factual questions, implementation tasks, or debugging."
+  },
+  "cron-scheduler": {
+    "what": "Build production-grade scheduled jobs with cron syntax, timezone handling, overlap prevention, health checks, monitoring, alerting, and structured logging.",
+    "not_for": "n8n workflows or event-driven webhooks."
+  },
+  "csp-headers": {
+    "what": "Audit existing security headers, identify overly permissive directives, and generate a production-ready Content-Security-Policy with companion headers.",
+    "not_for": "API route audits or dependency scanning."
+  },
+  "database-architect": {
+    "what": "Produce production-ready Supabase/Postgres schemas with proper naming, relationships, RLS policies, indexes, and migration SQL.",
+    "not_for": "Schema migration of existing tables or code refactoring."
+  },
+  "database-migration": {
+    "what": "Execute production-grade database migrations for PostgreSQL/Supabase with zero-downtime DDL, rollback strategies, data backfills, and Supabase-specific workflows.",
+    "not_for": "Database design from scratch, query optimization, RLS policies, or ORM setup."
+  },
+  "dependency-audit": {
+    "what": "Scan project dependencies for vulnerabilities, outdated packages, abandoned libraries, and supply chain risks with a prioritized upgrade plan.",
+    "not_for": "Application-level security or secrets scanning."
+  },
+  "dependency-auditor": {
+    "what": "Perform deep dependency analysis covering CVE vulnerabilities, license compatibility, unused packages, version freshness, and safe update paths.",
+    "not_for": "Code quality linting or documentation drift detection."
+  },
+  "developer-growth-analysis": {
+    "what": "Analyze Claude Code session history and diary entries to surface coding patterns, identify growth areas, and generate a personalized development report.",
+    "not_for": "Code review or debugging."
+  },
+  "diagram-generator": {
+    "what": "Generate architecture diagrams, ERDs, flowcharts, and sequence diagrams from natural language, code, or project context in Mermaid, Excalidraw, or SVG format.",
+    "not_for": "ASCII art or text-only representations."
+  },
+  "diary": {
+    "what": "Save a structured session diary capturing what was built, decisions made, and next steps at the end of a productive session.",
+    "not_for": null
+  },
+  "doc-index": {
+    "what": "Ingest external documentation from URLs or local directories into a hybrid vector+keyword index for instant retrieval, so Claude Code answers from current docs instead of stale training data.",
+    "not_for": "Codebase structure mapping or API doc fetching via Context Hub."
+  },
+  "docker-setup": {
+    "what": "Analyze a project and generate optimized Dockerfiles, docker-compose configs, and deployment-ready container setups with health checks and volume management.",
+    "not_for": "Serverless or static site deployments."
+  },
+  "domain-ssl": {
+    "what": "Validate DNS records, SSL certificates, redirects, HSTS, and domain health across all managed properties.",
+    "not_for": "Full deployment workflows."
+  },
+  "drift-detection": {
+    "what": "Validate project documentation against the actual codebase, catching stale references, missing env vars, phantom dependencies, and broken instructions.",
+    "not_for": "Code quality linting or security scanning."
+  },
+  "echo": {
+    "what": "Recall information from past Claude Code sessions using semantic vector search when referencing previous work.",
+    "not_for": null
+  },
+  "email-sequence": {
+    "what": "Produce a complete multi-email sequence with subject lines, preview text, body copy, CTAs, and A/B test suggestions ready to load into any email platform.",
+    "not_for": "Newsletters or single marketing emails."
+  },
+  "env-manager-pro": {
+    "what": "Sync .env files with code, manage multi-environment configs, detect secrets in git, handle rotation workflows, and generate env documentation.",
+    "not_for": "Basic env audit or deployment config."
+  },
+  "error-handler": {
+    "what": "Generate standardized error handling patterns including retry logic, circuit breakers, error boundaries, structured error responses, and custom error classes.",
+    "not_for": "Debugging existing errors or testing error scenarios."
+  },
+  "facebook-ad": {
+    "what": "Create complete Facebook/Meta ad campaigns with audience targeting, ad copy variations, creative direction, budget allocation, and A/B testing protocols.",
+    "not_for": "Google search ads or organic social content."
+  },
+  "familiar": {
+    "what": "Break large tasks into coordinated Claude Code session prompts for parallel execution across multiple instances.",
+    "not_for": null
+  },
+  "feature-spec": {
+    "what": "Create a detailed specification for a single feature including user story, acceptance criteria, user flows, edge cases, API definitions, dependencies, and effort estimate.",
+    "not_for": "Full PRDs or user story backlogs."
+  },
+  "feedback-analyzer": {
+    "what": "Categorize, score, and prioritize customer feedback from support tickets, reviews, and surveys into actionable reports with feature request rankings and sentiment trends.",
+    "not_for": "Competitor analysis or market research."
+  },
+  "financial-model": {
+    "what": "Build monthly revenue projections, expense forecasts, unit economics (CAC, LTV, payback), break-even analysis, cash flow tracking, and scenario modeling.",
+    "not_for": "Pricing strategy or invoice generation."
+  },
+  "forge": {
+    "what": "Create new MemStack skills or improve existing ones with proper structure and progressive disclosure.",
+    "not_for": null
+  },
+  "freelancer-toolkit": {
+    "what": "Produce time tracking sheets, invoice calculations, and project analytics for freelancers managing multiple clients and billable hours.",
+    "not_for": "General invoice templates or proposal writing."
+  },
+  "frontend-design": {
+    "what": "Apply opinionated frontend conventions for Next.js + Tailwind + shadcn/ui projects, covering component patterns, responsive layouts, and professional UI that ships on the first pass.",
+    "not_for": "Backend logic, database design, API routes, or deployment."
+  },
+  "gdpr": {
+    "what": "Scan a repository for personal data collection, classify sensitivity under GDPR, determine whether GDPR applies, and report required roles, obligations, and remediation.",
+    "not_for": "General security audits or contract drafting."
+  },
+  "git-guard": {
+    "what": "Install or verify machine-wide secret-blocking on a repo by confirming the global pre-commit hook, .gitignore coverage, a non-neutered gitleaks config, and a reachable gitleaks binary.",
+    "not_for": "Scanning code or git history for existing secrets."
+  },
+  "git-worktrees": {
+    "what": "Manage git worktrees for isolated parallel development with separate directories per branch or agent, including sync and cleanup automation.",
+    "not_for": "Simple branch switching or stashing."
+  },
+  "google-ad": {
+    "what": "Design Google Ads search and display campaigns with keyword groups, bidding strategy, responsive search ads, ad extensions, and Quality Score optimization.",
+    "not_for": "Facebook/Meta ads or SEO."
+  },
+  "governor": {
+    "what": "Enforce tier-appropriate complexity and prevent over-engineering by matching project maturity to appropriate scope and patterns.",
+    "not_for": null
+  },
+  "governor-pro": {
+    "what": "Enforce discipline guardrails for agentic coding: think before coding, no sycophancy, no infinite loops, verify before claiming done.",
+    "not_for": "Tier/scope governance (Prototype/MVP/Production)."
+  },
+  "grimoire": {
+    "what": "Manage and update CLAUDE.md files across all projects after significant changes.",
+    "not_for": null
+  },
+  "gtm-validator": {
+    "what": "Simulate buyer reactions to pricing, messaging, and positioning to find weak spots before spending money on ads or launching publicly.",
+    "not_for": "Actual market research or competitor analysis."
+  },
+  "hetzner-setup": {
+    "what": "Provision a Hetzner Cloud server with security hardening, reverse proxy, SSL, database setup, monitoring, and automated backups.",
+    "not_for": "Managed platform deployments like Railway or Netlify."
+  },
+  "hooks-integration": {
+    "what": "Bridge MemStack skills into Claude Code's native hooks system, auto-triggering skills on session start, file changes, commits, and context compaction events.",
+    "not_for": "Git hooks or CI/CD webhooks."
+  },
+  "hosted-mcp-catalog": {
+    "what": "Discover zero-setup hosted MCP servers that require no API keys or local install, providing a reference catalog of immediately usable MCP tools.",
+    "not_for": "Building MCP servers or configuring local MCP."
+  },
+  "humanize": {
+    "what": "Remove AI tells and rewrite content to sound like a human wrote it, making text feel natural rather than machine-generated.",
+    "not_for": null
+  },
+  "invoice-generator": {
+    "what": "Generate professional invoices with line items, tax calculations, payment terms, due dates, and payment instructions as structured markdown ready for PDF conversion.",
+    "not_for": "Contracts or financial projections."
+  },
+  "ios-app-store": {
+    "what": "Follow a step-by-step checklist for submitting apps to the Apple App Store, covering pre-submission, common rejections, Capacitor/React Native specifics, and metadata optimization.",
+    "not_for": "Android/Google Play, web deployment, or app development/coding."
+  },
+  "keyword-research": {
+    "what": "Analyze a niche, existing content, and competitor landscape to produce a prioritized keyword map with search intent, difficulty estimates, and page assignments.",
+    "not_for": "Full site audits or ad keyword groups."
+  },
+  "landing-page-copy": {
+    "what": "Produce structured landing page copy blocks (hero, problem, solution, features, social proof, FAQ, CTA) ready to drop into any template or design.",
+    "not_for": "Blog posts or email sequences."
+  },
+  "launch-plan": {
+    "what": "Develop a day-by-day launch timeline with pre-launch buildup, launch week execution, post-launch optimization, channel strategy, and PR outreach templates.",
+    "not_for": "Ongoing funnel design or ad copy alone."
+  },
+  "lead-magnet": {
+    "what": "Create a lead magnet with format selection, content outline, landing page copy, email capture integration, delivery sequence, and nurture follow-up.",
+    "not_for": "Full funnel design or paid ad copy."
+  },
+  "licensing": {
+    "what": "Scan a repository for every license that touches the product (deps, vendored code, fonts, assets), then produce a per-package verdict table for commercial use readiness.",
+    "not_for": "Vulnerability scanning or contract drafting."
+  },
+  "local-seo": {
+    "what": "Evaluate Google Business Profile, NAP consistency, local schema markup, location pages, citations, and review management to produce an actionable local SEO scorecard.",
+    "not_for": "General SEO audits or national keyword research."
+  },
+  "log-analyzer": {
+    "what": "Parse application logs, detect error patterns, trace root causes, and generate fix recommendations, turning walls of log text into actionable insights.",
+    "not_for": "Real-time monitoring or metrics dashboards."
+  },
+  "marketplace-submit": {
+    "what": "Submit skills, plugins, or tools to community marketplaces via pull request with a step-by-step guide.",
+    "not_for": "Building skills or writing plugin code."
+  },
+  "mcp-builder": {
+    "what": "Scaffold complete MCP server projects with tool definitions, testing, and registration to wrap any API, database, or service as MCP tools.",
+    "not_for": "Consuming existing MCP servers or Claude Code plugin development."
+  },
+  "meeting-insights-analyzer": {
+    "what": "Extract decisions, action items, key insights, and behavioral patterns from meeting transcripts or notes.",
+    "not_for": "Scheduling meetings or writing agendas."
+  },
+  "mentor": {
+    "what": "Narrate decisions, tradeoffs, and reasoning in plain language as you build, so the user learns by working alongside you.",
+    "not_for": "Code review or debugging."
+  },
+  "meta-tag-optimizer": {
+    "what": "Scan all pages for existing meta tags, identify issues, and generate optimized replacements for titles, descriptions, Open Graph, canonical URLs, and robots directives.",
+    "not_for": "Schema markup or full site audits."
+  },
+  "migration-planner": {
+    "what": "Plan safe database schema migrations with zero-downtime strategies, rollback procedures, data validation checkpoints, and version tracking.",
+    "not_for": "Initial database design or code refactoring."
+  },
+  "model-router": {
+    "what": "Route tasks to the right AI model based on complexity, cost, and speed requirements, saving money without sacrificing quality where it matters.",
+    "not_for": "Building AI applications or configuring providers."
+  },
+  "multi-agent": {
+    "what": "Orchestrate multiple Claude Code instances as a coordinated team where a Manager delegates, a Builder implements, and a Reviewer verifies.",
+    "not_for": null
+  },
+  "mvp-scoper": {
+    "what": "Define the smallest buildable product that validates a core hypothesis using feature triage, effort/impact scoring, a 2-week sprint scope, and success criteria.",
+    "not_for": "Full PRDs or roadmap planning."
+  },
+  "n8n-workflow-builder": {
+    "what": "Design visual n8n workflows with trigger selection, node mapping, data transformations, error handling, and webhook integration.",
+    "not_for": "Standalone webhook endpoints or cron jobs."
+  },
+  "netlify-deploy": {
+    "what": "Validate build config, redirects, environment variables, and deployment readiness for Netlify static/SPA hosting.",
+    "not_for": "Railway, Vercel, or VPS deployments."
+  },
+  "newsletter": {
+    "what": "Produce an email newsletter edition with subject line formulas, section structure, personalization, link placement strategy, growth tactics, and engagement optimization.",
+    "not_for": "Lead magnets or content pipelines."
+  },
+  "nextjs-conventions": {
+    "what": "Apply Next.js 14+ App Router conventions for file-based routing, server/client component boundaries, data fetching, API routes, middleware, and environment variables.",
+    "not_for": "UI styling, database design, deployment, or React fundamentals without Next.js context."
+  },
+  "owasp-top10": {
+    "what": "Audit a web application against the OWASP Top 10 (2021) vulnerability categories with actionable findings and remediation steps.",
+    "not_for": "Dependency audits or secret scanning alone."
+  },
+  "performance-audit": {
+    "what": "Identify and prioritize performance bottlenecks across frontend, backend, and network layers with measured impact and fix priority.",
+    "not_for": "Code reviews or security audits."
+  },
+  "performance-profiler": {
+    "what": "Identify performance bottlenecks, memory leaks, and optimization opportunities through static analysis of code, queries, and bundle composition.",
+    "not_for": "Runtime monitoring or load testing."
+  },
+  "prd-writer": {
+    "what": "Generate a complete engineering-ready PRD with problem statement, user personas, functional and non-functional requirements, MoSCoW prioritization, and success metrics.",
+    "not_for": "Single feature specs or user story backlogs."
+  },
+  "pricing-strategy": {
+    "what": "Design pricing tiers using cost-plus, value-based, and competitor-based models with psychology triggers, tier structure templates, and A/B test plans.",
+    "not_for": "Competitor pricing comparison alone."
+  },
+  "product-description": {
+    "what": "Create conversion-optimized product descriptions with feature-to-benefit conversion, sensory language, SEO keywords, and platform-specific formats for Amazon, Shopify, and Etsy.",
+    "not_for": "Pricing strategy or sales funnels."
+  },
+  "project": {
+    "what": "Save and restore project state between Claude Code sessions for seamless handoffs when context is running low.",
+    "not_for": null
+  },
+  "proposal-writer": {
+    "what": "Generate a professional project proposal with executive summary, deliverables, tiered pricing, timeline, and terms ready to send as PDF or email.",
+    "not_for": "Contracts, invoices, or onboarding."
+  },
+  "python-conventions": {
+    "what": "Apply Python 3.10+ best practices for production code including project structure, type hints, error handling, FastAPI/Flask patterns, CLI design, and dependency management.",
+    "not_for": "Data science/ML, Jupyter notebooks, Django, or JS/TS projects."
+  },
+  "quill": {
+    "what": "Generate professional client quotations and proposals with itemized pricing and terms.",
+    "not_for": null
+  },
+  "rag-builder": {
+    "what": "Guide construction of a Retrieval-Augmented Generation system covering document ingestion, embedding, vector storage, and retrieval-augmented prompting.",
+    "not_for": "General database setup or API integration."
+  },
+  "railway-deploy": {
+    "what": "Validate project configuration, environment variables, and deployment readiness before pushing a Node.js, Python, or Docker application to Railway.",
+    "not_for": "Netlify, Vercel, or Hetzner deployments."
+  },
+  "refactor-planner": {
+    "what": "Identify code smells, assess refactoring risk, select appropriate patterns, and build incremental execution plans with rollback strategies and verification checkpoints.",
+    "not_for": "Writing new features or database migrations."
+  },
+  "rls-checker": {
+    "what": "Audit Supabase Row Level Security policies across all tables in a project to verify table-level access control.",
+    "not_for": "Non-Supabase projects or writing RLS policies from scratch."
+  },
+  "rls-guardian": {
+    "what": "Enforce Row Level Security on every Supabase table creation, ensuring no table goes live without proper access policies, with migration templates and pre-commit checks.",
+    "not_for": "General SQL queries or non-schema database tasks."
+  },
+  "roadmap-builder": {
+    "what": "Create a strategic product roadmap in Now/Next/Later format with quarterly themes, milestones, dependency mapping, resource allocation, and stakeholder communication templates.",
+    "not_for": "MVP scoping or sprint-level planning."
+  },
+  "sales-funnel": {
+    "what": "Map the complete customer journey across TOFU/MOFU/BOFU stages with page templates, copy hooks, conversion targets, and optimization checklists.",
+    "not_for": "Ad copy creation or time-bound launch plans."
+  },
+  "scan": {
+    "what": "Analyze a project's codebase complexity and generate pricing recommendations for freelance or consulting engagements.",
+    "not_for": null
+  },
+  "schema-markup": {
+    "what": "Identify applicable schema types, generate valid JSON-LD blocks, and verify against Google's Rich Results requirements ready to paste into page head.",
+    "not_for": "Meta tag optimization or full SEO audits."
+  },
+  "scope-of-work": {
+    "what": "Generate a formal Scope of Work document with objectives, deliverables, acceptance criteria, in/out scope definitions, work breakdown structure, and milestones.",
+    "not_for": "Proposals, contracts, or invoicing."
+  },
+  "secrets-scanner": {
+    "what": "Scan a codebase for hardcoded secrets, leaked API keys, and credential exposure across files and git history.",
+    "not_for": "Dependency vulnerabilities or RLS auditing."
+  },
+  "session-restore": {
+    "what": "Create structured snapshots capturing decisions, context, and next actions for seamless cross-session continuity and handoffs.",
+    "not_for": "Diary logging or project memory."
+  },
+  "shard": {
+    "what": "Split monolithic files into focused, maintainable modules when working with files over 1000 lines.",
+    "not_for": null
+  },
+  "sight": {
+    "what": "Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure.",
+    "not_for": null
+  },
+  "site-audit": {
+    "what": "Scan every page for meta tags, heading hierarchy, broken links, image optimization, Core Web Vitals, robots/sitemap, performance, and structured data to produce a prioritized fix list.",
+    "not_for": "Keyword research or schema markup generation alone."
+  },
+  "social-media": {
+    "what": "Create cross-platform organic social media posts for developers and solo founders who need to promote products without sounding like a marketing robot.",
+    "not_for": "Email marketing, SEO content, blog writing, paid ads, or graphic design."
+  },
+  "sop-builder": {
+    "what": "Generate a structured Standard Operating Procedure with numbered steps, prerequisites, decision points, verification checkpoints, rollback steps, and time estimates.",
+    "not_for": "Project proposals or scope documents."
+  },
+  "state": {
+    "what": "Maintain a living document of where you are right now in a project, loading current context at session start.",
+    "not_for": null
+  },
+  "test-generator": {
+    "what": "Auto-generate comprehensive test suites from existing code covering happy path, edge cases, error scenarios, and boundary conditions using the project's test framework.",
+    "not_for": "Running existing tests or test-driven development."
+  },
+  "test-writer": {
+    "what": "Generate comprehensive test suites with unit, integration, and e2e tests, proper mocking strategies, edge case coverage, naming conventions, and CI integration patterns.",
+    "not_for": "Refactoring plans or database migrations."
+  },
+  "tiktok-script": {
+    "what": "Create timestamped scripts for TikTok, Reels, and Shorts (15-60 seconds) with hook-in-first-2-seconds, visual cues, caption text, trending audio strategy, and hashtag research.",
+    "not_for": "Twitter threads or webinar scripts."
+  },
+  "token-optimization": {
+    "what": "Reduce token consumption by 50-80% using the 3-layer optimization stack: TokenStack™ (API compression), RTK (CLI output compression), and Serena (LSP-backed code navigation).",
+    "not_for": "TokenStack™-only troubleshooting."
+  },
+  "twitter-thread": {
+    "what": "Create multi-tweet threads (5-15 posts) with hook formulas, narrative arc, engagement tactics, data points, CTA placement, and scheduling strategy.",
+    "not_for": "TikTok scripts, newsletters, or LinkedIn posts."
+  },
+  "us-privacy-compliance": {
+    "what": "Provide an actionable implementation checklist for US state privacy laws (CCPA/CPRA + 13 other states) covering consent, deletion, and data rights in web apps.",
+    "not_for": "GDPR, HIPAA, PCI-DSS, or SOC 2."
+  },
+  "user-story-generator": {
+    "what": "Produce prioritized user stories with Given/When/Then acceptance criteria, story point estimates, story mapping across epics, and MoSCoW prioritization for sprint planning.",
+    "not_for": "Full PRDs or detailed feature specs."
+  },
+  "verify": {
+    "what": "Review completed work against requirements before committing to ensure nothing was missed.",
+    "not_for": null
+  },
+  "video-pipeline": {
+    "what": "Design an n8n + AI automated pipeline for video content covering ideation, scripting, asset generation, assembly, and publishing to YouTube.",
+    "not_for": "Writing individual video scripts or editing videos manually."
+  },
+  "webapp-testing": {
+    "what": "Produce Playwright end-to-end tests that verify real user flows in a browser for web application QA.",
+    "not_for": "Unit tests, API tests, or non-browser testing."
+  },
+  "web-scraper": {
+    "what": "Extract structured data from websites including text, tables, links, and images with pagination handling, rate limiting, and robots.txt compliance.",
+    "not_for": "API documentation fetching or browser testing."
+  },
+  "webinar-script": {
+    "what": "Produce a full timestamped webinar script with hook, teaching segments, offer transition, Q&A handling, CTA placement, slide suggestions, and replay follow-up email sequence.",
+    "not_for": "Launch plans or static sales page copy."
+  },
+  "webhook-designer": {
+    "what": "Create secure webhook handlers with endpoint design, payload validation, HMAC signature verification, retry logic, idempotency, logging, and dead letter queues.",
+    "not_for": "Full n8n workflows or scheduled tasks."
+  },
+  "work": {
+    "what": "Track tasks, manage plans, and survive Claude Code compacts with three operating modes for staying organized across sessions.",
+    "not_for": null
+  },
+  "youtube-script": {
+    "what": "Produce a timestamped video script with hook, retention techniques, visual directions, SEO metadata, and thumbnail concept optimized for YouTube's algorithm.",
+    "not_for": "TikTok/Reels short-form scripts or webinar presentations."
+  }
+}

@@ -19,7 +19,10 @@
     "rules"
   ],
   "scripts": {
-    "build": "echo 'MemStack is not a buildable project'"
+    "build": "echo 'MemStack is not a buildable project'",
+    "vendor:skills": "node scripts/vendor-skill-data.mjs",
+    "gen:catalogs": "node scripts/generate-catalogs.mjs --write",
+    "check:catalogs": "node scripts/generate-catalogs.mjs --check"
   },
   "files": [
     ".claude/hooks/",

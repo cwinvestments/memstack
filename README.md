@@ -39,7 +39,9 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup or troubleshooti
 
 **Architecture note:** Pro skills are license-gated — when you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
 
-**Pro-exclusive skills (43):** `consolidate`, `context-db`, `api-docs`, `branching`, `multi-agent`, `codebase-index`, `doc-index`, `diagram-generator`, `browser-use`, `session-restore`, `drift-detection`, `mcp-builder`, `claude-api-helper`, `test-generator`, `log-analyzer`, `performance-profiler`, `dependency-auditor`, `git-worktrees`, `error-handler`, `web-scraper`, `advanced-security`, `env-manager-pro`, `hooks-integration`, `developer-growth-analysis`, `meeting-insights-analyzer`, `gtm-validator`, `rag-builder`, `model-router`, `video-pipeline`, `governor-pro`, `config-audit`, `burn`, `frontend-design`, `us-privacy-compliance`, `ios-app-store`, `database-architect`, `database-migration`, `api-load-tester`, `social-media`, `council`, `checkpoint`, `nextjs-conventions`, `python-conventions` — these require an active Pro license.
+<!-- BEGIN GENERATED PRO LIST -->
+**Pro-exclusive skills (43):** `advanced-security`, `api-docs`, `api-load-tester`, `branching`, `browser-use`, `burn`, `checkpoint`, `claude-api-helper`, `codebase-index`, `config-audit`, `consolidate`, `context-db`, `council`, `database-architect`, `database-migration`, `dependency-auditor`, `developer-growth-analysis`, `diagram-generator`, `doc-index`, `drift-detection`, `env-manager-pro`, `error-handler`, `frontend-design`, `git-worktrees`, `governor-pro`, `gtm-validator`, `hooks-integration`, `ios-app-store`, `log-analyzer`, `mcp-builder`, `meeting-insights-analyzer`, `model-router`, `multi-agent`, `nextjs-conventions`, `performance-profiler`, `python-conventions`, `rag-builder`, `session-restore`, `social-media`, `test-generator`, `us-privacy-compliance`, `video-pipeline`, `web-scraper` — these require an active Pro license.
+<!-- END GENERATED PRO LIST -->
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
 
@@ -88,144 +90,185 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 
 All 128 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 43 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
-### Core (20 skills)
+<!-- BEGIN GENERATED SKILLS CATALOG -->
+### Core (15 — 6 free + 9 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `diary` | Session logging with git integration and SQLite storage |
-| `echo` | Past session recall via semantic vector search + SQLite |
-| `work` | Task planning and todo list management |
-| `state` | Load and update project context at session start |
-| `project` | Save project state and handoff context |
-| `verify` | Verification before committing completed work |
-| `governor` | Project maturity assessment and complexity budgeting |
-| `grimoire` | Update project context files after significant changes |
-| `compress` | TokenStack™ proxy status and token savings |
-| `token-optimization` | Built-in TokenStack™ compression proxy: enable, tiers, and savings |
-| `humanize` | Make AI-generated text sound natural |
-| `forge` | Create new MemStack™ skills |
-| `familiar` | Dispatch work across parallel CC sessions |
-| `scan` | Codebase complexity analysis and project estimation |
-| `quill` | Generate client-facing price quotations |
-| `shard` | Split and manage files over 1000 lines |
-| `sight` | Visual diagrams and architecture overviews |
-| `consolidate` | Weekly cross-project summaries and pattern detection |
-| `context-db` | SQLite-backed facts database — query project knowledge instead of full CLAUDE.md |
-| `api-docs` | Fetch current API docs via Context Hub before writing API code |
+| `compress` | Monitor and manage TokenStack™ context compression for Claude Code sessions, tracking proxy status and token savings. |
+| `diary` | Save a structured session diary capturing what was built, decisions made, and next steps at the end of a productive session. |
+| `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. |
+| `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. |
+| `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. |
+| `token-optimization` | Reduce token consumption by 50-80% using the 3-layer optimization stack: TokenStack™ (API compression), RTK (CLI output compression), and Serena (LSP-backed code navigation). |
+| `burn` **[PRO]** | Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts. |
+| `checkpoint` **[PRO]** | Capture state and context before risky changes so you can roll back if things go wrong, creating structured save points with decision context and file states. |
+| `consolidate` **[PRO]** | Compress a week of diary entries into actionable insights and cross-project pattern summaries. |
+| `context-db` **[PRO]** | Store and query structured project knowledge in a per-project SQLite database, reducing token usage by returning only relevant facts instead of reading full CLAUDE.md. |
+| `council` **[PRO]** | Run a structured multi-perspective debate with four voices analyzing tradeoffs before making significant technical decisions. |
+| `governor-pro` **[PRO]** | Enforce discipline guardrails for agentic coding: think before coding, no sycophancy, no infinite loops, verify before claiming done. |
+| `model-router` **[PRO]** | Route tasks to the right AI model based on complexity, cost, and speed requirements, saving money without sacrificing quality where it matters. |
+| `multi-agent` **[PRO]** | Orchestrate multiple Claude Code instances as a coordinated team where a Manager delegates, a Builder implements, and a Reviewer verifies. |
+| `session-restore` **[PRO]** | Create structured snapshots capturing decisions, context, and next actions for seamless cross-session continuity and handoffs. |
 
-### Security (8 skills)
+### Security (12 — 8 free + 4 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `rls-checker` | Supabase Row Level Security policy verification |
-| `rls-guardian` | RLS enforcement on new/altered database tables |
-| `api-audit` | API endpoint protection verification |
-| `owasp-top10` | Comprehensive web security review against OWASP Top 10 |
-| `secrets-scanner` | Exposed secrets detection in source code |
-| `dependency-audit` | Vulnerability scanning and abandoned package detection |
-| `csp-headers` | HTTP security headers (CSP, HSTS, X-Frame-Options) |
-| `git-guard` | Pre-commit secret-blocking install & verification (global hook, .gitignore, gitleaks config) |
+| `api-audit` | Audit Next.js API routes for authentication, authorization, input validation, and common vulnerabilities with a prioritized findings report. |
+| `csp-headers` | Audit existing security headers, identify overly permissive directives, and generate a production-ready Content-Security-Policy with companion headers. |
+| `dependency-audit` | Scan project dependencies for vulnerabilities, outdated packages, abandoned libraries, and supply chain risks with a prioritized upgrade plan. |
+| `git-guard` | Install or verify machine-wide secret-blocking on a repo by confirming the global pre-commit hook, .gitignore coverage, a non-neutered gitleaks config, and a reachable gitleaks binary. |
+| `owasp-top10` | Audit a web application against the OWASP Top 10 (2021) vulnerability categories with actionable findings and remediation steps. |
+| `rls-checker` | Audit Supabase Row Level Security policies across all tables in a project to verify table-level access control. |
+| `rls-guardian` | Enforce Row Level Security on every Supabase table creation, ensuring no table goes live without proper access policies, with migration templates and pre-commit checks. |
+| `secrets-scanner` | Scan a codebase for hardcoded secrets, leaked API keys, and credential exposure across files and git history. |
+| `advanced-security` **[PRO]** | Perform deep security analysis covering authentication, authorization, input validation, API security, dependency CVEs, and infrastructure hardening with proof-of-concept examples and remediation guides. |
+| `config-audit` **[PRO]** | Scan Claude Code project configuration (.claude/, hooks, MCP servers, .gitignore, .env) for secrets, dangerous patterns, and misconfigurations before they cause problems. |
+| `dependency-auditor` **[PRO]** | Perform deep dependency analysis covering CVE vulnerabilities, license compatibility, unused packages, version freshness, and safe update paths. |
+| `env-manager-pro` **[PRO]** | Sync .env files with code, manage multi-environment configs, detect secrets in git, handle rotation workflows, and generate env documentation. |
 
-### Deployment (6 skills)
-
-| Skill | Description |
-|-------|-------------|
-| `railway-deploy` | Application deployment to Railway with env vars and domains |
-| `netlify-deploy` | Static site and serverless function deployment to Netlify |
-| `docker-setup` | Container optimization with Dockerfile and docker-compose |
-| `ci-cd-pipeline` | Automated build, test, and deployment pipelines (GitHub Actions) |
-| `domain-ssl` | DNS records, SSL certificates, and custom domain configuration |
-| `hetzner-setup` | VPS provisioning, hardening, and deployment |
-
-### Development (9 free + 1 Pro)
+### Deployment (8 — 7 free + 1 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `database-architect` | **[PRO]** Supabase/Postgres table structures, relationships, and RLS |
-| `api-designer` | Next.js App Router API routes with Zod validation |
-| `code-reviewer` | Structured code quality, security, and performance reviews |
-| `test-writer` | Unit, integration, and component tests with mocking |
-| `migration-planner` | Safe schema evolution with zero-downtime strategies |
-| `performance-audit` | Frontend and backend performance diagnosis and optimization |
-| `refactor-planner` | Systematic code improvement and tech debt reduction |
-| `changelog-generator` | Formatted CHANGELOG.md generated from git commit history, grouped by type |
-| `mentor` | Real-time plain-language narration of decisions and tradeoffs while building |
-| `webapp-testing` | Playwright end-to-end browser tests that verify real user flows |
+| `ci-cd-pipeline` | Detect the project type and generate a complete CI/CD pipeline with lint, test, build, and deploy stages plus rollback strategy and environment management. |
+| `docker-setup` | Analyze a project and generate optimized Dockerfiles, docker-compose configs, and deployment-ready container setups with health checks and volume management. |
+| `domain-ssl` | Validate DNS records, SSL certificates, redirects, HSTS, and domain health across all managed properties. |
+| `hetzner-setup` | Provision a Hetzner Cloud server with security hardening, reverse proxy, SSL, database setup, monitoring, and automated backups. |
+| `marketplace-submit` | Submit skills, plugins, or tools to community marketplaces via pull request with a step-by-step guide. |
+| `netlify-deploy` | Validate build config, redirects, environment variables, and deployment readiness for Netlify static/SPA hosting. |
+| `railway-deploy` | Validate project configuration, environment variables, and deployment readiness before pushing a Node.js, Python, or Docker application to Railway. |
+| `ios-app-store` **[PRO]** | Follow a step-by-step checklist for submitting apps to the Apple App Store, covering pre-submission, common rejections, Capacitor/React Native specifics, and metadata optimization. |
 
-### Business (10 skills)
+### Development (37 — 16 free + 21 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `proposal-writer` | Project proposals for client and freelance engagements |
-| `scope-of-work` | Project boundaries, deliverables, and acceptance criteria |
-| `contract-template` | Professional service contracts with legal clauses |
-| `client-onboarding` | Structured onboarding process for new clients |
-| `invoice-generator` | Professional invoices with line items and payment instructions |
-| `financial-model` | Financial projections with scenario modeling and unit economics |
-| `sop-builder` | Step-by-step documentation for repeatable processes |
-| `freelancer-toolkit` | Time tracking, billable hours, and project analytics for freelancers |
-| `gdpr` | Scans a repo for personal data; reports GDPR applicability, obligations, and remediation |
-| `licensing` | Audits dependency and asset licenses for commercial-use readiness with a per-package verdict |
+| `api-designer` | Produce production-ready Next.js App Router API routes with auth guards, Zod validation, typed responses, and consistent error handling. |
+| `changelog-generator` | Generate a formatted CHANGELOG.md from git commit history, grouped by type and ready for release. |
+| `code-reviewer` | Conduct a systematic code review across security, performance, maintainability, error handling, testing, and accessibility with severity-ranked findings and specific fixes. |
+| `familiar` | Break large tasks into coordinated Claude Code session prompts for parallel execution across multiple instances. |
+| `forge` | Create new MemStack skills or improve existing ones with proper structure and progressive disclosure. |
+| `mentor` | Narrate decisions, tradeoffs, and reasoning in plain language as you build, so the user learns by working alongside you. |
+| `migration-planner` | Plan safe database schema migrations with zero-downtime strategies, rollback procedures, data validation checkpoints, and version tracking. |
+| `performance-audit` | Identify and prioritize performance bottlenecks across frontend, backend, and network layers with measured impact and fix priority. |
+| `project` | Save and restore project state between Claude Code sessions for seamless handoffs when context is running low. |
+| `refactor-planner` | Identify code smells, assess refactoring risk, select appropriate patterns, and build incremental execution plans with rollback strategies and verification checkpoints. |
+| `shard` | Split monolithic files into focused, maintainable modules when working with files over 1000 lines. |
+| `state` | Maintain a living document of where you are right now in a project, loading current context at session start. |
+| `test-writer` | Generate comprehensive test suites with unit, integration, and e2e tests, proper mocking strategies, edge case coverage, naming conventions, and CI integration patterns. |
+| `verify` | Review completed work against requirements before committing to ensure nothing was missed. |
+| `webapp-testing` | Produce Playwright end-to-end tests that verify real user flows in a browser for web application QA. |
+| `work` | Track tasks, manage plans, and survive Claude Code compacts with three operating modes for staying organized across sessions. |
+| `api-docs` **[PRO]** | Fetch current API documentation via Context Hub before writing code that calls external APIs, ensuring code targets the latest API surface instead of stale training data. |
+| `api-load-tester` **[PRO]** | Design and run load tests to measure API throughput, find bottlenecks under stress, and validate scalability using tools like k6 and Artillery. |
+| `branching` **[PRO]** | Enforce a dev-branch workflow where all work happens on dev and merges to master only after review. |
+| `claude-api-helper` **[PRO]** | Generate correct Anthropic API integration code for Python and TypeScript covering messages, streaming, tool use, batches, vision, and prompt caching with proper error handling. |
+| `codebase-index` **[PRO]** | Generate compact markdown index files from the codebase so Claude Code can skip the exploration phase, saving approximately 50K tokens per session. |
+| `database-architect` **[PRO]** | Produce production-ready Supabase/Postgres schemas with proper naming, relationships, RLS policies, indexes, and migration SQL. |
+| `database-migration` **[PRO]** | Execute production-grade database migrations for PostgreSQL/Supabase with zero-downtime DDL, rollback strategies, data backfills, and Supabase-specific workflows. |
+| `developer-growth-analysis` **[PRO]** | Analyze Claude Code session history and diary entries to surface coding patterns, identify growth areas, and generate a personalized development report. |
+| `diagram-generator` **[PRO]** | Generate architecture diagrams, ERDs, flowcharts, and sequence diagrams from natural language, code, or project context in Mermaid, Excalidraw, or SVG format. |
+| `doc-index` **[PRO]** | Ingest external documentation from URLs or local directories into a hybrid vector+keyword index for instant retrieval, so Claude Code answers from current docs instead of stale training data. |
+| `drift-detection` **[PRO]** | Validate project documentation against the actual codebase, catching stale references, missing env vars, phantom dependencies, and broken instructions. |
+| `error-handler` **[PRO]** | Generate standardized error handling patterns including retry logic, circuit breakers, error boundaries, structured error responses, and custom error classes. |
+| `frontend-design` **[PRO]** | Apply opinionated frontend conventions for Next.js + Tailwind + shadcn/ui projects, covering component patterns, responsive layouts, and professional UI that ships on the first pass. |
+| `git-worktrees` **[PRO]** | Manage git worktrees for isolated parallel development with separate directories per branch or agent, including sync and cleanup automation. |
+| `log-analyzer` **[PRO]** | Parse application logs, detect error patterns, trace root causes, and generate fix recommendations, turning walls of log text into actionable insights. |
+| `mcp-builder` **[PRO]** | Scaffold complete MCP server projects with tool definitions, testing, and registration to wrap any API, database, or service as MCP tools. |
+| `nextjs-conventions` **[PRO]** | Apply Next.js 14+ App Router conventions for file-based routing, server/client component boundaries, data fetching, API routes, middleware, and environment variables. |
+| `performance-profiler` **[PRO]** | Identify performance bottlenecks, memory leaks, and optimization opportunities through static analysis of code, queries, and bundle composition. |
+| `python-conventions` **[PRO]** | Apply Python 3.10+ best practices for production code including project structure, type hints, error handling, FastAPI/Flask patterns, CLI design, and dependency management. |
+| `rag-builder` **[PRO]** | Guide construction of a Retrieval-Augmented Generation system covering document ingestion, embedding, vector storage, and retrieval-augmented prompting. |
+| `test-generator` **[PRO]** | Auto-generate comprehensive test suites from existing code covering happy path, edge cases, error scenarios, and boundary conditions using the project's test framework. |
 
-### Content (8 skills)
+### Business (15 — 13 free + 2 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `blog-post` | Long-form written content for blogs and publications |
-| `email-sequence` | Multi-email automated campaigns with nurture sequences |
-| `landing-page-copy` | Persuasive short-form copy for product landing pages |
-| `newsletter` | Newsletter editions with subject lines, content, and growth strategy |
-| `product-description` | Conversion-optimized product descriptions for e-commerce |
-| `tiktok-script` | Scripts with hooks and visual cues for 15–60s vertical videos |
-| `twitter-thread` | Multi-tweet narratives with hooks, data points, and CTAs |
-| `youtube-script` | Scripted content for YouTube with hooks, chapters, and CTAs |
+| `client-onboarding` | Produce a complete client onboarding package with welcome email, intake questionnaire, kickoff meeting agenda, access provisioning checklist, and check-in schedule. |
+| `contract-template` | Generate service agreement, NDA, and subcontractor templates with scope, payment, IP ownership, confidentiality, termination, and liability clauses. |
+| `financial-model` | Build monthly revenue projections, expense forecasts, unit economics (CAC, LTV, payback), break-even analysis, cash flow tracking, and scenario modeling. |
+| `freelancer-toolkit` | Produce time tracking sheets, invoice calculations, and project analytics for freelancers managing multiple clients and billable hours. |
+| `gdpr` | Scan a repository for personal data collection, classify sensitivity under GDPR, determine whether GDPR applies, and report required roles, obligations, and remediation. |
+| `governor` | Enforce tier-appropriate complexity and prevent over-engineering by matching project maturity to appropriate scope and patterns. |
+| `invoice-generator` | Generate professional invoices with line items, tax calculations, payment terms, due dates, and payment instructions as structured markdown ready for PDF conversion. |
+| `licensing` | Scan a repository for every license that touches the product (deps, vendored code, fonts, assets), then produce a per-package verdict table for commercial use readiness. |
+| `proposal-writer` | Generate a professional project proposal with executive summary, deliverables, tiered pricing, timeline, and terms ready to send as PDF or email. |
+| `quill` | Generate professional client quotations and proposals with itemized pricing and terms. |
+| `scan` | Analyze a project's codebase complexity and generate pricing recommendations for freelance or consulting engagements. |
+| `scope-of-work` | Generate a formal Scope of Work document with objectives, deliverables, acceptance criteria, in/out scope definitions, work breakdown structure, and milestones. |
+| `sop-builder` | Generate a structured Standard Operating Procedure with numbered steps, prerequisites, decision points, verification checkpoints, rollback steps, and time estimates. |
+| `meeting-insights-analyzer` **[PRO]** | Extract decisions, action items, key insights, and behavioral patterns from meeting transcripts or notes. |
+| `us-privacy-compliance` **[PRO]** | Provide an actionable implementation checklist for US state privacy laws (CCPA/CPRA + 13 other states) covering consent, deletion, and data rights in web apps. |
+
+### Content (10 — 9 free + 1 Pro)
+
+| Skill | Description |
+|-------|-------------|
+| `blog-post` | Produce a complete, publish-ready blog post with SEO metadata, structured sections, readability optimization, and internal linking suggestions. |
+| `email-sequence` | Produce a complete multi-email sequence with subject lines, preview text, body copy, CTAs, and A/B test suggestions ready to load into any email platform. |
+| `humanize` | Remove AI tells and rewrite content to sound like a human wrote it, making text feel natural rather than machine-generated. |
+| `landing-page-copy` | Produce structured landing page copy blocks (hero, problem, solution, features, social proof, FAQ, CTA) ready to drop into any template or design. |
+| `newsletter` | Produce an email newsletter edition with subject line formulas, section structure, personalization, link placement strategy, growth tactics, and engagement optimization. |
+| `product-description` | Create conversion-optimized product descriptions with feature-to-benefit conversion, sensory language, SEO keywords, and platform-specific formats for Amazon, Shopify, and Etsy. |
+| `tiktok-script` | Create timestamped scripts for TikTok, Reels, and Shorts (15-60 seconds) with hook-in-first-2-seconds, visual cues, caption text, trending audio strategy, and hashtag research. |
+| `twitter-thread` | Create multi-tweet threads (5-15 posts) with hook formulas, narrative arc, engagement tactics, data points, CTA placement, and scheduling strategy. |
+| `youtube-script` | Produce a timestamped video script with hook, retention techniques, visual directions, SEO metadata, and thumbnail concept optimized for YouTube's algorithm. |
+| `social-media` **[PRO]** | Create cross-platform organic social media posts for developers and solo founders who need to promote products without sounding like a marketing robot. |
 
 ### SEO & GEO (6 skills)
 
 | Skill | Description |
 |-------|-------------|
-| `site-audit` | Website SEO health evaluation |
-| `keyword-research` | Target keywords with search volume and difficulty |
-| `meta-tag-optimizer` | HTML meta tag optimization for search visibility |
-| `schema-markup` | Schema.org structured data (JSON-LD) for rich results |
-| `ai-search-visibility` | Content optimization for AI-powered search engines |
-| `local-seo` | Local search optimization (Google Business Profile, NAP) |
+| `ai-search-visibility` | Evaluate and optimize content for citation by AI search engines like ChatGPT, Perplexity, Google AI Overview, and Claude by checking crawler access, content structure, llms.txt, and AI-friendly patterns. |
+| `keyword-research` | Analyze a niche, existing content, and competitor landscape to produce a prioritized keyword map with search intent, difficulty estimates, and page assignments. |
+| `local-seo` | Evaluate Google Business Profile, NAP consistency, local schema markup, location pages, citations, and review management to produce an actionable local SEO scorecard. |
+| `meta-tag-optimizer` | Scan all pages for existing meta tags, identify issues, and generate optimized replacements for titles, descriptions, Open Graph, canonical URLs, and robots directives. |
+| `schema-markup` | Identify applicable schema types, generate valid JSON-LD blocks, and verify against Google's Rich Results requirements ready to paste into page head. |
+| `site-audit` | Scan every page for meta tags, heading hierarchy, broken links, image optimization, Core Web Vitals, robots/sitemap, performance, and structured data to produce a prioritized fix list. |
 
-### Marketing (9 skills)
+### Marketing (9 — 8 free + 1 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `sales-funnel` | Complete customer journey from stranger to repeat buyer |
-| `facebook-ad` | Social media ad copy with targeting for Meta platforms |
-| `google-ad` | Keyword groups, headlines, and Quality Score optimization |
-| `launch-plan` | Day-by-day launch timeline with pre/post checklists |
-| `competitor-analysis` | Pricing, feature, and messaging comparisons |
-| `pricing-strategy` | Pricing tiers, psychology application, and A/B testing |
-| `lead-magnet` | Lead capture assets with landing page copy and nurture sequences |
-| `webinar-script` | Timestamped presentation scripts with slide notes |
-| `marketplace-submit` | Submit skills, plugins, or tools to community marketplaces via pull request |
+| `competitor-analysis` | Produce a structured competitive analysis covering pricing, features, positioning, traffic sources, and weaknesses as a comparison matrix with strategic recommendations. |
+| `facebook-ad` | Create complete Facebook/Meta ad campaigns with audience targeting, ad copy variations, creative direction, budget allocation, and A/B testing protocols. |
+| `google-ad` | Design Google Ads search and display campaigns with keyword groups, bidding strategy, responsive search ads, ad extensions, and Quality Score optimization. |
+| `launch-plan` | Develop a day-by-day launch timeline with pre-launch buildup, launch week execution, post-launch optimization, channel strategy, and PR outreach templates. |
+| `lead-magnet` | Create a lead magnet with format selection, content outline, landing page copy, email capture integration, delivery sequence, and nurture follow-up. |
+| `pricing-strategy` | Design pricing tiers using cost-plus, value-based, and competitor-based models with psychology triggers, tier structure templates, and A/B test plans. |
+| `sales-funnel` | Map the complete customer journey across TOFU/MOFU/BOFU stages with page templates, copy hooks, conversion targets, and optimization checklists. |
+| `webinar-script` | Produce a full timestamped webinar script with hook, teaching segments, offer transition, Q&A handling, CTA placement, slide suggestions, and replay follow-up email sequence. |
+| `gtm-validator` **[PRO]** | Simulate buyer reactions to pricing, messaging, and positioning to find weak spots before spending money on ads or launching publicly. |
 
 ### Product (6 skills)
 
 | Skill | Description |
 |-------|-------------|
-| `prd-writer` | Engineering-ready PRD with problem statement and personas |
-| `feature-spec` | Detailed feature specifications with user flows and edge cases |
-| `user-story-generator` | Prioritized stories with Given/When/Then criteria |
-| `mvp-scoper` | Smallest viable build that validates product hypothesis |
-| `roadmap-builder` | Strategic planning with themes, milestones, and resources |
-| `feedback-analyzer` | Support ticket and review categorization and prioritization |
+| `feature-spec` | Create a detailed specification for a single feature including user story, acceptance criteria, user flows, edge cases, API definitions, dependencies, and effort estimate. |
+| `feedback-analyzer` | Categorize, score, and prioritize customer feedback from support tickets, reviews, and surveys into actionable reports with feature request rankings and sentiment trends. |
+| `mvp-scoper` | Define the smallest buildable product that validates a core hypothesis using feature triage, effort/impact scoring, a 2-week sprint scope, and success criteria. |
+| `prd-writer` | Generate a complete engineering-ready PRD with problem statement, user personas, functional and non-functional requirements, MoSCoW prioritization, and success metrics. |
+| `roadmap-builder` | Create a strategic product roadmap in Now/Next/Later format with quarterly themes, milestones, dependency mapping, resource allocation, and stakeholder communication templates. |
+| `user-story-generator` | Produce prioritized user stories with Given/When/Then acceptance criteria, story point estimates, story mapping across epics, and MoSCoW prioritization for sprint planning. |
 
-### Automation (6 skills)
+### Automation (10 — 6 free + 4 Pro)
 
 | Skill | Description |
 |-------|-------------|
-| `n8n-workflow-builder` | Design automated workflows with triggers and data transformations |
-| `webhook-designer` | Secure webhook receivers with validation and idempotency |
-| `cron-scheduler` | Recurring background jobs with monitoring and failure handling |
-| `api-integration` | Build reliable connections between systems via their APIs |
-| `content-pipeline` | Automate creation, formatting, and publishing across platforms |
-| `hosted-mcp-catalog` | Discover zero-setup hosted MCP servers that need no API keys or local install |
+| `api-integration` | Build system-to-system connectors with REST/GraphQL patterns, authentication flows (OAuth, API key, JWT), rate limit handling, data mapping, error recovery with circuit breakers, and sync monitoring. |
+| `content-pipeline` | Automate end-to-end content workflows from ideation through draft, review, approval, cross-platform formatting, scheduling, and publishing with CMS integration. |
+| `cron-scheduler` | Build production-grade scheduled jobs with cron syntax, timezone handling, overlap prevention, health checks, monitoring, alerting, and structured logging. |
+| `hosted-mcp-catalog` | Discover zero-setup hosted MCP servers that require no API keys or local install, providing a reference catalog of immediately usable MCP tools. |
+| `n8n-workflow-builder` | Design visual n8n workflows with trigger selection, node mapping, data transformations, error handling, and webhook integration. |
+| `webhook-designer` | Create secure webhook handlers with endpoint design, payload validation, HMAC signature verification, retry logic, idempotency, logging, and dead letter queues. |
+| `browser-use` **[PRO]** | Automate browser interactions for QA testing, deploy verification, form filling, and link checking using Playwright from within Claude Code. |
+| `hooks-integration` **[PRO]** | Bridge MemStack skills into Claude Code's native hooks system, auto-triggering skills on session start, file changes, commits, and context compaction events. |
+| `video-pipeline` **[PRO]** | Design an n8n + AI automated pipeline for video content covering ideation, scripting, asset generation, assembly, and publishing to YouTube. |
+| `web-scraper` **[PRO]** | Extract structured data from websites including text, tables, links, and images with pagination handling, rate limiting, and robots.txt compliance. |
+<!-- END GENERATED SKILLS CATALOG -->
 
 ## Pro Templates
 

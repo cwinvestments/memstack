@@ -1,0 +1,770 @@
+[
+  {
+    "slug": "advanced-security",
+    "category": "Security",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "ai-search-visibility",
+    "category": "SEO & GEO",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "api-audit",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "api-designer",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "api-docs",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "api-integration",
+    "category": "Automation",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "api-load-tester",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "blog-post",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "branching",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "browser-use",
+    "category": "Automation",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "burn",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "changelog-generator",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "checkpoint",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "ci-cd-pipeline",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "claude-api-helper",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "client-onboarding",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "code-reviewer",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "codebase-index",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "competitor-analysis",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "compress",
+    "category": "Core",
+    "isPro": false,
+    "version": "2.0.0"
+  },
+  {
+    "slug": "config-audit",
+    "category": "Security",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "consolidate",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "content-pipeline",
+    "category": "Automation",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "context-db",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "contract-template",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "council",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "cron-scheduler",
+    "category": "Automation",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "csp-headers",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "database-architect",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "database-migration",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "dependency-audit",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "dependency-auditor",
+    "category": "Security",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "developer-growth-analysis",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "diagram-generator",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "diary",
+    "category": "Core",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "doc-index",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "docker-setup",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "domain-ssl",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "drift-detection",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "echo",
+    "category": "Core",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "email-sequence",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "env-manager-pro",
+    "category": "Security",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "error-handler",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "facebook-ad",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "familiar",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "feature-spec",
+    "category": "Product",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "feedback-analyzer",
+    "category": "Product",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "financial-model",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "forge",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "freelancer-toolkit",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "frontend-design",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "gdpr",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "git-guard",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "git-worktrees",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "google-ad",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "governor",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "governor-pro",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "grimoire",
+    "category": "Core",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "gtm-validator",
+    "category": "Marketing",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "hetzner-setup",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "hooks-integration",
+    "category": "Automation",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "hosted-mcp-catalog",
+    "category": "Automation",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "humanize",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "invoice-generator",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "ios-app-store",
+    "category": "Deployment",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "keyword-research",
+    "category": "SEO & GEO",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "landing-page-copy",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "launch-plan",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "lead-magnet",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "licensing",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "local-seo",
+    "category": "SEO & GEO",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "log-analyzer",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "marketplace-submit",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "mcp-builder",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "meeting-insights-analyzer",
+    "category": "Business",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "mentor",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "meta-tag-optimizer",
+    "category": "SEO & GEO",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "migration-planner",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "model-router",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "multi-agent",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "mvp-scoper",
+    "category": "Product",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "n8n-workflow-builder",
+    "category": "Automation",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "netlify-deploy",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "newsletter",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "nextjs-conventions",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "owasp-top10",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "performance-audit",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "performance-profiler",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "prd-writer",
+    "category": "Product",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "pricing-strategy",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "product-description",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "project",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "proposal-writer",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "python-conventions",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "quill",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "rag-builder",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "railway-deploy",
+    "category": "Deployment",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "refactor-planner",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "rls-checker",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "rls-guardian",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "roadmap-builder",
+    "category": "Product",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "sales-funnel",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "scan",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "schema-markup",
+    "category": "SEO & GEO",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "scope-of-work",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "secrets-scanner",
+    "category": "Security",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "session-restore",
+    "category": "Core",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "shard",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "sight",
+    "category": "Core",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "site-audit",
+    "category": "SEO & GEO",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "social-media",
+    "category": "Content",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "sop-builder",
+    "category": "Business",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "state",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "test-generator",
+    "category": "Development",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "test-writer",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "tiktok-script",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "token-optimization",
+    "category": "Core",
+    "isPro": false,
+    "version": "2.0.0"
+  },
+  {
+    "slug": "twitter-thread",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "us-privacy-compliance",
+    "category": "Business",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "user-story-generator",
+    "category": "Product",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "verify",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "video-pipeline",
+    "category": "Automation",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "web-scraper",
+    "category": "Automation",
+    "isPro": true,
+    "version": null
+  },
+  {
+    "slug": "webapp-testing",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "webhook-designer",
+    "category": "Automation",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "webinar-script",
+    "category": "Marketing",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "work",
+    "category": "Development",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
+    "slug": "youtube-script",
+    "category": "Content",
+    "isPro": false,
+    "version": "1.0.0"
+  }
+]
