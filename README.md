@@ -100,7 +100,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. |
 | `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. |
 | `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. |
-| `token-optimization` | Reduce token consumption by 50-80% using the 3-layer optimization stack: TokenStack™ (API compression), RTK (CLI output compression), and Serena (LSP-backed code navigation). |
+| `token-optimization` | Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard. |
 | `burn` **[PRO]** | Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts. |
 | `checkpoint` **[PRO]** | Capture state and context before risky changes so you can roll back if things go wrong, creating structured save points with decision context and file states. |
 | `consolidate` **[PRO]** | Compress a week of diary entries into actionable insights and cross-project pattern summaries. |

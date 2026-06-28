@@ -464,8 +464,8 @@
     "not_for": "Twitter threads or webinar scripts."
   },
   "token-optimization": {
-    "what": "Reduce token consumption by 50-80% using the 3-layer optimization stack: TokenStack™ (API compression), RTK (CLI output compression), and Serena (LSP-backed code navigation).",
-    "not_for": "TokenStack™-only troubleshooting."
+    "what": "Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard.",
+    "not_for": "Live proxy status or troubleshooting (use Compress)."
   },
   "twitter-thread": {
     "what": "Create multi-tweet threads (5-15 posts) with hook formulas, narrative arc, engagement tactics, data points, CTA placement, and scheduling strategy.",
