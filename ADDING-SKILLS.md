@@ -6,6 +6,8 @@ free/Pro gating breaks. (git-guard shipped wrong because the old version of this
 doc listed only two count locations and was silent on the catalog rows, the
 two-tier count scheme, and the gating registry.)
 
+> **Version bumps** (plugin vs. loader) follow a separate policy — see `memstack-skill-loader/VERSIONING.md`, the canonical two-track versioning source of truth. This doc is about skills and counts, not version numbers.
+
 > [!DANGER] The two-tier count scheme — read this first
 > There are **two** skill counts and they are not the same number:
 >
