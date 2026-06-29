@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+# GIT-GUARD commit-msg hook
+# -------------------------------------------------------------------------
+# Blocks any commit whose message contains a "Co-authored-by:" trailer.
+# Designed to be installed machine-wide via: git config --global core.hooksPath
+# so it runs on EVERY commit in EVERY repo that uses the shared hooks dir.
+#
+# Co-Authored-By trailers are banned by policy (global CLAUDE.md hard rule:
+# "never append a Co-Authored-By trailer to any commit message, ever").
+# This hook is the mechanical enforcement of that stated-but-unenforced rule.
+#
+# Exit 0 = allow the commit
+# Exit 1 = block the commit
+#
+# A blocked commit prints a clearly delimited "GIT-GUARD:" block to stderr
+# stating WHAT was blocked, WHY, and HOW to proceed - matching the style of
+# the sibling secret-scanning pre-commit hook.
+# -------------------------------------------------------------------------
+
+set -uo pipefail
+
+SEP="================================================================"
+
+# commit-msg always receives the path to the proposed message file as $1.
+MSG_FILE="${1:-}"
+if [ -z "$MSG_FILE" ] || [ ! -f "$MSG_FILE" ]; then
+  # No message file = nothing this hook can check. Allow rather than break
+  # commits for non-standard invocations; this guard only owns the trailer.
+  exit 0
+fi
+
+# Match a REAL trailer line only: optional leading whitespace, then the token
+# "Co-authored-by" (case-insensitive) immediately followed by a colon.
+# Anchoring to the start of the line is deliberate - it means prose that merely
+# MENTIONS the phrase (e.g. this very commit, which describes the rule) is NOT
+# blocked; only an actual trailer line is.
+TRAILER_RE='^[[:space:]]*Co-authored-by:'
+
+# Drop comment lines first (git strips lines starting with '#' from the final
+# message anyway, so a '# Co-authored-by:' in the commit template or help block
+# must never trip the guard), then look for an actual trailer line.
+HITS="$(grep -vE '^[[:space:]]*#' "$MSG_FILE" | grep -E -i "$TRAILER_RE" || true)"
+
+if [ -n "$HITS" ]; then
+  {
+    echo ""
+    echo "$SEP"
+    echo "GIT-GUARD: COMMIT BLOCKED - Co-Authored-By TRAILER"
+    echo "$SEP"
+    echo "WHAT: The commit message contains a Co-Authored-By trailer:"
+    while IFS= read -r line; do
+      echo "          $line"
+    done <<< "$HITS"
+    echo "WHY:  Co-Authored-By trailers are banned by policy (global CLAUDE.md"
+    echo "      hard rule). They must never appear in any commit message, ever."
+    echo "HOW:  Remove the 'Co-authored-by:' line(s) and commit again. If you"
+    echo "      passed it via 'git commit -m', drop that trailer argument."
+    echo "      To bypass intentionally (NOT recommended - this rule has no"
+    echo "      legitimate exception): git commit --no-verify"
+    echo "$SEP"
+    echo ""
+  } >&2
+  exit 1
+fi
+
+exit 0
