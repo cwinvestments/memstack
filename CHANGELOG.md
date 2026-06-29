@@ -1,5 +1,13 @@
 # MemStack™ Changelog
 
+## v3.5.5 — 2026-06-29 — TokenStack Skill Refresh
+
+### Changed
+- **token-optimization skill** — description and content refreshed to center **TokenStack™** as the sole built-in compression proxy; dropped the retired Headroom / RTK / Serena three-layer framing. Skill-content/description refresh only — **no new skills**; total stays **128** (85 free + 43 Pro-exclusive).
+
+### Notes
+- Plugin-track patch (Option A): plugin → **3.5.5**, loader unchanged at **4.5.1**. Republished so the marketplace bundle refreshes — the version-string bump is what forces clients to re-pull the corrected skill (`/plugin marketplace update` keys on the version *differing*, not on semver ordering). GitHub Releases are human-facing only and not required for propagation.
+
 ## v3.5.4 — 2026-06-23 — Documentation Alignment + Skill-Change Guardrails
 
 ### Added
