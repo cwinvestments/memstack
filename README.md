@@ -11,24 +11,84 @@ Skills activate automatically when you need them. Say "deploy this to Railway" a
 MemStack installs in two parts: the **skills** (via the Claude Code plugin
 marketplace) and the **engine** (the MCP skill loader, via PyPI). You need
 both — the loader reads skill files from the installed marketplace plugin.
+Every command below is labeled **(in Claude Code)** or **(in terminal)** —
+running one in the wrong place is the most common setup mistake.
 
-**Step 1 — Install the free skills** (run inside Claude Code):
+**Step 1 — Install the free skills · (in Claude Code):**
 ```
 /plugin marketplace add cwinvestments/memstack
 /plugin install memstack@cwinvestments-memstack
 ```
+Run both commands. This unlocks the 85 free skills right away.
 
-**Step 2 — Install the engine** (run in your terminal):
+> **SSH error?** ("Host key verification failed" on a fresh server that's never used GitHub over SSH.)
+> **Default fix · (in terminal)** — rewrite GitHub to HTTPS, then retry Step 1:
+> ```bash
+> git config --global url."https://github.com/".insteadOf "git@github.com:"
+> ```
+> **Backup fix · (in terminal)** — add GitHub's host key, then retry Step 1:
+> ```bash
+> mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+> ```
+
+**Step 2 — Install the engine · (in terminal):**
+
+Windows:
 ```bash
 pip install memstack-skill-loader
+```
+
+Linux / Mac — use the explicit interpreter (the same one you register in Step 3):
+```bash
+/usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
+```
+Find yours with `which python3` and substitute it if it isn't `/usr/bin/python3`. The `--break-system-packages` flag is required on newer externally-managed Python. No pip for that interpreter? Run `sudo apt install python3-pip` first (Debian/Ubuntu).
+
+**Step 3 — Register the MCP server · (in terminal):** register against the **same interpreter you installed onto in Step 2.**
+
+Windows:
+```bash
 claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader
 ```
 
-**Step 3 — Restart Claude Code**, then type `list skills` to verify. You should see the 85 free skills.
+Linux / Mac:
+```bash
+claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skill_loader
+```
+If this doesn't match Step 2's interpreter, the server won't launch (you'll see a "failed to reconnect" error and `activate_license` will be missing).
 
-**Step 4 — (Pro only)** unlock the 43 Pro skills — see [Unlock Pro Skills](#unlock-pro-skills) below.
+**Step 4 — Activate your license · (in Claude Code, after a full restart):** fully quit and reopen Claude Code first so it picks up the new MCP server, then run:
+```
+activate_license(key="your-key", email="you@example.com")
+```
+This unlocks the 43 Pro-exclusive skills (85 free + 43 Pro = 128 total). Free-tier users can skip this step — type `list skills` to verify the 85 free skills loaded.
 
-See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup or troubleshooting.
+See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup, and the [Troubleshooting](#troubleshooting) section below.
+
+### Troubleshooting
+
+**`error: externally-managed-environment` (during Step 2)** — pip refuses to install on a system-managed Python. Add `--break-system-packages` · (in terminal):
+```bash
+/usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
+```
+
+**Plugin clone fails: "Host key verification failed" (during Step 1)** — a fresh server that's never connected to GitHub over SSH. **Default fix · (in terminal):** `git config --global url."https://github.com/".insteadOf "git@github.com:"` then retry Step 1. **Backup fix · (in terminal):** `mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts` then retry Step 1.
+
+**`activate_license` not found, or MCP "failed to reconnect (-32000)"** — the loader was installed onto a **different Python interpreter** than the one Claude Code launches (the classic bare-`python` mismatch on Linux/Mac). Check · (in terminal):
+```bash
+/usr/bin/python3 -c "import memstack_skill_loader; print('ok')"
+```
+If it prints `ok`, make sure Step 3 registered that exact path, then fully restart Claude Code. If it errors with `ModuleNotFoundError`, reinstall onto the explicit interpreter and re-register against that same path · (in terminal):
+```bash
+/usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
+claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skill_loader
+```
+Then fully restart Claude Code. Rule of thumb: whatever interpreter you `import`-check as `ok` is the path that must appear in your `claude mcp add` command.
+
+**`No module named pip` (during Step 2)** — that interpreter ships without pip (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
+```bash
+sudo apt install python3-pip
+```
 
 ### Tier Structure
 
