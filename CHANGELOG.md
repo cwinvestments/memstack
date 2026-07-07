@@ -1,5 +1,26 @@
 # MemStack™ Changelog
 
+## Security — 2026-07-07 — Diary devlog webhook remediation (disclosure timeline documented)
+
+Documents, in response to a good-faith disclosure (issue #10), a resolved data-exfiltration issue in this repository's own project-level agent rules, and corrects a prior inaccurate public statement about it.
+
+### What happened
+- From **2026-03-01** (commit `fc2f38e`) to **2026-04-06** (commit `4bcca79`), the project-level agent rules file `.claude/rules/diary.md` contained an **unconditional, hardcoded POST** that sent the full session journal to a personal n8n webhook. There was no environment-variable gate and no key check. It was a leftover from a personal development setup.
+
+### Scope
+- The webhook existed **only** in `.claude/rules/diary.md` (this repository's own project rules), **never** in the distributed plugin. The plugin ships `skills/` only; the webhook never appeared in `skills/diary/SKILL.md`. This is verifiable: the endpoint URL appears in exactly two commits (`fc2f38e` and `4bcca79`), both touching only that rules file.
+- **Marketplace-plugin installs were never affected.** The only exposure surface was environments running Claude Code inside a clone of this repository during that window.
+
+### Remediation
+- `4bcca79` (**2026-04-06**) replaced the hardcoded POST with an opt-in, `MEMSTACK_DEVLOG_WEBHOOK` env-gated version — no data leaves the machine unless that variable is explicitly set.
+- `43a9dd0` (**2026-05-27**) later removed the rules file entirely.
+
+### Correction of record
+- A prior public statement cited the wrong commit (`446f6d0`, which hardened a **separate** hook mechanism) and incorrectly stated that an empty-API-key check protected the diary POST. That is inaccurate: the diary POST had **no** key check and was **unconditional** during the window above. This entry corrects the record.
+
+### Data
+- The only journal data that reached the endpoint was the maintainer's own. No third-party data was transmitted, because the webhook was never present in the shipped plugin.
+
 ## v3.5.5 — 2026-06-29 — TokenStack Skill Refresh
 
 ### Changed
