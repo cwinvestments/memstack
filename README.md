@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/cwinvestments-memstack-badge.png)](https://mseep.ai/app/cwinvestments-memstack)
+
 # MemStack™
 
 [![Version: 3.5.5](https://img.shields.io/badge/Version-3.5.5-green.svg)](CHANGELOG.md)
