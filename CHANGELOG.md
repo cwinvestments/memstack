@@ -1,5 +1,13 @@
 # MemStack™ Changelog
 
+## v3.5.6 — 2026-07-09 — Hooks Execute-Bit Fix (Linux/macOS SessionStart)
+
+### Fixed
+- **SessionStart hook now runs on Linux/macOS.** `hooks/run-hook.cmd` shipped without the execute bit (mode `100644`) from its introduction on 2026-04-07 (`b7d09fa`). Because the plugin invokes the wrapper directly as a command, Unix shells rejected it with "Permission denied" — so the SessionStart context injection (the "call `find_skill` first" priming) **silently never ran on Linux/macOS**, and skill auto-loading never fired for Mac/Linux users. Both `hooks/run-hook.cmd` and `hooks/session-start` are now marked executable (`100755`).
+- Windows was unaffected — its `cmd.exe` branch does not require the execute bit.
+
+Reported by **ahpoblete** (issue #12). Thank you!
+
 ## Security — 2026-07-07 — Diary devlog webhook remediation (disclosure timeline documented)
 
 Documents, in response to a good-faith disclosure (issue #10), a resolved data-exfiltration issue in this repository's own project-level agent rules, and corrects a prior inaccurate public statement about it.

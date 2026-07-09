@@ -1,6 +1,6 @@
 # MemStack™
 
-[![Version: 3.5.5](https://img.shields.io/badge/Version-3.5.5-green.svg)](CHANGELOG.md)
+[![Version: 3.5.6](https://img.shields.io/badge/Version-3.5.6-green.svg)](CHANGELOG.md)
 
 The structured skill framework for Claude Code — **128 professional skills** for deployment, security, databases, content, marketing, and more.
 
