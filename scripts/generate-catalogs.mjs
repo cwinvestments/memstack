@@ -61,9 +61,9 @@ if (skills.some((s) => s.slug === "kdp-format"))
 
 const free = skills.filter((s) => !s.isPro);
 const pro = skills.filter((s) => s.isPro);
-if (skills.length !== 128) die(`expected 128 skills, got ${skills.length}`);
+if (skills.length !== 129) die(`expected 129 skills, got ${skills.length}`);
 if (free.length !== 85) die(`expected 85 free skills, got ${free.length}`);
-if (pro.length !== 43) die(`expected 43 Pro skills, got ${pro.length}`);
+if (pro.length !== 44) die(`expected 44 Pro skills, got ${pro.length}`);
 
 for (const s of skills) {
   if (!CATEGORY_ORDER.includes(s.category))
@@ -81,7 +81,7 @@ for (const arr of byCat.values())
 
 let sum = 0;
 for (const arr of byCat.values()) sum += arr.length;
-if (sum !== 128) die(`per-category counts sum to ${sum}, expected 128`);
+if (sum !== 129) die(`per-category counts sum to ${sum}, expected 129`);
 
 // ============================================================================
 // Render helpers
@@ -168,7 +168,7 @@ function extractRegion(text, begin, end, label) {
 // ============================================================================
 function report() {
   console.log("[generate-catalogs] validation:");
-  console.log(`  total=128 ✓   free=85 ✓   pro=43 ✓   per-category sum=${sum} ✓`);
+  console.log(`  total=129 ✓   free=85 ✓   pro=44 ✓   per-category sum=${sum} ✓`);
   console.log("  every skill resolves a `what` ✓   no kdp-format ✓");
   for (const cat of CATEGORY_ORDER) {
     const arr = byCat.get(cat);

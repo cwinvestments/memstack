@@ -1,6 +1,6 @@
 # MemStack™ — Skill Quick Reference
 
-> **128 skills across 10 categories** (85 free + 43 Pro-exclusive). Describe your task and the matching skill activates.
+> **129 skills across 10 categories** (85 free + 44 Pro-exclusive). Describe your task and the matching skill activates.
 >
 > Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key — activate via Dashboard Settings or `activate_license()` in Claude Code.
 
@@ -187,7 +187,7 @@
 
 ---
 
-## Automation (10)
+## Automation (11)
 
 | Skill | What It Does | Not For |
 |-------|-------------|---------|
@@ -200,8 +200,9 @@
 | `browser-use` **[PRO]** | Automate browser interactions for QA testing, deploy verification, form filling, and link checking using Playwright from within Claude Code. | Unit testing or API testing. |
 | `hooks-integration` **[PRO]** | Bridge MemStack skills into Claude Code's native hooks system, auto-triggering skills on session start, file changes, commits, and context compaction events. | Git hooks or CI/CD webhooks. |
 | `video-pipeline` **[PRO]** | Design an n8n + AI automated pipeline for video content covering ideation, scripting, asset generation, assembly, and publishing to YouTube. | Writing individual video scripts or editing videos manually. |
+| `video-review` **[PRO]** | Download a video (YouTube, Loom, TikTok, X, Instagram, Vimeo, or local file), extract frames, and pull a transcript so Claude can review a demo, UI walkthrough, or content clip grounded in what is on screen and in the audio. | Producing or publishing videos via n8n automation (use video-pipeline), reviewing source code or PRs, or writing video scripts. |
 | `web-scraper` **[PRO]** | Extract structured data from websites including text, tables, links, and images with pagination handling, rate limiting, and robots.txt compliance. | API documentation fetching or browser testing. |
 
 ---
 
-*MemStack™ v3.5.4 — 128 skills across 10 categories (85 free + 43 Pro-exclusive), one prompt away.*
+*MemStack™ v3.5.4 — 129 skills across 10 categories (85 free + 44 Pro-exclusive), one prompt away.*

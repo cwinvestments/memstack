@@ -487,6 +487,10 @@
     "what": "Design an n8n + AI automated pipeline for video content covering ideation, scripting, asset generation, assembly, and publishing to YouTube.",
     "not_for": "Writing individual video scripts or editing videos manually."
   },
+  "video-review": {
+    "what": "Download a video (YouTube, Loom, TikTok, X, Instagram, Vimeo, or local file), extract frames, and pull a transcript so Claude can review a demo, UI walkthrough, or content clip grounded in what is on screen and in the audio.",
+    "not_for": "Producing or publishing videos via n8n automation (use video-pipeline), reviewing source code or PRs, or writing video scripts."
+  },
   "webapp-testing": {
     "what": "Produce Playwright end-to-end tests that verify real user flows in a browser for web application QA.",
     "not_for": "Unit tests, API tests, or non-browser testing."

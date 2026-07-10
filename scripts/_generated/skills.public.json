@@ -732,6 +732,12 @@
     "version": null
   },
   {
+    "slug": "video-review",
+    "category": "Automation",
+    "isPro": true,
+    "version": null
+  },
+  {
     "slug": "web-scraper",
     "category": "Automation",
     "isPro": true,

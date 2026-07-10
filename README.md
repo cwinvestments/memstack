@@ -2,7 +2,7 @@
 
 [![Version: 3.5.6](https://img.shields.io/badge/Version-3.5.6-green.svg)](CHANGELOG.md)
 
-The structured skill framework for Claude Code — **128 professional skills** for deployment, security, databases, content, marketing, and more.
+The structured skill framework for Claude Code — **129 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
@@ -61,7 +61,7 @@ If this doesn't match Step 2's interpreter, the server won't launch (you'll see 
 ```
 activate_license(key="your-key", email="you@example.com")
 ```
-This unlocks the 43 Pro-exclusive skills (85 free + 43 Pro = 128 total). Free-tier users can skip this step — type `list skills` to verify the 85 free skills loaded.
+This unlocks the 44 Pro-exclusive skills (85 free + 44 Pro = 129 total). Free-tier users can skip this step — type `list skills` to verify the 85 free skills loaded.
 
 See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup, and the [Troubleshooting](#troubleshooting) section below.
 
@@ -95,12 +95,12 @@ sudo apt install python3-pip
 | Tier | Skills | Access |
 |------|--------|--------|
 | **Free** | 85 skills | Included with MemStack™ base |
-| **Pro** | 128 total (85 free + 43 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
+| **Pro** | 129 total (85 free + 44 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are license-gated — when you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
 
 <!-- BEGIN GENERATED PRO LIST -->
-**Pro-exclusive skills (43):** `advanced-security`, `api-docs`, `api-load-tester`, `branching`, `browser-use`, `burn`, `checkpoint`, `claude-api-helper`, `codebase-index`, `config-audit`, `consolidate`, `context-db`, `council`, `database-architect`, `database-migration`, `dependency-auditor`, `developer-growth-analysis`, `diagram-generator`, `doc-index`, `drift-detection`, `env-manager-pro`, `error-handler`, `frontend-design`, `git-worktrees`, `governor-pro`, `gtm-validator`, `hooks-integration`, `ios-app-store`, `log-analyzer`, `mcp-builder`, `meeting-insights-analyzer`, `model-router`, `multi-agent`, `nextjs-conventions`, `performance-profiler`, `python-conventions`, `rag-builder`, `session-restore`, `social-media`, `test-generator`, `us-privacy-compliance`, `video-pipeline`, `web-scraper` — these require an active Pro license.
+**Pro-exclusive skills (44):** `advanced-security`, `api-docs`, `api-load-tester`, `branching`, `browser-use`, `burn`, `checkpoint`, `claude-api-helper`, `codebase-index`, `config-audit`, `consolidate`, `context-db`, `council`, `database-architect`, `database-migration`, `dependency-auditor`, `developer-growth-analysis`, `diagram-generator`, `doc-index`, `drift-detection`, `env-manager-pro`, `error-handler`, `frontend-design`, `git-worktrees`, `governor-pro`, `gtm-validator`, `hooks-integration`, `ios-app-store`, `log-analyzer`, `mcp-builder`, `meeting-insights-analyzer`, `model-router`, `multi-agent`, `nextjs-conventions`, `performance-profiler`, `python-conventions`, `rag-builder`, `session-restore`, `social-media`, `test-generator`, `us-privacy-compliance`, `video-pipeline`, `video-review`, `web-scraper` — these require an active Pro license.
 <!-- END GENERATED PRO LIST -->
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
@@ -146,9 +146,9 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - TokenStack™ context compression
 - Always-on rules and slash commands
 
-## All Skills (128 total — 85 free + 43 Pro-exclusive)
+## All Skills (129 total — 85 free + 44 Pro-exclusive)
 
-All 128 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 43 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 129 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 44 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 <!-- BEGIN GENERATED SKILLS CATALOG -->
 ### Core (15 — 6 free + 9 Pro)
@@ -314,7 +314,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `roadmap-builder` | Create a strategic product roadmap in Now/Next/Later format with quarterly themes, milestones, dependency mapping, resource allocation, and stakeholder communication templates. |
 | `user-story-generator` | Produce prioritized user stories with Given/When/Then acceptance criteria, story point estimates, story mapping across epics, and MoSCoW prioritization for sprint planning. |
 
-### Automation (10 — 6 free + 4 Pro)
+### Automation (11 — 6 free + 5 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -327,6 +327,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 | `browser-use` **[PRO]** | Automate browser interactions for QA testing, deploy verification, form filling, and link checking using Playwright from within Claude Code. |
 | `hooks-integration` **[PRO]** | Bridge MemStack skills into Claude Code's native hooks system, auto-triggering skills on session start, file changes, commits, and context compaction events. |
 | `video-pipeline` **[PRO]** | Design an n8n + AI automated pipeline for video content covering ideation, scripting, asset generation, assembly, and publishing to YouTube. |
+| `video-review` **[PRO]** | Download a video (YouTube, Loom, TikTok, X, Instagram, Vimeo, or local file), extract frames, and pull a transcript so Claude can review a demo, UI walkthrough, or content clip grounded in what is on screen and in the audio. |
 | `web-scraper` **[PRO]** | Extract structured data from websites including text, tables, links, and images with pagination handling, rate limiting, and robots.txt compliance. |
 <!-- END GENERATED SKILLS CATALOG -->
 
@@ -355,7 +356,7 @@ All 128 skills are **fully implemented** with complete protocols, context guards
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 128 skills
+- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 129 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
