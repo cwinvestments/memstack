@@ -1,5 +1,17 @@
 # MemStack™ Changelog
 
+## Skills — 2026-07-11 — video-review Pro skill
+
+### Added
+- **video-review Pro skill** — Claude Code watches an existing video (YouTube URL or local file), downloads it, extracts frames, pulls a transcript, and reviews what is actually on screen. Built for demos, UI walkthroughs, screen recordings, and content clips.
+  - Engine vendored from **bradautomates/claude-video** (MIT, attributed in-skill).
+  - Windows-hardened: platform-aware install hints, UTF-8 console self-defense, preflight probes for `deno` and `curl_cffi` (now required by yt-dlp for YouTube downloads).
+
+### Notes
+- **Skill count: 129 total** (85 free + 44 Pro-exclusive).
+- **Pro users** — delivered automatically within 24 hours, or instantly via `refresh_pro_skills`.
+- **Loader release** — `memstack-skill-loader` **4.8.0** on PyPI.
+
 ## v3.5.6 — 2026-07-09 — Hooks Execute-Bit Fix (Linux/macOS SessionStart)
 
 ### Fixed
