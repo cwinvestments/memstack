@@ -215,6 +215,10 @@
     "what": "Manage git worktrees for isolated parallel development with separate directories per branch or agent, including sync and cleanup automation.",
     "not_for": "Simple branch switching or stashing."
   },
+  "goal": {
+    "what": "Structure a task into TASK, WHY, OUTCOME, CONSTRAINTS, and a required VERIFICATION criterion before execution begins, so 'done' is defined and provable up front.",
+    "not_for": "Tracking or updating an existing task list (use work) or step-by-step guidance mid-execution."
+  },
   "google-ad": {
     "what": "Design Google Ads search and display campaigns with keyword groups, bidding strategy, responsive search ads, ad extensions, and Quality Score optimization.",
     "not_for": "Facebook/Meta ads or SEO."

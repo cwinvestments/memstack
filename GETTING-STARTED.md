@@ -1,8 +1,8 @@
 # Getting Started with MemStack™
 
-MemStack™ gives Claude Code **128 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
+MemStack™ gives Claude Code **130 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
 
-**85 skills are free.** A Pro license key unlocks all 128 skills including 43 Pro-exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
+**86 skills are free.** A Pro license key unlocks all 130 skills including 44 Pro-exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
 
 ## What You'll Need
 
@@ -18,7 +18,7 @@ MemStack comes in two parts — the **skills** (Claude Code plugin marketplace) 
 /plugin marketplace add cwinvestments/memstack
 /plugin install memstack@cwinvestments-memstack
 ```
-Run both commands. This unlocks the 85 free skills right away.
+Run both commands. This unlocks the 86 free skills right away.
 
 > **SSH error?** ("Host key verification failed" on a fresh server that's never used GitHub over SSH.)
 > **Default fix · (in terminal)** — rewrite GitHub to HTTPS, then retry Step 1:
@@ -60,7 +60,7 @@ If this doesn't match Step 2's interpreter, the server won't launch (you'll see 
 ```
 activate_license(key="your-key", email="you@example.com")
 ```
-This unlocks the 43 Pro-exclusive skills (85 free + 43 Pro = 128 total). Free-tier users can skip this step — type `list skills` to verify the 85 free skills loaded.
+This unlocks the 44 Pro-exclusive skills (86 free + 44 Pro = 130 total). Free-tier users can skip this step — type `list skills` to verify the 86 free skills loaded.
 
 ## Verify It Works
 
@@ -74,7 +74,7 @@ If Claude responds with a structured protocol (activation message, context guard
 
 ## Pro License (Optional)
 
-A Pro license unlocks all 128 skills including 43 Pro-exclusive skills.
+A Pro license unlocks all 130 skills including 44 Pro-exclusive skills.
 
 1. Get a key at [memstack.pro](https://memstack.pro)
 2. Complete the Install steps above first (marketplace + engine)
@@ -82,7 +82,7 @@ A Pro license unlocks all 128 skills including 43 Pro-exclusive skills.
    ```
    activate_license(key="MSPRO-XXXXXXXX-XXXX", email="you@example.com")
    ```
-4. Pro skills download automatically from our server to `~/.memstack/pro-skills` (no separate marketplace step for Pro). You should see all 128 skills (85 free + 43 Pro).
+4. Pro skills download automatically from our server to `~/.memstack/pro-skills` (no separate marketplace step for Pro). You should see all 130 skills (86 free + 44 Pro).
 
 > **Advanced Alternative:** You can also set the `MEMSTACK_PRO_LICENSE_KEY` environment variable instead of using `activate_license`. Use `setx` on Windows or add to `~/.bashrc` on Mac/Linux, then restart your terminal and Claude Code.
 
@@ -92,15 +92,15 @@ MemStack has three parts that update independently. Restart Claude Code after an
 
 | Part | What it covers | How to update |
 |------|----------------|---------------|
-| **Free skills** | the 85 free skills, including new releases | In Claude Code: `/plugin marketplace update cwinvestments-memstack`, then `/reload-plugins` (or restart) |
-| **Pro skills** | the 43 Pro skills | Auto-updates within 24h; force an immediate refresh by running the `refresh_pro_skills` tool |
+| **Free skills** | the 86 free skills, including new releases | In Claude Code: `/plugin marketplace update cwinvestments-memstack`, then `/reload-plugins` (or restart) |
+| **Pro skills** | the 44 Pro skills | Auto-updates within 24h; force an immediate refresh by running the `refresh_pro_skills` tool |
 | **Engine** | the skill loader itself | In terminal: `pip install --upgrade memstack-skill-loader` |
 
 **If a new free skill doesn't show up** after a marketplace update (version detection can be unreliable), re-run `/plugin install memstack@cwinvestments-memstack`. As a last resort, clear the cached plugin and reinstall it.
 
 ## What's Included
 
-### Skill Categories (128 total: 85 free + 43 Pro)
+### Skill Categories (130 total: 86 free + 44 Pro)
 
 | Category | Skills | Examples |
 |----------|--------|----------|

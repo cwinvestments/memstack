@@ -11,14 +11,16 @@ two-tier count scheme, and the gating registry.)
 > [!DANGER] The two-tier count scheme — read this first
 > There are **two** skill counts and they are not the same number:
 >
-> | Tier | Value (current) | Includes `kdp-format`? | Where it may appear |
-> |------|-----------------|------------------------|---------------------|
-> | **Public** | **128** (85 free + 43 Pro) | **NO** | Every public-facing doc, website, marketing, manifests |
-> | **Local** | **129** (85 free + 43 Pro + 1 local-only `kdp-format`) | YES | Maintainer notes only — NEVER ship this number |
+> | Tier | Includes `kdp-format`? | Where it may appear |
+> |------|------------------------|---------------------|
+> | **Public** | **NO** | Every public-facing doc, website, marketing, manifests |
+> | **Local** | YES — public **+ 1** local-only `kdp-format` | Maintainer notes only — NEVER ship this number |
 >
-> - `kdp-format` lives in `C:\Projects\memstack\skills\kdp-format`, is **gitignored**, and is **local-only**. If you count 86 free skills on disk, subtract 1 — the public free count is always 85.
-> - **NEVER put 129 (or 86 free) in any public-facing doc, manifest, website string, or marketing copy.**
-> - Adding a **public** skill bumps **both** tiers by one (e.g. 128→129 public, 129→130 local). Adding a local-only skill bumps only the local tier.
+> **Do not trust any count written in this doc as current — treat every number here as illustrative only.** The authoritative public count is whatever `memstack-skill-loader/scripts/check_skill_drift.py` computes from `.claude/rules/skill-counts.md`. **Run the drift check to get the live count before editing any count.**
+>
+> - `kdp-format` lives in `C:\Projects\memstack\skills\kdp-format`, is **gitignored**, and is **local-only**. It is counted in the **local** tier only — if you count free skills on disk, subtract 1 for `kdp-format` to get the public free count.
+> - The public and local counts differ by exactly 1 (`kdp-format`). **Never ship the local number** (the on-disk free count) in any public-facing doc, manifest, website string, or marketing copy.
+> - Adding a **public** skill bumps **both** tiers by one. Adding a local-only skill bumps only the local tier.
 > - Canonical rule: `memstack-skill-loader/.claude/rules/skill-counts.md`. Canonical doc map: `memstack-skill-loader/MemStack-Documentation-Map.md`. When the totals change, update those two first, then everything below.
 
 ---
@@ -47,6 +49,9 @@ A skill reaches users through one of three independent channels. Know which one 
 | **Pro** | `pro-skills/<slug>/SKILL.md` | `memstack-skill-loader` | 2 (AdminStack) |
 
 Categories: `automation`, `business`, `content`, `deployment`, `development`, `marketing`, `product`, `security`, `seo-geo`.
+
+> [!WARNING] Free skills live in **two** structural locations.
+> Categorized free skills sit in `skills/<category>/<slug>/`; core/standalone free skills sit in top-level `skills/<slug>/`. A count that scans only one location will miss skills. **Never count by scanning a single location — `memstack-skill-loader/scripts/check_skill_drift.py` is the count authority** (it walks the canonical free set and cross-checks it against `skill-counts.md`).
 
 ---
 
@@ -99,6 +104,17 @@ PRO_EXCLUSIVE_SKILLS = frozenset({"advanced-security", "api-docs", ..., "web-scr
 
 Bumping a number is not enough — the skill must appear as a **row/entry** in every per-skill catalog, or it won't render/list even though the total went up.
 
+> [!IMPORTANT] Required regeneration order (source → loader → memstack → site)
+> The category/description data has **one source of truth: the loader** (`memstack-skill-loader`). `memstack` and `memstack-pro-site` **vendor** from it — they never define categories. Do these in this exact order; reordering causes drift:
+>
+> 1. **Edit SOURCE** (hand-edit): loader `src/memstack_skill_loader/categories.py` (category) + `src/memstack_skill_loader/skill_descriptions.json` (`what`/`not_for`); the skill's `SKILL.md` in `memstack`; Pro tier in loader `license.py` (`PRO_EXCLUSIVE_SKILLS`).
+> 2. **Loader — regenerate + verify:** `python scripts/export_public_skills.py` (rewrites `skills.public.json`), then `python scripts/check_skill_drift.py` → must PASS.
+> 3. **memstack — vendor + regenerate + verify:** `npm run vendor:skills` → `npm run gen:catalogs` → `npm run check:catalogs` (Step 4b).
+> 4. **site (`memstack-pro-site`) — vendor + regenerate + verify:** `npm run vendor:skills` → `npm run gen:skills` → `npm run check:skills` (`skillCounts.ts` auto-derives).
+> 5. **Verify all three agree** on the skill's category and the total count.
+>
+> **RULE — never hand-edit generated files.** `skills.public.json` (loader), `memstack/scripts/_generated/*`, `memstack-pro-site/src/data/skills.ts`, and `skillCounts.ts` are generated/vendored. Hand edits revert on the next regenerate and fail `check:*`. Edit the **source** and regenerate.
+
 | Catalog | Repo | What to add |
 |---------|------|-------------|
 | `README.md` — catalog tables + Pro-exclusive list | `memstack` | **GENERATED — do not hand-edit.** Lives between `<!-- BEGIN/END GENERATED … -->` markers; regenerate via Step 4b. |
@@ -111,9 +127,20 @@ Bumping a number is not enough — the skill must appear as a **row/entry** in e
 > [!IMPORTANT] The memstack catalogs are now single-sourced from the loader.
 > `README.md`'s catalog tables, its Pro-exclusive list, and **all of `SKILL-REFERENCE.md`** are **generated** from the loader's authoritative data — the same single-source pipeline the website uses. Never hand-edit them: hand edits are overwritten on the next regenerate and will fail `check:catalogs`. You edit the **sources** (above); the catalogs follow via Step 4b.
 
+### Step 4a — Re-export the loader's public data (before 4b)
+
+The loader is the source; `skills.public.json` is **generated** from `categories.py` + the skill's `SKILL.md` version + the Pro gate. After editing the sources (Step 4 rows), regenerate it in `memstack-skill-loader`:
+
+```bash
+python scripts/export_public_skills.py   # regenerate skills.public.json (fail-loud on count / category / overlap)
+python scripts/check_skill_drift.py      # must PASS: counts consistent, every slug has a category
+```
+
+Do **not** hand-edit `skills.public.json`. Only after this passes, run Step 4b in `memstack`.
+
 ### Step 4b — Regenerate the memstack catalogs (after editing the sources)
 
-Once the loader sources are updated (category in `categories.py`, tier in `PRO_EXCLUSIVE_SKILLS`, `what`/`not_for` in `skill_descriptions.json`) and `skills.public.json` is **re-exported**, regenerate in `memstack`:
+Once the loader sources are updated (category in `categories.py`, tier in `PRO_EXCLUSIVE_SKILLS`, `what`/`not_for` in `skill_descriptions.json`) and `skills.public.json` is **re-exported** (Step 4a), regenerate in `memstack`:
 
 ```bash
 npm run vendor:skills    # byte-for-byte copy loader sources -> scripts/_generated/ (+ SOURCE.md provenance)
@@ -121,7 +148,10 @@ npm run gen:catalogs     # regenerate README regions + SKILL-REFERENCE.md from t
 npm run check:catalogs   # must exit 0 (committed == regenerated); EOL-robust, safe in CI / fresh checkout
 ```
 
-`gen:catalogs` is **fail-loud**: it aborts if the data isn't exactly 128 (85 free + 43 Pro), any skill has no `what`, a category is unknown, or the local-only `kdp-format` leaks in. Per-category counts **and every count in the generated docs are derived** — there is nothing to hand-bump inside the generated regions.
+`gen:catalogs` is **fail-loud**: it aborts if the data isn't exactly the expected public total (the free/Pro counts asserted in the generator and kept in sync by the drift check — never trust a number written here, verify live), any skill has no `what`, a category is unknown, or the local-only `kdp-format` leaks in. Per-category counts **and every count in the generated docs are derived** — there is nothing to hand-bump inside the generated regions.
+
+> [!NOTE] Moving a skill between categories shifts per-category subtotals.
+> Recategorizing (e.g. Development → Core) changes each affected category's subtotal (one −1, one +1) even though the **total** is unchanged. Those subtotals are **derived** by the generators/section headers — they are **not** tracked in `skill-counts.md` (which holds only total / free / Pro). So a category move is still a full source-edit-then-regenerate: change `categories.py`, re-run `export_public_skills.py`, regenerate the memstack + site catalogs, and re-run `check_skill_drift.py` so the derived subtotals update everywhere.
 
 ---
 
@@ -174,6 +204,9 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 | Count/catalog edits on the site | `memstack-pro-site` |
 
 Follow repo git hygiene: stage specific paths, never `git add -A`, build before push.
+
+> [!NOTE] One skill change = commits in **multiple** repos.
+> Adding or moving a skill is never a single-repo commit. Expect commits in: **`memstack-skill-loader`** (source edit in `categories.py` / `skill_descriptions.json` / `license.py` + regenerated `skills.public.json`, plus engine/CLI if the skill has one), **`memstack`** (the `SKILL.md` + regenerated `_generated/*`, README regions, `SKILL-REFERENCE.md`), and **`memstack-pro-site`** (regenerated `skills.ts` + `skillCounts.ts`-derived counts). Commit them together as a set — landing one and forgetting the others is how the channels drift.
 
 ---
 

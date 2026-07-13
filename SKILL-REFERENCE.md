@@ -1,18 +1,19 @@
 # MemStack™ — Skill Quick Reference
 
-> **129 skills across 10 categories** (85 free + 44 Pro-exclusive). Describe your task and the matching skill activates.
+> **130 skills across 10 categories** (86 free + 44 Pro-exclusive). Describe your task and the matching skill activates.
 >
 > Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key — activate via Dashboard Settings or `activate_license()` in Claude Code.
 
 ---
 
-## Core (15)
+## Core (16)
 
 | Skill | What It Does | Not For |
 |-------|-------------|---------|
 | `compress` | Monitor and manage TokenStack™ context compression for Claude Code sessions, tracking proxy status and token savings. | — |
 | `diary` | Save a structured session diary capturing what was built, decisions made, and next steps at the end of a productive session. | — |
 | `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. | — |
+| `goal` | Structure a task into TASK, WHY, OUTCOME, CONSTRAINTS, and a required VERIFICATION criterion before execution begins, so 'done' is defined and provable up front. | Tracking or updating an existing task list (use work) or step-by-step guidance mid-execution. |
 | `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. | — |
 | `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. | — |
 | `token-optimization` | Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard. | Live proxy status or troubleshooting (use Compress). |
@@ -205,4 +206,4 @@
 
 ---
 
-*MemStack™ v3.5.4 — 129 skills across 10 categories (85 free + 44 Pro-exclusive), one prompt away.*
+*MemStack™ v3.5.4 — 130 skills across 10 categories (86 free + 44 Pro-exclusive), one prompt away.*

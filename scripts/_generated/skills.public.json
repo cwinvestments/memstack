@@ -324,6 +324,12 @@
     "version": null
   },
   {
+    "slug": "goal",
+    "category": "Core",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
     "slug": "google-ad",
     "category": "Marketing",
     "isPro": false,
