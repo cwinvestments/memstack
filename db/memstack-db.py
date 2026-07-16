@@ -24,6 +24,7 @@ Commands:
 
 import argparse
 import json
+import os
 import sqlite3
 import sys
 from pathlib import Path
@@ -78,6 +79,79 @@ def normalize_type(value: str) -> str:
     if not stripped:
         return "decision"
     return TYPE_ALIASES.get(stripped.lower(), stripped)
+
+
+# Procedural insight types that mirror into the skill-loader's searchable memory.
+# architecture and decision are record, not procedure: bridging 1,000+ decisions
+# would drown FTS retrieval, so they are deliberately excluded.
+BRIDGED_TYPES = frozenset({"gotcha", "lesson", "pattern", "warning", "failed_approach"})
+
+
+def bridge_to_loader(project, type_value, content, context, tags, created_at) -> dict:
+    """Mirror a procedural insight into the skill-loader's memory.db; never raises."""
+    try:
+        # 1. Procedural filter: only the five procedure types bridge.
+        if type_value not in BRIDGED_TYPES:
+            return {}
+        # 2. A redirected loader DB would auto-create and silently diverge. Skip.
+        if os.environ.get("MEMSTACK_DB_PATH"):
+            return {"bridge_skipped": "MEMSTACK_DB_PATH is set"}
+        # 3. Guarded import: a machine without the loader is a no-op, not an error.
+        try:
+            from memstack_skill_loader import memory_db
+        except Exception:
+            return {}
+        # 4. Resolve the name against paths the store already knows; never guess.
+        project_dir = memory_db.resolve_project_dir_by_name(project)
+        if project_dir is None:
+            return {"bridge_skipped": f"unknown project: {project}"}
+
+        # 5. Derive a title (procedural_memory.title is NOT NULL; insights has none).
+        text = content or ""
+        idx = text.find(". ")
+        if idx != -1 and idx < 120:
+            title = text[:idx]
+        else:
+            title = text[:90]
+        title = title.strip()
+        if title.endswith("."):
+            title = title[:-1]
+        title = " ".join(title.split())
+        if len(title) > 90:
+            cut = title[:90]
+            if " " in cut:
+                cut = cut[:cut.rfind(" ")]
+            title = cut.rstrip() + "..."
+        if not title:
+            title = text[:60]
+
+        # 6. Content: append operative context (procedural_memory has no context col).
+        body = content or ""
+        if context and context.strip():
+            body = body + "\n\nContext: " + context.strip()
+
+        # 7. Tags: comma-separated string -> ordered unique list; empty -> None.
+        tag_list = []
+        for tag in (tags or "").split(","):
+            tag = tag.strip()
+            if tag and tag not in tag_list:
+                tag_list.append(tag)
+        stack_tags = tag_list or None
+
+        # 8-9. created_at passed through verbatim (keyword-only). None -> failure.
+        lesson_id = memory_db.insert_lesson(
+            title,
+            body,
+            type_value,
+            project_dir=project_dir,
+            stack_tags=stack_tags,
+            created_at=created_at,
+        )
+        if lesson_id is None:
+            return {"bridge_failed": True}
+        return {"bridged": {"project_dir": project_dir, "lesson_id": lesson_id}}
+    except Exception as exc:  # 10. Never raise into the diary save.
+        return {"bridge_error": str(exc)}
 
 
 def get_db():
@@ -149,6 +223,10 @@ def cmd_add_insight(args):
     )
     conn.commit()
     row_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+    # Read the stored timestamp back so the bridge mirrors the ACTUAL created_at.
+    created_at = conn.execute(
+        "SELECT created_at FROM insights WHERE id = ?", (row_id,)
+    ).fetchone()[0]
     conn.close()
     response = {"ok": True, "id": row_id}
     if raw_type is not None and str(raw_type).strip():
@@ -157,6 +235,19 @@ def cmd_add_insight(args):
                 response["type_normalized"] = f"{raw_type} -> {type_value}"
         else:
             response["type_unknown"] = type_value
+    # Dual-write procedural insights into the skill-loader's searchable memory.
+    # memstack.db is already committed and closed; the bridge is guarded and
+    # never raises, so a failure here cannot disturb the diary save.
+    response.update(
+        bridge_to_loader(
+            data.get("project"),
+            type_value,
+            data["content"],
+            data.get("context", ""),
+            data.get("tags", ""),
+            created_at,
+        )
+    )
     print(json.dumps(response))
 
 
