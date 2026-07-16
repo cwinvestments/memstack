@@ -96,10 +96,23 @@ When the user asks to save a diary, keep these in mind:
    python "$MEMSTACK_PATH/db/memstack-db.py" add-session '{"project":"<name>","date":"<YYYY-MM-DD>","accomplished":"<bullets>","files_changed":"<bullets>","commits":"<bullets>","decisions":"<bullets>","problems":"<bullets>","next_steps":"<bullets>","duration":"<estimate>","raw_markdown":"<full text>"}'
    ```
 
-5. **Also save decisions as insights** for cross-project search:
+5. **Save insights** for cross-project search:
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" add-insight '{"project":"<name>","type":"decision","content":"<decision>","context":"Session <date>","tags":"<project>"}'
+   python "$MEMSTACK_PATH/db/memstack-db.py" add-insight '{"project":"<name>","type":"<type>","content":"<insight>","context":"Session <date>","tags":"<project>"}'
    ```
+
+   Choose `<type>` deliberately from this vocabulary — do not default to one:
+   - `gotcha` — something that bit us and the fix. Non-obvious behavior a future session would trip on again.
+   - `lesson` — a general rule learned the hard way. Broader than one bug.
+   - `pattern` — a reusable approach or convention that worked.
+   - `warning` — a known hazard to avoid. Not yet a bug, but will be.
+   - `failed_approach` — something tried that did not work, and why. Prevents retrying it.
+   - `architecture` — a structural fact about how a system is built.
+   - `decision` — a choice made and the reasoning. Historical record.
+
+   The first five are **procedural** — an agent can act on them at retrieval time. `architecture` and `decision` are **record**. When a row could be either, prefer the procedural type.
+
+   Unknown types pass through unchanged but come back as `type_unknown` in the JSON response — that is the signal to pick a type from the list above.
 
    **CRITICAL: The field name is "content", NOT "insight". Using "insight" will fail with a missing required field error.**
 
