@@ -1,5 +1,13 @@
 # MemStack™ Changelog
 
+## v3.5.7 — 2026-07-16 — Diary Step 5: deliberate insight types
+
+### Changed
+- **The diary skill's Step 5 no longer hardcodes `"type":"decision"`.** It now lists the seven canonical insight types — `gotcha`, `lesson`, `pattern`, `warning`, `failed_approach`, `architecture`, `decision` — each with when-to-use guidance, and states the procedural-vs-record distinction: the first five are **procedural** (an agent can act on them at retrieval time), while `architecture` and `decision` are **record**. Previously every insight was filed as `decision`, collapsing the vocabulary that cross-project search depends on.
+
+### Notes
+- Content-only bump. `skills/` ships verbatim, so `d0c04d2` changed what 3.5.6 served without moving its version; 3.5.7 restores the invariant that shipped content and version advance together. Skill count is unchanged.
+
 ## Skills — 2026-07-11 — video-review Pro skill
 
 ### Added

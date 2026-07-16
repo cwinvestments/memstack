@@ -13,7 +13,7 @@
         "source": "github",
         "repo": "cwinvestments/memstack"
       },
-      "version": "3.5.6",
+      "version": "3.5.7",
       "category": "productivity",
       "keywords": ["skills", "memory", "context", "session", "productivity", "devops", "security", "database", "deployment"]
     }
