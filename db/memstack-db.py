@@ -50,6 +50,36 @@ def require_fields(data: dict, *fields: str) -> None:
             sys.exit(1)
 
 
+CANONICAL_TYPES = frozenset(
+    {"gotcha", "lesson", "pattern", "warning", "failed_approach", "decision", "architecture"}
+)
+
+# Variant spellings seen in real data, mapped to a canonical type. Canonicals map to
+# themselves; anything not listed passes through unchanged.
+TYPE_ALIASES = {t: t for t in CANONICAL_TYPES}
+TYPE_ALIASES.update(
+    {
+        "bug": "gotcha",
+        "bugfix": "gotcha",
+        "bug-fix": "gotcha",
+        "distribution-bug": "gotcha",
+        "debugging": "gotcha",
+        "prevention": "warning",
+        "correction": "gotcha",
+    }
+)
+
+
+def normalize_type(value: str) -> str:
+    """Map a type variant to its canonical form; unknown types pass through unchanged."""
+    if value is None:
+        return "decision"
+    stripped = str(value).strip()
+    if not stripped:
+        return "decision"
+    return TYPE_ALIASES.get(stripped.lower(), stripped)
+
+
 def get_db():
     """Get database connection, initializing schema if needed."""
     is_new = not DB_PATH.exists()
@@ -103,13 +133,15 @@ def cmd_add_insight(args):
     """Add an insight or decision."""
     data = parse_json_arg(args.json)
     require_fields(data, "content")
+    raw_type = data.get("type")
+    type_value = normalize_type(raw_type)
     conn = get_db()
     conn.execute(
         """INSERT INTO insights (project, type, content, context, tags)
            VALUES (:project, :type, :content, :context, :tags)""",
         {
             "project": data.get("project"),
-            "type": data.get("type", "decision"),
+            "type": type_value,
             "content": data["content"],
             "context": data.get("context", ""),
             "tags": data.get("tags", ""),
@@ -118,7 +150,14 @@ def cmd_add_insight(args):
     conn.commit()
     row_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
     conn.close()
-    print(json.dumps({"ok": True, "id": row_id}))
+    response = {"ok": True, "id": row_id}
+    if raw_type is not None and str(raw_type).strip():
+        if type_value in CANONICAL_TYPES:
+            if type_value != str(raw_type).strip().lower():
+                response["type_normalized"] = f"{raw_type} -> {type_value}"
+        else:
+            response["type_unknown"] = type_value
+    print(json.dumps(response))
 
 
 def cmd_search(args):
