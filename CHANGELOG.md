@@ -1,5 +1,14 @@
 # MemStack Changelog
 
+## [Unreleased]
+
+### Fixed
+- **macOS/Linux support**: rules and skills hardcoded `C:/Projects/memstack/...`, so every python invocation failed on non-Windows machines. Paths are now portable `~/Projects/memstack/...` (55 refs across 18 files: `.claude/rules/`, `.claude/commands/`, `MEMSTACK.md`, `templates/handoff.md`, 9 `skills/*/SKILL.md`). `~` expands in bash, zsh and PowerShell, so Windows behaviour is unchanged. Backslash forms (`C:\Projects\memstack\db\memstack.db`) normalised to forward slashes.
+- README uninstall table listed a Windows path on the macOS/Linux row (`rm C:\Projects\YourProject\.claude` → `rm ~/Projects/YourProject/.claude`).
+
+### Added
+- Python command note in the 10 files that invoke python: `python3` on macOS/Linux, `python` on Windows. macOS has no `python` alias, so the rules failed there even once the paths resolved. Commands remain `python` (correct on Windows); the note covers the rest.
+
 ## [3.2.3] - 2026-03-06
 
 ### Changed
