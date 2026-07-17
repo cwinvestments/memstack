@@ -104,7 +104,7 @@ cp -r /path/to/memstack/.claude /path/to/yourproject/.claude
 
 That's it. Start Claude Code in your project directory and begin working — hooks fire automatically, rules load every session, and skills activate on matching triggers. No activation line needed.
 
-> **Without `.claude/` installed:** If you're in a project that doesn't have MemStack's `.claude/` folder, you can still use skills manually by adding this to your prompt: `Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.`
+> **Without `.claude/` installed:** If you're in a project that doesn't have MemStack's `.claude/` folder, you can still use skills manually by adding this to your prompt: `Read ~/Projects/memstack/MEMSTACK.md and follow the MemStack skill framework.` (Windows: `C:\Projects\memstack\MEMSTACK.md`)
 
 ### Step 5 (Optional): Install Semantic Search
 
@@ -193,7 +193,7 @@ ln -s /path/to/memstack/.claude /path/to/YourProject/.claude
 | Platform | Command | Notes |
 |----------|---------|-------|
 | Windows | `rmdir C:\Projects\YourProject\.claude` | Removes the junction only, not the source |
-| macOS/Linux | `rm C:\Projects\YourProject\.claude` | Removes the symlink only, not the source |
+| macOS/Linux | `rm ~/Projects/YourProject/.claude` | Removes the symlink only, not the source |
 
 ## Three-Layer Architecture
 

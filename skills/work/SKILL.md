@@ -5,6 +5,8 @@ description: "Use when the user says 'plan', 'todo', 'copy plan', 'append plan',
 
 
 # 📋 Work — Plan Execution Engaged
+
+> **Python command:** `python3` on macOS/Linux, `python` on Windows — substitute in the commands below.
 *Track tasks, manage plans, and survive CC compacts with three operating modes.*
 
 ## Activation
@@ -33,7 +35,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 2. Read the project's `CLAUDE.md` (if it exists) — conventions, architecture decisions
 3. Check recent diary:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py get-sessions <project> --limit 3
+   python ~/Projects/memstack/db/memstack-db.py get-sessions <project> --limit 3
    ```
 4. Check git state:
    ```bash
@@ -50,7 +52,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 1. Parse the entire plan into individual numbered tasks
 2. For each task, save to SQLite:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py add-plan-task '{"project":"<name>","task_number":<n>,"description":"<task>","status":"pending"}'
+   python ~/Projects/memstack/db/memstack-db.py add-plan-task '{"project":"<name>","task_number":<n>,"description":"<task>","status":"pending"}'
    ```
 3. Confirm with task count
 4. Also write a markdown copy to `memory/projects/{project}-plan.md` for human readability
@@ -63,11 +65,11 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 1. Read current plan from SQLite:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py get-plan <project>
+   python ~/Projects/memstack/db/memstack-db.py get-plan <project>
    ```
 2. Update individual task statuses:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py update-task '{"project":"<name>","task_number":<n>,"status":"completed"}'
+   python ~/Projects/memstack/db/memstack-db.py update-task '{"project":"<name>","task_number":<n>,"status":"completed"}'
    ```
 3. Add new tasks if needed via `add-plan-task`
 4. No size limits needed — SQLite handles scale
@@ -78,7 +80,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 1. Load plan from SQLite:
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py get-plan <project>
+   python ~/Projects/memstack/db/memstack-db.py get-plan <project>
    ```
 2. Parse the JSON output for task statuses
 3. Output a summary:
@@ -102,8 +104,8 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 ## Inputs
 - Plan text (copy mode) or project name (append/resume)
-- Database: `C:\Projects\memstack\db\memstack.db` (via memstack-db.py)
-- Fallback: `C:\Projects\memstack\memory\projects\` (legacy markdown)
+- Database: `~/Projects/memstack/db/memstack.db` (via memstack-db.py)
+- Fallback: `~/Projects/memstack/memory/projects/` (legacy markdown)
 
 ## Outputs
 - Formatted task list with status indicators

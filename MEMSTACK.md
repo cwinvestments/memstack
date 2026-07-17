@@ -1,5 +1,7 @@
 # MemStack v3.2.3 — Skill Framework for Claude Code
 
+> **Python command:** `python3` on macOS/Linux, `python` on Windows — substitute in the commands below.
+
 You are running with MemStack enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
 **v3.2.3 changes:** TTS voice notifications (pre-prompt + post-task), diary webhook to n8n, Pro skills catalog rule for organic upsell. Description trap audit, anti-rationalization tables, Governor skill (#19), silent context compilation (Work Step 0).
@@ -108,11 +110,11 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **"tier" / "scope" / "what's allowed"** →Governor only
 
 ## Storage
-- **Database (primary):** `C:\Projects\memstack\db\memstack.db` — SQLite with WAL mode
-- **DB Helper:** `python C:/Projects/memstack/db/memstack-db.py <command>` — repository pattern CLI
+- **Database (primary):** `~/Projects/memstack/db/memstack.db` — SQLite with WAL mode
+- **DB Helper:** `python ~/Projects/memstack/db/memstack-db.py <command>` — repository pattern CLI
 - **Commands:** `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`, `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
 
 ## Paths
-- Skills: `C:\Projects\memstack\skills\{name}\SKILL.md` | Deprecated: `skills\_deprecated\` | Hooks: `.claude/hooks/` | Rules: `.claude/rules/` | Commands: `.claude/commands/` | DB: `C:\Projects\memstack\db\` | Config: `config.json`
+- Skills: `~/Projects/memstack/skills/{name}/SKILL.md` | Deprecated: `skills/_deprecated/` | Hooks: `.claude/hooks/` | Rules: `.claude/rules/` | Commands: `.claude/commands/` | DB: `~/Projects/memstack/db/` | Config: `config.json`
 
 *Architecture inspired by Developer Kaki's MemoryCore (github.com/Kiyoraka/Project-AI-MemoryCore)*

@@ -5,7 +5,7 @@
 Add new skills and upgrade existing ones based on competitive analysis (GSD framework) and community tools (blader/humanizer). Maintain MemStack™'s core philosophy: zero-friction, auto-loading, framework-agnostic.
 
 ## Working Directory
-C:\Projects\memstack
+~/Projects/memstack
 
 ## Pre-Flight
 - Read MEMSTACK.md to understand current skill structure and naming conventions

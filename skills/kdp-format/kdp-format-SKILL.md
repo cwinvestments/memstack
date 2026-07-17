@@ -284,8 +284,8 @@ First paragraph after heading/break → No indent
 ## CC PROMPT TEMPLATE FOR FORMATTING
 
 ```
-Read C:\Projects\memstack\MEMSTACK.md and follow the MemStack skill framework.
-Read C:\Projects\memstack\skills\kdp-format\SKILL.md for book formatting specs.
+Read ~/Projects/memstack/MEMSTACK.md and follow the MemStack skill framework.
+Read ~/Projects/memstack/skills/kdp-format/SKILL.md for book formatting specs.
 
 Working directory: C:\Projects\[BookName]
 

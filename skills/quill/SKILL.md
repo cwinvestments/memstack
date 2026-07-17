@@ -5,6 +5,8 @@ description: "Use when the user says 'create quotation', 'generate quote', 'prop
 
 
 # ✒️ Quill — Drafting Quotation...
+
+> **Python command:** `python3` on macOS/Linux, `python` on Windows — substitute in the commands below.
 *Generate professional client quotations and proposals.*
 
 ## Activation
@@ -36,7 +38,7 @@ Then execute the protocol below.
 
 5. **Save to SQLite** (primary):
    ```bash
-   python C:/Projects/memstack/db/memstack-db.py set-context '{"project":"<client>","last_quote_date":"<date>","quote_summary":"<scope>"}'
+   python ~/Projects/memstack/db/memstack-db.py set-context '{"project":"<client>","last_quote_date":"<date>","quote_summary":"<scope>"}'
    ```
 6. **Also save markdown copy** to `memory/projects/{client}-quote-{date}.md` (human-readable backup)
 7. **Present formatted** for copy-paste into email or PDF export

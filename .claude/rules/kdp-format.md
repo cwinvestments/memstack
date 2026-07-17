@@ -85,13 +85,13 @@ If the user hasn't provided a markdown file path, ask:
 Check that the `docx` npm package is available:
 
 ```bash
-cd C:/Projects/memstack/skills/kdp-format && npm ls docx 2>/dev/null || npm install docx
+cd ~/Projects/memstack/skills/kdp-format && npm ls docx 2>/dev/null || npm install docx
 ```
 
 ### Step 3: Run the formatter
 
 ```bash
-node C:/Projects/memstack/skills/kdp-format/format-kdp.js "<manuscript-path>" "<output-path>"
+node ~/Projects/memstack/skills/kdp-format/format-kdp.js "<manuscript-path>" "<output-path>"
 ```
 
 - If `<output-path>` is not specified, it defaults to the manuscript filename with `.docx` extension

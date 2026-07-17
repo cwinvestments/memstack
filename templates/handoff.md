@@ -31,7 +31,7 @@
 
 ```
 Working directory: {working_dir}
-Read C:\Projects\memstack\MEMSTACK.md
+Read ~/Projects/memstack/MEMSTACK.md
 
 Resume {project_name} work. Last session ({date}) completed:
 {accomplished_summary}
