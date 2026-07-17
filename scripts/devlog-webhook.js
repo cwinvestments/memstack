@@ -38,6 +38,9 @@ async function main() {
   const url = process.env.MEMSTACK_DEVLOG_WEBHOOK;
   if (!url) return; // not configured -> clean no-op (no error, no output)
 
+  const key = process.env.DEVLOG_KEY;
+  if (!key) return; // no auth key -> clean no-op (never break a diary save)
+
   // Global fetch requires Node 18+. If it's missing, no-op rather than crash.
   if (typeof fetch !== 'function') return;
 
@@ -57,7 +60,7 @@ async function main() {
   try {
     await fetch(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-devlog-key': key },
       body: JSON.stringify({ diary }),
       signal: controller.signal,
     });
