@@ -99,7 +99,7 @@ Detected project type: ${DETECTED_TYPES}. Relevant skills: ${SKILL_HINTS}."
 ESCAPED_CONTEXT=$(printf '%s' "$ADDITIONAL_CONTEXT" | python -c "import sys,json; print(json.dumps(sys.stdin.read()))")
 
 # Output structured JSON for CC hook system
-printf '{"hookSpecificOutput":{"additionalContext":%s}}' "$ESCAPED_CONTEXT"
+printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":%s}}' "$ESCAPED_CONTEXT"
 
 # --- Auto-index CLAUDE.md into SQLite ---
 # If CLAUDE.md exists in the working directory, extract key facts and store in project_context
