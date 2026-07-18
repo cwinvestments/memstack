@@ -60,6 +60,11 @@ escape_for_json() {
     printf '%s' "$s"
 }
 
+# Convert only literal \n sequences to real newlines before escaping, so
+# escape_for_json single-escapes them. Deliberately narrower than printf '%b'
+# (which would also process \t, \\, octal, etc.) — we only authored \n above.
+CONTEXT=${CONTEXT//\\n/$'\n'}
+
 escaped=$(escape_for_json "$CONTEXT")
 
 # --- Output JSON for CC ---
