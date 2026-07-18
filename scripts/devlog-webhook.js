@@ -27,30 +27,61 @@
 //
 // CONTRACT (intentional, do not "improve" away)
 // ---------------------------------------------
-//   * MEMSTACK_DEVLOG_WEBHOOK not set      -> silent no-op, exit 0, no output.
-//   * Missing/unreadable markdown path     -> swallowed, exit 0.
-//   * Network error / timeout / non-2xx    -> swallowed, exit 0.
-//   * `fetch` unavailable (Node < 18)      -> swallowed, exit 0.
 // The webhook is fire-and-forget: it must NEVER block, fail, or delay a diary
-// save, and must NEVER create a file on disk.
+// save, and must NEVER create a file on disk. Exit code is ALWAYS 0, in every
+// path below.
+//
+// What is NOT swallowed is visibility: each outcome prints exactly one line to
+// stderr (prefixed "devlog-webhook:") so a broken pipeline is distinguishable
+// from a working one in the Diary hook output. Behavior is unchanged — only
+// diagnostics were added.
+//   * MEMSTACK_DEVLOG_WEBHOOK not set      -> stderr line, exit 0, nothing sent.
+//   * DEVLOG_KEY not set                   -> stderr line, exit 0, nothing sent.
+//   * `fetch` unavailable (Node < 18)      -> stderr line, exit 0, nothing sent.
+//   * Missing/unreadable/empty markdown    -> stderr line, exit 0, nothing sent.
+//   * Network error / timeout              -> stderr line, exit 0.
+//   * Non-2xx response                     -> stderr line (status + body), exit 0.
+//   * 2xx response                         -> stderr line confirming, exit 0.
+
+// One diagnostic line to stderr. Prefixed so it's greppable in Diary hook output.
+function log(msg) {
+  console.error('devlog-webhook: ' + msg);
+}
 
 async function main() {
   const url = process.env.MEMSTACK_DEVLOG_WEBHOOK;
-  if (!url) return; // not configured -> clean no-op (no error, no output)
+  if (!url) {
+    log('MEMSTACK_DEVLOG_WEBHOOK is not set — nothing sent.');
+    return;
+  }
 
   const key = process.env.DEVLOG_KEY;
-  if (!key) return; // no auth key -> clean no-op (never break a diary save)
+  if (!key) {
+    log('DEVLOG_KEY is not set — nothing sent.');
+    return;
+  }
 
   // Global fetch requires Node 18+. If it's missing, no-op rather than crash.
-  if (typeof fetch !== 'function') return;
+  if (typeof fetch !== 'function') {
+    log('global fetch unavailable (needs Node 18+) — nothing sent.');
+    return;
+  }
 
-  // Read the diary markdown that was just written. If we can't read it, there
-  // is nothing meaningful to send — swallow and return.
+  // Read the diary markdown that was just written.
   const mdPath = process.argv[2];
+  if (!mdPath) {
+    log('no diary path argument given — nothing sent.');
+    return;
+  }
   let diary;
   try {
     diary = require('fs').readFileSync(mdPath, 'utf8');
-  } catch {
+  } catch (err) {
+    log('could not read diary at ' + mdPath + ': ' + err.message + ' — nothing sent.');
+    return;
+  }
+  if (!diary || !diary.trim()) {
+    log('diary at ' + mdPath + ' is empty — nothing sent.');
     return;
   }
 
@@ -58,15 +89,21 @@ async function main() {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 5000); // ~5s, like `curl -m 5`
   try {
-    await fetch(url, {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-devlog-key': key },
       body: JSON.stringify({ diary }),
       signal: controller.signal,
     });
-    // Response status is intentionally ignored — fire-and-forget.
-  } catch {
-    // network failure / abort / anything -> swallow
+    if (res.ok) {
+      log('sent OK (HTTP ' + res.status + ').');
+    } else {
+      let body = '';
+      try { body = (await res.text()).slice(0, 200); } catch { /* body unreadable */ }
+      log('webhook returned HTTP ' + res.status + ' — treated as NOT sent. Body: ' + body);
+    }
+  } catch (err) {
+    log('network error: ' + err.message + ' — nothing sent.');
   } finally {
     clearTimeout(timer);
   }
