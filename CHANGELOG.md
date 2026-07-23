@@ -1,5 +1,14 @@
 # MemStack™ Changelog
 
+## v3.6.0 — 2026-07-23 — Diary Lv.8: FACTS block (cross-session memory)
+
+### Added
+- **The diary skill now appends a `## FACTS` block** — atomic, machine-parsed cross-session knowledge, one fact per line as `subject | claim | method [| entities]`. Only facts worth remembering across sessions; verified over reported; corrections of prior beliefs are the highest-value entries. New protocol step 8 ingests the block into the Memory Engine via `python -m memstack_skill_loader.diary_ingest` — fail-open and dedupe-safe, mirroring the devlog-webhook by-path pattern.
+
+### Notes
+- Requires the companion loader release (**memstack-skill-loader 4.13.0** on PyPI) for the `diary_ingest` module step 8 calls and the SessionStart living-memory injection that reads the facts back. Diary SKILL.md is now version 1.1.0.
+- Content bump so the marketplace serves the updated diary skill (the plugin ships `skills/` verbatim from the version-keyed cache).
+
 ## v3.5.7 — 2026-07-16 — Diary Step 5: deliberate insight types
 
 ### Changed
