@@ -1,7 +1,7 @@
 ---
 name: diary
 description: "Use when the user says 'save diary', 'log session', 'wrapping up', or at end of a productive session."
-version: 1.0.0
+version: 1.1.0
 ---
 
 
@@ -121,7 +121,42 @@ When the user asks to save a diary, keep these in mind:
    python "$MEMSTACK_PATH/db/memstack-db.py" set-context '{"project":"<name>","last_session_date":"<YYYY-MM-DD>"}'
    ```
 
-7. **Also save markdown copy** to `memory/sessions/{date}-{project}.md` (export format, human-readable backup)
+7. **Also save markdown copy** to `memory/sessions/{date}-{project}.md` (export format, human-readable backup). Append a `## FACTS` block (see below) as the **last** section of this markdown.
+
+8. **Ingest the FACTS block** into the Memory Engine — fire-and-forget, right after the markdown is written:
+ ```bash
+ python -m memstack_skill_loader.diary_ingest "memory/sessions/{date}-{project}.md"
+ ```
+ This parses the `## FACTS` block and stores each fact with `source_type='diary'`. It **always exits 0** and never blocks the diary save: malformed lines are skipped with a `memory-ingest:` stderr note, good lines still ingest, and a diary with no FACTS block is a silent no-op. Re-running on the same file stores nothing new (facts dedupe on source + subject + claim).
+
+## FACTS Block — Cross-Session Memory
+
+The `## FACTS` block is how a session hands durable, atomic knowledge to future sessions. It is machine-parsed, so the format is fixed. **One fact per line:**
+
+```
+subject | claim | method [| entities]
+```
+
+- **subject** — a dotted-path namespace, lowercase (e.g. `memstack.dashboard.start`, `adminstack.portal.auth`). Group related facts under a shared prefix.
+- **claim** — exactly one assertion. Keep it self-contained. Must not contain a `|`.
+- **method** — how you *know* it, one of: `verified` (you saw it work / read the code / ran it), `reported` (stated but unconfirmed), `inferred` (deduced), `assumed` (a guess — scored lowest).
+- **entities** — *optional* 4th field: comma-separated tags this fact touches.
+
+### Examples (note the granularity)
+
+```
+## FACTS
+memstack.dashboard.start | start_dashboard() in dashboard.py, port 3333, proxy opt-in | verified
+memstack.memory.recall-scoring | recall score = confidence * exp(-age/half_life), computed at query time, never stored | verified
+adminstack.portal.auth | portal uses Supabase magic-link auth, not passwords | reported | supabase, auth
+memstack.memory.corrections | a superseded fact cannot be corrected; corrections extend from the live tip | verified | correction
+```
+
+### What to include
+
+- **Only facts worth remembering across sessions.** Not "ran the tests" — that's in the diary body. A fact is something a future session would waste time rediscovering: a port, an entry point, an auth model, a non-obvious constraint.
+- **Prefer `verified` over `reported`.** If you actually confirmed it, say so — verified facts are trusted and decay slowest. Don't inflate: an unconfirmed claim is `reported`.
+- **Corrections of prior beliefs are the most valuable entries.** If this session overturned something an earlier session believed ("the port is 3333, not 8080"; "auth is magic-link, not passwords"), record the corrected claim as a fact — that is exactly the knowledge that stops the team repeating a mistake.
 
 ## Session File Size Management
 
@@ -225,3 +260,4 @@ The Diary skill is part of a broader hook system that automates session lifecycl
 - **Lv.5** — Handoff: Added structured Session Handoff section — in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)
 - **Lv.6** — PreCompact: Added automatic PreCompact hook — saves working state snapshot before CC context compaction, captures uncommitted changes, recent commands, and modified files with COMPACTION_INTERRUPTED flag. (Origin: MemStack v3.3.1, Mar 2026)
 - **Lv.7** — Hook System: Documented full 7-hook system across 5 CC lifecycle events — PreToolUse (TTS + pre-push), PostToolUse (post-commit + observation monitor), SessionStart (Headroom + context injection), Stop, PreCompact. (Origin: MemStack v3.3.2, Mar 2026)
+- **Lv.8** — FACTS Ingestion: Added the `## FACTS` block — atomic, machine-parsed cross-session knowledge (subject | claim | method | entities) ingested into the Memory Engine via `diary_ingest` after each save. Fail-open, dedupe-safe, corrections-first. (Origin: MemStack Memory Engine step 4, Jul 2026)
