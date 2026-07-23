@@ -65,6 +65,21 @@ escape_for_json() {
 # (which would also process \t, \\, octal, etc.) — we only authored \n above.
 CONTEXT=${CONTEXT//\\n/$'\n'}
 
+# --- Living-memory block (Memory Engine, step 5) ---
+# Fold in the current project's top recall-scored facts. The loader module is
+# strictly fail-open (always exits 0; prints a block ONLY when facts exist), and
+# every failure mode here is additionally guarded so session start never breaks:
+#   - python / loader not installed -> substitution is empty ( || true )
+#   - DB unreachable, or no facts    -> module prints nothing to stdout
+# The block carries real newlines, which escape_for_json handles just like CONTEXT.
+PYBIN="$(command -v python 2>/dev/null || command -v python3 2>/dev/null || true)"
+if [ -n "$PYBIN" ]; then
+    LIVING_MEMORY="$("$PYBIN" -m memstack_skill_loader.session_context 2>/dev/null || true)"
+    if [ -n "$LIVING_MEMORY" ]; then
+        CONTEXT="${CONTEXT}"$'\n'"${LIVING_MEMORY}"
+    fi
+fi
+
 escaped=$(escape_for_json "$CONTEXT")
 
 # --- Output JSON for CC ---
