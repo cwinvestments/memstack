@@ -27,7 +27,7 @@ import json
 import os
 import sqlite3
 import sys
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 DB_DIR = Path(__file__).parent
 DB_PATH = DB_DIR / "memstack.db"
@@ -87,6 +87,66 @@ def normalize_type(value: str) -> str:
 BRIDGED_TYPES = frozenset({"gotcha", "lesson", "pattern", "warning", "failed_approach"})
 
 
+def _known_project_dirs(memory_db, project) -> list:
+    """Directories the loader's store already associates with ``project``.
+
+    Prefers find_project_dirs_by_name, which distinguishes "never seen" (0) from
+    "collides with another project" (2+). Older loaders only have
+    resolve_project_dir_by_name, which collapses both to None — there we fall
+    back and simply cannot report ambiguity, which is no worse than before.
+    """
+    finder = getattr(memory_db, "find_project_dirs_by_name", None)
+    if finder is not None:
+        return list(finder(project))
+    single = memory_db.resolve_project_dir_by_name(project)
+    return [single] if single else []
+
+
+def resolve_project_dir(memory_db, project) -> dict:
+    """Decide which project_dir an insight belongs to, or why it cannot bridge.
+
+    Returns {"project_dir": path} on success (plus "autoregistered": path when
+    the project is entering the store for the first time), or {"reason": str}
+    describing exactly which of the three failure modes applied.
+
+    Auto-registration is deliberately gated on the CURRENT WORKING DIRECTORY
+    agreeing with the supplied name. The diary invokes this script from the
+    project root, so cwd is the project — but a name that does NOT match cwd is
+    almost always an ad-hoc label ("general", "test", "SnowTrack+LawnTrack")
+    rather than a real repo, and registering those would pollute cross-project
+    recall permanently. Requiring corroboration from the filesystem the process
+    is actually running in means a project cannot be typo'd into existence.
+    """
+    known = _known_project_dirs(memory_db, project)
+    if len(known) == 1:
+        return {"project_dir": known[0]}
+    if len(known) > 1:
+        return {
+            "reason": "ambiguous project {!r}: {} known paths ({}) — refusing "
+                      "to guess".format(project, len(known), ", ".join(known))
+        }
+
+    name = (project or "").strip()
+    if not name:
+        return {"reason": "unknown project: no project name supplied"}
+
+    try:
+        cwd = os.getcwd()
+    except OSError as exc:
+        return {"reason": f"unknown project {name!r}: cwd unavailable ({exc})"}
+
+    canonical = getattr(memory_db, "canonical_project_dir", None)
+    cwd = canonical(cwd) if canonical else cwd
+    cwd_name = PureWindowsPath(cwd).name
+
+    if cwd_name.lower() != name.lower():
+        return {
+            "reason": "unrecognized project {!r}: not in the memory store, and "
+                      "cwd basename is {!r} — not auto-registering".format(name, cwd_name)
+        }
+    return {"project_dir": cwd, "autoregistered": cwd}
+
+
 def bridge_to_loader(project, type_value, content, context, tags, created_at) -> dict:
     """Mirror a procedural insight into the skill-loader's memory.db; never raises."""
     try:
@@ -101,10 +161,18 @@ def bridge_to_loader(project, type_value, content, context, tags, created_at) ->
             from memstack_skill_loader import memory_db
         except Exception:
             return {}
-        # 4. Resolve the name against paths the store already knows; never guess.
-        project_dir = memory_db.resolve_project_dir_by_name(project)
+        # 4. Resolve the name against paths the store already knows.
+        #
+        # A name can fail for three different reasons, and they are NOT
+        # interchangeable — reporting all of them as "unknown project" sent a
+        # real investigation looking for a missing registration when the actual
+        # fault was a duplicate. Report each honestly, and auto-register only
+        # the one case where the filesystem corroborates the name.
+        resolution = resolve_project_dir(memory_db, project)
+        project_dir = resolution.get("project_dir")
         if project_dir is None:
-            return {"bridge_skipped": f"unknown project: {project}"}
+            return {"bridge_skipped": resolution["reason"]}
+        autoregistered = resolution.get("autoregistered")
 
         # 5. Derive a title (procedural_memory.title is NOT NULL; insights has none).
         text = content or ""
@@ -149,7 +217,12 @@ def bridge_to_loader(project, type_value, content, context, tags, created_at) ->
         )
         if lesson_id is None:
             return {"bridge_failed": True}
-        return {"bridged": {"project_dir": project_dir, "lesson_id": lesson_id}}
+        result = {"bridged": {"project_dir": project_dir, "lesson_id": lesson_id}}
+        if autoregistered:
+            # Surface it: the project just entered cross-project memory for the
+            # first time, and a wrong path here is worth noticing immediately.
+            result["project_autoregistered"] = autoregistered
+        return result
     except Exception as exc:  # 10. Never raise into the diary save.
         return {"bridge_error": str(exc)}
 
