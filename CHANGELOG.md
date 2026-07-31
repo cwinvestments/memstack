@@ -1,5 +1,15 @@
 # MemStack™ Changelog
 
+## v3.6.1 — 2026-07-31 — Bridge: cwd-corroborated auto-registration
+
+### Fixed
+- **Diary saves in projects the loader's memory store had never seen no longer vanish.** A project with no prior rows had no way to enter the store, so it stayed skipped forever and its insights never reached cross-project memory. The bridge now falls back to the current working directory — which is the project root, since the diary invokes the script from there — and auto-registers. Registration is gated on cwd's basename matching the supplied name, which is the entire safety story: a project cannot be typo'd into existence, because the typo would not match the directory the process is running in. A genuine ambiguous collision is never auto-registered either, even when cwd matches, since picking one side would silently attach the insight to the wrong project. First-time registration is surfaced as `project_autoregistered` so a wrong path is noticeable immediately rather than months later.
+- **The bridge stops calling every failure "unknown project."** `resolve_project_dir_by_name` returns `None` for both "never seen" and "this basename belongs to two different directories", and the bridge reported both identically — wording that sent one investigation looking for a registration that was never missing. Three distinct reasons are now reported: unknown (no name / no cwd), ambiguous (with the colliding path count), and unrecognized-with-cwd-basename.
+
+### Notes
+- Prefers the loader's `find_project_dirs_by_name` (**memstack-skill-loader 4.14.0+**) and degrades to `resolve_project_dir_by_name` on older loaders, where ambiguity simply stays unreportable — no worse than before, and it still refuses rather than guesses.
+- The fix itself landed in `27c3e86` **under the static 3.6.0 version string**, which meant clients holding a cached 3.6.0 would never re-pull it (see `VERSIONING.md` §5). This version bump is what actually serves it.
+
 ## v3.6.0 — 2026-07-23 — Diary Lv.8: FACTS block (cross-session memory)
 
 ### Added
