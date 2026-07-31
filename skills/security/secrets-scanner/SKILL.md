@@ -27,6 +27,112 @@ Then execute the protocol below.
 | **Pre-deployment security review** | ACTIVE — full scan |
 | **User is creating .env files** | DORMANT — let them work |
 
+## ⚠️ Enforcement lives in CLAUDE.md, not here
+
+**This skill cannot be the control that prevents secret leaks.** Skill matching is semantic and
+probabilistic — it misses. In a real session that leaked a live SendGrid production key, the
+query "rotate object storage credentials S3 bucket key move secrets rotation" scored this skill
+at **0.24** and it never loaded. The task was credential handling end to end.
+
+Therefore the *hard rule* ("never print a secret value") belongs in always-loaded context —
+a project `CLAUDE.md` block — which loads unconditionally regardless of matching, MCP
+reachability, or hooks. **This skill carries the operational how-to below; `CLAUDE.md` carries
+the prohibition.** If you are reading this skill and the project has no secrets block in
+`CLAUDE.md`, adding one is the highest-value fix available, ahead of any scan.
+
+## Safe Inspection Patterns (use these any time you touch a secrets file)
+
+### Rule: allowlist names, never denylist values
+
+Redaction by denylist is the single most common way secrets leak during "safe" inspection.
+A pattern that redacts `KEY=`, `SECRET=`, `PASSWORD=` looks thorough and silently fails on
+`SENDGRID_API_KEY_PROD=`, `STRIPE_SECRET_KEY_TEST=`, `DB_PASSWORD_2=` — any suffixed variant.
+**Never enumerate what to hide. Emit only what is provably safe: names.**
+
+```bash
+# ✅ Variable names only — values are never read into the output stream
+cut -d= -f1 .env | grep -vE '^#|^$' | sort
+
+# ✅ Whole-file structure with every value destroyed before display
+sed 's/=.*/=<redacted>/' .env
+
+# ✅ Existence / non-emptiness as a boolean
+grep -qE '^VARNAME=.+' .env && echo set || echo unset
+
+# ❌ NEVER — denylist; misses every suffixed variant
+sed -E 's/(KEY|SECRET|PASSWORD)=.*/\1=[REDACTED]/' .env
+
+# ❌ NEVER — "just the first few characters" is still printing the secret
+sed -E 's/=(.{6}).*/=\1…/' .env
+```
+
+### Verifying a value without revealing it
+
+Most real questions ("is it the right key?", "did the paste get mangled?", "do prod and dev
+match?") are answerable without the value:
+
+```bash
+# Length — catches truncated/padded pastes. A stray trailing "." in a 64-char R2 secret
+# produced SignatureDoesNotMatch and was diagnosed purely from length + charset.
+awk -F= '/^VARNAME=/{print length($2)}' .env
+
+# Character-class sanity, no value emitted
+grep '^VARNAME=' .env | cut -d= -f2- | tr -d '"' \
+  | grep -qE '^[0-9a-f]{64}$' && echo "64-hex OK" || echo "unexpected format"
+
+# Fingerprint — safe to log, paste, and compare across machines
+grep '^VARNAME=' .env | cut -d= -f2- | tr -d '"' | sha256sum | cut -c1-8
+
+# Do two environments hold the same value? Compare fingerprints, never values.
+for h in prod dev; do ssh $h "grep '^VARNAME=' .env | cut -d= -f2- \
+  | tr -d '\"' | sha256sum | cut -c1-8"; done
+
+# Does a stored hash match a known password? Boolean only.
+python -c "from werkzeug.security import check_password_hash; print(check_password_hash(h, pw))"
+```
+
+### Atomic .env editing
+
+Never edit `.env` in place, and never leave a plaintext backup — a `.env.bak` recreates exactly
+the exposure that rotation exists to remove.
+
+```python
+import os, tempfile
+p = '/path/.env'
+orig = open(p, 'rb').read(); st = os.stat(p)
+out = [transform(l) for l in orig.split(b'\n')]          # byte mode: no newline rewriting
+fd, tmp = tempfile.mkstemp(dir=os.path.dirname(p), prefix='.envtmp')
+os.write(fd, b'\n'.join(out)); os.fsync(fd); os.close(fd)
+os.chmod(tmp, st.st_mode & 0o777); os.chown(tmp, st.st_uid, st.st_gid)
+os.replace(tmp, p)                                        # atomic; no half-written window
+
+# Prove correctness by reporting WHICH KEYS changed — never the values
+after = open(p, 'rb').read().split(b'\n')
+diffs = [i for i, (a, b) in enumerate(zip(orig.split(b'\n'), after)) if a != b]
+print("changed keys:", [after[i].split(b'=')[0].decode() for i in diffs])
+```
+
+Read and write in **byte mode**. Python text mode applies universal-newline translation and
+silently rewrites every line ending in a CRLF file, turning a one-line edit into a whole-file diff.
+
+### Secrets that do not look like secrets
+
+- **Capability URLs.** An unguessable object key, presigned URL, or invite link *is* a
+  credential — its security is precisely that nobody has seen it. Printing one to a transcript,
+  a commit message, or a log destroys it. Treat like a password.
+- **Endpoints containing account IDs.** `https://<account-id>.r2.cloudflarestorage.com` is not
+  a credential but is an infrastructure identifier; prefer not to broadcast it.
+- **Parsed env dicts in tracebacks.** A script that loads `.env` into a dict can print that dict
+  from an exception handler. Ensure no parsed-env variable can reach an error path.
+
+### If a secret prints anyway
+
+1. **Stop.** Do not finish the task first.
+2. **Flag it immediately and explicitly** — name the variable, say where it went.
+3. **Rotation is mandatory**, not a judgement call. A value in a transcript is compromised
+   regardless of who you think can read the transcript.
+4. **Audit the same output for co-leaked values** before rotating, so rotation happens once.
+
 ## Protocol
 
 ### Step 1: Scan for Hardcoded Secrets (Check 1)
