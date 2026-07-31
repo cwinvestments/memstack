@@ -31,8 +31,8 @@ A skill reaches users through one of three independent channels. Know which one 
 
 | Channel | Carries | Source of truth | How the user gets it |
 |---------|---------|-----------------|----------------------|
-| **1. Marketplace plugin** | The **85 FREE skills** | `cwinvestments/memstack` repo, `skills/` dir | `/plugin marketplace add cwinvestments/memstack` → `/plugin install memstack@cwinvestments-memstack`. The loader reads free skills out of the installed **plugin directory**. |
-| **2. AdminStack download-on-activation** | The **43 PRO skills** | `memstack-skill-loader/pro-skills/`, served as a bundle | On `activate_license(...)`, the engine downloads the Pro bundle from `admin.cwaffiliateinvestments.com/api/skills/pro-bundle` into `~/.memstack/pro-skills`. |
+| **1. Marketplace plugin** | The **86 FREE skills** | `cwinvestments/memstack` repo, `skills/` dir | `/plugin marketplace add cwinvestments/memstack` → `/plugin install memstack@cwinvestments-memstack`. The loader reads free skills out of the installed **plugin directory**. |
+| **2. AdminStack download-on-activation** | The **44 PRO skills** | `memstack-skill-loader/pro-skills/`, served as a bundle | On `activate_license(...)`, the engine downloads the Pro bundle from `admin.cwaffiliateinvestments.com/api/skills/pro-bundle` into `~/.memstack/pro-skills`. |
 | **3. PyPI** | The **engine** (no skills) | `memstack-skill-loader` package | `pip install memstack-skill-loader` → `claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader`. The package ships **zero** skills and is inert until registered. |
 
 > [!WARNING] The marketplace step is REQUIRED, not optional.
@@ -188,7 +188,7 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 | `ARCHITECTURE_DISTRIBUTION.md` | Total |
 | `src/memstack_skill_loader/server.py` | Runtime messages — verify (may be dynamic `len(...)`; correct if hardcoded) |
 
-> Reminder from the top of this doc: every number above is the **public** count. Never write 129 / 86-free anywhere in this table.
+> Reminder from the top of this doc: there is exactly one count, so every number above is simply the current count (130 total / 86 free / 44 Pro). Verify it live with the drift check rather than trusting this line.
 
 > [!NOTE] Keep `MemStack-Documentation-Map.md` in sync.
 > It is the canonical tracker of every documentation location and must reflect the current count. Its header is current, but its **§3 (website-audit) body and footer currently lag** (they still describe a pre-128 state) — a separate cleanup. Refresh the §3 "What It Shows" rows to the live count; leave the dated audit-log footer as-is (it is a historical record — append a new dated line rather than rewriting it).
