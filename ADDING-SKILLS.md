@@ -8,20 +8,20 @@ two-tier count scheme, and the gating registry.)
 
 > **Version bumps** (plugin vs. loader) follow a separate policy — see `memstack-skill-loader/VERSIONING.md`, the canonical two-track versioning source of truth. This doc is about skills and counts, not version numbers.
 
-> [!DANGER] The two-tier count scheme — read this first
-> There are **two** skill counts and they are not the same number:
+> [!IMPORTANT] There is exactly one skill count — read this first
+> Every skill on disk is public. The on-disk free count **is** the public free
+> count, and the on-disk total **is** the public total. There is no local-only
+> tier and no subtract-one adjustment.
 >
-> | Tier | Includes `kdp-format`? | Where it may appear |
-> |------|------------------------|---------------------|
-> | **Public** | **NO** | Every public-facing doc, website, marketing, manifests |
-> | **Local** | YES — public **+ 1** local-only `kdp-format` | Maintainer notes only — NEVER ship this number |
+> **Do not trust any count written in this doc as current — treat every number here as illustrative only.** The authoritative count is whatever `memstack-skill-loader/scripts/check_skill_drift.py` computes from `.claude/rules/skill-counts.md`. **Run the drift check to get the live count before editing any count.**
 >
-> **Do not trust any count written in this doc as current — treat every number here as illustrative only.** The authoritative public count is whatever `memstack-skill-loader/scripts/check_skill_drift.py` computes from `.claude/rules/skill-counts.md`. **Run the drift check to get the live count before editing any count.**
->
-> - `kdp-format` lives in `C:\Projects\memstack\skills\kdp-format`, is **gitignored**, and is **local-only**. It is counted in the **local** tier only — if you count free skills on disk, subtract 1 for `kdp-format` to get the public free count.
-> - The public and local counts differ by exactly 1 (`kdp-format`). **Never ship the local number** (the on-disk free count) in any public-facing doc, manifest, website string, or marketing copy.
-> - Adding a **public** skill bumps **both** tiers by one. Adding a local-only skill bumps only the local tier.
+> - Adding a skill bumps the count everywhere. There is no tier that moves independently.
 > - Canonical rule: `memstack-skill-loader/.claude/rules/skill-counts.md`. Canonical doc map: `memstack-skill-loader/MemStack-Documentation-Map.md`. When the totals change, update those two first, then everything below.
+>
+> *History: a single gitignored local-only skill once made the local count exceed
+> the public count by one, which is why the drift check still carries a local-vs-public
+> comparison. That skill was retired on 2026-07-31; the comparison stays armed in case
+> the two counts ever diverge again.*
 
 ---
 
@@ -148,7 +148,7 @@ npm run gen:catalogs     # regenerate README regions + SKILL-REFERENCE.md from t
 npm run check:catalogs   # must exit 0 (committed == regenerated); EOL-robust, safe in CI / fresh checkout
 ```
 
-`gen:catalogs` is **fail-loud**: it aborts if the data isn't exactly the expected public total (the free/Pro counts asserted in the generator and kept in sync by the drift check — never trust a number written here, verify live), any skill has no `what`, a category is unknown, or the local-only `kdp-format` leaks in. Per-category counts **and every count in the generated docs are derived** — there is nothing to hand-bump inside the generated regions.
+`gen:catalogs` is **fail-loud**: it aborts if the data isn't exactly the expected public total (the free/Pro counts asserted in the generator and kept in sync by the drift check — never trust a number written here, verify live), any skill has no `what`, or a category is unknown. Per-category counts **and every count in the generated docs are derived** — there is nothing to hand-bump inside the generated regions.
 
 > [!NOTE] Moving a skill between categories shifts per-category subtotals.
 > Recategorizing (e.g. Development → Core) changes each affected category's subtotal (one −1, one +1) even though the **total** is unchanged. Those subtotals are **derived** by the generators/section headers — they are **not** tracked in `skill-counts.md` (which holds only total / free / Pro). So a category move is still a full source-edit-then-regenerate: change `categories.py`, re-run `export_public_skills.py`, regenerate the memstack + site catalogs, and re-run `check_skill_drift.py` so the derived subtotals update everywhere.

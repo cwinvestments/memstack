@@ -55,10 +55,6 @@ const descs = JSON.parse(readFileSync(join(GEN, "skill_descriptions.json"), "utf
 
 if (!Array.isArray(skills)) die("skills.public.json is not an array");
 
-// Defensive: the gitignored local-only skill must NEVER reach a public catalog.
-if (skills.some((s) => s.slug === "kdp-format"))
-  die("kdp-format present in vendored data — must never appear in a public catalog");
-
 const free = skills.filter((s) => !s.isPro);
 const pro = skills.filter((s) => s.isPro);
 if (skills.length !== 130) die(`expected 130 skills, got ${skills.length}`);
@@ -169,7 +165,7 @@ function extractRegion(text, begin, end, label) {
 function report() {
   console.log("[generate-catalogs] validation:");
   console.log(`  total=130 ✓   free=86 ✓   pro=44 ✓   per-category sum=${sum} ✓`);
-  console.log("  every skill resolves a `what` ✓   no kdp-format ✓");
+  console.log("  every skill resolves a `what` ✓");
   for (const cat of CATEGORY_ORDER) {
     const arr = byCat.get(cat);
     const f = arr.filter((s) => !s.isPro).length;
