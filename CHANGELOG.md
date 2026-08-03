@@ -1,5 +1,14 @@
 # MemStack™ Changelog
 
+## v3.6.2 - 2026-08-02 - Ship the stranded secrets-scanner guidance
+
+### Fixed
+- **Customers on 3.6.1 were running a secrets-scanner skill that reads as a working control, without the section stating it is not one.** The 106-line block (committed `1d956de`, 2026-07-31) that opens with "Enforcement lives in CLAUDE.md, not here" plus the safe-inspection how-to (allowlist-names redaction, verify-without-revealing via length / character class / sha256 fingerprint, atomic byte-mode `.env` editing, capability-URL handling) landed on `master` under the static 3.6.1 version string. Clients cache the plugin by version string and never re-pull under a static version, so it reached no one. This release bumps the version, which is the only thing that makes the marketplace serve content that was already sitting on `master`.
+- **The diary skill no longer emits em dashes** into published diary bodies (the "Session Diary" title and the "Files Changed" bullet format), also stranded on `master` since `2803169`.
+
+### Notes
+- Content bump; skill count unchanged, no skill added or removed. The stranding root cause is now guarded by `.claude/rules/skill-release.md` (a `skills/` change is unshipped until a version bump and `master` push) and documented in `RELEASING.md`.
+
 ## v3.6.1 — 2026-07-31 — Bridge: cwd-corroborated auto-registration
 
 ### Fixed
