@@ -1,6 +1,6 @@
 # MemStack™ Changelog
 
-## v3.6.3 - 2026-08-03 - Secrets rule ships with every session; diary ingest docs match reality
+## v3.7.0 - 2026-08-03 - Secrets rule ships with every session; diary ingest docs corrected
 
 ### Added
 - **A secrets output policy now ships in the SessionStart hook's `additionalContext`**, so it reaches every session without a customer pasting anything into their own CLAUDE.md. It states the rule directly: never print a secret's value (env var, credential, API key, token, password, or capability URL), inspect `.env` by names only, allowlist names rather than denylist value patterns, verify by property (length, fingerprint, boolean) instead of by printing, redact before running rather than after, and treat rotation as mandatory if a value escapes.
@@ -8,11 +8,14 @@
 - **Measured cost:** the hook's static `additionalContext` grows from **301 tokens to 501 tokens (+200)**, 1,372 to 2,249 characters, charged once per session at startup (cl100k_base; Claude's tokenizer will differ slightly).
 
 ### Fixed
-- **The diary skill's FACTS ingest step no longer documents behavior the ingester stopped having.** It described the step as fire-and-forget, claimed it **always exits 0**, and said malformed lines are skipped with only a stderr note, which invited treating a silent run as a successful one. The ingester now prints an `N ingested, M duplicate, K skipped` summary on stdout with one indented reason per skipped line, and classifies the outcome by exit code: **0** nothing lost, **1** total loss (lines present, none ingested), **2** store failure (aborted at the first bad row). The step now instructs reading that summary, and re-running after fixing skipped lines, which is safe because facts dedupe on source + subject + claim. A non-zero exit still never means the diary failed to save; the markdown and SQLite row are already written by then.
+- **The diary skill's FACTS ingest step no longer documents behavior the ingester stopped having.** It described the step as fire-and-forget, claimed it **always exits 0**, and said malformed lines are skipped with only a stderr note, which invited treating a silent run as a successful one. The ingester (on the loader's `master`, not yet in a published release, see Notes) prints an `N ingested, M duplicate, K skipped` summary on stdout with one indented reason per skipped line, and classifies the outcome by exit code: **0** nothing lost, **1** total loss (lines present, none ingested), **2** store failure (aborted at the first bad row). The step now instructs reading that summary, and re-running after fixing skipped lines, which is safe because facts dedupe on source + subject + claim. A non-zero exit still never means the diary failed to save; the markdown and SQLite row are already written by then.
 
 ### Notes
-- Content and hook bump; **no skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro)**, verified against the loader's `check_skill_drift.py`, which is the count authority.
-- The corrected exit-code behavior is already released in the companion engine (**memstack-skill-loader 4.15.1**, commit `555e707` on `master`), so these docs describe shipped behavior as of this release.
+- **MINOR, not patch:** a new always-loaded block shipping to every session is a new mechanism, and this track versions a new mechanism as MINOR (3.4.0, 3.5.0, 3.6.0). A content fix inside an existing skill stays a PATCH (3.5.5, 3.6.2).
+- This content was briefly published as **3.6.3** (commit `101b14f`) before the version was re-cut as 3.7.0. The two are byte-identical in content; 3.6.3 is superseded and carries nothing 3.7.0 lacks. Anyone who updated in that window is not missing anything, but should update again so the cached version string matches.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro)**, verified against the loader's `check_skill_drift.py`, which is the count authority.
+- **The corrected exit-code behavior is not in a published loader yet.** It is committed on the loader's `master` (`555e707`) but sits in that repo's `## Unreleased` section: the `v4.15.1` tag points at `6c0ef7b`, five commits earlier, and **4.15.1 is still the newest version on PyPI**. No published release contains it.
+- **This means the diary skill's step 8 documents behavior an installed loader does not have.** On 4.15.1 the ingester prints no summary and exits 0 on every path. A user who follows the corrected doc, sees no `N ingested, M duplicate, K skipped` line, and concludes their install is broken is a likely outcome, not an edge case. The doc is accurate about where the ingester is going, not about today; it becomes true when the loader cuts its next release. Until then a silent ingest on 4.15.1 is normal, not a fault.
 
 ## v3.6.2 - 2026-08-02 - Ship the stranded secrets-scanner guidance
 
