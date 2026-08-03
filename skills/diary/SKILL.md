@@ -67,13 +67,13 @@ When the user asks to save a diary, keep these in mind:
 
 3. **Format the diary entry:**
    ```markdown
-   # Session Diary — {project} — {date}
+   # Session Diary: {project}, {date}
 
    ## Accomplished
    - Item 1...
 
    ## Files Changed
-   - path/to/file.ts — description
+   - path/to/file.ts: description
 
    ## Commits
    - abc1234 Message
@@ -87,8 +87,8 @@ When the user asks to save a diary, keep these in mind:
    ## Session Handoff
    **In Progress:** [what was actively being worked on when session ended]
    **Uncommitted Changes:** [list any unstaged/uncommitted work, or "None"]
-   **Pick Up Here:** [exact instruction for next session — specific enough to start cold]
-   **Session Context:** [anything important that isn't captured elsewhere — temp decisions, debugging state, gotchas discovered]
+   **Pick Up Here:** [exact instruction for next session, specific enough to start cold]
+   **Session Context:** [anything important that isn't captured elsewhere: temp decisions, debugging state, gotchas discovered]
    ```
 
 4. **Save to SQLite database** (primary storage):
