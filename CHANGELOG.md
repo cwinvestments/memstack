@@ -1,5 +1,19 @@
 # MemStack™ Changelog
 
+## v3.6.3 - 2026-08-03 - Secrets rule ships with every session; diary ingest docs match reality
+
+### Added
+- **A secrets output policy now ships in the SessionStart hook's `additionalContext`**, so it reaches every session without a customer pasting anything into their own CLAUDE.md. It states the rule directly: never print a secret's value (env var, credential, API key, token, password, or capability URL), inspect `.env` by names only, allowlist names rather than denylist value patterns, verify by property (length, fingerprint, boolean) instead of by printing, redact before running rather than after, and treat rotation as mandatory if a value escapes.
+- **This is guidance the assistant is instructed to follow, not an enforcement mechanism.** Nothing in the hook inspects, filters, or blocks a command or its output. It cannot prevent a secret from being printed; it only tells the assistant not to print one. Treat it as a standing instruction, not as a control, and do not let its presence substitute for redaction at the point where output is actually produced.
+- **Measured cost:** the hook's static `additionalContext` grows from **301 tokens to 501 tokens (+200)**, 1,372 to 2,249 characters, charged once per session at startup (cl100k_base; Claude's tokenizer will differ slightly).
+
+### Fixed
+- **The diary skill's FACTS ingest step no longer documents behavior the ingester stopped having.** It described the step as fire-and-forget, claimed it **always exits 0**, and said malformed lines are skipped with only a stderr note, which invited treating a silent run as a successful one. The ingester now prints an `N ingested, M duplicate, K skipped` summary on stdout with one indented reason per skipped line, and classifies the outcome by exit code: **0** nothing lost, **1** total loss (lines present, none ingested), **2** store failure (aborted at the first bad row). The step now instructs reading that summary, and re-running after fixing skipped lines, which is safe because facts dedupe on source + subject + claim. A non-zero exit still never means the diary failed to save; the markdown and SQLite row are already written by then.
+
+### Notes
+- Content and hook bump; **no skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro)**, verified against the loader's `check_skill_drift.py`, which is the count authority.
+- The corrected exit-code behavior is already released in the companion engine (**memstack-skill-loader 4.15.1**, commit `555e707` on `master`), so these docs describe shipped behavior as of this release.
+
 ## v3.6.2 - 2026-08-02 - Ship the stranded secrets-scanner guidance
 
 ### Fixed

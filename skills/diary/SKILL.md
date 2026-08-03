@@ -123,11 +123,23 @@ When the user asks to save a diary, keep these in mind:
 
 7. **Also save markdown copy** to `memory/sessions/{date}-{project}.md` (export format, human-readable backup). Append a `## FACTS` block (see below) as the **last** section of this markdown.
 
-8. **Ingest the FACTS block** into the Memory Engine — fire-and-forget, right after the markdown is written:
+8. **Ingest the FACTS block** into the Memory Engine, right after the markdown is written:
  ```bash
  python -m memstack_skill_loader.diary_ingest "memory/sessions/{date}-{project}.md"
  ```
- This parses the `## FACTS` block and stores each fact with `source_type='diary'`. It **always exits 0** and never blocks the diary save: malformed lines are skipped with a `memory-ingest:` stderr note, good lines still ingest, and a diary with no FACTS block is a silent no-op. Re-running on the same file stores nothing new (facts dedupe on source + subject + claim).
+ This parses the `## FACTS` block and stores each fact with `source_type='diary'`.
+
+ **Read the summary it prints. This step is not fire-and-forget.** It reports `N ingested, M duplicate, K skipped` on stdout, followed by one indented reason per skipped line naming the line number and what was wrong with it. The exit code classifies the outcome:
+
+ | Exit | Meaning |
+ |------|---------|
+ | **0** | Nothing was lost: facts ingested, an all-duplicates re-run, or no FACTS block at all (which prints nothing at all). |
+ | **1** | Total loss. The block held lines and not one of them ingested. |
+ | **2** | Store failure. The run aborted at the first bad row; the Memory Engine is broken, not the diary. |
+
+ **If K is not 0, fix those lines in the markdown and run the command again.** A skipped line is a fact this session was supposed to hand to the next one and did not, and the most common cause is a `|` inside a claim. Re-running is safe: facts dedupe on source + subject + claim, so anything already stored comes back as a duplicate rather than being written twice.
+
+ A non-zero exit never means the diary failed to save. The markdown and the SQLite row are already written by this point, and ingestion cannot undo them.
 
 ## FACTS Block — Cross-Session Memory
 
