@@ -205,8 +205,16 @@ PRO_BUNDLE_URL = os.environ.get("MEMSTACK_PRO_BUNDLE_URL", "https://admin.cwaffi
 PRO_BUNDLE_VERSION_URL = os.environ.get("MEMSTACK_PRO_BUNDLE_VERSION_URL", PRO_BUNDLE_URL.rstrip("/") + "/version")
 ```
 
-Two endpoints, auth-matched through one shared helper (`pro-skills-bundle.ts:24-54`) so that a
-key which can read the version can always download the bundle.
+Two endpoints, one shared gatekeeper. Both call `authenticateLicenseKey`
+(`pro-skills-bundle.ts:64-120`), which decides authentication and entitlement in one place, so the
+two endpoints' access rules cannot drift apart: a key that can read the version can also download
+the bundle, and a key refused one is refused the other. A request is admitted only if the key
+exists, is active, is unexpired, and carries a tier in an explicit allowlist of entitled tiers
+(`pro-skills-bundle.ts:36`). The allowlist names what is entitled rather than what is excluded, so
+an unknown, misspelled, or newly introduced tier is refused rather than admitted by default.
+Refusals are deliberately distinguishable: a dead credential returns 401, while a live key whose
+plan does not include this content returns 403 with `reason: "tier_not_entitled"`
+(`pro-skills-bundle.ts:95-116`).
 
 The zip endpoint (`pro-bundle/route.ts`) walks `PRO_SKILLS_DIR` (`pro-skills-bundle.ts:12`, which
 is `adminstack/src/data/pro-skills/`), gates inclusion on a folder having a `SKILL.md`
@@ -417,15 +425,29 @@ no check compares them.
 counts and slug sets (`check_skill_drift.py`). A change to the content of an existing file is
 invisible to all of them.
 
-**G-6. Pro bundle authorization is enforced client-side.** The entitlement decision for the Pro
-bundle endpoints is made in the loader rather than re-derived at the server boundary. The visible
-consequence is that entitlement *changes* do not propagate: a customer whose tier changes after
-their first successful download keeps receiving bundle updates, because the update path keys on a
-local `.complete` sentinel rather than on a fresh entitlement decision (`server.py:324-325`).
-Flagged, not assessed. See U-2.
+**G-6. Entitlement changes do not propagate to a running install.** This is a correctness gap, not
+a security one.
+
+The server-side half is closed. Both Pro bundle endpoints decide entitlement at the server, on an
+allowlist of entitled tiers that refuses anything unrecognised; section 5 describes that gatekeeper
+and is its permanent home. Verified against production in both directions on 2026-08-04: an active
+free-tier key receives 403, a Pro key receives 200. Entitlement does not depend on the client
+asking honestly.
+
+What remains is that the client's own state lags a tier change. After a tier changes, the loader
+keeps acting on its last license answer: the validation response authorizes a 30 day offline cache
+(`validate/route.ts:252`) and the loader adds a fixed 7 day safety extension on top
+(`GRACE_EXTENSION_DAYS`, `license.py:43`), so a stale tier can persist locally for roughly 37 days.
+Separately, the auto-update path decides whether to probe at all from a local `.complete` sentinel
+rather than from a fresh entitlement decision (`server.py:324-325`). The consequence is that a
+customer whose tier changed keeps using the Pro skills already on their disk until that window
+expires. It is a correctness gap because the server no longer relies on the client's belief: a
+non-entitled key gets no bundle bytes from either endpoint regardless of what the loader thinks.
+Closing it means treating a tier change as a cache invalidation event instead of waiting the
+window out.
 
 Deliberately not detailed here: this document ships inside the plugin to every customer's disk,
-so the specific server behaviour and the reproduction live in the adminstack repo instead. Do not
+so the pre-fix behaviour and its reproduction live in the adminstack repo instead. Do not
 re-add them to this file.
 
 ---
@@ -440,11 +462,11 @@ install pinned to an older version, restart, wait past the delay, and observe wh
 updates and whether a `/reload-plugins` prompt appears. Until then section 9's client-side claims
 are documentation plus one consistent observation, not verification.
 
-**U-2. Whether the server independently enforces entitlement (G-6).** That the checks are made
-client-side is verified by reading the loader. The server's behaviour under a non-entitled
-credential has not been exercised. *Settle it:* the adminstack owner tests the endpoints directly
-against staging, and moves the check server-side if it proves client-side only. Tracked in
-adminstack, not in this file.
+**U-2. Retired 2026-08-04, answered.** It asked whether the server independently enforces
+entitlement. It does, and both endpoints were exercised against production under an entitled and a
+non-entitled credential. The finding now lives in G-6, which records the enforcement and the one
+half of the gap that is still open. The number is left in place rather than reused, so that
+references to U-1 and U-3 through U-5 stay stable.
 
 **U-3. Whether any real customer has auto-update enabled.** Unknowable from here, because we
 collect no plugin version (`license.py:424-431`). *Settle it:* telemetry we deliberately chose
