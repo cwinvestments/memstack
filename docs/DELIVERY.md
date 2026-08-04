@@ -9,9 +9,9 @@ is why this document exists and why section 2 lists them.
 
 | What | Where | How |
 |---|---|---|
-| Plugin manifest, hooks, free skills | `C:\Projects\memstack` at `e40f2b4` (3.7.0) | read the files; `find`, `git ls-files` |
-| Pro bundle server | `C:\Projects\adminstack` | read `src/lib/pro-skills-bundle.ts`, `src/app/api/skills/pro-bundle/**` |
-| Loader | `C:\Projects\memstack-skill-loader` | read `src/memstack_skill_loader/**`; ran `_compute_bundle_version` and `_auto_discover_skills` |
+| Plugin manifest, hooks, free skills | `memstack` at `e40f2b4` (3.7.0) | read the files; `find`, `git ls-files` |
+| Pro bundle server | `adminstack` | read `src/lib/pro-skills-bundle.ts`, `src/app/api/skills/pro-bundle/**` |
+| Loader | `memstack-skill-loader` | read `src/memstack_skill_loader/**`; ran `_compute_bundle_version` and `_auto_discover_skills` |
 | Counts | all three repos | ran `check_skill_drift.py` |
 | Host client behaviour | code.claude.com/docs | quoted, not verified. See section 9 and U-1 |
 | One live install | this machine | `~/.claude/plugins/`, 2026-08-04 |
@@ -161,7 +161,7 @@ candidates = [
 Confirmed by running `_auto_discover_skills()` on this machine:
 
 ```
-Auto-detected skills at: C:\Users\claud\.claude\plugins\marketplaces\cwinvestments-memstack\skills (86 skills found)
+Auto-detected skills at: ~/.claude/plugins/marketplaces/cwinvestments-memstack/skills (86 skills found)
 ```
 
 **Consequence:** `/plugin marketplace update` alone refreshes the content that `find_skill` and
@@ -509,12 +509,12 @@ ls ~/.claude/plugins/cache/cwinvestments-memstack/memstack/
 diff ~/.claude/plugins/cache/cwinvestments-memstack/memstack/*/hooks/session-start hooks/session-start
 
 # the Pro fingerprint, over the directory it actually reads
-python -c "import sys;sys.path.insert(0,'C:/Projects/memstack-skill-loader/src');\
+python -c "import sys;sys.path.insert(0,'<memstack-skill-loader>/src');\
 from memstack_skill_loader.server import _compute_bundle_version as f;from pathlib import Path;\
-print(f(Path('C:/Projects/adminstack/src/data/pro-skills')))"
+print(f(Path('<adminstack>/src/data/pro-skills')))"
 
 # counts across all three repos
-python C:/Projects/memstack-skill-loader/scripts/check_skill_drift.py
+python <memstack-skill-loader>/scripts/check_skill_drift.py
 ```
 
 ---
