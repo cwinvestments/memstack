@@ -16,6 +16,12 @@ is why this document exists and why section 2 lists them.
 | Host client behaviour | code.claude.com/docs | quoted, not verified. See section 9 and U-1 |
 | One live install | this machine | `~/.claude/plugins/`, 2026-08-04 |
 
+**Citations:** this repository is public; `adminstack` and `memstack-skill-loader` are private. A
+citation into either names a real file and line for a reader who holds access, not a link anyone
+can follow. They are kept in that form deliberately: a reference the owner can check is worth more
+than an unsourced summary nobody can. The loader's source also ships in its PyPI sdist, so its
+citations resolve there at the matching package version; adminstack's does not ship anywhere.
+
 **Scope:** how bytes get from a repo to a customer. Not what the skills do.
 
 ---
