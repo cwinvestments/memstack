@@ -35,7 +35,33 @@ SCHEMA_PATH = DB_DIR / "schema.sql"
 
 
 def parse_json_arg(raw: str) -> dict:
-    """Parse JSON input with a clean error on failure."""
+    """Parse JSON input with a clean error on failure.
+
+    The literal argument ``-`` means "read the payload from stdin" rather than
+    from the command line, following the usual Unix convention. Callers should
+    prefer it for anything containing prose: on Windows, cmd.exe parses a ``>``
+    in an argument as redirection and silently creates a 0-byte file named
+    after the token that follows it. A payload delivered on stdin is never seen
+    by the shell's parser, so its content cannot be interpreted as an operator.
+
+    ``-`` cannot collide with real input: it is not valid JSON, so any argument
+    that parses today keeps working unchanged.
+    """
+    if raw == "-":
+        try:
+            raw = sys.stdin.buffer.read().decode("utf-8-sig")
+        except (UnicodeDecodeError, OSError) as e:
+            print(json.dumps({
+                "ok": False,
+                "error": f"Invalid JSON input: could not read stdin as UTF-8: {e}",
+            }))
+            sys.exit(1)
+        if not raw.strip():
+            print(json.dumps({
+                "ok": False,
+                "error": "Invalid JSON input: stdin was empty (expected a JSON payload)",
+            }))
+            sys.exit(1)
     try:
         return json.loads(raw)
     except json.JSONDecodeError as e:
