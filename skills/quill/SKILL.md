@@ -36,8 +36,16 @@ Then execute the protocol below.
    - Valid-until date (30 days from now)
 
 5. **Save to SQLite** (primary):
+
+   Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside the scope summary cannot be read as one.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" set-context '{"project":"<client>","last_quote_date":"<date>","quote_summary":"<scope>"}'
+   cat quote-context.json | python "$MEMSTACK_PATH/db/memstack-db.py" set-context -
+   ```
+
+   `quote-context.json` contains:
+   ```json
+   {"project":"<client>","last_quote_date":"<date>","quote_summary":"<scope>"}
    ```
 6. **Also save markdown copy** to `memory/projects/{client}-quote-{date}.md` (human-readable backup)
 7. **Present formatted** for copy-paste into email or PDF export

@@ -50,8 +50,16 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 1. Parse the entire plan into individual numbered tasks
 2. For each task, save to SQLite:
+
+   Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside a task description cannot be read as one.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" add-plan-task '{"project":"<name>","task_number":<n>,"description":"<task>","status":"pending"}'
+   cat task.json | python "$MEMSTACK_PATH/db/memstack-db.py" add-plan-task -
+   ```
+
+   `task.json` contains:
+   ```json
+   {"project":"<name>","task_number":<n>,"description":"<task>","status":"pending"}
    ```
 3. Confirm with task count
 4. Also write a markdown copy to `memory/projects/{project}-plan.md` for human readability
@@ -67,8 +75,16 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
    python "$MEMSTACK_PATH/db/memstack-db.py" get-plan <project>
    ```
 2. Update individual task statuses:
+
+   Same form, even though this payload is only metadata. One rule with no exceptions is easier to follow than a rule you have to judge.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" update-task '{"project":"<name>","task_number":<n>,"status":"completed"}'
+   cat task-update.json | python "$MEMSTACK_PATH/db/memstack-db.py" update-task -
+   ```
+
+   `task-update.json` contains:
+   ```json
+   {"project":"<name>","task_number":<n>,"status":"completed"}
    ```
 3. Add new tasks if needed via `add-plan-task`
 4. No size limits needed — SQLite handles scale

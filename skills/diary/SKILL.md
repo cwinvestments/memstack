@@ -47,7 +47,7 @@ When the user asks to save a diary, keep these in mind:
 
 ## Protocol
 
-**Always use Bash for all memstack-db.py commands. Do not use PowerShell or CMD -- PowerShell mangles JSON arguments.**
+**Never pass a JSON payload as a quoted command-line argument. Write it to a file and pipe it in with the dash sentinel, as every command below shows. On Windows, cmd.exe treats single quotes as ordinary characters, so a redirection operator anywhere in a quoted payload is executed rather than passed.**
 
 **All JSON field values must be plain strings. Never pass arrays or objects. If multiple items (files, commits, decisions), join them as a comma-separated string.**
 
@@ -92,13 +92,29 @@ When the user asks to save a diary, keep these in mind:
    ```
 
 4. **Save to SQLite database** (primary storage):
+
+   Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside your prose cannot be read as one.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" add-session '{"project":"<name>","date":"<YYYY-MM-DD>","accomplished":"<bullets>","files_changed":"<bullets>","commits":"<bullets>","decisions":"<bullets>","problems":"<bullets>","next_steps":"<bullets>","duration":"<estimate>","raw_markdown":"<full text>"}'
+   cat session.json | python "$MEMSTACK_PATH/db/memstack-db.py" add-session -
+   ```
+
+   `session.json` contains:
+   ```json
+   {"project":"<name>","date":"<YYYY-MM-DD>","accomplished":"<bullets>","files_changed":"<bullets>","commits":"<bullets>","decisions":"<bullets>","problems":"<bullets>","next_steps":"<bullets>","duration":"<estimate>","raw_markdown":"<full text>"}
    ```
 
 5. **Save insights** for cross-project search:
+
+   Same form: write the payload to a file, pipe it in, `-` as the argument. Insight text is prose, so it must never travel on the command line.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" add-insight '{"project":"<name>","type":"<type>","content":"<insight>","context":"Session <date>","tags":"<project>"}'
+   cat insight.json | python "$MEMSTACK_PATH/db/memstack-db.py" add-insight -
+   ```
+
+   `insight.json` contains:
+   ```json
+   {"project":"<name>","type":"<type>","content":"<insight>","context":"Session <date>","tags":"<project>"}
    ```
 
    Choose `<type>` deliberately from this vocabulary — do not default to one:
@@ -117,8 +133,16 @@ When the user asks to save a diary, keep these in mind:
    **CRITICAL: The field name is "content", NOT "insight". Using "insight" will fail with a missing required field error.**
 
 6. **Update project context** with last session date:
+
+   Same form, even though this payload is only metadata. One rule with no exceptions is easier to follow than a rule you have to judge.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" set-context '{"project":"<name>","last_session_date":"<YYYY-MM-DD>"}'
+   cat context.json | python "$MEMSTACK_PATH/db/memstack-db.py" set-context -
+   ```
+
+   `context.json` contains:
+   ```json
+   {"project":"<name>","last_session_date":"<YYYY-MM-DD>"}
    ```
 
 7. **Also save markdown copy** to `memory/sessions/{date}-{project}.md` (export format, human-readable backup). Append a `## FACTS` block (see below) as the **last** section of this markdown.

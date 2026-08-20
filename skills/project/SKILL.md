@@ -28,8 +28,16 @@ Then execute the protocol below.
    - Key file paths that were modified
 2. **Run git status** to capture uncommitted state
 3. **Save project context to SQLite:**
+
+   Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside your prose cannot be read as one.
+
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" set-context '{"project":"<name>","status":"active","current_branch":"<branch>","last_session_date":"<YYYY-MM-DD>","known_issues":"<issues>","backlog":"<next tasks>"}'
+   cat context.json | python "$MEMSTACK_PATH/db/memstack-db.py" set-context -
+   ```
+
+   `context.json` contains:
+   ```json
+   {"project":"<name>","status":"active","current_branch":"<branch>","last_session_date":"<YYYY-MM-DD>","known_issues":"<issues>","backlog":"<next tasks>"}
    ```
 4. **Also save markdown handoff** to `memory/projects/{project}-{date}.md`
 5. **Present the ready-to-paste prompt** for the next CC session
