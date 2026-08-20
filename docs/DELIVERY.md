@@ -198,6 +198,12 @@ declares it. `claude plugin validate` reports unrecognized fields as warnings. S
 What it does not carry: Pro skills (not in this repo), and the MCP loader (`.mcp.json` untracked,
 absent from the install).
 
+**Update 2026-08-20.** The enumeration above also omits `.claude/`, 26 tracked files including 10
+hook scripts and `settings.json`, which travels with the rest of the tree. Four of those hook
+consumers were repaired on 2026-08-20 to read their tool input from the stdin JSON payload; they
+had been reading a variable that never existed and so had never run (`4289d0e`, shipped in 3.7.2).
+The enumeration above describes the tree as it stood on 2026-08-04, before that repair.
+
 ---
 
 ## 5. Path B, the Pro bundle path

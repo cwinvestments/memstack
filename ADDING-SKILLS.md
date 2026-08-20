@@ -13,10 +13,10 @@ two-tier count scheme, and the gating registry.)
 > count, and the on-disk total **is** the public total. There is no local-only
 > tier and no subtract-one adjustment.
 >
-> **Do not trust any count written in this doc as current — treat every number here as illustrative only.** The authoritative count is whatever `memstack-skill-loader/scripts/check_skill_drift.py` computes from `.claude/rules/skill-counts.md`. **Run the drift check to get the live count before editing any count.**
+> **Do not trust any count written in this doc as current — treat every number here as illustrative only.** The authoritative count is what `memstack-skill-loader/scripts/check_skill_drift.py` counts **on disk**; `memstack-skill-loader/.claude/rules/skill-counts.md` is the literal it compares that truth against, not the source of it. **Run the drift check to get the live count before editing any count.**
 >
 > - Adding a skill bumps the count everywhere. There is no tier that moves independently.
-> - Canonical rule: `memstack-skill-loader/.claude/rules/skill-counts.md`. Canonical doc map: `memstack-skill-loader/MemStack-Documentation-Map.md`. When the totals change, update those two first, then everything below.
+> - Canonical rule: `memstack-skill-loader/.claude/rules/skill-counts.md`. Canonical doc map: `memstack-skill-loader/MemStack-Documentation-Map.md`. When the totals change, count what is on disk first, update everything below, and change `skill-counts.md` **last** — it is the drift check's comparand, so editing it first disarms the guard rather than correcting a count.
 >
 > *History: a single gitignored local-only skill once made the local count exceed
 > the public count by one, which is why the drift check still carries a local-vs-public
@@ -31,8 +31,8 @@ A skill reaches users through one of three independent channels. Know which one 
 
 | Channel | Carries | Source of truth | How the user gets it |
 |---------|---------|-----------------|----------------------|
-| **1. Marketplace plugin** | The **86 FREE skills** | `cwinvestments/memstack` repo, `skills/` dir | `/plugin marketplace add cwinvestments/memstack` → `/plugin install memstack@cwinvestments-memstack`. The loader reads free skills out of the installed **plugin directory**. |
-| **2. AdminStack download-on-activation** | The **44 PRO skills** | `memstack-skill-loader/pro-skills/`, served as a bundle | On `activate_license(...)`, the engine downloads the Pro bundle from `admin.cwaffiliateinvestments.com/api/skills/pro-bundle` into `~/.memstack/pro-skills`. |
+| **1. Marketplace plugin** | The **86 FREE skills** | `cwinvestments/memstack` repo, `skills/` dir | `/plugin marketplace add cwinvestments/memstack` → `/plugin install memstack@cwinvestments-memstack`. The loader reads free skills out of the **marketplace clone** (`~/.claude/plugins/marketplaces/cwinvestments-memstack/skills`), which it prefers ahead of the versioned plugin cache. |
+| **2. AdminStack download-on-activation** | The **44 PRO skills** | `adminstack/src/data/pro-skills/` — the copy customers actually receive. `memstack-skill-loader/pro-skills/` is a **fallback only**, bypassed permanently once a download completes; a skill added there alone reaches nobody. Keep both identical. | On `activate_license(...)`, the engine downloads the Pro bundle from `admin.cwaffiliateinvestments.com/api/skills/pro-bundle` into `~/.memstack/pro-skills`. |
 | **3. PyPI** | The **engine** (no skills) | `memstack-skill-loader` package | `pip install memstack-skill-loader` → `claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader`. The package ships **zero** skills and is inert until registered. |
 
 > [!WARNING] The marketplace step is REQUIRED, not optional.
@@ -46,7 +46,7 @@ A skill reaches users through one of three independent channels. Know which one 
 |------------|----------|------|---------|
 | **Free, categorized** | `skills/<category>/<slug>/SKILL.md` | `memstack` | 1 (marketplace) |
 | **Free, core/standalone** | `skills/<slug>/SKILL.md` (top-level) | `memstack` | 1 (marketplace) |
-| **Pro** | `pro-skills/<slug>/SKILL.md` | `memstack-skill-loader` | 2 (AdminStack) |
+| **Pro** | `src/data/pro-skills/<slug>/SKILL.md` (distribution) **and** `pro-skills/<slug>/SKILL.md` (fallback) — both, every time | `adminstack` (distribution) + `memstack-skill-loader` (fallback) | 2 (AdminStack) |
 
 Categories: `automation`, `business`, `content`, `deployment`, `development`, `marketing`, `product`, `security`, `seo-geo`.
 
@@ -162,7 +162,7 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 **Website (`memstack-pro-site`) — start here, it's the source:**
 | File | What holds the count |
 |------|----------------------|
-| `src/config/skillCounts.ts` | **THE single source** — `{ free, pro, total, categories }`. Everything else on the site renders from this. |
+| `src/config/skillCounts.ts` | **Derived — nothing to hand-edit.** It computes `{ free, pro, total, categories }` from the generated `skills.ts`; everything else on the site renders from it. |
 | `src/data/skills.ts` | The catalog array (Step 4) + a **vestigial `CATEGORIES` count** — keep it in sync. |
 | `src/components/sections/FrameworkArtifact.jsx` | Skill count renders dynamically from `SKILL_COUNTS.total` (no edit needed). **Caveat — categories, not skills:** line 314 **hardcodes** the category count (`10`) instead of `{SKILL_COUNTS.categories}`. Not a skill-count issue, but if you ever **change the category set**, fix this line too. |
 
@@ -175,11 +175,12 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 | `MEMSTACK.md` | Total |
 | `.claude-plugin/plugin.json` | Count in description/metadata |
 | `.claude-plugin/marketplace.json` | Count in description/metadata |
+| `docs/DELIVERY.md` | Free / Pro / total in its section 1 artifact table, and the free count quoted in section 4 |
 
 **`memstack-skill-loader` repo:**
 | File | What holds the count |
 |------|----------------------|
-| `.claude/rules/skill-counts.md` | **Canonical rule** — update the math here first |
+| `.claude/rules/skill-counts.md` | **Canonical rule** — the drift check's comparand. Count on disk first and change this file **last**, after every other location already matches |
 | `MemStack-Documentation-Map.md` | **Canonical doc tracker** — update here first; keep it in sync (see note below) |
 | `README.md` | Total |
 | `QUICKSTART.md` | Total |
@@ -191,7 +192,7 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 > Reminder from the top of this doc: there is exactly one count, so every number above is simply the current count (130 total / 86 free / 44 Pro). Verify it live with the drift check rather than trusting this line.
 
 > [!NOTE] Keep `MemStack-Documentation-Map.md` in sync.
-> It is the canonical tracker of every documentation location and must reflect the current count. Its header is current, but its **§3 (website-audit) body and footer currently lag** (they still describe a pre-128 state) — a separate cleanup. Refresh the §3 "What It Shows" rows to the live count; leave the dated audit-log footer as-is (it is a historical record — append a new dated line rather than rewriting it).
+> It is the canonical tracker of every documentation location and must reflect the current count. As of 2026-08-20 it lags in four separate places: its two header dates (July 23 / July 31) both predate its real last edit, its stated plugin version reads 3.7.0, its **§3 (website-audit) body carries a 128 / 85 free + 43 Pro state**, and its footer carries an older 127 / 84 + 43 — a separate cleanup. Refresh the §3 "What It Shows" rows to the live count; leave the dated audit-log footer as-is (it is a historical record — append a new dated line rather than rewriting it).
 
 ---
 

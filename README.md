@@ -94,7 +94,7 @@ sudo apt install python3-pip
 
 | Tier | Skills | Access |
 |------|--------|--------|
-| **Free** | 85 skills | Included with MemStack™ base |
+| **Free** | 86 skills | Included with MemStack™ base |
 | **Pro** | 130 total (86 free + 44 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are license-gated — when you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
