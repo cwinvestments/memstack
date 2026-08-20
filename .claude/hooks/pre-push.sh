@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
-# MemStack v3.3.3 — Pre-Push Hook
+# MemStack — Pre-Push Hook
 # Deterministic pre-push check: build verification + commit format + secrets scan
-# Exit 0 = allow, exit 2 = block
+# Exit 0 = allow, exit 2 = block. Block reasons go to stdout and stderr both,
+# because a caller blocked by exit 2 is handed stderr only.
+#
+# Scope: the secrets checks scan the commits this push would deliver, not the
+# working directory. Anything gitignored or merely sitting on disk is not this
+# hook's business, because pushing it is impossible.
 #
 # Triggered by: PreToolUse on Bash commands matching "git push"
 
@@ -19,11 +24,38 @@ else
     PROJECT_NAME=$(basename "$(pwd)")
 fi
 
+# Emit a block reason on stdout and on stderr. When this hook exits 2 only
+# stderr is handed back to the caller that was blocked, while a human running
+# the hook in a terminal reads stdout, so a reason has to reach both.
+say_block() {
+    printf '%s\n' "$1"
+    printf '%s\n' "$1" >&2
+}
+
+# --- Resolve what this push would actually deliver ---
+# The secrets checks below are scoped to this range rather than to the working
+# directory. A working-directory scan reads gitignored files that never leave
+# the machine: the first live run of this hook blocked a release on six
+# findings, five of them in gitignored local state and the sixth a table of PEM
+# header strings inside the secrets-scanner skill's own documentation.
+UPSTREAM=$(git rev-parse --abbrev-ref '@{upstream}' 2>/dev/null || echo "")
+if [ -n "$UPSTREAM" ]; then
+    SCAN_LOG_OPTS="$UPSTREAM..HEAD"
+    SCAN_DIFF_RANGE="$UPSTREAM..HEAD"
+    SCAN_SCOPE="commits not yet on $UPSTREAM"
+else
+    # First push of a branch: there is no upstream to diff against, so scan the
+    # tip commit rather than falling back to the working directory.
+    SCAN_LOG_OPTS="-1 HEAD"
+    SCAN_DIFF_RANGE="HEAD~1..HEAD"
+    SCAN_SCOPE="HEAD (no upstream set)"
+fi
+
 # --- Check 1: Uncommitted changes (modified/staged tracked files only) ---
 # Filter out untracked files (??) — they don't affect the push
 if git status --porcelain 2>/dev/null | grep -qE '^[^?]'; then
-    echo "SEAL: Uncommitted changes detected. Commit before pushing."
-    git status --short
+    say_block "SEAL: Uncommitted changes detected. Commit before pushing."
+    say_block "$(git status --short)"
     exit 2
 fi
 
@@ -33,7 +65,7 @@ if [ -f "package.json" ]; then
     if grep -q '"build"' package.json 2>/dev/null; then
         echo "SEAL: Running build check..."
         if ! npm run build --silent 2>&1 | tail -5; then
-            echo "SEAL: Build failed. Fix errors before pushing."
+            say_block "SEAL: Build failed. Fix errors before pushing."
             exit 2
         fi
         echo "SEAL: Build passed."
@@ -41,7 +73,7 @@ if [ -f "package.json" ]; then
 elif [ -f "Makefile" ]; then
     echo "SEAL: Running make build..."
     if ! make build 2>&1 | tail -5; then
-        echo "SEAL: Build failed."
+        say_block "SEAL: Build failed."
         exit 2
     fi
 elif [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
@@ -73,32 +105,37 @@ for candidate in \
 done
 
 if [ -n "$GITLEAKS_BIN" ]; then
-    GITLEAKS_OUTPUT=$("$GITLEAKS_BIN" detect --source . --no-git --redact --exit-code 1 2>&1) || {
-        echo "SEAL: Secrets detected in working tree:"
-        echo "$GITLEAKS_OUTPUT" | head -30
-        echo "SEAL: Fix the above before pushing."
+    # gitleaks 8.x: the "git" command scans commit history and --log-opts takes
+    # git log arguments, so this covers exactly the commits the push delivers.
+    GITLEAKS_OUTPUT=$("$GITLEAKS_BIN" git . --log-opts="$SCAN_LOG_OPTS" --redact --no-banner --exit-code 1 2>&1) || {
+        say_block "SEAL: Secrets detected in $SCAN_SCOPE:"
+        say_block "$(printf '%s\n' "$GITLEAKS_OUTPUT" | head -30)"
+        say_block "SEAL: Fix the above before pushing."
         exit 2
     }
 else
-    # Fallback: basic regex scan if production scanner not installed
+    # Fallback: basic regex scan if the production scanner is not installed,
+    # scoped to the same commit range and never to the working directory. The
+    # matching lines are deliberately not printed: a match is a candidate
+    # secret, and the secrets policy forbids emitting one. Only the fact of a
+    # match is reported, which is all the block needs.
     SECRETS_PATTERN='(api_key|api_secret|password|token|secret)\s*[:=]\s*["\x27][^\s"'\'']{8,}'
-    if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iP "$SECRETS_PATTERN" 2>/dev/null | grep -v "config.json" | head -3; then
-        echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
+    if git diff "$SCAN_DIFF_RANGE" --unified=0 2>/dev/null | grep -iP "$SECRETS_PATTERN" 2>/dev/null | grep -qv "config.json"; then
+        say_block "SEAL: Possible secrets detected in $SCAN_SCOPE. Review before pushing."
         exit 2
     fi
-    if git diff HEAD~1..HEAD --unified=0 2>/dev/null | grep -iE "(api_key|api_secret|password|token|secret)[[:space:]]*[:=][[:space:]]*[\"'][A-Za-z0-9_-]{8,}" 2>/dev/null | grep -v "config.json" | head -3; then
-        echo "SEAL: Possible secrets detected in recent changes. Review before pushing."
+    if git diff "$SCAN_DIFF_RANGE" --unified=0 2>/dev/null | grep -iE "(api_key|api_secret|password|token|secret)[[:space:]]*[:=][[:space:]]*[\"'][A-Za-z0-9_-]{8,}" 2>/dev/null | grep -qv "config.json"; then
+        say_block "SEAL: Possible secrets detected in $SCAN_SCOPE. Review before pushing."
         exit 2
     fi
 fi
 
-# --- Check 5: No .env files in unpushed commits ---
-UPSTREAM=$(git rev-parse --abbrev-ref '@{upstream}' 2>/dev/null || echo "")
-if [ -n "$UPSTREAM" ]; then
-    if git diff "$UPSTREAM"..HEAD --name-only 2>/dev/null | grep -qE '(^|/)\.env'; then
-        echo "SEAL: .env file detected in unpushed commits. Remove before pushing."
-        exit 2
-    fi
+# --- Check 5: No .env files in the range being pushed ---
+# Uses the range resolved above, so a branch with no upstream is checked at its
+# tip instead of being skipped entirely.
+if git diff "$SCAN_DIFF_RANGE" --name-only 2>/dev/null | grep -qE '(^|/)\.env'; then
+    say_block "SEAL: .env file detected in $SCAN_SCOPE. Remove before pushing."
+    exit 2
 fi
 
 echo "SEAL: All pre-push checks passed."
