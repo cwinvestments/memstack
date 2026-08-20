@@ -6,16 +6,16 @@ Git commits support two formats. Use whichever fits the context:
 **Standard format** (default):
 ```
 [ProjectName] Brief description of change
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 **Conventional format** (for phased projects or when type clarity helps):
 ```
 type(scope): description
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
+
+Never add a `Co-Authored-By` trailer. The machine-wide `commit-msg` git guard
+hard-blocks any commit message containing one, so a commit that carries it is
+refused outright.
 
 Types: `feat` (new feature), `fix` (bug fix), `docs` (documentation), `refactor` (restructure), `style` (formatting), `test` (tests), `chore` (maintenance)
 

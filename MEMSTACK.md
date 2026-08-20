@@ -15,7 +15,7 @@ You are running with MemStack™ enabled. Skills use the official **Anthropic SK
 ## Global Rules
 See `.claude/rules/memstack.md` for the full rule set. Summary:
 1. Read the project's `CLAUDE.md` first if one exists
-2. Commit format: `[ProjectName] description` or `type(scope): description` — Co-authored-by Claude
+2. Commit format: `[ProjectName] description` or `type(scope): description`, with no Co-Authored-By trailer
 3. Always build before push (enforced by hook)
 4. Document decisions in CLAUDE.md
 5. Skill chain: Work → Seal (hook) → Diary → Monitor (hook)
