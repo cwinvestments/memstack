@@ -1,5 +1,24 @@
 # MemStack™ Changelog
 
+## v3.7.2 - 2026-08-20 - Four hook consumers that never ran now read their input from stdin
+
+### Fixed
+- **Every hook consumer shipped with this plugin gated on `CLAUDE_TOOL_INPUT`, an environment variable Claude Code does not provide.** All four expanded it to the empty string, so none of them ever ran, not once, on any customer machine. Three were registrations in `.claude/settings.json` that piped the empty variable to `grep` and took the failing branch every time: the pre-push gate (`pre-push.sh`), the pre-commit secrets gate (`pre-commit-secrets.sh`), and the post-commit check (`post-commit.sh`). The fourth, `post-tool-monitor.sh`, read `CLAUDE_TOOL_NAME` and `CLAUDE_TOOL_INPUT` directly.
+- **Both secret-scanning gates were among the four.** Anyone relying on this plugin had two staged-secret checks registered and neither had ever executed a single scan. Treat any commit made under 3.7.1 or earlier as unscanned by these hooks.
+- **Measured, not inferred.** 1053 observation entries written between 2026-06-02 and 2026-08-05 each recorded `unknown` as the tool name and `unknown call` as the summary, which are exactly the empty-variable defaults.
+- **The documented delivery mechanism is stdin.** Claude Code passes hook input as a single JSON document on the hook process stdin. `tool_name` is a top-level string and `tool_input` is the tool's own parameter object, so a Bash command is `tool_input.command`. No `CLAUDE_TOOL_INPUT` variable exists in any form, which was confirmed by capturing a live payload before anything was changed.
+- **A new dispatcher, `.claude/hooks/gate-on-command.sh`, now owns the three gated registrations.** It reads the payload, extracts `tool_input.command` with `python`, tests it against a literal substring passed as an argument, and runs the target script only on a match. The three target scripts are untouched and still take no arguments and read no stdin.
+- **`post-tool-monitor.sh` now parses the same payload directly**, keeping its existing summary logic, entry format, and 120 character clip. The observation files keep their shape and carry real tool names and real summaries in place of `unknown`.
+- **Failure posture is explicit rather than silent.** A gate that cannot parse its input exits 0 and blocks nothing, and the two secret gates announce the skipped run on stderr instead of passing quietly, because a silent no-op is the exact defect being repaired.
+- **No command text is written to the gate log.** A command can carry a credential, so only the matched pattern and the target script name are recorded.
+- **The repo's own commit-format rule instructed every session to add a `Co-Authored-By` trailer that the machine-wide `commit-msg` guard hard-blocks**, so a session that followed the rule had its commit refused. The instruction is removed from `.claude/rules/memstack.md` and from the rule summary in `MEMSTACK.md`, and the guard's behavior is stated in its place.
+
+### Notes
+- **Every gate was proven firing live before this release, not assumed repaired.** Each one was triggered by a real tool call and left evidence: the pre-push gate ran and blocked the call with exit 2, both `git commit` gates logged a match on a real commit, and `post-tool-monitor.sh` recorded a `Write` and a `Bash` entry with real values one minute after the previous entry still said `unknown`.
+- **PATCH, not MINOR.** This repairs registrations that already shipped and adds no customer-facing capability. The dispatcher is the repair itself, not a new mechanism.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+- **The version bump is the delivery step, not bookkeeping.** Clients cache the plugin by its version string and re-pull only when it differs, so none of this reaches an existing customer until 3.7.2 is on `master`.
+
 ## v3.7.1 - 2026-08-20 - JSON payloads move to a stdin sentinel so a shell never parses them
 
 ### Fixed
