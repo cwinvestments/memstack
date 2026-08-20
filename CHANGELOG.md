@@ -1,5 +1,20 @@
 # MemStack™ Changelog
 
+## v3.7.1 - 2026-08-20 - JSON payloads move to a stdin sentinel so a shell never parses them
+
+### Fixed
+- **All seven `memstack-db.py` call sites across four skills now pass their JSON payload on stdin** rather than as a single-quoted command-line argument. The sites are `add-session`, `add-insight`, and `set-context` in the diary skill; `set-context` in the project skill; `set-context` in the quill skill; and `add-plan-task` and `update-task` in the work skill. Each writes the payload to a file and pipes it in with the literal `-` argument.
+- **Why it mattered:** on Windows, `cmd.exe` does not treat single quotes as quoting characters. A redirection operator anywhere inside a quoted payload was therefore executed rather than passed through, silently creating a 0-byte file named after the token that followed it. Prose composed by a session routinely contains one, in an arrow or a comparison.
+- **Confirmed by evidence, not theorized:** a 0-byte file named `parses` appeared in `memory/sessions/`. Database row 689 holds the text `=> parses` while none of that diary's markdown files do, so the string reached the database by travelling on the command line, and the shell acted on the operator on the way past.
+- **`db/memstack-db.py` gained the sentinel** (commit `f5fa4b1`). The literal argument `-` makes `parse_json_arg` read the payload from stdin instead. It cannot collide with real input, because `-` is not valid JSON, so every argument that parsed before still parses unchanged.
+- **The diary skill's Protocol rule was rewritten to match.** It previously said to always use Bash because PowerShell mangles JSON arguments. That named the wrong mechanism and the wrong shell: the hazard is cmd.exe redirection rather than JSON mangling, and PowerShell, which does treat single quotes as quoting, is the shell that would have survived it. The rule now states what the examples below it actually do.
+
+### Notes
+- **PATCH, not MINOR:** instructions inside existing skills were corrected. No new skill and no new mechanism ships, which is how this track has sized a content fix before (3.5.5, 3.6.2).
+- **All seven sites moved, including the three that carry only metadata.** A rule with exceptions is a rule that gets applied wrongly, and the sentinel costs nothing on a small payload.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+- **The version bump is the delivery step, not bookkeeping.** Clients cache the plugin by its version string and re-pull only when that string differs, so none of these fixes reach an existing customer until 3.7.1 is on `master`.
+
 ## v3.7.0 - 2026-08-03 - Secrets rule ships with every session; diary ingest docs corrected
 
 ### Added
