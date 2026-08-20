@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git push\" && bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-push.sh || exit 0'",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/gate-on-command.sh\" --critical \"git push\" pre-push.sh",
             "timeout": 60000
           }
         ]
@@ -26,7 +26,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git commit\" && bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre-commit-secrets.sh || exit 0'",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/gate-on-command.sh\" --critical \"git commit\" pre-commit-secrets.sh",
             "timeout": 30000
           }
         ]
@@ -38,7 +38,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git commit\" && bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/post-commit.sh || exit 0'",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/gate-on-command.sh\" \"git commit\" post-commit.sh",
             "timeout": 10000
           }
         ]
