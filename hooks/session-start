@@ -80,6 +80,108 @@ if [ -n "$PYBIN" ]; then
     fi
 fi
 
+# --- Plugin update-staleness block (DELIVERY.md G-2 and G-4) ---
+# Reports when this install is behind what the marketplace serves. Two
+# independent signals:
+#   G-4  zero network, every session: the marketplace clone advanced but
+#        /plugin update never ran, so CC still loads the old hooks and skills.
+#   G-2  network, at most once per TTL: a release exists that this machine has
+#        no other way to learn about.
+# Advisory only. This hook runs under `set -euo pipefail`, so every command
+# below is either an `if` condition or `|| true`-guarded: any failure leaves
+# CONTEXT exactly as it was, and the hook still emits its JSON and exits 0.
+
+# The installed version is the plugin cache directory name:
+#   ~/.claude/plugins/cache/<marketplace>/memstack/<version>/
+# A basename that is not a version means this is a dev checkout running from
+# the repo (basename "memstack"), where staleness is meaningless. Skip silently.
+INSTALLED_VERSION="$(basename "$PLUGIN_ROOT")"
+if printf '%s' "$INSTALLED_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+
+    # First "version": "x.y.z" on stdin. No jq dependency.
+    extract_version() {
+        sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([0-9][0-9.]*\)".*/\1/p' 2>/dev/null \
+            | head -1 || true
+    }
+    is_version() {
+        printf '%s' "${1:-}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'
+    }
+    # Empty arguments sort first, so they never win tail -1.
+    newest_of() {
+        printf '%s\n' "$@" | sort -V | tail -1 || true
+    }
+
+    # --- G-4: read the marketplace clone directly. No network, every session. ---
+    CLONE_VERSION=""
+    CLONE_MANIFEST="${HOME:-}/.claude/plugins/marketplaces/cwinvestments-memstack/.claude-plugin/plugin.json"
+    if [ -n "${HOME:-}" ] && [ -f "$CLONE_MANIFEST" ]; then
+        CLONE_VERSION="$(extract_version < "$CLONE_MANIFEST" || true)"
+        is_version "$CLONE_VERSION" || CLONE_VERSION=""
+    fi
+
+    # --- G-2: the published version, at most once per TTL. ---
+    REMOTE_VERSION=""
+    if [ "${MEMSTACK_NO_UPDATE_CHECK:-}" != "1" ] && [ -n "${HOME:-}" ]; then
+        STAMP_DIR="${HOME}/.memstack"
+        STAMP="${STAMP_DIR}/plugin-version-check.json"
+        TTL="${MEMSTACK_PLUGIN_VERSION_TTL:-86400}"
+        FEED_URL="${MEMSTACK_MARKETPLACE_JSON_URL:-https://raw.githubusercontent.com/cwinvestments/memstack/master/.claude-plugin/marketplace.json}"
+
+        NOW="$(date +%s 2>/dev/null || true)"
+        STAMPED_AT=""
+        if [ -f "$STAMP" ]; then
+            REMOTE_VERSION="$(sed -n 's/.*"remote_version"[[:space:]]*:[[:space:]]*"\([0-9][0-9.]*\)".*/\1/p' "$STAMP" 2>/dev/null | head -1 || true)"
+            STAMPED_AT="$(sed -n 's/.*"checked_at"[[:space:]]*:[[:space:]]*\([0-9]*\).*/\1/p' "$STAMP" 2>/dev/null | head -1 || true)"
+        fi
+        is_version "$REMOTE_VERSION" || REMOTE_VERSION=""
+        # Anything unparseable becomes 0, which forces a fetch.
+        case "$NOW"        in ''|*[!0-9]*) NOW=0 ;; esac
+        case "$STAMPED_AT" in ''|*[!0-9]*) STAMPED_AT=0 ;; esac
+        case "$TTL"        in ''|*[!0-9]*) TTL=86400 ;; esac
+
+        FETCH=1
+        if [ "$NOW" -gt 0 ] && [ "$STAMPED_AT" -gt 0 ] && [ -n "$REMOTE_VERSION" ] \
+           && [ "$(( NOW - STAMPED_AT ))" -lt "$TTL" ]; then
+            FETCH=0
+        fi
+
+        if [ "$FETCH" = "1" ]; then
+            FETCHED=""
+            if command -v curl >/dev/null 2>&1; then
+                FETCHED="$(curl -s -m 3 "$FEED_URL" 2>/dev/null || true)"
+            fi
+            PARSED="$(printf '%s' "$FETCHED" | extract_version || true)"
+            if is_version "$PARSED"; then
+                REMOTE_VERSION="$PARSED"
+            fi
+            # Stamp on every probe, including a failed one: a machine that is
+            # offline backs off for the full TTL instead of paying the curl
+            # timeout at every session start. On failure REMOTE_VERSION still
+            # holds whatever the previous stamp carried, so nothing is lost.
+            mkdir -p "$STAMP_DIR" 2>/dev/null || true
+            printf '{\n  "remote_version": "%s",\n  "checked_at": %s\n}\n' \
+                "$REMOTE_VERSION" "$NOW" > "$STAMP" 2>/dev/null || true
+        fi
+    fi
+
+    # --- Decide. Only ever report forward movement. ---
+    # LATEST is the max of the three; if that is the installed version (the
+    # normal case, and also a dev build ahead of the marketplace) say nothing.
+    LATEST="$(newest_of "$INSTALLED_VERSION" "$CLONE_VERSION" "$REMOTE_VERSION" || true)"
+    STALE_MSG=""
+    if is_version "$LATEST" && [ "$LATEST" != "$INSTALLED_VERSION" ]; then
+        if [ -n "$CLONE_VERSION" ] && [ "$CLONE_VERSION" = "$LATEST" ]; then
+            STALE_MSG="MemStack update available: installed ${INSTALLED_VERSION}, latest ${LATEST}. The marketplace cache already holds ${LATEST}, so only this install is behind. Tell the user at a natural moment to run: /plugin update memstack@cwinvestments-memstack and then restart the session. Fixes only reach this install through that update."
+        else
+            # LATEST is not installed and is not the clone, so it is the remote.
+            STALE_MSG="MemStack update available: installed ${INSTALLED_VERSION}, latest ${LATEST}. Tell the user at a natural moment to run: /plugin marketplace update cwinvestments-memstack then /plugin update memstack@cwinvestments-memstack and restart the session. Fixes only reach this install through that update."
+        fi
+    fi
+    if [ -n "$STALE_MSG" ]; then
+        CONTEXT="${CONTEXT}"$'\n'"${STALE_MSG}"
+    fi
+fi
+
 escaped=$(escape_for_json "$CONTEXT")
 
 # --- Output JSON for CC ---
