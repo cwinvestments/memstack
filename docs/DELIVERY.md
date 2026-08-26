@@ -63,6 +63,10 @@ resolves from its default location instead. Settled in section 3.
 False. It makes the change *available*. Nothing in MemStack then tells anyone, and for this
 marketplace no automatic fetch is known to run. Settled in sections 9 and 10.
 
+**Update 2026-08-26.** Still false, but for one reason fewer. Since `ac468b7`, shipped in 3.8.0,
+session start does tell the user that a newer version exists (section 9, G-2). Available is still
+not delivered: the customer, or client auto-update, has to act on the notice.
+
 **"A Pro customer's auto-update probe keeps their whole install current."**
 False. It keeps their Pro skills current and nothing else, so their hooks and free skills can be
 arbitrarily stale while the Pro half updates on schedule. Settled in sections 7 and 8.
@@ -368,6 +372,12 @@ repo HEAD hooks/session-start:               5523 bytes, sha256 6432aeb4...
 The clone was last updated `2026-08-03T02:19:30Z`; `e40f2b4` (3.7.0) was committed
 `2026-08-03 14:29:27Z`. The machine has simply never fetched since.
 
+**Update 2026-08-26.** The passive customer's blind spot is narrower since `ac468b7`, shipped in
+3.8.0. The Pro channel still signals nothing about the other half, but session start now says
+outright that the install is behind, so the stale half announces itself. The table and the
+verified instance stand: what a release delivers to each of these three customers did not change,
+only what they are told.
+
 ---
 
 ## 9. What prompts a user
@@ -409,6 +419,15 @@ from us or, as far as we can tell, from the client. Advising them to enable it o
 `/plugin` then Marketplaces then Enable auto-update, is the cheapest available fix and would
 convert every future release into automatic delivery.
 
+**Update 2026-08-26.** This section's heading claim no longer holds, and neither does the "from
+us" half of the sentence above. As of `ac468b7`, shipped in 3.8.0, `hooks/session-start` compares
+the installed plugin version against the marketplace clone every session, and against the
+published `marketplace.json` at most once per 24 hours, then relays any shortfall through
+`additionalContext` so it reaches the user inside the session rather than on stderr. The three
+bullets above are unaffected: the loader's PyPI check, the dashboard version, and the omitted
+`plugin_version` telemetry are all unchanged. The client-side half is untouched, so the
+documentation-plus-one-observation caveat and U-1 stand exactly as written.
+
 ---
 
 ## 10. Known gaps
@@ -423,6 +442,12 @@ slowly. Never.
 delivery depends on a manual action the customer has no signal to take (section 9). The release
 runbook treats the push as the finish line; for existing customers it is not.
 
+**Update 2026-08-26. Closed in `ac468b7`, shipped in 3.8.0.** Session start now reports when the
+installed plugin is behind the marketplace. The published `marketplace.json` is fetched at most
+once per 24 hours, bounded at 3 seconds, stamped in `~/.memstack/plugin-version-check.json`, and
+the verdict reaches the session through `additionalContext`. The customer now has the signal;
+acting on it is still theirs to do.
+
 **G-3. `components` in `plugin.json:9-11` is dead config.** It is not in the schema and is
 silently ignored. It reads as though hooks are excluded from delivery, and is the likeliest seed
 of the recurring confusion this document exists to end. Delete it, or replace it with the real
@@ -432,6 +457,12 @@ default locations.
 **G-4. Two copies of the free skills, updated by different commands.** Section 4: Claude Code
 reads the versioned cache, the loader reads the marketplace clone. They can diverge silently and
 no check compares them.
+
+**Update 2026-08-26. Closed in `ac468b7`, shipped in 3.8.0.** The half-updated state is detected
+every session at zero network cost, by comparing the marketplace clone's manifest version against
+the installed cache version. That is the state where `/plugin marketplace update` ran and
+`/plugin update` did not, so `find_skill` already serves the new skills while Claude Code still
+loads the old hooks and the old namespaced skills.
 
 **G-5. No published-versus-repository content check.** The existing drift check compares skill
 counts and slug sets (`check_skill_drift.py`). A change to the content of an existing file is
@@ -490,6 +521,12 @@ U-3.
 **U-5. Whether the marketplace clone and the versioned cache have ever diverged in the field
 (G-4).** Only one machine was inspected, and there they matched. *Settle it:* a check comparing
 the two trees, or a support-time diagnostic.
+
+**Update 2026-08-26.** Partly settled by `ac468b7`, shipped in 3.8.0: every session compares the
+clone's manifest version against the installed cache version, so a divergence on a customer
+machine now announces itself instead of waiting to be inspected. It compares versions, not trees,
+so two copies carrying the same version and different bytes would still pass unnoticed, and it
+tells the customer rather than us, so the field-wide answer is still unknown.
 
 ---
 
