@@ -23,7 +23,9 @@
 #   - Stages ONLY its own probe file.
 #   - Never runs `git reset --hard`; undoes any commit it provokes with
 #     `reset --soft` and verifies HEAD is back where it started.
-#   - Exits non-zero if the guard failed OR if cleanup did not fully restore.
+#   - Exits non-zero if the guard failed, if cleanup did not fully restore, OR if
+#     the probe never reached the index (a run that cannot arm its probe proves
+#     nothing and must not report a pass).
 # -------------------------------------------------------------------------
 
 set -uo pipefail
@@ -74,7 +76,29 @@ attempt() {
     local label="$1" n="$2" out rc before after saw_guard
 
     printf '%s\n' "$PROBE_LINE" > "$PROBE"
-    git add -- "$PROBE" >/dev/null 2>&1
+    # -f because a deny-by-default .gitignore (an allowlist rooted at `/*`) would
+    # otherwise make `git add` refuse the probe. The probe is this harness's own
+    # temporary file, staged and removed inside this function, so forcing it past
+    # ignore rules changes nothing the repo cares about.
+    git add -f -- "$PROBE" >/dev/null 2>&1
+
+    # A verification that cannot prove its probe was armed must fail, not pass.
+    # Without this, an add that silently refuses leaves nothing staged, `git commit`
+    # returns 1 for "nothing to commit", HEAD is unchanged - and every check below
+    # reads that as the guard blocking. That is a green run with the guard never
+    # invoked. -f closes the known ignore hole; this closes every unknown refusal
+    # mode of the same shape.
+    if [ -z "$(git diff --cached --name-only -- "$PROBE")" ]; then
+        echo ""
+        echo "  VERIFY: PROBE NEVER STAGED - $PROBE is not in the index after 'git add -f'."
+        echo "  VERIFY: This run proves NOTHING about the guard; it was never invoked."
+        echo "  VERIFY: at attempt: $label"
+        rm -f -- "$PROBE"
+        echo ""
+        echo "RESULT: FAIL - harness could not arm its probe."
+        exit 2
+    fi
+
     before="$(git rev-parse HEAD)"
 
     if [ -z "$n" ]; then
