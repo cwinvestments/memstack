@@ -21,6 +21,30 @@
 
 set -uo pipefail
 
+# --- Writing the message must NEVER change the verdict ------------------------
+# Every refusal below prints ~15 lines to stderr and only THEN calls `exit 1`.
+# If stderr is a pipe that closes early - the common
+#     git commit -m "..." 2>&1 | head -5
+# - one of those echoes gets SIGPIPE and KILLS this shell before it ever reaches
+# `exit 1`. That is fatal here, because Git for Windows reports a hook that died
+# from a SIGNAL as exit status 0, i.e. "allow".
+#
+# Measured on git 2.51.2.windows.1 (hook terminating four different ways, no
+# pipes involved):
+#     exit 1            -> git rc=1, commit BLOCKED
+#     exit 141          -> git rc=1, commit BLOCKED
+#     killed by SIGPIPE -> git rc=0, COMMIT CREATED
+#     killed by SIGTERM -> git rc=0, COMMIT CREATED
+#
+# So the guard printed "COMMIT BLOCKED - SECRET DETECTED" and the commit landed
+# anyway. Ignoring SIGPIPE turns a failed write into an ordinary error return,
+# so control flow always reaches an explicit `exit`.
+trap '' PIPE
+
+# Any OTHER signal must fail CLOSED too - being killed must never be reported to
+# git as success. Consistent with the fail-safe policy stated above.
+trap 'exit 1' HUP INT TERM
+
 SEP="================================================================"
 
 # --- Fail-closed trap for any unexpected error -------------------------------
@@ -41,7 +65,7 @@ fail_closed() {
         echo "          git commit --no-verify"
         echo "$SEP"
         echo ""
-    } >&2
+    } >&2 || true
     exit 1
 }
 trap fail_closed ERR
@@ -87,7 +111,7 @@ regex_fallback_scan() {
         echo "          winget install Gitleaks.Gitleaks"
         echo "$SEP"
         echo ""
-    } >&2
+    } >&2 || true
 
     local STAGED_DIFF HITS REGEX_RC SECRETS_PATTERN
     STAGED_DIFF="$(git diff --cached --unified=0 2>/dev/null || true)"
@@ -114,7 +138,7 @@ regex_fallback_scan() {
             echo "      To bypass intentionally: git commit --no-verify"
             echo "$SEP"
             echo ""
-        } >&2
+        } >&2 || true
         exit 1
     fi
 
@@ -134,7 +158,7 @@ regex_fallback_scan() {
             echo "$HITS"
             echo "$SEP"
             echo ""
-        } >&2
+        } >&2 || true
         exit 1
     fi
     return 0
@@ -204,7 +228,7 @@ if [ -n "$GITLEAKS_BIN" ]; then
                 echo "      That restores gitleaks' built-in rules while keeping your allowlist."
                 echo "$SEP"
                 echo ""
-            } >&2
+            } >&2 || true
         fi
 
         if [ -n "$FORCED_CFG" ]; then
@@ -239,7 +263,7 @@ if [ -n "$GITLEAKS_BIN" ]; then
                 echo "$GL_OUT" | head -30
                 echo "$SEP"
                 echo ""
-            } >&2
+            } >&2 || true
             exit 1
         elif [ "$GL_RC" -ne 0 ]; then
             # rc neither 0 (clean) nor 1 (secret) = gitleaks errored -> fail closed
@@ -258,7 +282,7 @@ if [ -n "$GITLEAKS_BIN" ]; then
                 echo "$GL_OUT" | head -30
                 echo "$SEP"
                 echo ""
-            } >&2
+            } >&2 || true
             exit 1
         fi
         # rc 0 = clean, fall through to STAGE B
@@ -344,7 +368,7 @@ if [ "${#BLOCKED[@]}" -gt 0 ]; then
         echo "      To bypass intentionally (ONLY if certain): git commit --no-verify"
         echo "$SEP"
         echo ""
-    } >&2
+    } >&2 || true
     exit 1
 fi
 
