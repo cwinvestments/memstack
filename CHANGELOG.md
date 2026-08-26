@@ -1,5 +1,22 @@
 # MemStack™ Changelog
 
+## v3.8.0 - 2026-08-26 - The session now tells you a release exists
+
+### Added
+- **This release adds the mechanism that tells you about future releases, which means it is the last one you have to find on your own.** Until now nothing in MemStack told a customer that a new version existed. The only automatic channel is the Pro bundle probe, and it carries Pro skills and structurally cannot carry hooks or free skills, so a customer who never ran the update commands never received a hook fix or a free-skill fix. Not slowly. Never. The check that closes this ships inside the thing it reports on, so it can only start working for you once you install this release by hand.
+- **Session start now reports when the installed plugin is behind the marketplace.** The report goes into the session context and the model relays it at a natural moment, with the exact commands to run and the reminder that a restart is required. It names both the installed and the available version, so the size of the gap is visible rather than implied.
+- **It also detects the half-updated state**, where `/plugin marketplace update` has run but `/plugin update` has not. That state is easy to miss because it looks like a working update: `find_skill` starts serving the new skills immediately while Claude Code keeps loading the old hooks and the old `/memstack:*` skills from the previous install. The check compares the two on disk, names the state, and asks only for the command that is actually missing.
+- **Bounded so it cannot cost you a session.** The hook is synchronous with session start, so the network probe runs at most once per day, is capped at three seconds, and is skipped entirely when a same-day answer is already on disk. The half-updated check reads two local files and touches the network never. Every failure path is silent: no network, no `curl`, a wrong answer, an unwritable stamp directory, all of them leave the session exactly as it would have been. A machine that is offline records the attempt and backs off for the full day rather than paying the timeout at every session start.
+- **Kill switch: `MEMSTACK_NO_UPDATE_CHECK=1`** disables the network probe. `MEMSTACK_PLUGIN_VERSION_TTL` overrides the once-a-day interval.
+
+### Fixed
+- **The machine-wide pre-commit guard is hardened against signal death.** Invoked through a pipe, the hook could be killed part way through writing its message, and git reports a signal-killed hook as success. The failure was silent in the worst direction: the commit proceeded as though the guard had passed, when in fact the guard never finished deciding.
+- **The verification harness now asserts that its probe actually staged.** It stages with force and then confirms the probe is present in the index, failing loudly when it is not. Previously an ignore rule could exclude the probe file, `git add` would decline it with the complaint discarded, and the run reported green with the guard never invoked once. A harness that cannot prove it armed its own probe cannot tell a pass from a thing it never tested.
+
+### Notes
+- **MINOR, not PATCH.** This adds a customer-facing mechanism that did not exist before, which this track sizes as a MINOR.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro)**, verified against the loader's `check_skill_drift.py`, which is the count authority.
+
 ## v3.7.2 - 2026-08-20 - Four hook consumers that never ran now read their input from stdin
 
 ### Fixed
