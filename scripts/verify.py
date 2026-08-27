@@ -8,11 +8,12 @@ Usage:
     python scripts/verify.py list
     python scripts/verify.py run [--task-id ID]
     python scripts/verify.py selftest
+    python scripts/verify.py gate      # reads a Stop hook payload on stdin
 
 Exit codes:
-    0  PASS               every detected check ran and passed
+    0  PASS / ALLOW       every detected check passed, or the gate allows
     1  FAIL               at least one detected check failed
-    2  reserved           for the gate; never emitted by this file
+    2  BLOCK              gate only: unverified tracked changes exist
     3  NOTHING_DETECTED   no check was detected, or every one was skipped
     64 usage error        argparse's own default is 2, which would collide
 
@@ -32,6 +33,23 @@ Design notes that are load-bearing, not decoration:
   - The `cmd` field in a receipt is a DISPLAY STRING. It is never re-executed
     by anything, here or downstream. Captured text fed back to a shell is how
     stray redirect operators get executed.
+
+  - The gate compares TREE FINGERPRINTS, not timestamps. A receipt proves a
+    verdict about one exact tree state and nothing else. "A check ran recently"
+    is not the same claim as "this code passed", and only the second one is
+    worth blocking on.
+
+  - Untracked files are excluded from the fingerprint. A scratch file, a
+    backup, or an editor artifact is not unverified work, and a gate that
+    treats it as such gets disarmed by its owner within a day.
+
+  - The gate never blocks unless it is armed by a .verify-required file at the
+    repo root. Absent that file this subcommand is inert, which is what makes
+    it safe to ship before anyone has opted in.
+
+  - Every internal failure of the gate is an ALLOW with a note on stderr. A
+    guard that can break the session it guards will be removed, and a removed
+    guard verifies nothing.
 
 Stdlib only. No machine-specific paths. Windows first, but portable.
 """
@@ -63,8 +81,19 @@ CHECK_TIMEOUT_S = 900
 # Bounded on purpose. v1 detects these and nothing else.
 NPM_SCRIPT_NAMES = ("test", "lint", "typecheck", "build")
 
-RECEIPTS_SUBDIR = Path(".memstack") / "receipts"
+MEMSTACK_SUBDIR = Path(".memstack")
+RECEIPTS_SUBDIR = MEMSTACK_SUBDIR / "receipts"
 MARKER_NAME = "verify-selftest.json"
+
+# The gate's arming marker. Untracked, it arms one machine. Committed, it would
+# arm every clone: that promotion is a deliberate decision, not a default.
+ARM_MARKER_NAME = ".verify-required"
+GATE_STATE_NAME = "gate-state.json"
+
+# The repair cap. Two blocked rounds on one unchanged tree, then the gate
+# yields: at that point the block has stopped being information and started
+# being an obstacle, and a human should look instead.
+GATE_MAX_BLOCKS = 3
 
 _SAFE_ID = re.compile(r"[^A-Za-z0-9._-]+")
 
@@ -170,6 +199,56 @@ def git_facts(root: Path) -> tuple[str | None, bool | None]:
     if status and status[0] == 0:
         dirty = bool(status[1].strip())
     return head, dirty
+
+
+def git_head(root: Path) -> str | None:
+    result = _git(root, ["rev-parse", "HEAD"])
+    if result and result[0] == 0:
+        return result[1].strip() or None
+    return None
+
+
+def tracked_changes(root: Path) -> list[str] | None:
+    """Porcelain lines for TRACKED changes only. None if git cannot answer.
+
+    Untracked (??) entries are dropped. A backup file, a scratch script or an
+    editor artifact is not work that needs verifying, and counting it as such
+    would make the gate fire on things its owner has no intention of shipping.
+    None is returned rather than [] when git cannot answer, because [] would
+    assert a clean tree that was never observed.
+    """
+    status = _git(root, ["status", "--porcelain"])
+    if status is None or status[0] != 0:
+        return None
+    return [line for line in status[1].splitlines()
+            if line.strip() and not line.startswith("??")]
+
+
+def tree_fingerprint(root: Path) -> str | None:
+    """sha256 over HEAD plus every tracked-change line. None if git is mute.
+
+    This is the whole identity of a tree state as far as verification is
+    concerned: which commit, plus exactly what is modified on top of it. Two
+    trees with the same fingerprint have the same code, so a PASS on one is a
+    PASS on the other. Any edit to a tracked file changes it, which is what
+    makes a stale receipt unable to clear new work.
+    """
+    lines = tracked_changes(root)
+    if lines is None:
+        return None
+    head = git_head(root)
+    payload = "head:" + (head or "NONE") + "\n" + "\n".join(lines) + "\n"
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def repo_root(start: Path) -> Path:
+    """The git top level containing `start`, or `start` itself if git is mute."""
+    result = _git(start, ["rev-parse", "--show-toplevel"])
+    if result and result[0] == 0:
+        top = result[1].strip()
+        if top:
+            return Path(top)
+    return start
 
 
 # --------------------------------------------------------------------------
@@ -404,15 +483,18 @@ def _write_json(path: Path, payload: dict) -> None:
         handle.write("\n")
 
 
-def build_receipt(task_id: str, started: str, root: Path, checks: list[dict]) -> dict:
+def build_receipt(task_id: str, started: str, root: Path, checks: list[dict],
+                  kind: str = "run") -> dict:
     head, dirty = git_facts(root)
     return {
         "task_id": task_id,
         "started": started,
         "finished": _now_iso(),
         "cwd": str(root),
+        "kind": kind,
         "head": head,
         "dirty": dirty,
+        "tree_fingerprint": tree_fingerprint(root),
         "checks": checks,
         "verdict": verdict_for(checks),
         "can_fail_demonstrated": can_fail_demonstrated(),
@@ -423,6 +505,205 @@ def write_receipt(root: Path, receipt: dict) -> Path:
     path = root / RECEIPTS_SUBDIR / (_safe_task_id(receipt["task_id"]) + ".json")
     _write_json(path, receipt)
     return path
+
+
+# --------------------------------------------------------------------------
+# the gate
+#
+# Reads a Stop hook payload on stdin and decides whether unverified tracked
+# work exists. All of the logic lives here rather than in the hook script, so
+# the hook stays a one-line invocation and this file stays the single portable
+# artifact that can be reasoned about, tested, and moved between projects.
+# --------------------------------------------------------------------------
+
+def _load_json(path: Path) -> dict | None:
+    text = _read_text(path)
+    if text is None:
+        return None
+    try:
+        loaded = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    return loaded if isinstance(loaded, dict) else None
+
+
+def gate_eligible(receipt: dict) -> bool:
+    """Only a PASSing `run` receipt can clear the gate.
+
+    A selftest receipt is explicitly NOT eligible even though its verdict is
+    PASS. Selftest proves this file can report FAIL; it never runs the
+    project's own checks, so honouring it would let a green result from a chain
+    that never examined the project unlock the project's work. That is the
+    exact failure this tool exists to prevent, one level up.
+
+    A receipt with no `kind` predates the gate and carries no fingerprint. It
+    is ineligible too, which errs toward blocking rather than toward allowing.
+    """
+    return receipt.get("verdict") == "PASS" and receipt.get("kind") == "run"
+
+
+def newest_gate_receipt(root: Path) -> dict | None:
+    """The most recent gate-eligible receipt, by finish time then mtime."""
+    directory = root / RECEIPTS_SUBDIR
+    try:
+        entries = sorted(directory.glob("*.json"))
+    except OSError:
+        return None
+
+    best = None
+    best_key = None
+    for entry in entries:
+        receipt = _load_json(entry)
+        if receipt is None or not gate_eligible(receipt):
+            continue
+        try:
+            mtime = entry.stat().st_mtime
+        except OSError:
+            mtime = 0.0
+        # ISO-8601 Z strings sort correctly as text, so no parsing is needed.
+        key = (str(receipt.get("finished") or ""), mtime)
+        if best_key is None or key > best_key:
+            best, best_key = receipt, key
+    return best
+
+
+def gate_state_path(root: Path) -> Path:
+    return root / MEMSTACK_SUBDIR / GATE_STATE_NAME
+
+
+def gate_record_block(root: Path, session_id: str, fingerprint: str) -> int:
+    """Count consecutive blocks for one (session, tree) pair. Returns the count.
+
+    The count resets when the fingerprint changes, because a changed tree is
+    new work and new work deserves enforcement from scratch. A state file that
+    cannot be written degrades to a permanent count of 1, which keeps blocking
+    rather than yielding: failing toward the safe side of a cap that exists
+    only for comfort.
+    """
+    path = gate_state_path(root)
+    state = _load_json(path) or {}
+    sessions = state.get("sessions")
+    if not isinstance(sessions, dict):
+        sessions = {}
+
+    entry = sessions.get(session_id)
+    if isinstance(entry, dict) and entry.get("fingerprint") == fingerprint:
+        count = int(entry.get("blocks") or 0) + 1
+    else:
+        count = 1
+
+    sessions[session_id] = {
+        "fingerprint": fingerprint,
+        "blocks": count,
+        "last_seen": _now_iso(),
+    }
+    # Keep the file small without ever dropping the session being counted.
+    if len(sessions) > 50:
+        ordered = sorted(sessions.items(),
+                         key=lambda kv: str(kv[1].get("last_seen") or ""))
+        for stale_id, _ in ordered[:len(sessions) - 50]:
+            if stale_id != session_id:
+                sessions.pop(stale_id, None)
+
+    try:
+        _write_json(path, {"sessions": sessions})
+    except OSError:
+        pass
+    return count
+
+
+def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, str]:
+    """(exit_code, message). 0 allows, 2 blocks. Message may be empty."""
+    if payload.get("stop_hook_active"):
+        # The recursion guard. Whatever else is true, a hook that keeps firing
+        # into its own re-entry is worse than an unverified tree.
+        return EXIT_PASS, ""
+
+    raw_cwd = payload.get("cwd")
+    start = None
+    if isinstance(raw_cwd, str) and raw_cwd.strip():
+        candidate = Path(raw_cwd)
+        if candidate.is_dir():
+            start = candidate
+    if start is None:
+        start = fallback_cwd or Path.cwd()
+    root = repo_root(start.resolve())
+
+    if not (root / ARM_MARKER_NAME).is_file():
+        # Unarmed. This is the shipped-but-inert state, and it is silent on
+        # purpose: a note here would be noise on every turn of every session
+        # that never asked for a gate.
+        return EXIT_PASS, ""
+
+    fingerprint = tree_fingerprint(root)
+    if fingerprint is None:
+        return EXIT_PASS, ("verify gate: git could not describe the tree at "
+                           + str(root) + "; allowing.")
+
+    receipt = newest_gate_receipt(root)
+    if receipt is not None and receipt.get("tree_fingerprint") == fingerprint:
+        return EXIT_PASS, ""
+
+    changes = tracked_changes(root)
+    if not changes:
+        # Nothing is modified on top of HEAD. Either no verification has ever
+        # happened here, or the last one was of this same commit; both mean
+        # there is no unverified edit sitting in the tree.
+        if receipt is None:
+            return EXIT_PASS, ""
+        head = git_head(root)
+        if head is not None and receipt.get("head") == head:
+            return EXIT_PASS, ""
+
+    session_id = payload.get("session_id")
+    if not isinstance(session_id, str) or not session_id.strip():
+        session_id = "unknown-session"
+
+    count = gate_record_block(root, session_id, fingerprint)
+    if count >= GATE_MAX_BLOCKS:
+        return EXIT_PASS, (
+            "verify gate: YIELDING after " + str(GATE_MAX_BLOCKS - 1)
+            + " blocked rounds on the same unverified tree (tree "
+            + fingerprint[:12] + "). The gate will not block again until the"
+            + " tree changes. Look at this yourself: two repair rounds did not"
+            + " produce a passing receipt.")
+
+    command = "python scripts/verify.py run --task-id " + session_id
+    return EXIT_GATE_RESERVED, (
+        "verify gate: BLOCKED. Unverified tracked changes exist; run  "
+        + command + "  and finish only when it passes.")
+
+
+def gate_from_text(raw: str, fallback_cwd: Path | None = None) -> tuple[int, str]:
+    """Parse a payload and decide. Never raises, never blocks on its own bugs."""
+    try:
+        payload = json.loads(raw) if raw.strip() else None
+        if not isinstance(payload, dict):
+            return EXIT_PASS, ("verify gate: stdin was not a JSON object;"
+                               " allowing.")
+        return gate_decide(payload, fallback_cwd)
+    except json.JSONDecodeError:
+        return EXIT_PASS, "verify gate: could not parse stdin as JSON; allowing."
+    except Exception as exc:  # noqa: BLE001 - deliberate: see the note below.
+        # A gate that raises would fail the session it is supposed to protect,
+        # and the first thing anyone does with a hook that breaks their session
+        # is delete it. Allowing loudly is strictly better than dying.
+        return EXIT_PASS, ("verify gate: internal error ("
+                           + type(exc).__name__ + ": " + str(exc)
+                           + "); allowing.")
+
+
+def cmd_gate() -> int:
+    try:
+        raw = sys.stdin.read()
+    except (OSError, UnicodeDecodeError) as exc:
+        sys.stderr.write("verify gate: could not read stdin ("
+                         + type(exc).__name__ + "); allowing.\n")
+        return EXIT_PASS
+    code, message = gate_from_text(raw)
+    if message:
+        sys.stderr.write(message + "\n")
+    return code
 
 
 # --------------------------------------------------------------------------
@@ -492,6 +773,211 @@ def _run_case(repo: Path) -> dict:
     plans = detect_checks(repo)
     checks = [execute_check(plan, repo) for plan in plans]
     return build_receipt("selftest-case", _now_iso(), repo, checks)
+
+
+# --------------------------------------------------------------------------
+# gate controls: fabricate real git repos, drive the real decision function
+# --------------------------------------------------------------------------
+
+def _init_repo(repo: Path, tracked: dict[str, str]) -> str | None:
+    """git init + commit `tracked`. Returns None on success, else a reason.
+
+    Hooks are pointed at an empty directory inside the fabrication, so a
+    machine-wide core.hooksPath cannot reach in and run somebody's pre-commit
+    guard against a throwaway repo. Files are added by explicit path: `git add`
+    with a blanket -A is exactly how unintended content gets staged.
+    """
+    git = shutil.which("git")
+    if git is None:
+        return "git is not on PATH, so the gate cannot be controlled"
+
+    repo.mkdir(parents=True, exist_ok=True)
+    hooks_dir = repo / "nohooks"
+    hooks_dir.mkdir(parents=True, exist_ok=True)
+    for rel, body in tracked.items():
+        target = repo / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with open(target, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(body)
+
+    steps: list[list[str]] = [
+        ["init", "-q"],
+        ["config", "core.hooksPath", str(hooks_dir)],
+        ["config", "user.email", "selftest@example.invalid"],
+        ["config", "user.name", "verify selftest"],
+        ["config", "commit.gpgsign", "false"],
+        ["add", "--"] + sorted(tracked),
+        ["commit", "-q", "-m", "selftest baseline"],
+    ]
+    for step in steps:
+        result = _git(repo, step)
+        if result is None or result[0] != 0:
+            return "git " + step[0] + " failed in the fabricated repo"
+    if git_head(repo) is None:
+        return "fabricated repo has no HEAD after commit"
+    return None
+
+
+def _write_gate_receipt(repo: Path, task_id: str, kind: str,
+                        fingerprint: str | None) -> None:
+    _write_json(repo / RECEIPTS_SUBDIR / (task_id + ".json"), {
+        "task_id": task_id,
+        "started": _now_iso(),
+        "finished": _now_iso(),
+        "cwd": str(repo),
+        "kind": kind,
+        "head": git_head(repo),
+        "dirty": True,
+        "tree_fingerprint": fingerprint,
+        "checks": [],
+        "verdict": "PASS",
+        "can_fail_demonstrated": True,
+    })
+
+
+def _payload(repo: Path, session_id: str, stop_hook_active: bool = False) -> dict:
+    return {
+        "session_id": session_id,
+        "cwd": str(repo),
+        "hook_event_name": "Stop",
+        "stop_hook_active": stop_hook_active,
+    }
+
+
+def _gate_cases(base: Path) -> list[dict]:
+    """Seven controls over the gate. Each asserts an exit code AND its message.
+
+    Asserting only the code would pass a gate that blocks for the wrong reason
+    or blocks silently, and a block with no message is indistinguishable from a
+    crash to whoever receives it.
+    """
+    cases: list[dict] = []
+
+    def dirty_armed_repo(name: str) -> tuple[Path, str | None]:
+        repo = base / name
+        reason = _init_repo(repo, {"src/app.py": "VALUE = 1\n"})
+        if reason:
+            return repo, reason
+        # A tracked modification: this is the only thing the gate cares about.
+        with open(repo / "src" / "app.py", "w", encoding="utf-8", newline="\n") as h:
+            h.write("VALUE = 2\n")
+        # An untracked file too, which must NOT count as unverified work.
+        with open(repo / "scratch.tmp", "w", encoding="utf-8", newline="\n") as h:
+            h.write("ignore me\n")
+        with open(repo / ARM_MARKER_NAME, "w", encoding="utf-8", newline="\n") as h:
+            h.write("armed by selftest\n")
+        return repo, None
+
+    # 1. Armed, tracked modifications, no receipt at all: must BLOCK.
+    repo, reason = dirty_armed_repo("gate-block")
+    if reason:
+        cases.append(_case("gate-blocks-armed-dirty-tree", "fabricated git repo",
+                           False, reason))
+    else:
+        code, message = gate_decide(_payload(repo, "s-block"))
+        ok = code == EXIT_GATE_RESERVED and "Unverified tracked changes" in message
+        cases.append(_case(
+            "gate-blocks-armed-dirty-tree",
+            "armed repo, tracked modification, no receipt",
+            ok,
+            "exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 2. A matching PASS run receipt clears exactly that tree.
+    repo, reason = dirty_armed_repo("gate-allow")
+    if reason:
+        cases.append(_case("gate-allows-matching-pass-receipt", "fabricated git repo",
+                           False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        code, message = gate_decide(_payload(repo, "s-allow"))
+        ok = code == EXIT_PASS and message == ""
+        cases.append(_case(
+            "gate-allows-matching-pass-receipt",
+            "armed dirty repo with a PASS run receipt for this exact tree",
+            ok,
+            "exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 3. A PASS SELFTEST receipt must NOT clear the gate. Selftest never runs
+    #    the project's checks, so it cannot vouch for the project's code.
+    repo, reason = dirty_armed_repo("gate-selftest-receipt")
+    if reason:
+        cases.append(_case("gate-ignores-passing-selftest-receipt", "fabricated git repo",
+                           False, reason))
+    else:
+        _write_gate_receipt(repo, "selftest-shaped", "selftest", tree_fingerprint(repo))
+        code, message = gate_decide(_payload(repo, "s-selftest"))
+        ok = code == EXIT_GATE_RESERVED and "Unverified tracked changes" in message
+        cases.append(_case(
+            "gate-ignores-passing-selftest-receipt",
+            "armed dirty repo whose only PASS receipt is a selftest",
+            ok,
+            "exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 4. stop_hook_active short-circuits everything. Never risk the loop.
+    repo, reason = dirty_armed_repo("gate-recursion")
+    if reason:
+        cases.append(_case("gate-allows-when-stop-hook-active", "fabricated git repo",
+                           False, reason))
+    else:
+        code, message = gate_decide(_payload(repo, "s-loop", stop_hook_active=True))
+        ok = code == EXIT_PASS and message == ""
+        cases.append(_case(
+            "gate-allows-when-stop-hook-active",
+            "the same blocking tree, with stop_hook_active true",
+            ok,
+            "exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 5. Unarmed: the shipped-but-inert state, silent as well as permissive.
+    repo, reason = dirty_armed_repo("gate-unarmed")
+    if reason:
+        cases.append(_case("gate-allows-when-unarmed", "fabricated git repo",
+                           False, reason))
+    else:
+        (repo / ARM_MARKER_NAME).unlink()
+        code, message = gate_decide(_payload(repo, "s-unarmed"))
+        ok = code == EXIT_PASS and message == ""
+        cases.append(_case(
+            "gate-allows-when-unarmed",
+            "the same blocking tree with no .verify-required marker",
+            ok,
+            "exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 6. The repair cap yields on the third encounter of one unchanged tree.
+    repo, reason = dirty_armed_repo("gate-cap")
+    if reason:
+        cases.append(_case("gate-cap-yields-on-third-round", "fabricated git repo",
+                           False, reason))
+    else:
+        rounds = [gate_decide(_payload(repo, "s-cap")) for _ in range(3)]
+        codes = [c for c, _ in rounds]
+        ok = (
+            codes == [EXIT_GATE_RESERVED, EXIT_GATE_RESERVED, EXIT_PASS]
+            and "YIELDING" in rounds[2][1]
+        )
+        cases.append(_case(
+            "gate-cap-yields-on-third-round",
+            "three Stop events, same session, same unchanged tree",
+            ok,
+            "exits=" + repr(codes) + " third=" + repr(rounds[2][1]),
+        ))
+
+    # 7. Malformed stdin allows, with a note. The gate's own failure is never
+    #    the session's failure.
+    code, message = gate_from_text("{ this is not json", base)
+    ok = code == EXIT_PASS and "verify gate:" in message and "JSON" in message
+    cases.append(_case(
+        "gate-allows-on-malformed-stdin-with-a-note",
+        "unparseable stdin fed to the real entry point",
+        ok,
+        "exit=" + repr(code) + " message=" + repr(message),
+    ))
+
+    return cases
 
 
 def cmd_selftest(root: Path) -> int:
@@ -586,6 +1072,9 @@ def cmd_selftest(root: Path) -> int:
             "verdict=" + r["verdict"] + " checks=" + repr(r["checks"]),
         ))
 
+        # 5-11. The gate's own controls, against real fabricated git repos.
+        cases.extend(_gate_cases(base))
+
     passed = all(c["status"] == "PASS" for c in cases)
     if passed:
         marker = write_marker()
@@ -598,8 +1087,12 @@ def cmd_selftest(root: Path) -> int:
         "started": started,
         "finished": _now_iso(),
         "cwd": str(root),
+        # Marked selftest so the gate will not accept it. This receipt says
+        # "verify.py works", never "this project's checks passed".
+        "kind": "selftest",
         "head": head,
         "dirty": dirty,
+        "tree_fingerprint": tree_fingerprint(root),
         "checks": cases,
         "verdict": "PASS" if passed else "FAIL",
         "can_fail_demonstrated": can_fail_demonstrated(),
@@ -637,6 +1130,8 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("selftest", help="prove this verify can report FAIL and SKIP")
 
+    sub.add_parser("gate", help="read a Stop hook payload on stdin and allow or block")
+
     args = parser.parse_args(argv)
     root = Path.cwd().resolve()
 
@@ -646,6 +1141,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_run(root, args.task_id)
     if args.command == "selftest":
         return cmd_selftest(root)
+    if args.command == "gate":
+        return cmd_gate()
     return EXIT_USAGE
 
 
