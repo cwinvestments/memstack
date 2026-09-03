@@ -113,7 +113,7 @@ Switching providers requires a `--force` re-index, because the vector dimensions
 ## Inputs
 - Keywords from the user's prompt (project name, feature name, date range)
 - Vector DB: `$MEMSTACK_PATH/memory\vectors\lancedb\` (via LanceDB)
-- Database: `$MEMSTACK_PATH/db\memstack.db` (via memstack-db.py)
+- Database: `~/.memstack/memstack.db` (via memstack-db.py)
 - Fallback: `$MEMSTACK_PATH/memory\` (legacy markdown files)
 
 ## Outputs

@@ -1,6 +1,6 @@
 # MemStack™
 
-[![Version: 3.9.5](https://img.shields.io/badge/Version-3.9.5-green.svg)](CHANGELOG.md)
+[![Version: 3.9.6](https://img.shields.io/badge/Version-3.9.6-green.svg)](CHANGELOG.md)
 
 The structured skill framework for Claude Code: **130 professional skills** for deployment, security, databases, content, marketing, and more.
 
@@ -360,7 +360,6 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 - **On-demand loading**: Skills load from the catalog only when matched, no context bloat from 130 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
-- **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
 - **PostToolUse observation capture**: Auto-logs every file write and bash command to `.claude/observations/` with timestamps and parsed summaries
 - **SessionStart context injection**: Injects last 3 diary + observation summaries into `.claude/session-context.md` at session start for instant recall
 - **TokenStack™ integration**: Context compression proxy for token savings

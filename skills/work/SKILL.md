@@ -119,7 +119,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 ## Inputs
 - Plan text (copy mode) or project name (append/resume)
-- Database: `$MEMSTACK_PATH/db\memstack.db` (via memstack-db.py)
+- Database: `~/.memstack/memstack.db` (via memstack-db.py)
 - Fallback: `$MEMSTACK_PATH/memory\projects\` (legacy markdown)
 
 ## Outputs

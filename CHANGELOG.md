@@ -1,5 +1,25 @@
 # MemStack™ Changelog
 
+## v3.9.6 - 2026-09-03 - A personal webhook leaves the product, and SessionStart gets one owner
+
+### Removed
+- **The DevLog webhook script and the Stop hook that pinged it are gone from the tree.** `scripts/devlog-webhook.js` posted a saved diary to a private blog queue, and `.claude/hooks/session-end.sh`, whose entire body was the ping, posted a session-completed notice to the same endpoint on every Stop. Both were a personal automation belonging to one maintainer's machine and should never have shipped. Both were in the tracked tree, and the marketplace path is a git clone rather than an npm publish, so the `files` allowlist in `package.json` never gated them: every customer install of 3.9.5 carried all three copies of the pipeline. The `Stop` registration in `.claude/settings.json` is removed with the script, and the SessionStart ping in `.claude/hooks/session-start.sh` is removed with it. Nothing fires unless a user sets `MEMSTACK_DEVLOG_WEBHOOK`, and nothing in the tree can fire it now regardless.
+- **The webhook was opt-in, and that was never the point.** It was gated behind an environment variable and sent nothing when unset, which is why it survived the 2026-07-07 remediation. What it still did was ship a private publication pipeline as product code, aimed at an endpoint no customer owns, wired into two lifecycle events by default. The removal is about what belongs in the tree, not about whether the gate held.
+
+### Changed
+- **The repo-local SessionStart hook no longer injects any context, and the plugin hook is the single source.** `.claude/hooks/session-start.sh` and `hooks/session-start` were both registered and both emitted an `additionalContext` payload. Their skill-loader blocks were byte identical, 1,370 bytes each, so that block was delivered to every session twice, and each hook added its own project-detection line stating the same fact in different words. The measured duplication was 1,462 bytes per session out of a combined 9,744. The plugin hook is the copy that also carries the secrets policy, the living-memory recall block, the update-staleness advisory and the `core.hooksPath` check, so the repo-local copy is the one that stopped emitting. It now writes nothing to stdout at all.
+- **The repo-local hook keeps the two jobs the plugin hook does not do**: indexing `CLAUDE.md` into the `project_context` table, and printing the Pro nudge on stderr. Its header records the date and the reason, so the next reader does not restore the duplicate injection on the assumption that it was lost by accident.
+
+### Fixed
+- **Two skill counts were stale in shipped text.** The plugin hook advertised "100+ professional skills" and now says 130, matching `plugin.json` and the README. The repo-local hook's Pro nudge offered "29 additional skills" and now says 44, which is the actual Pro-exclusive count behind the 130 total (86 free + 44 Pro).
+- **`setup.py` is now a Python marker in the plugin hook.** It already was one in the repo-local hook, so a project carrying only `setup.py` was detected as Python by the hook that has stopped emitting and not detected at all by the hook that still does. Such a project now reports Python rather than dropping the project line entirely.
+- **Two documentation lines pointed at things that no longer exist.** `README.md` listed "Diary webhook: Session logs auto-POST to n8n webhook for devlog automation" as a Key Feature of the product, which it never should have been; that line is removed. `config.json` carried a `_note` describing the same webhook as opt-in, also removed. The `skills/echo` and `skills/work` input sections both located the store at `$MEMSTACK_PATH/db\memstack.db`, a beside-the-script path that 3.9.5 replaced; both now read `~/.memstack/memstack.db`.
+
+### Notes
+- **The disclosure history in this file is unchanged on purpose.** The 2026-07-07 security entry and the 2026-03-01 entry that introduced the webhook both stay exactly as written. They are the record of what happened, and a removal is not a reason to edit them.
+- **PATCH, not MINOR.** Files are removed and a hook stops emitting, but no capability a customer relied on changes: the context those customers received is still injected, once instead of twice, by the plugin hook.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+
 ## v3.9.5 - 2026-09-03 - The diary session store lives in the user's home
 
 ### Fixed

@@ -14,6 +14,5 @@
       "deploy_target": "railway",
       "repo": "github.com/youruser/another-project"
     }
-  },
-  "_note": "External webhooks are opt-in via MEMSTACK_DEVLOG_WEBHOOK env var"
+  }
 }
