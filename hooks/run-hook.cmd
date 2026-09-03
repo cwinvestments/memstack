@@ -15,6 +15,8 @@ if "%~1"=="" (
     exit /b 1
 )
 
+if /i "%~1"=="verify-gate" goto verify_gate
+
 set "HOOK_DIR=%~dp0"
 
 REM Try Git for Windows bash in standard locations
@@ -37,10 +39,37 @@ if %ERRORLEVEL% equ 0 (
 REM No bash found - exit silently rather than error
 REM (plugin still works, just without SessionStart context injection)
 exit /b 0
+
+REM The Stop gate. Runs the verify CLI's gate subcommand with stdin
+REM inherited, so the hook payload reaches it untouched. Anything this
+REM branch itself cannot do exits 0: a missing python or a missing
+REM verify.py must never look like a block, because 2 is the only code
+REM that means blocked and it belongs to verify.py alone.
+:verify_gate
+where python >nul 2>nul
+if errorlevel 1 exit /b 0
+if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" exit /b 0
+python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" gate
+exit /b %ERRORLEVEL%
 CMDBLOCK
 
 # Unix: run the named script directly
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCRIPT_NAME="$1"
 shift
+
+# The Stop gate, same contract as the batch branch above: stdin is
+# inherited, and anything this branch itself cannot do exits 0 rather
+# than looking like a block.
+if [ "$SCRIPT_NAME" = "verify-gate" ]; then
+    PY=""
+    command -v python >/dev/null 2>&1 && PY="python"
+    if [ -z "$PY" ]; then
+        command -v python3 >/dev/null 2>&1 && PY="python3"
+    fi
+    [ -n "$PY" ] || exit 0
+    [ -f "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" ] || exit 0
+    exec "$PY" "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" gate
+fi
+
 exec bash "${SCRIPT_DIR}/${SCRIPT_NAME}" "$@"

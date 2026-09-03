@@ -506,6 +506,30 @@ def _write_json(path: Path, payload: dict) -> None:
         handle.write("\n")
 
 
+def ensure_memstack_ignored(root: Path) -> None:
+    """Write root/.memstack/.gitignore holding a single "*" if it is absent.
+
+    Receipts and gate state are evidence, not source. A customer repo that
+    installs this plugin must never be asked to commit them, and must never
+    have to notice them in git status to avoid it: the directory ignores
+    itself from the moment it first exists. Doing it here rather than in a
+    shipped .gitignore edit means it holds in any repo, including one whose
+    .gitignore this plugin has never touched.
+
+    An existing file is left exactly as it is, and a write that fails is
+    swallowed: neither a receipt nor a gate decision may fail over this.
+    """
+    path = root / MEMSTACK_SUBDIR / ".gitignore"
+    if path.exists():
+        return
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write("*\n")
+    except OSError:
+        pass
+
+
 def build_receipt(task_id: str, started: str, root: Path, checks: list[dict],
                   kind: str = "run") -> dict:
     head, dirty, untracked = git_facts(root)
@@ -527,6 +551,7 @@ def build_receipt(task_id: str, started: str, root: Path, checks: list[dict],
 
 def write_receipt(root: Path, receipt: dict) -> Path:
     path = root / RECEIPTS_SUBDIR / (_safe_task_id(receipt["task_id"]) + ".json")
+    ensure_memstack_ignored(root)
     _write_json(path, receipt)
     return path
 
@@ -630,6 +655,7 @@ def gate_record_block(root: Path, session_id: str, fingerprint: str) -> int:
                 sessions.pop(stale_id, None)
 
     try:
+        ensure_memstack_ignored(root)
         _write_json(path, {"sessions": sessions})
     except OSError:
         pass
@@ -1128,7 +1154,26 @@ def cmd_selftest(root: Path) -> int:
                 + repr(r["tree_fingerprint"] == clean),
             ))
 
-        # 6-12. The gate's own controls, against real fabricated git repos.
+        # 6. Writing a receipt must leave .memstack ignoring itself. A repo
+        #    that installs this plugin should never be asked to commit
+        #    evidence, nor to notice it in git status in order to decline.
+        ignore_repo = _fabricate(base, "receipt-ignore", {})
+        written = write_receipt(ignore_repo, build_receipt(
+            "selftest-ignore", _now_iso(), ignore_repo, []))
+        ignore_file = ignore_repo / MEMSTACK_SUBDIR / ".gitignore"
+        content = (ignore_file.read_text(encoding="utf-8")
+                   if ignore_file.is_file() else None)
+        ok = written.is_file() and content is not None and content.strip() == "*"
+        cases.append(_case(
+            "receipt-write-leaves-memstack-self-ignoring",
+            "fresh fabricated repo, one receipt written",
+            ok,
+            "receipt=" + repr(written.is_file())
+            + " gitignore=" + repr(ignore_file.is_file())
+            + " content=" + repr(content),
+        ))
+
+        # 7-13. The gate's own controls, against real fabricated git repos.
         cases.extend(_gate_cases(base))
 
     passed = all(c["status"] == "PASS" for c in cases)
