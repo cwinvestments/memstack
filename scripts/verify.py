@@ -71,7 +71,9 @@ from pathlib import Path
 
 EXIT_PASS = 0
 EXIT_FAIL = 1
-EXIT_GATE_RESERVED = 2  # deliberately never returned from this file
+# Returned only by gate_decide, and only on a block. Never returned by the
+# run, list or selftest commands, whose outcomes are 0, 1 and 3.
+EXIT_GATE_RESERVED = 2
 EXIT_NOTHING_DETECTED = 3
 EXIT_USAGE = 64
 
@@ -184,21 +186,27 @@ def _git(root: Path, args: list[str]) -> tuple[int, str] | None:
     return proc.returncode, proc.stdout.decode("utf-8", errors="replace")
 
 
-def git_facts(root: Path) -> tuple[str | None, bool | None]:
-    """(head, dirty). Either may be None when git cannot answer.
+def git_facts(root: Path) -> tuple[str | None, bool | None, int | None]:
+    """(head, dirty, untracked_count). Any of the three may be None when git
+    cannot answer.
 
-    dirty is None rather than False when unknown. False would assert a clean
-    tree we never observed.
+    dirty means exactly what the fingerprint means. It is True only when
+    tracked_changes is non-empty and False when that list is empty, so the
+    two facts a receipt records about a tree can never disagree about it.
+    An untracked file is not a tracked change: a tree carrying nothing but
+    backups, scratch scripts and editor artifacts is clean here and
+    fingerprints identically to the same tree without them.
+
+    Untracked files are reported separately as untracked_count, so that
+    information is kept rather than folded into a boolean the gate would
+    then have to ignore.
+
+    None is used rather than False or 0 when git cannot answer, because
+    either would assert a clean tree that was never observed.
     """
-    head = None
-    dirty = None
-    result = _git(root, ["rev-parse", "HEAD"])
-    if result and result[0] == 0:
-        head = result[1].strip() or None
-    status = _git(root, ["status", "--porcelain"])
-    if status and status[0] == 0:
-        dirty = bool(status[1].strip())
-    return head, dirty
+    changes = tracked_changes(root)
+    dirty = None if changes is None else bool(changes)
+    return git_head(root), dirty, untracked_count(root)
 
 
 def git_head(root: Path) -> str | None:
@@ -222,6 +230,21 @@ def tracked_changes(root: Path) -> list[str] | None:
         return None
     return [line for line in status[1].splitlines()
             if line.strip() and not line.startswith("??")]
+
+
+def untracked_count(root: Path) -> int | None:
+    """How many untracked porcelain lines the tree carries, or None if git
+    cannot answer.
+
+    The counterpart to tracked_changes: exactly what that function drops,
+    counted instead of discarded. Recorded on receipts so an untracked pile
+    stays visible without ever reaching the fingerprint or the gate.
+    """
+    status = _git(root, ["status", "--porcelain"])
+    if status is None or status[0] != 0:
+        return None
+    return sum(1 for line in status[1].splitlines()
+               if line.startswith("??"))
 
 
 def tree_fingerprint(root: Path) -> str | None:
@@ -485,7 +508,7 @@ def _write_json(path: Path, payload: dict) -> None:
 
 def build_receipt(task_id: str, started: str, root: Path, checks: list[dict],
                   kind: str = "run") -> dict:
-    head, dirty = git_facts(root)
+    head, dirty, untracked = git_facts(root)
     return {
         "task_id": task_id,
         "started": started,
@@ -494,6 +517,7 @@ def build_receipt(task_id: str, started: str, root: Path, checks: list[dict],
         "kind": kind,
         "head": head,
         "dirty": dirty,
+        "untracked_count": untracked,
         "tree_fingerprint": tree_fingerprint(root),
         "checks": checks,
         "verdict": verdict_for(checks),
@@ -1072,7 +1096,39 @@ def cmd_selftest(root: Path) -> int:
             "verdict=" + r["verdict"] + " checks=" + repr(r["checks"]),
         ))
 
-        # 5-11. The gate's own controls, against real fabricated git repos.
+        # 5. An untracked file is not a tracked change. A clean HEAD plus one
+        #    untracked file must report dirty false, count that file, and
+        #    fingerprint identically to the same tree without it. This is the
+        #    control on the receipt field the gate does not read.
+        untracked_repo = base / "untracked-only"
+        reason = _init_repo(untracked_repo, {"src/app.py": "VALUE = 1\n"})
+        if reason:
+            cases.append(_case("untracked-file-does-not-make-a-tree-dirty",
+                               "fabricated git repo", False, reason))
+        else:
+            clean = tree_fingerprint(untracked_repo)
+            with open(untracked_repo / "scratch.tmp", "w",
+                      encoding="utf-8", newline="\n") as handle:
+                handle.write("ignore me\n")
+            r = build_receipt("selftest-untracked", _now_iso(),
+                              untracked_repo, [])
+            ok = (
+                r["dirty"] is False
+                and r["untracked_count"] == 1
+                and clean is not None
+                and r["tree_fingerprint"] == clean
+            )
+            cases.append(_case(
+                "untracked-file-does-not-make-a-tree-dirty",
+                "git repo with a clean HEAD and one untracked file",
+                ok,
+                "dirty=" + repr(r["dirty"])
+                + " untracked_count=" + repr(r["untracked_count"])
+                + " fingerprint_matches_clean="
+                + repr(r["tree_fingerprint"] == clean),
+            ))
+
+        # 6-12. The gate's own controls, against real fabricated git repos.
         cases.extend(_gate_cases(base))
 
     passed = all(c["status"] == "PASS" for c in cases)
@@ -1081,7 +1137,7 @@ def cmd_selftest(root: Path) -> int:
     else:
         marker = None
 
-    head, dirty = git_facts(root)
+    head, dirty, untracked = git_facts(root)
     receipt = {
         "task_id": "selftest-" + _stamp(),
         "started": started,
@@ -1092,6 +1148,7 @@ def cmd_selftest(root: Path) -> int:
         "kind": "selftest",
         "head": head,
         "dirty": dirty,
+        "untracked_count": untracked,
         "tree_fingerprint": tree_fingerprint(root),
         "checks": cases,
         "verdict": "PASS" if passed else "FAIL",
