@@ -96,8 +96,10 @@ When the user asks to save a diary, keep these in mind:
    Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside your prose cannot be read as one.
 
    ```bash
-   cat session.json | python "$MEMSTACK_PATH/db/memstack-db.py" add-session -
+   cat session.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" add-session -
    ```
+
+   The store is `~/.memstack/memstack.db`, one file per user, never a file beside the script. Every command prints the path it used on stderr as `memstack-db: store <path>`, so a session can confirm where it wrote instead of assuming.
 
    `session.json` contains:
    ```json
@@ -109,7 +111,7 @@ When the user asks to save a diary, keep these in mind:
    Same form: write the payload to a file, pipe it in, `-` as the argument. Insight text is prose, so it must never travel on the command line.
 
    ```bash
-   cat insight.json | python "$MEMSTACK_PATH/db/memstack-db.py" add-insight -
+   cat insight.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" add-insight -
    ```
 
    `insight.json` contains:
@@ -137,7 +139,7 @@ When the user asks to save a diary, keep these in mind:
    Same form, even though this payload is only metadata. One rule with no exceptions is easier to follow than a rule you have to judge.
 
    ```bash
-   cat context.json | python "$MEMSTACK_PATH/db/memstack-db.py" set-context -
+   cat context.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" set-context -
    ```
 
    `context.json` contains:

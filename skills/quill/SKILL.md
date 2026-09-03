@@ -40,7 +40,7 @@ Then execute the protocol below.
    Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside the scope summary cannot be read as one.
 
    ```bash
-   cat quote-context.json | python "$MEMSTACK_PATH/db/memstack-db.py" set-context -
+   cat quote-context.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" set-context -
    ```
 
    `quote-context.json` contains:

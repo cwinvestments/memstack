@@ -56,15 +56,15 @@ If this returns results, present them with scores, dates, and source files.
 
 Always run SQLite search to supplement vector results or as fallback if Step 1 fails:
 ```bash
-python "$MEMSTACK_PATH/db/memstack-db.py" search "<keywords>" --project <project>
+python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" search "<keywords>" --project <project>
 ```
 
 ### Step 3: Recent Sessions and Insights
 
 For additional context:
 ```bash
-python "$MEMSTACK_PATH/db/memstack-db.py" get-sessions <project> --limit 5
-python "$MEMSTACK_PATH/db/memstack-db.py" get-insights <project>
+python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-sessions <project> --limit 5
+python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-insights <project>
 ```
 
 ### Step 4: Markdown Fallback

@@ -34,7 +34,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 2. Read the project's `CLAUDE.md` (if it exists): conventions, architecture decisions
 3. Check recent diary:
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" get-sessions <project> --limit 3
+   python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-sessions <project> --limit 3
    ```
 4. Check git state:
    ```bash
@@ -54,7 +54,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
    Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside a task description cannot be read as one.
 
    ```bash
-   cat task.json | python "$MEMSTACK_PATH/db/memstack-db.py" add-plan-task -
+   cat task.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" add-plan-task -
    ```
 
    `task.json` contains:
@@ -72,14 +72,14 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 1. Read current plan from SQLite:
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" get-plan <project>
+   python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-plan <project>
    ```
 2. Update individual task statuses:
 
    Same form, even though this payload is only metadata. One rule with no exceptions is easier to follow than a rule you have to judge.
 
    ```bash
-   cat task-update.json | python "$MEMSTACK_PATH/db/memstack-db.py" update-task -
+   cat task-update.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" update-task -
    ```
 
    `task-update.json` contains:
@@ -95,7 +95,7 @@ Before executing ANY mode, silently gather current state. Do NOT present finding
 
 1. Load plan from SQLite:
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" get-plan <project>
+   python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-plan <project>
    ```
 2. Parse the JSON output for task statuses
 3. Output a summary:

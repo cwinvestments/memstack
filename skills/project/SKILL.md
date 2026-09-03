@@ -32,7 +32,7 @@ Then execute the protocol below.
    Write the payload to a file, then pipe it in with `-` as the argument. A payload on stdin is never seen by the shell's parser, so a redirection operator inside your prose cannot be read as one.
 
    ```bash
-   cat context.json | python "$MEMSTACK_PATH/db/memstack-db.py" set-context -
+   cat context.json | python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" set-context -
    ```
 
    `context.json` contains:
@@ -46,15 +46,15 @@ Then execute the protocol below.
 
 1. **Load project context from SQLite:**
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" get-context <project>
+   python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-context <project>
    ```
 2. **Load recent sessions:**
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" get-sessions <project> --limit 3
+   python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-sessions <project> --limit 3
    ```
 3. **Load plan if exists:**
    ```bash
-   python "$MEMSTACK_PATH/db/memstack-db.py" get-plan <project>
+   python "${CLAUDE_PLUGIN_ROOT}/db/memstack-db.py" get-plan <project>
    ```
 4. **Fallback:** Check `memory/projects/` for markdown handoffs
 5. **Present combined state** so CC can continue immediately

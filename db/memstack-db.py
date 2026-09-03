@@ -19,7 +19,13 @@ Commands:
     get-plan      <project>       Get all plan tasks for a project
     update-task   <json>          Update a plan task status
     export-md     <project>       Export project memory as markdown
+    import-sessions <path>        Merge another memstack.db into this store
     stats                         Show database statistics
+
+Store location:
+    The store is ~/.memstack/memstack.db, NOT a file beside this script.
+    Set MEMSTACK_SESSION_DB to point somewhere else. Every command prints the
+    path it used on stderr, so a caller can always confirm where it wrote.
 """
 
 import argparse
@@ -30,8 +36,32 @@ import sys
 from pathlib import Path, PureWindowsPath
 
 DB_DIR = Path(__file__).parent
-DB_PATH = DB_DIR / "memstack.db"
 SCHEMA_PATH = DB_DIR / "schema.sql"
+
+# The session store deliberately does NOT live beside this script.
+#
+# Ten copies of this file exist on a working machine: the repo, the marketplace
+# checkout, and one per cached plugin version. A script-relative store meant
+# each copy wrote to its own database, so a diary save landed wherever the copy
+# that happened to run had been unpacked. Two plugin-cache copies each collected
+# a single stray session that never reached the canonical store, and a plugin
+# update discards the cache directory holding it.
+#
+# The store is therefore keyed to the user, not to the script.
+LEGACY_DB_PATH = DB_DIR / "memstack.db"
+DEFAULT_DB_PATH = Path.home() / ".memstack" / "memstack.db"
+DB_PATH = DEFAULT_DB_PATH
+
+#: Environment override for the session store. Deliberately NOT MEMSTACK_DB_PATH,
+#: which already names the skill-loader's memory.db and is read by
+#: bridge_to_loader() to decide whether the insight bridge is safe to run.
+DB_PATH_ENV = "MEMSTACK_SESSION_DB"
+
+
+def resolve_db_path() -> Path:
+    """Resolve the store path at call time, so an override applies per process."""
+    override = os.environ.get(DB_PATH_ENV)
+    return Path(override) if override else DEFAULT_DB_PATH
 
 
 def parse_json_arg(raw: str) -> dict:
@@ -253,15 +283,59 @@ def bridge_to_loader(project, type_value, content, context, tags, created_at) ->
         return {"bridge_error": str(exc)}
 
 
+def _adopt_legacy_store(db_path: Path) -> None:
+    """One time only: adopt a store an older version left beside this script.
+
+    Copies, never moves. The source stays exactly where it is, so rolling back
+    to an earlier plugin version still finds its data and nothing is destroyed
+    if this copy turns out to be the wrong one. Returns silently when the
+    destination already exists, which is what makes this happen exactly once
+    and keeps it from ever overwriting a live store.
+
+    The copy goes through SQLite's own backup API rather than a file copy: the
+    store runs in WAL mode, so committed transactions can still be sitting in a
+    sidecar -wal file that a plain file copy would leave behind.
+    """
+    if db_path.exists():
+        return
+    legacy = LEGACY_DB_PATH
+    if not legacy.is_file():
+        return
+    try:
+        if legacy.resolve() == db_path.resolve():
+            return
+    except OSError:
+        return
+    src = sqlite3.connect(f"file:{legacy}?mode=ro", uri=True)
+    try:
+        dst = sqlite3.connect(str(db_path))
+        try:
+            with dst:
+                src.backup(dst)
+        finally:
+            dst.close()
+    finally:
+        src.close()
+    print(
+        f"memstack-db: copied existing store from {legacy} to {db_path} "
+        "(one time; the source was left in place)",
+        file=sys.stderr,
+    )
+
+
 def get_db():
     """Get database connection, initializing schema if needed."""
-    is_new = not DB_PATH.exists()
-    conn = sqlite3.connect(str(DB_PATH))
+    db_path = resolve_db_path()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    _adopt_legacy_store(db_path)
+    is_new = not db_path.exists()
+    conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode = WAL")
     conn.execute("PRAGMA foreign_keys = ON")
     if is_new:
         conn.executescript(SCHEMA_PATH.read_text())
+    print(f"memstack-db: store {db_path}", file=sys.stderr)
     return conn
 
 
@@ -270,7 +344,7 @@ def cmd_init(_args):
     conn = get_db()
     conn.executescript(SCHEMA_PATH.read_text())
     conn.close()
-    print(json.dumps({"ok": True, "db": str(DB_PATH)}))
+    print(json.dumps({"ok": True, "db": str(resolve_db_path())}))
 
 
 def cmd_add_session(args):
@@ -591,8 +665,111 @@ def cmd_export_md(args):
     print("\n".join(lines))
 
 
+# Tables import-sessions merges, as (table, columns to carry, dedupe key).
+#
+# "id" is absent from every column list on purpose: rows are inserted with fresh
+# ids so that two stores which both start their sequence at 1 can be merged
+# without collision. created_at IS carried, because it is half of what identifies
+# a row as one already seen.
+IMPORT_TABLES = (
+    (
+        "sessions",
+        ("project", "date", "accomplished", "files_changed", "commits", "decisions",
+         "problems", "next_steps", "duration", "raw_markdown", "created_at"),
+        ("created_at", "project", "accomplished"),
+    ),
+    (
+        "insights",
+        ("project", "type", "content", "context", "tags", "created_at"),
+        ("created_at", "project", "content"),
+    ),
+    (
+        # project_context is UNIQUE(project), so the row identity IS the project.
+        "project_context",
+        ("project", "status", "current_branch", "last_session_date",
+         "architecture_decisions", "known_issues", "backlog", "updated_at"),
+        ("project",),
+    ),
+    (
+        # plans is UNIQUE(project, task_number), likewise.
+        "plans",
+        ("project", "task_number", "description", "status", "blocked_reason",
+         "created_at", "updated_at"),
+        ("project", "task_number"),
+    ),
+)
+
+
+def cmd_import_sessions(args):
+    """Merge another memstack.db into this store, skipping rows already present.
+
+    The source is opened read-only and is never written to, moved or deleted.
+    """
+    source = Path(args.path)
+    if not source.is_file():
+        print(json.dumps({"ok": False, "error": f"Source database not found: {source}"}))
+        sys.exit(1)
+
+    dest = get_db()
+    if source.resolve() == resolve_db_path().resolve():
+        dest.close()
+        print(json.dumps({"ok": False, "error": "Source and destination are the same file"}))
+        sys.exit(1)
+    try:
+        src = sqlite3.connect(f"file:{source}?mode=ro", uri=True)
+    except sqlite3.Error as exc:
+        dest.close()
+        print(json.dumps({"ok": False, "error": f"Cannot open source read-only: {exc}"}))
+        sys.exit(1)
+    src.row_factory = sqlite3.Row
+
+    src_tables = {r[0] for r in src.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table'")}
+
+    report = {}
+    try:
+        for table, columns, key_cols in IMPORT_TABLES:
+            if table not in src_tables:
+                report[table] = {"imported": 0, "skipped": 0, "note": "absent in source"}
+                continue
+            imported = 0
+            skipped = 0
+            # IFNULL on both sides so that two NULLs compare equal: SQL's NULL
+            # would otherwise make a row with a null project never match itself
+            # and import again on every run.
+            where = " AND ".join(f"IFNULL({c}, '') = IFNULL(?, '')" for c in key_cols)
+            insert_sql = "INSERT INTO {} ({}) VALUES ({})".format(
+                table, ", ".join(columns), ", ".join("?" for _ in columns))
+            for row in src.execute(f"SELECT * FROM {table}"):
+                present = set(row.keys())
+                key_vals = [row[c] if c in present else None for c in key_cols]
+                if dest.execute(
+                    f"SELECT 1 FROM {table} WHERE {where} LIMIT 1", key_vals
+                ).fetchone():
+                    skipped += 1
+                    continue
+                dest.execute(insert_sql,
+                             [row[c] if c in present else None for c in columns])
+                imported += 1
+            report[table] = {"imported": imported, "skipped": skipped}
+        dest.commit()
+    finally:
+        src.close()
+        dest.close()
+
+    print(json.dumps({
+        "ok": True,
+        "source": str(source),
+        "destination": str(resolve_db_path()),
+        "tables": report,
+        "imported_total": sum(t["imported"] for t in report.values()),
+        "skipped_total": sum(t["skipped"] for t in report.values()),
+    }))
+
+
 def cmd_stats(_args):
     """Show database statistics."""
+    db_path = resolve_db_path()
     conn = get_db()
     sessions = conn.execute("SELECT COUNT(*) FROM sessions").fetchone()[0]
     insights = conn.execute("SELECT COUNT(*) FROM insights").fetchone()[0]
@@ -610,8 +787,8 @@ def cmd_stats(_args):
         "projects": projects,
         "plan_tasks": plans,
         "sessions_by_project": {r["project"]: r["cnt"] for r in by_project},
-        "db_path": str(DB_PATH),
-        "db_size_kb": round(DB_PATH.stat().st_size / 1024, 1) if DB_PATH.exists() else 0,
+        "db_path": str(db_path),
+        "db_size_kb": round(db_path.stat().st_size / 1024, 1) if db_path.exists() else 0,
     }))
 
 
@@ -657,6 +834,9 @@ def main():
     p = sub.add_parser("export-md")
     p.add_argument("project")
 
+    p = sub.add_parser("import-sessions")
+    p.add_argument("path")
+
     sub.add_parser("stats")
 
     args = parser.parse_args()
@@ -677,6 +857,7 @@ def main():
         "get-plan": cmd_get_plan,
         "update-task": cmd_update_task,
         "export-md": cmd_export_md,
+        "import-sessions": cmd_import_sessions,
         "stats": cmd_stats,
     }
     cmd_map[args.command](args)
