@@ -42,14 +42,22 @@ exit /b 0
 
 REM The Stop gate. Runs the verify CLI's gate subcommand with stdin
 REM inherited, so the hook payload reaches it untouched. Anything this
-REM branch itself cannot do exits 0: a missing python or a missing
-REM verify.py must never look like a block, because 2 is the only code
-REM that means blocked and it belongs to verify.py alone.
+REM branch itself cannot do exits 0: an absent python, a python that is
+REM the Windows Store stub, a broken python or a missing verify.py must
+REM never look like a block, because 2 is the only code that means
+REM blocked and it belongs to verify.py alone.
+REM The probe runs the interpreter instead of asking where it is. The
+REM Store stub satisfies a path lookup and then exits 9009 without
+REM running any code, so only executing something proves anything.
+REM Both invocations go through call, because a python that is a .cmd
+REM or .bat shim would otherwise take control and never hand it back:
+REM the shim's own exit code would become this hook's, and the lines
+REM below would never run.
 :verify_gate
-where python >nul 2>nul
+call python -c "import sys" >nul 2>nul
 if errorlevel 1 exit /b 0
 if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" exit /b 0
-python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" gate
+call python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" gate
 exit /b %ERRORLEVEL%
 CMDBLOCK
 

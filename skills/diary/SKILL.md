@@ -153,7 +153,7 @@ When the user asks to save a diary, keep these in mind:
  ```
  This parses the `## FACTS` block and stores each fact with `source_type='diary'`.
 
- **Read the summary it prints. This step is not fire-and-forget.** It reports `N ingested, M duplicate, K skipped` on stdout, followed by one indented reason per skipped line naming the line number and what was wrong with it. The exit code classifies the outcome:
+ **Read the summary it prints. This step is not fire-and-forget.** It reports `memory-ingest: N ingested, M duplicate, K skipped into project 'NAME': PATH` on stdout, followed by one indented reason per skipped line naming the line number and what was wrong with it. `NAME` is the namespace the facts were actually written to, derived from the diary's filename, and it is the part to check: a diary filed under an unintended project ingests cleanly and exits 0 while staying invisible to every recall for the real one. When no fact has ever been stored under that namespace the line reads `into NEW project 'NAME'`, which is the cheapest signal that derivation landed somewhere unintended. Pass `--project NAME` to skip filename derivation entirely when the derived name would be wrong. The exit code classifies the outcome:
 
  | Exit | Meaning |
  |------|---------|
