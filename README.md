@@ -2,7 +2,7 @@
 
 [![Version: 3.9.2](https://img.shields.io/badge/Version-3.9.2-green.svg)](CHANGELOG.md)
 
-The structured skill framework for Claude Code — **130 professional skills** for deployment, security, databases, content, marketing, and more.
+The structured skill framework for Claude Code: **130 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
@@ -10,11 +10,11 @@ Skills activate automatically when you need them. Say "deploy this to Railway" a
 
 MemStack installs in two parts: the **skills** (via the Claude Code plugin
 marketplace) and the **engine** (the MCP skill loader, via PyPI). You need
-both — the loader reads skill files from the installed marketplace plugin.
-Every command below is labeled **(in Claude Code)** or **(in terminal)** —
+both: the loader reads skill files from the installed marketplace plugin.
+Every command below is labeled **(in Claude Code)** or **(in terminal)**:
 running one in the wrong place is the most common setup mistake.
 
-**Step 1 — Install the free skills · (in Claude Code):**
+**Step 1: Install the free skills · (in Claude Code):**
 ```
 /plugin marketplace add cwinvestments/memstack
 /plugin install memstack@cwinvestments-memstack
@@ -22,29 +22,29 @@ running one in the wrong place is the most common setup mistake.
 Run both commands. This unlocks the 86 free skills right away.
 
 > **SSH error?** ("Host key verification failed" on a fresh server that's never used GitHub over SSH.)
-> **Default fix · (in terminal)** — rewrite GitHub to HTTPS, then retry Step 1:
+> **Default fix · (in terminal)**: rewrite GitHub to HTTPS, then retry Step 1:
 > ```bash
 > git config --global url."https://github.com/".insteadOf "git@github.com:"
 > ```
-> **Backup fix · (in terminal)** — add GitHub's host key, then retry Step 1:
+> **Backup fix · (in terminal)**: add GitHub's host key, then retry Step 1:
 > ```bash
 > mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 > ```
 
-**Step 2 — Install the engine · (in terminal):**
+**Step 2: Install the engine · (in terminal):**
 
 Windows:
 ```bash
 pip install memstack-skill-loader
 ```
 
-Linux / Mac — use the explicit interpreter (the same one you register in Step 3):
+Linux / Mac: use the explicit interpreter (the same one you register in Step 3):
 ```bash
 /usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
 ```
 Find yours with `which python3` and substitute it if it isn't `/usr/bin/python3`. The `--break-system-packages` flag is required on newer externally-managed Python. No pip for that interpreter? Run `sudo apt install python3-pip` first (Debian/Ubuntu).
 
-**Step 3 — Register the MCP server · (in terminal):** register against the **same interpreter you installed onto in Step 2.**
+**Step 3: Register the MCP server · (in terminal):** register against the **same interpreter you installed onto in Step 2.**
 
 Windows:
 ```bash
@@ -57,24 +57,24 @@ claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skil
 ```
 If this doesn't match Step 2's interpreter, the server won't launch (you'll see a "failed to reconnect" error and `activate_license` will be missing).
 
-**Step 4 — Activate your license · (in Claude Code, after a full restart):** fully quit and reopen Claude Code first so it picks up the new MCP server, then run:
+**Step 4: Activate your license · (in Claude Code, after a full restart):** fully quit and reopen Claude Code first so it picks up the new MCP server, then run:
 ```
 activate_license(key="your-key", email="you@example.com")
 ```
-This unlocks the 44 Pro-exclusive skills (86 free + 44 Pro = 130 total). Free-tier users can skip this step — type `list skills` to verify the 86 free skills loaded.
+This unlocks the 44 Pro-exclusive skills (86 free + 44 Pro = 130 total). Free-tier users can skip this step: type `list skills` to verify the 86 free skills loaded.
 
 See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup, and the [Troubleshooting](#troubleshooting) section below.
 
 ### Troubleshooting
 
-**`error: externally-managed-environment` (during Step 2)** — pip refuses to install on a system-managed Python. Add `--break-system-packages` · (in terminal):
+**`error: externally-managed-environment` (during Step 2)**: pip refuses to install on a system-managed Python. Add `--break-system-packages` · (in terminal):
 ```bash
 /usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
 ```
 
-**Plugin clone fails: "Host key verification failed" (during Step 1)** — a fresh server that's never connected to GitHub over SSH. **Default fix · (in terminal):** `git config --global url."https://github.com/".insteadOf "git@github.com:"` then retry Step 1. **Backup fix · (in terminal):** `mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts` then retry Step 1.
+**Plugin clone fails: "Host key verification failed" (during Step 1)**: a fresh server that's never connected to GitHub over SSH. **Default fix · (in terminal):** `git config --global url."https://github.com/".insteadOf "git@github.com:"` then retry Step 1. **Backup fix · (in terminal):** `mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts` then retry Step 1.
 
-**`activate_license` not found, or MCP "failed to reconnect (-32000)"** — the loader was installed onto a **different Python interpreter** than the one Claude Code launches (the classic bare-`python` mismatch on Linux/Mac). Check · (in terminal):
+**`activate_license` not found, or MCP "failed to reconnect (-32000)"**: the loader was installed onto a **different Python interpreter** than the one Claude Code launches (the classic bare-`python` mismatch on Linux/Mac). Check · (in terminal):
 ```bash
 /usr/bin/python3 -c "import memstack_skill_loader; print('ok')"
 ```
@@ -85,7 +85,7 @@ claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skil
 ```
 Then fully restart Claude Code. Rule of thumb: whatever interpreter you `import`-check as `ok` is the path that must appear in your `claude mcp add` command.
 
-**`No module named pip` (during Step 2)** — that interpreter ships without pip (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
+**`No module named pip` (during Step 2)**: that interpreter ships without pip (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
 ```bash
 sudo apt install python3-pip
 ```
@@ -97,10 +97,10 @@ sudo apt install python3-pip
 | **Free** | 86 skills | Included with MemStack™ base |
 | **Pro** | 130 total (86 free + 44 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
-**Architecture note:** Pro skills are license-gated — when you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
+**Architecture note:** Pro skills are license-gated. When you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
 
 <!-- BEGIN GENERATED PRO LIST -->
-**Pro-exclusive skills (44):** `advanced-security`, `api-docs`, `api-load-tester`, `branching`, `browser-use`, `burn`, `checkpoint`, `claude-api-helper`, `codebase-index`, `config-audit`, `consolidate`, `context-db`, `council`, `database-architect`, `database-migration`, `dependency-auditor`, `developer-growth-analysis`, `diagram-generator`, `doc-index`, `drift-detection`, `env-manager-pro`, `error-handler`, `frontend-design`, `git-worktrees`, `governor-pro`, `gtm-validator`, `hooks-integration`, `ios-app-store`, `log-analyzer`, `mcp-builder`, `meeting-insights-analyzer`, `model-router`, `multi-agent`, `nextjs-conventions`, `performance-profiler`, `python-conventions`, `rag-builder`, `session-restore`, `social-media`, `test-generator`, `us-privacy-compliance`, `video-pipeline`, `video-review`, `web-scraper` — these require an active Pro license.
+**Pro-exclusive skills (44):** `advanced-security`, `api-docs`, `api-load-tester`, `branching`, `browser-use`, `burn`, `checkpoint`, `claude-api-helper`, `codebase-index`, `config-audit`, `consolidate`, `context-db`, `council`, `database-architect`, `database-migration`, `dependency-auditor`, `developer-growth-analysis`, `diagram-generator`, `doc-index`, `drift-detection`, `env-manager-pro`, `error-handler`, `frontend-design`, `git-worktrees`, `governor-pro`, `gtm-validator`, `hooks-integration`, `ios-app-store`, `log-analyzer`, `mcp-builder`, `meeting-insights-analyzer`, `model-router`, `multi-agent`, `nextjs-conventions`, `performance-profiler`, `python-conventions`, `rag-builder`, `session-restore`, `social-media`, `test-generator`, `us-privacy-compliance`, `video-pipeline`, `video-review`, `web-scraper`. These require an active Pro license.
 <!-- END GENERATED PRO LIST -->
 
 **New skill rule:** All newly added skills default to Pro-exclusive. After 90 days, they drop to the free tier unless marked permanent-Pro.
@@ -113,15 +113,15 @@ Complete the **Install** steps above first (marketplace + engine). Then, in Clau
 activate_license(key="your-key", email="you@example.com")
 ```
 
-Pro skills download automatically from our server to `~/.memstack/pro-skills` — there is **no** separate marketplace step for Pro. Your key is saved permanently — no environment variables needed.
+Pro skills download automatically from our server to `~/.memstack/pro-skills`: there is **no** separate marketplace step for Pro. Your key is saved permanently: no environment variables needed.
 
 > **Alternative:** You can also set `MEMSTACK_PRO_LICENSE_KEY` as an environment variable instead of using `activate_license`. Use `setx` on Windows or add to `~/.bashrc` on Mac/Linux, then restart your terminal and Claude Code.
 
 ### Updating
 
-MemStack updates through three independent channels — refresh whichever you need, then restart Claude Code:
+MemStack updates through three independent channels. Refresh whichever you need, then restart Claude Code:
 
-**1. Free skills** (including newly released ones) — in Claude Code:
+**1. Free skills** (including newly released ones), in Claude Code:
 ```
 /plugin marketplace update cwinvestments-memstack
 ```
@@ -129,9 +129,9 @@ then `/reload-plugins` (or restart Claude Code).
 
 *Fallback:* if a new skill doesn't appear (marketplace version-detection can be unreliable), re-run `/plugin install memstack@cwinvestments-memstack`. As a last resort, clear the cached plugin and reinstall it.
 
-**2. Pro skills** — auto-update within 24 hours. To force an immediate re-download, ask Claude to run the `refresh_pro_skills` tool.
+**2. Pro skills**: auto-update within 24 hours. To force an immediate re-download, ask Claude to run the `refresh_pro_skills` tool.
 
-**3. Engine** (the skill loader itself) — in your terminal:
+**3. Engine** (the skill loader itself), in your terminal:
 ```bash
 pip install --upgrade memstack-skill-loader
 ```
@@ -146,12 +146,12 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - TokenStack™ context compression
 - Always-on rules and slash commands
 
-## All Skills (130 total — 86 free + 44 Pro-exclusive)
+## All Skills (130 total: 86 free + 44 Pro-exclusive)
 
-All 130 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system — only the skill matching your current task is loaded, preventing context bloat. 44 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 130 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system: only the skill matching your current task is loaded, preventing context bloat. 44 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 <!-- BEGIN GENERATED SKILLS CATALOG -->
-### Core (16 — 7 free + 9 Pro)
+### Core (16: 7 free + 9 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -172,7 +172,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `multi-agent` **[PRO]** | Orchestrate multiple Claude Code instances as a coordinated team where a Manager delegates, a Builder implements, and a Reviewer verifies. |
 | `session-restore` **[PRO]** | Create structured snapshots capturing decisions, context, and next actions for seamless cross-session continuity and handoffs. |
 
-### Security (12 — 8 free + 4 Pro)
+### Security (12: 8 free + 4 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -189,7 +189,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `dependency-auditor` **[PRO]** | Perform deep dependency analysis covering CVE vulnerabilities, license compatibility, unused packages, version freshness, and safe update paths. |
 | `env-manager-pro` **[PRO]** | Sync .env files with code, manage multi-environment configs, detect secrets in git, handle rotation workflows, and generate env documentation. |
 
-### Deployment (8 — 7 free + 1 Pro)
+### Deployment (8: 7 free + 1 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -202,7 +202,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `railway-deploy` | Validate project configuration, environment variables, and deployment readiness before pushing a Node.js, Python, or Docker application to Railway. |
 | `ios-app-store` **[PRO]** | Follow a step-by-step checklist for submitting apps to the Apple App Store, covering pre-submission, common rejections, Capacitor/React Native specifics, and metadata optimization. |
 
-### Development (37 — 16 free + 21 Pro)
+### Development (37: 16 free + 21 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -244,7 +244,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `rag-builder` **[PRO]** | Guide construction of a Retrieval-Augmented Generation system covering document ingestion, embedding, vector storage, and retrieval-augmented prompting. |
 | `test-generator` **[PRO]** | Auto-generate comprehensive test suites from existing code covering happy path, edge cases, error scenarios, and boundary conditions using the project's test framework. |
 
-### Business (15 — 13 free + 2 Pro)
+### Business (15: 13 free + 2 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -264,7 +264,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `meeting-insights-analyzer` **[PRO]** | Extract decisions, action items, key insights, and behavioral patterns from meeting transcripts or notes. |
 | `us-privacy-compliance` **[PRO]** | Provide an actionable implementation checklist for US state privacy laws (CCPA/CPRA + 13 other states) covering consent, deletion, and data rights in web apps. |
 
-### Content (10 — 9 free + 1 Pro)
+### Content (10: 9 free + 1 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -290,7 +290,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `schema-markup` | Identify applicable schema types, generate valid JSON-LD blocks, and verify against Google's Rich Results requirements ready to paste into page head. |
 | `site-audit` | Scan every page for meta tags, heading hierarchy, broken links, image optimization, Core Web Vitals, robots/sitemap, performance, and structured data to produce a prioritized fix list. |
 
-### Marketing (9 — 8 free + 1 Pro)
+### Marketing (9: 8 free + 1 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -315,7 +315,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `roadmap-builder` | Create a strategic product roadmap in Now/Next/Later format with quarterly themes, milestones, dependency mapping, resource allocation, and stakeholder communication templates. |
 | `user-story-generator` | Produce prioritized user stories with Given/When/Then acceptance criteria, story point estimates, story mapping across epics, and MoSCoW prioritization for sprint planning. |
 
-### Automation (11 — 6 free + 5 Pro)
+### Automation (11: 6 free + 5 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -357,7 +357,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched — no context bloat from 130 skills
+- **On-demand loading**: Skills load from the catalog only when matched, no context bloat from 130 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **Diary webhook**: Session logs auto-POST to n8n webhook for devlog automation
@@ -395,4 +395,4 @@ The dashboard is free for all users. Pro skills require a [license](https://mems
 
 ## License
 
-MIT — see [LICENSE](LICENSE). © 2026 CW Affiliate Investments LLC.
+MIT: see [LICENSE](LICENSE). © 2026 CW Affiliate Investments LLC.
