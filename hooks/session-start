@@ -182,6 +182,42 @@ if printf '%s' "$INSTALLED_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
     fi
 fi
 
+# --- core.hooksPath sanity check ---
+# A core.hooksPath that points at a directory which does not exist disables
+# every git hook in the repo without saying so: git finds nothing to run and
+# reports success, so a pre-commit secrets gate or a commit-msg guard is simply
+# absent while still looking configured. That one condition is worth a line.
+# Nothing else fires it: unset, empty, or a path that resolves to a real
+# directory all stay silent, and so does a machine with no git or a cwd that is
+# not a repository. Every git call below is guarded, so a failure leaves CONTEXT
+# exactly as it was and the hook still emits its JSON and exits 0.
+if command -v git >/dev/null 2>&1; then
+    GIT_TOPLEVEL="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+    if [ -n "$GIT_TOPLEVEL" ]; then
+        # --path performs the tilde expansion that a raw --get does not, so a
+        # value like ~/.githooks is tested as the directory it names rather
+        # than as a literal. Fall back to the plain read if --path is refused.
+        HOOKS_PATH="$(git config --get --path core.hooksPath 2>/dev/null || true)"
+        if [ -z "$HOOKS_PATH" ]; then
+            HOOKS_PATH="$(git config --get core.hooksPath 2>/dev/null || true)"
+        fi
+        if [ -n "$HOOKS_PATH" ]; then
+            # git resolves a relative hooksPath against the repo top level.
+            case "$HOOKS_PATH" in
+                /*|~*|?:/*|?:\\*) RESOLVED_HOOKS_PATH="$HOOKS_PATH" ;;
+                *)                RESOLVED_HOOKS_PATH="${GIT_TOPLEVEL}/${HOOKS_PATH}" ;;
+            esac
+            if [ ! -d "$RESOLVED_HOOKS_PATH" ]; then
+                HOOKS_PATH_SHOWN="\"${HOOKS_PATH}\""
+                if [ "$RESOLVED_HOOKS_PATH" != "$HOOKS_PATH" ]; then
+                    HOOKS_PATH_SHOWN="${HOOKS_PATH_SHOWN} (resolved to \"${RESOLVED_HOOKS_PATH}\")"
+                fi
+                CONTEXT="${CONTEXT}"$'\n'"Git hooks are disabled in this repository: core.hooksPath points at a missing directory, ${HOOKS_PATH_SHOWN}. Git is therefore running no hooks for this repo, so any pre-commit, commit-msg, or pre-push guard is absent."
+            fi
+        fi
+    fi
+fi
+
 escaped=$(escape_for_json "$CONTEXT")
 
 # --- Output JSON for CC ---

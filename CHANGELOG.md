@@ -1,5 +1,26 @@
 # MemStack™ Changelog
 
+## v3.9.0 - 2026-09-03 - Verification writes a receipt, and a gate reads it
+
+### Added
+- **A verification CLI, `scripts/verify.py`, that runs the project's own check chain and writes a receipt saying what happened.** The receipt records the detected chain, each check's outcome, the git head, and a fingerprint of the working tree, so a later reader can tell whether the receipt still describes the code in front of them. It is evidence rather than a claim: a run that could not execute a check says so instead of reporting a pass.
+- **A Stop gate that reads those receipts and blocks a session that is ending with unverified tracked changes.** It ships through `hooks/run-hook.cmd verify-gate`, registered as a `Stop` hook in `hooks/hooks.json` with a 15 second timeout. Exit code 2 is the only code that means blocked and it belongs to `verify.py` alone; every condition the wrapper itself cannot resolve exits 0.
+- **The gate is inert until you arm it.** It never blocks unless a `.verify-required` file exists at the repo root of the working copy it is running in. Installing this release therefore changes nothing about how your sessions end. `.verify-required` is gitignored on purpose: committed into a shipping tree it would arm every clone of that repo.
+- **`skills/verify` is rewritten to 2.0.0** to drive the CLI rather than describe verification in prose. It runs the chain, reads the receipt, and reports what the receipt says. It stays dormant in repositories with no detectable check chain, during read-only audits, and for edits that leave no tracked change behind.
+- **Session start now reports a `core.hooksPath` that points at a directory which does not exist.** That setting silently disables every git hook in the repo: git finds nothing to run and reports success, so a pre-commit secrets gate or a commit-msg guard is absent while still looking configured. One line names the condition, quotes the configured path, and says git is running no hooks for that repo. Nothing else fires it. Unset, empty, and a path that resolves to a real directory all stay silent, as do a machine with no git and a working directory that is not a repository.
+- **The diary skill documents what ingest actually summarizes**, so the boundary between what is stored and what is derived is readable from the skill instead of inferred from behavior.
+
+### Fixed
+- **A receipt's `dirty` flag now means what the fingerprint means.** It previously disagreed with the tree fingerprint about untracked files, so a receipt could read clean while the fingerprint had already moved. Untracked files are now counted separately in `untracked_count` and the two agree by construction.
+- **The interpreter probe runs python instead of asking where python is.** On Windows the Store stub satisfies a path lookup and then exits 9009 without executing anything, so a lookup proved nothing. The probe now executes a trivial import, and both invocations go through `call`, because a python that is a `.cmd` or `.bat` shim would otherwise take control and never hand it back: the shim's exit code would become the hook's, and the lines after it would never run.
+- **The receipt directory ignores itself.** `.memstack/` is gitignored, which also keeps generated receipts from riding a broad `git add` into the shipping tree.
+
+### Notes
+- **MINOR, not PATCH.** This adds two customer-facing mechanisms that did not exist before, the verification CLI and the Stop gate, and rewrites a skill to a new major.
+- **Nothing here blocks you by default.** The gate is disarmed unless `.verify-required` is present, and the `core.hooksPath` line is advisory context, not enforcement.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+- **The version bump is the delivery step, not bookkeeping.** Clients cache the plugin by its version string and re-pull only when that string differs, so none of this reaches an existing customer until 3.9.0 is on `master`.
+
 ## v3.8.0 - 2026-08-26 - The session now tells you a release exists
 
 ### Added
