@@ -13,7 +13,7 @@ Usage:
 Exit codes:
     0  PASS / ALLOW       every detected check passed, or the gate allows
     1  FAIL               at least one detected check failed
-    2  BLOCK              gate only: unverified tracked changes exist
+    2  BLOCK              gate only: no PASS receipt matches the tree
     3  NOTHING_DETECTED   no check was detected, or every one was skipped
     64 usage error        argparse's own default is 2, which would collide
 
@@ -37,11 +37,15 @@ Design notes that are load-bearing, not decoration:
   - The gate compares TREE FINGERPRINTS, not timestamps. A receipt proves a
     verdict about one exact tree state and nothing else. "A check ran recently"
     is not the same claim as "this code passed", and only the second one is
-    worth blocking on.
+    worth blocking on. The fingerprint names tracked CONTENT, not the commit
+    that content happens to sit on, so committing verified work does not
+    invalidate its receipt.
 
-  - Untracked files are excluded from the fingerprint. A scratch file, a
-    backup, or an editor artifact is not unverified work, and a gate that
-    treats it as such gets disarmed by its owner within a day.
+  - Untracked files are excluded from the fingerprint, and inherently so: the
+    fingerprint is a git tree object, and a tree holds only what the index
+    holds. A scratch file, a backup, or an editor artifact is not unverified
+    work, and a gate that treats it as such gets disarmed by its owner within
+    a day.
 
   - The gate never blocks unless it is armed by a .verify-required file at the
     repo root. Absent that file this subcommand is inert, which is what makes
@@ -169,8 +173,15 @@ def _sha256_file(path: Path) -> str | None:
 # git facts
 # --------------------------------------------------------------------------
 
-def _git(root: Path, args: list[str]) -> tuple[int, str] | None:
-    """Run a read-only git command. None if git is unavailable."""
+def _git(root: Path, args: list[str],
+         env: dict[str, str] | None = None) -> tuple[int, str] | None:
+    """Run a git command and capture stdout. None if git is unavailable.
+
+    Every caller but one is read-only. The exception is tree_fingerprint,
+    which runs `add -u` against a COPY of the index named by GIT_INDEX_FILE in
+    `env`; the repository's own index is never the target. env=None inherits
+    the process environment, which is what every read-only caller wants.
+    """
     git = shutil.which("git")
     if not git:
         return None
@@ -180,6 +191,7 @@ def _git(root: Path, args: list[str]) -> tuple[int, str] | None:
             cwd=str(root),
             capture_output=True,
             timeout=60,
+            env=env,
         )
     except (OSError, subprocess.TimeoutExpired):
         return None
@@ -248,20 +260,70 @@ def untracked_count(root: Path) -> int | None:
 
 
 def tree_fingerprint(root: Path) -> str | None:
-    """sha256 over HEAD plus every tracked-change line. None if git is mute.
+    """sha256 over the git tree object for the working tree's tracked content.
 
-    This is the whole identity of a tree state as far as verification is
-    concerned: which commit, plus exactly what is modified on top of it. Two
-    trees with the same fingerprint have the same code, so a PASS on one is a
-    PASS on the other. Any edit to a tracked file changes it, which is what
-    makes a stale receipt unable to clear new work.
+    This is the identity of a tree state as far as verification is concerned:
+    the CONTENT of every tracked file, and nothing else. Two trees with the
+    same tracked content have the same fingerprint regardless of which commit
+    they sit on, which is why committing verified work does not require
+    re-verifying it: the commit moves content that was already checked, and
+    moving it changes nothing the checks looked at. Any edit to a tracked
+    file, staged or not, does change the content and so changes the
+    fingerprint, which is what keeps a stale receipt from clearing new work.
+
+    The work happens against a COPY of the index, so the repository's own
+    index is never touched: locate the real one, copy it, then run `add -u`
+    and `write-tree` with GIT_INDEX_FILE pointing at the copy. `add -u`
+    folds in tracked modifications and deletions; files already staged are
+    in the copy to begin with.
+
+    Untracked files are excluded, and inherently rather than by a filter:
+    write-tree serialises the index, `add -u` only ever updates paths git
+    already tracks, and a path git has never heard of is in neither. There is
+    no rule here that could be forgotten or mis-scoped.
+
+    None whenever git cannot answer: git absent, not a repository, unmerged
+    entries that write-tree refuses to serialise, or no temp directory. The
+    temp index is deleted on every path.
     """
-    lines = tracked_changes(root)
-    if lines is None:
+    located = _git(root, ["rev-parse", "--git-path", "index"])
+    if located is None or located[0] != 0:
         return None
-    head = git_head(root)
-    payload = "head:" + (head or "NONE") + "\n" + "\n".join(lines) + "\n"
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    raw = located[1].strip()
+    if not raw:
+        return None
+    real_index = Path(raw)
+    if not real_index.is_absolute():
+        real_index = root / real_index
+
+    tmpdir = None
+    try:
+        if not real_index.is_file():
+            return None
+        tmpdir = tempfile.mkdtemp(prefix="memstack-verify-index-")
+        copy = Path(tmpdir) / "index"
+        shutil.copyfile(real_index, copy)
+
+        env = dict(os.environ)
+        # Forward slashes: git for Windows accepts either, this accepts fewer
+        # ways to be wrong.
+        env["GIT_INDEX_FILE"] = copy.as_posix()
+
+        staged = _git(root, ["add", "-u"], env=env)
+        if staged is None or staged[0] != 0:
+            return None
+        written = _git(root, ["write-tree"], env=env)
+        if written is None or written[0] != 0:
+            return None
+        tree = written[1].strip()
+        if not tree:
+            return None
+        return hashlib.sha256(("tree:" + tree).encode("utf-8")).hexdigest()
+    except OSError:
+        return None
+    finally:
+        if tmpdir is not None:
+            shutil.rmtree(tmpdir, ignore_errors=True)
 
 
 def repo_root(start: Path) -> Path:
@@ -543,6 +605,10 @@ def build_receipt(task_id: str, started: str, root: Path, checks: list[dict],
         "dirty": dirty,
         "untracked_count": untracked,
         "tree_fingerprint": tree_fingerprint(root),
+        # What that fingerprint MEANS. Receipts written before 3.9.2 carry a
+        # fingerprint computed a different way and no key saying so, and the
+        # gate refuses those rather than risking a match across two schemes.
+        "fingerprint_kind": "tree",
         "checks": checks,
         "verdict": verdict_for(checks),
         "can_fail_demonstrated": can_fail_demonstrated(),
@@ -559,8 +625,8 @@ def write_receipt(root: Path, receipt: dict) -> Path:
 # --------------------------------------------------------------------------
 # the gate
 #
-# Reads a Stop hook payload on stdin and decides whether unverified tracked
-# work exists. All of the logic lives here rather than in the hook script, so
+# Reads a Stop hook payload on stdin and decides whether a PASS receipt
+# matches the tree. All of the logic lives here rather than in the hook, so
 # the hook stays a one-line invocation and this file stays the single portable
 # artifact that can be reasoned about, tested, and moved between projects.
 # --------------------------------------------------------------------------
@@ -577,7 +643,7 @@ def _load_json(path: Path) -> dict | None:
 
 
 def gate_eligible(receipt: dict) -> bool:
-    """Only a PASSing `run` receipt can clear the gate.
+    """Only a PASSing `run` receipt carrying a tree fingerprint can clear the gate.
 
     A selftest receipt is explicitly NOT eligible even though its verdict is
     PASS. Selftest proves this file can report FAIL; it never runs the
@@ -587,8 +653,18 @@ def gate_eligible(receipt: dict) -> bool:
 
     A receipt with no `kind` predates the gate and carries no fingerprint. It
     is ineligible too, which errs toward blocking rather than toward allowing.
+
+    A receipt with no `fingerprint_kind`, or one naming anything other than
+    "tree", predates 3.9.2. Its tree_fingerprint is a hash of HEAD plus
+    porcelain status lines, which is a different claim about a different
+    thing that happens to live in the same field and have the same shape.
+    Comparing the two schemes could only ever match by accident, and an
+    accidental match would clear the gate on work nothing had verified, so
+    such a receipt is ineligible. The cost is one verify run after upgrading.
     """
-    return receipt.get("verdict") == "PASS" and receipt.get("kind") == "run"
+    return (receipt.get("verdict") == "PASS"
+            and receipt.get("kind") == "run"
+            and receipt.get("fingerprint_kind") == "tree")
 
 
 def newest_gate_receipt(root: Path) -> dict | None:
@@ -720,7 +796,7 @@ def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, s
 
     command = "python scripts/verify.py run --task-id " + session_id
     return EXIT_GATE_RESERVED, (
-        "verify gate: BLOCKED. Unverified tracked changes exist; run  "
+        "verify gate: BLOCKED. No PASS receipt matches this tree state; run  "
         + command + "  and finish only when it passes.")
 
 
@@ -869,8 +945,11 @@ def _init_repo(repo: Path, tracked: dict[str, str]) -> str | None:
 
 
 def _write_gate_receipt(repo: Path, task_id: str, kind: str,
-                        fingerprint: str | None) -> None:
-    _write_json(repo / RECEIPTS_SUBDIR / (task_id + ".json"), {
+                        fingerprint: str | None,
+                        fingerprint_kind: str | None = "tree") -> None:
+    """Write a PASS receipt by hand. fingerprint_kind=None omits the key
+    entirely, which is exactly the shape of a receipt written before 3.9.2."""
+    receipt = {
         "task_id": task_id,
         "started": _now_iso(),
         "finished": _now_iso(),
@@ -879,10 +958,14 @@ def _write_gate_receipt(repo: Path, task_id: str, kind: str,
         "head": git_head(repo),
         "dirty": True,
         "tree_fingerprint": fingerprint,
+        "fingerprint_kind": fingerprint_kind,
         "checks": [],
         "verdict": "PASS",
         "can_fail_demonstrated": True,
-    })
+    }
+    if fingerprint_kind is None:
+        del receipt["fingerprint_kind"]
+    _write_json(repo / RECEIPTS_SUBDIR / (task_id + ".json"), receipt)
 
 
 def _payload(repo: Path, session_id: str, stop_hook_active: bool = False) -> dict:
@@ -895,7 +978,7 @@ def _payload(repo: Path, session_id: str, stop_hook_active: bool = False) -> dic
 
 
 def _gate_cases(base: Path) -> list[dict]:
-    """Seven controls over the gate. Each asserts an exit code AND its message.
+    """Eight controls over the gate. Each asserts an exit code AND its message.
 
     Asserting only the code would pass a gate that blocks for the wrong reason
     or blocks silently, and a block with no message is indistinguishable from a
@@ -925,7 +1008,8 @@ def _gate_cases(base: Path) -> list[dict]:
                            False, reason))
     else:
         code, message = gate_decide(_payload(repo, "s-block"))
-        ok = code == EXIT_GATE_RESERVED and "Unverified tracked changes" in message
+        ok = (code == EXIT_GATE_RESERVED
+              and "No PASS receipt matches this tree state" in message)
         cases.append(_case(
             "gate-blocks-armed-dirty-tree",
             "armed repo, tracked modification, no receipt",
@@ -958,7 +1042,8 @@ def _gate_cases(base: Path) -> list[dict]:
     else:
         _write_gate_receipt(repo, "selftest-shaped", "selftest", tree_fingerprint(repo))
         code, message = gate_decide(_payload(repo, "s-selftest"))
-        ok = code == EXIT_GATE_RESERVED and "Unverified tracked changes" in message
+        ok = (code == EXIT_GATE_RESERVED
+              and "No PASS receipt matches this tree state" in message)
         cases.append(_case(
             "gate-ignores-passing-selftest-receipt",
             "armed dirty repo whose only PASS receipt is a selftest",
@@ -1026,6 +1111,39 @@ def _gate_cases(base: Path) -> list[dict]:
         ok,
         "exit=" + repr(code) + " message=" + repr(message),
     ))
+
+    # 8. A receipt written before 3.9.2 carries no fingerprint_kind, and its
+    #    tree_fingerprint was computed a different way. It must not clear the
+    #    gate. The control comes first and is asserted before the result
+    #    counts: the SAME receipt, same fingerprint string, same everything,
+    #    WITH the key does clear the gate. Without that control this case
+    #    would also pass if the receipt were being rejected for some unrelated
+    #    reason, or if the gate had simply stopped allowing anything.
+    repo, reason = dirty_armed_repo("gate-old-format")
+    if reason:
+        cases.append(_case("old-format-receipt-is-ineligible",
+                           "fabricated git repo", False, reason))
+    else:
+        fingerprint = tree_fingerprint(repo)
+        _write_gate_receipt(repo, "same-receipt", "run", fingerprint)
+        control_code, control_message = gate_decide(_payload(repo, "s-old-control"))
+        # Same path, same fingerprint. The only difference is the key.
+        _write_gate_receipt(repo, "same-receipt", "run", fingerprint,
+                            fingerprint_kind=None)
+        code, message = gate_decide(_payload(repo, "s-old"))
+        ok = (
+            control_code == EXIT_PASS
+            and control_message == ""
+            and code == EXIT_GATE_RESERVED
+            and "No PASS receipt matches this tree state" in message
+        )
+        cases.append(_case(
+            "old-format-receipt-is-ineligible",
+            "armed dirty repo whose only PASS run receipt predates fingerprint_kind",
+            ok,
+            "control_exit=" + repr(control_code)
+            + " exit=" + repr(code) + " message=" + repr(message),
+        ))
 
     return cases
 
@@ -1173,7 +1291,90 @@ def cmd_selftest(root: Path) -> int:
             + " content=" + repr(content),
         ))
 
-        # 7-13. The gate's own controls, against real fabricated git repos.
+        # 7. Committing content that is already in the working tree must not
+        #    change the fingerprint. This is the whole point of 3.9.2: a
+        #    receipt earned on verified work survives the commit of that work.
+        #    The control is asserted first and is load-bearing: the edit
+        #    itself MUST have moved the fingerprint. Without it, a
+        #    tree_fingerprint that returned a constant, or None, would sail
+        #    through this case looking like a success.
+        commit_repo = base / "fingerprint-commit"
+        reason = _init_repo(commit_repo, {"src/app.py": "VALUE = 1\n"})
+        if reason:
+            cases.append(_case("commit-does-not-change-fingerprint",
+                               "fabricated git repo", False, reason))
+        else:
+            clean = tree_fingerprint(commit_repo)
+            with open(commit_repo / "src" / "app.py", "w",
+                      encoding="utf-8", newline="\n") as handle:
+                handle.write("VALUE = 2\n")
+            before = tree_fingerprint(commit_repo)
+            failed = None
+            for step in [["add", "--", "src/app.py"],
+                         ["commit", "-q", "-m", "same content, now committed"]]:
+                result = _git(commit_repo, step)
+                if result is None or result[0] != 0:
+                    failed = "git " + step[0] + " failed"
+                    break
+            after = None if failed else tree_fingerprint(commit_repo)
+            control_edit_moved_it = (clean is not None and before is not None
+                                     and before != clean)
+            ok = (
+                failed is None
+                and control_edit_moved_it
+                and after is not None
+                and after == before
+            )
+            cases.append(_case(
+                "commit-does-not-change-fingerprint",
+                "tracked edit, then a commit of that exact content",
+                ok,
+                "control_edit_moved_it=" + repr(control_edit_moved_it)
+                + " clean=" + repr(clean[:12] if clean else clean)
+                + " before_commit=" + repr(before[:12] if before else before)
+                + " after_commit=" + repr(after[:12] if after else after)
+                + (" failed=" + repr(failed) if failed else ""),
+            ))
+
+        # 8. Staging a new file must move the fingerprint; leaving the same
+        #    file untracked must not. Both halves are asserted, and the
+        #    untracked half is the control: a fingerprint that ignored the
+        #    index entirely would satisfy it on its own, so it proves nothing
+        #    unless the staged half is checked alongside it.
+        staged_repo = base / "fingerprint-staged"
+        reason = _init_repo(staged_repo, {"src/app.py": "VALUE = 1\n"})
+        if reason:
+            cases.append(_case("staged-new-file-changes-fingerprint",
+                               "fabricated git repo", False, reason))
+        else:
+            clean = tree_fingerprint(staged_repo)
+            with open(staged_repo / "src" / "new.py", "w",
+                      encoding="utf-8", newline="\n") as handle:
+                handle.write("NEW = 1\n")
+            untracked_fp = tree_fingerprint(staged_repo)
+            result = _git(staged_repo, ["add", "--", "src/new.py"])
+            failed = None if (result and result[0] == 0) else "git add failed"
+            staged_fp = None if failed else tree_fingerprint(staged_repo)
+            control_untracked_invisible = (clean is not None
+                                           and untracked_fp == clean)
+            ok = (
+                failed is None
+                and control_untracked_invisible
+                and staged_fp is not None
+                and staged_fp != clean
+            )
+            cases.append(_case(
+                "staged-new-file-changes-fingerprint",
+                "one new file, first untracked and then staged",
+                ok,
+                "control_untracked_invisible=" + repr(control_untracked_invisible)
+                + " clean=" + repr(clean[:12] if clean else clean)
+                + " untracked=" + repr(untracked_fp[:12] if untracked_fp else untracked_fp)
+                + " staged=" + repr(staged_fp[:12] if staged_fp else staged_fp)
+                + (" failed=" + repr(failed) if failed else ""),
+            ))
+
+        # 9-16. The gate's own controls, against real fabricated git repos.
         cases.extend(_gate_cases(base))
 
     passed = all(c["status"] == "PASS" for c in cases)
@@ -1195,6 +1396,7 @@ def cmd_selftest(root: Path) -> int:
         "dirty": dirty,
         "untracked_count": untracked,
         "tree_fingerprint": tree_fingerprint(root),
+        "fingerprint_kind": "tree",
         "checks": cases,
         "verdict": "PASS" if passed else "FAIL",
         "can_fail_demonstrated": can_fail_demonstrated(),

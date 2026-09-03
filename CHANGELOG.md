@@ -1,5 +1,21 @@
 # MemStack™ Changelog
 
+## v3.9.2 - 2026-09-03 - A commit of verified content keeps its receipt
+
+### Fixed
+- **Committing content that was already verified no longer invalidates its receipt.** The tree fingerprint was a hash of HEAD plus every porcelain status line, so it described where content sat as much as what that content was, and a commit changed both halves at once: HEAD moved and the status lines emptied. A receipt earned seconds earlier stopped matching, and the gate blocked a session whose code nothing had touched since it passed. The fingerprint is now the git tree object for the working tree's tracked content, taken by copying the index, running `git add -u` against the copy, and hashing what `git write-tree` returns. Two trees holding the same tracked content fingerprint identically regardless of which commit they sit on, so moving verified content into a commit leaves its receipt valid. Any edit to a tracked file, staged or not, still changes the content and still moves the fingerprint, so a stale receipt still cannot clear new work.
+- **The block message no longer claims tracked changes exist.** It read "Unverified tracked changes exist", which was false in exactly the case that most often produced it: after a commit the tree is clean and there are no tracked changes at all, only a receipt that no longer matches. It now reads "No PASS receipt matches this tree state", which is the condition the gate actually tests.
+
+### Changed
+- **Receipts carry a `fingerprint_kind` field, and the gate requires it to read `tree`.** A receipt written before 3.9.2 holds a fingerprint of the older kind, in the same field, with the same shape and length. Comparing across the two schemes could only ever match by accident, and an accidental match would clear the gate on work that nothing had verified. Receipts written before 3.9.2 therefore no longer clear the gate. One `python scripts/verify.py run` refreshes them, which is what the gate's message already tells you to do.
+
+### Notes
+- **Untracked files are still excluded, and now inherently rather than by a filter.** `git write-tree` serialises the index, and `git add -u` only ever updates paths git already tracks, so a path git has never heard of is in neither. There is no rule left here that could be forgotten or mis-scoped.
+- **The repository's own index is never touched.** The fingerprint runs against a copy, located with `git rev-parse --git-path index` and named to git through `GIT_INDEX_FILE`, and that copy is deleted on every path including failure. Every failure still returns nothing at all rather than a wrong answer: git absent, not a repository, unmerged entries that write-tree refuses to serialise, or no temp directory available.
+- **The selftest grew from 13 cases to 16**, and each new case asserts a control before its result is allowed to count. A commit of identical content leaves the fingerprint equal, with the control that the edit before it moved the fingerprint. A staged new file moves the fingerprint, with the control that the same file left untracked does not. A PASS run receipt without `fingerprint_kind` fails to clear an armed gate, with the control that the identical receipt carrying the key clears it. The deliberate-FAIL demonstration remains the first case.
+- **PATCH, not MINOR.** The receipt gains a field and the gate gains a condition, but nothing is added to what the tool does, and an install that has run verify once since upgrading behaves as it did before.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+
 ## v3.9.1 - 2026-09-03 - The hook wrapper's line endings are pinned, and bash can read them
 
 ### Fixed
