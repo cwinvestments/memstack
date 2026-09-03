@@ -277,6 +277,23 @@ def tree_fingerprint(root: Path) -> str | None:
     folds in tracked modifications and deletions; files already staged are
     in the copy to begin with.
 
+    The copy must be indistinguishable from the original, mtime included,
+    which is why it is made with copy2 rather than copyfile. Git decides
+    whether to trust an index entry's cached stat data using its racy-clean
+    rule: an entry whose mtime is not older than the index file's own mtime
+    is treated as possibly stale and re-read from disk, while an older entry
+    is trusted on stat alone. copyfile stamps the copy with a fresh mtime,
+    which makes every entry look older than its index and so trusted. A file
+    edited within the same second as the last index write, to content of the
+    same byte length, still matches on the fields git compares, so git
+    serialises its HEAD content instead of what is on disk and the
+    fingerprint silently describes the wrong tree. That is not a rare corner:
+    a 200 iteration probe of one selftest case hit it 33 times, plus 33 more
+    where both computations were wrong in the same direction and agreed.
+    copy2 carries the original mtime across so the rule sees exactly what it
+    would have seen against the real index. The mtime is asserted afterwards
+    and set explicitly with os.utime when a filesystem truncates it.
+
     Untracked files are excluded, and inherently rather than by a filter:
     write-tree serialises the index, `add -u` only ever updates paths git
     already tracks, and a path git has never heard of is in neither. There is
@@ -302,7 +319,16 @@ def tree_fingerprint(root: Path) -> str | None:
             return None
         tmpdir = tempfile.mkdtemp(prefix="memstack-verify-index-")
         copy = Path(tmpdir) / "index"
-        shutil.copyfile(real_index, copy)
+        # copy2, not copyfile: the mtime travels with the bytes. See the
+        # docstring. A fresh mtime here is a silently wrong fingerprint.
+        shutil.copy2(real_index, copy)
+        original_stat = os.stat(real_index)
+        copied_stat = os.stat(copy)
+        if copied_stat.st_mtime_ns != original_stat.st_mtime_ns:
+            # Some filesystems truncate what copy2 sets. Say it in nanoseconds
+            # rather than trust the copy to have carried it.
+            os.utime(copy, ns=(original_stat.st_atime_ns,
+                               original_stat.st_mtime_ns))
 
         env = dict(os.environ)
         # Forward slashes: git for Windows accepts either, this accepts fewer
@@ -1374,7 +1400,137 @@ def cmd_selftest(root: Path) -> int:
                 + (" failed=" + repr(failed) if failed else ""),
             ))
 
-        # 9-16. The gate's own controls, against real fabricated git repos.
+        # 9. Git's racy-clean rule trusts an index entry's cached stat data
+        #    once that entry is older than the index file itself. The temp
+        #    index copy must therefore carry the ORIGINAL index's mtime; with
+        #    a fresh one every entry reads as trusted, and an edit made in the
+        #    same second as the last index write, to content of the same byte
+        #    length, serialises as its HEAD content. This case sets exactly
+        #    that trap and asserts the fingerprint is correct and identical on
+        #    every computation across second boundaries. The control reverts
+        #    the fix in place and requires the trap to actually spring: a
+        #    green result here would otherwise prove only that the trap was
+        #    never armed.
+        def racy_fixture(name: str) -> tuple[Path, str | None, bool]:
+            """Commit N bytes, then overwrite with N different bytes, inside
+            one second. Returns (repo, reason, landed_in_the_same_second)."""
+            repo = base / name
+            for _ in range(12):
+                if repo.exists():
+                    shutil.rmtree(repo, ignore_errors=True)
+                # Begin at the top of a second so init, commit and the edit
+                # all fall inside the same one.
+                time.sleep(max(0.0, 1.0 - (time.time() % 1.0)))
+                reason = _init_repo(repo, {"src/app.py": "VALUE = 1\n"})
+                if reason:
+                    return repo, reason, False
+                edited = repo / "src" / "app.py"
+                with open(edited, "w", encoding="utf-8", newline="\n") as handle:
+                    handle.write("VALUE = 2\n")
+                located = _git(repo, ["rev-parse", "--git-path", "index"])
+                if located is None or located[0] != 0:
+                    return repo, "git could not locate the index", False
+                index_path = Path(located[1].strip())
+                if not index_path.is_absolute():
+                    index_path = repo / index_path
+                try:
+                    if int(index_path.stat().st_mtime) == int(edited.stat().st_mtime):
+                        return repo, None, True
+                except OSError as exc:
+                    return repo, "stat failed: " + repr(exc), False
+            return repo, None, False
+
+        def fingerprint_loop(repo: Path) -> tuple[list[str | None], int]:
+            """50 fingerprints of an unchanging tree, spread over enough wall
+            clock to cross at least two second boundaries."""
+            values: list[str | None] = []
+            seconds = set()
+            for _ in range(50):
+                values.append(tree_fingerprint(repo))
+                seconds.add(int(time.time()))
+                time.sleep(0.02)
+            return values, len(seconds)
+
+        def head_tree_fingerprint(repo: Path) -> str | None:
+            """What a stale answer looks like: the committed tree."""
+            result = _git(repo, ["rev-parse", "HEAD^{tree}"])
+            if result is None or result[0] != 0 or not result[1].strip():
+                return None
+            return hashlib.sha256(
+                ("tree:" + result[1].strip()).encode("utf-8")).hexdigest()
+
+        racy_repo, racy_reason, racy_armed = racy_fixture("fingerprint-racy")
+        control_repo, control_reason, control_armed = racy_fixture(
+            "fingerprint-racy-control")
+        trap_reason = racy_reason or control_reason
+        if trap_reason:
+            cases.append(_case("same-second-edit-fingerprints-consistently",
+                               "fabricated git repo", False, repr(trap_reason)))
+        elif not (racy_armed and control_armed):
+            cases.append(_case(
+                "same-second-edit-fingerprints-consistently",
+                "same-second same-length edit under git's racy-clean rule",
+                False,
+                "trap NOT ARMED: the edit never landed in the index's own"
+                " second (racy=" + repr(racy_armed)
+                + " control=" + repr(control_armed) + ")",
+            ))
+        else:
+            stale_fp = head_tree_fingerprint(racy_repo)
+            values, distinct_seconds = fingerprint_loop(racy_repo)
+
+            # The oracle is independent of the copy logic under test: stage
+            # the modification into the repo's REAL index and serialise that.
+            added = _git(racy_repo, ["add", "-u"])
+            written = (_git(racy_repo, ["write-tree"])
+                       if added is not None and added[0] == 0 else None)
+            expected = None
+            if written is not None and written[0] == 0 and written[1].strip():
+                expected = hashlib.sha256(
+                    ("tree:" + written[1].strip()).encode("utf-8")).hexdigest()
+
+            # Control: put the bug back. copyfile drops the mtime, and the
+            # os.utime correction that backs copy2 up is neutralised too, so
+            # this is the pre-3.9.4 code path exactly. Both are restored in
+            # the finally regardless of what the loop does.
+            real_copy2, real_utime = shutil.copy2, os.utime
+            try:
+                shutil.copy2 = shutil.copyfile
+                os.utime = lambda *a, **k: None
+                control_values, _ = fingerprint_loop(control_repo)
+            finally:
+                shutil.copy2, os.utime = real_copy2, real_utime
+            control_stale_fp = head_tree_fingerprint(control_repo)
+            control_demonstrated = (
+                control_stale_fp is not None
+                and any(v == control_stale_fp for v in control_values))
+
+            all_equal = len(set(values)) == 1
+            correct = expected is not None and values[0] == expected
+            distinct_from_head = expected is not None and expected != stale_fp
+            ok = (all_equal and correct and distinct_from_head
+                  and distinct_seconds >= 3 and control_demonstrated)
+            cases.append(_case(
+                "same-second-edit-fingerprints-consistently",
+                "same-second same-length edit under git's racy-clean rule",
+                ok,
+                "control=" + ("DEMONSTRATED, the reverted fix produced "
+                              + str(sum(1 for v in control_values
+                                        if v == control_stale_fp))
+                              + "/50 stale values"
+                              if control_demonstrated
+                              else "NOT DEMONSTRATED, the reverted fix produced"
+                                   " no stale value so this case proves nothing")
+                + " | distinct_fingerprints=" + str(len(set(values)))
+                + "/50 seconds_spanned=" + str(distinct_seconds)
+                + " matches_edited_content=" + repr(correct)
+                + " differs_from_HEAD_tree=" + repr(distinct_from_head)
+                + " fp=" + repr(values[0][:12] if values[0] else values[0])
+                + " expected=" + repr(expected[:12] if expected else expected)
+                + " HEAD_tree_fp=" + repr(stale_fp[:12] if stale_fp else stale_fp),
+            ))
+
+        # 10-17. The gate's own controls, against real fabricated git repos.
         cases.extend(_gate_cases(base))
 
     passed = all(c["status"] == "PASS" for c in cases)

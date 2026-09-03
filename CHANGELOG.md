@@ -1,5 +1,16 @@
 # MemStack™ Changelog
 
+## v3.9.4 - 2026-09-03 - The tree fingerprint no longer depends on when it is taken
+
+### Fixed
+- **`tree_fingerprint` could return the HEAD tree instead of the working tree, and which one you got depended on the wall clock.** The cause is one line: the temp index was copied with `shutil.copyfile`, which writes the copy with a fresh mtime instead of the original's. Git decides whether to trust an index entry's cached stat data with its racy-clean rule, trusting any entry older than the index file itself and re-reading from disk any entry that is not, so a freshly stamped copy makes every entry look trusted; a tracked file edited within the same second as the last index write, to content of the same byte length, then still matches on the fields git compares, and `git write-tree` serialises its committed content rather than what is on disk. The copy is now made with `shutil.copy2`, which carries the original mtime across, and the copy's `st_mtime_ns` is compared against the original's afterwards and set explicitly with `os.utime` on any filesystem that truncates it. A receipt written before this release could therefore record the HEAD tree for a same-second, same-length edit, describing content that was never verified.
+- **The selftest is no longer intermittent.** The same defect made `gate-allows-matching-pass-receipt` fail at random: the case wrote a receipt carrying one fingerprint and the gate then computed another for the same untouched tree. A 200 iteration probe of that single case measured 33 blocks, and a further 33 runs that passed only because both computations were wrong in the same direction and agreed. The same probe against the fixed function measures 0 blocks and 0 wrong fingerprints in 200 iterations, with all three computations per iteration identical.
+
+### Notes
+- **The selftest grew from 16 cases to 17.** The new case, `same-second-edit-fingerprints-consistently`, arms the trap rather than waiting for it: it commits a file, overwrites it with different content of the same byte length inside the same wall-clock second, asserts that the edit really did land in the index's own second, and then takes 50 fingerprints spread across several second boundaries. All 50 must be equal, and must equal a fingerprint taken from the repository's real index after a genuine `git add -u`, which is an oracle independent of the copy logic under test. Its control puts the bug back in place for a second fixture, reverting `copy2` to `copyfile` and neutralising the `os.utime` correction, and the case reports the control as not demonstrated rather than passing if that reverted path fails to produce a stale value. It currently reports 50 of 50 stale under the reverted fix and 1 distinct fingerprint in 50 under the fix. If the trap cannot be armed on a given machine, the case says so and fails rather than reporting a green it did not earn. The deliberate-FAIL demonstration remains the first case.
+- **PATCH, not MINOR.** One line of copy behaviour and one new selftest case. Nothing is added to what the tool does.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+
 ## v3.9.3 - 2026-09-03 - No em or en dashes anywhere in the repo
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "memstack",
-  "version": "3.9.3",
+  "version": "3.9.4",
   "description": "130 battle-tested skills for Claude Code. Session memory, git workflows, database migrations, security scanning, deployments, and more. Auto-trigger commands and project handoffs via markdown-based skills.",
   "author": {
     "name": "CW Affiliate Investments, LLC",
