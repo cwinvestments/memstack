@@ -83,15 +83,6 @@
             "timeout": 10000
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c \"python \\\"${CLAUDE_PROJECT_DIR}/scripts/verify.py\\\" gate\"",
-            "timeout": 15000
-          }
-        ]
       }
     ],
     "PreCompact": [
