@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-MemStack SQLite Memory Backend — CLI Helper
+MemStack SQLite Memory Backend: CLI Helper
 Repository pattern: skills call this script instead of raw file I/O.
 
 Usage:
@@ -118,7 +118,7 @@ def _known_project_dirs(memory_db, project) -> list:
 
     Prefers find_project_dirs_by_name, which distinguishes "never seen" (0) from
     "collides with another project" (2+). Older loaders only have
-    resolve_project_dir_by_name, which collapses both to None — there we fall
+    resolve_project_dir_by_name, which collapses both to None, there we fall
     back and simply cannot report ambiguity, which is no worse than before.
     """
     finder = getattr(memory_db, "find_project_dirs_by_name", None)
@@ -137,7 +137,7 @@ def resolve_project_dir(memory_db, project) -> dict:
 
     Auto-registration is deliberately gated on the CURRENT WORKING DIRECTORY
     agreeing with the supplied name. The diary invokes this script from the
-    project root, so cwd is the project — but a name that does NOT match cwd is
+    project root, so cwd is the project, but a name that does NOT match cwd is
     almost always an ad-hoc label ("general", "test", "SnowTrack+LawnTrack")
     rather than a real repo, and registering those would pollute cross-project
     recall permanently. Requiring corroboration from the filesystem the process
@@ -148,7 +148,7 @@ def resolve_project_dir(memory_db, project) -> dict:
         return {"project_dir": known[0]}
     if len(known) > 1:
         return {
-            "reason": "ambiguous project {!r}: {} known paths ({}) — refusing "
+            "reason": "ambiguous project {!r}: {} known paths ({}): refusing "
                       "to guess".format(project, len(known), ", ".join(known))
         }
 
@@ -168,7 +168,7 @@ def resolve_project_dir(memory_db, project) -> dict:
     if cwd_name.lower() != name.lower():
         return {
             "reason": "unrecognized project {!r}: not in the memory store, and "
-                      "cwd basename is {!r} — not auto-registering".format(name, cwd_name)
+                      "cwd basename is {!r}: not auto-registering".format(name, cwd_name)
         }
     return {"project_dir": cwd, "autoregistered": cwd}
 
@@ -190,7 +190,7 @@ def bridge_to_loader(project, type_value, content, context, tags, created_at) ->
         # 4. Resolve the name against paths the store already knows.
         #
         # A name can fail for three different reasons, and they are NOT
-        # interchangeable — reporting all of them as "unknown project" sent a
+        # interchangeable, reporting all of them as "unknown project" sent a
         # real investigation looking for a missing registration when the actual
         # fault was a duplicate. Report each honestly, and auto-register only
         # the one case where the filesystem corroborates the name.
@@ -539,7 +539,7 @@ def cmd_update_task(args):
 def cmd_export_md(args):
     """Export all memory for a project as markdown."""
     conn = get_db()
-    lines = [f"# Memory Export — {args.project}\n"]
+    lines = [f"# Memory Export: {args.project}\n"]
 
     # Sessions
     sessions = conn.execute(

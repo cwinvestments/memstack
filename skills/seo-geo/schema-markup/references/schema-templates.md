@@ -10,7 +10,7 @@ All JSON blocks below go inside:
 </script>
 ```
 
-Remove any optional field you can't populate with real data — empty or fake values can trigger Google manual actions. Never copy a template that references reviews, ratings, or prices you don't actually have.
+Remove any optional field you can't populate with real data. Empty or fake values can trigger Google manual actions. Never copy a template that references reviews, ratings, or prices you don't actually have.
 
 ---
 
@@ -44,7 +44,7 @@ Remove any optional field you can't populate with real data — empty or fake va
 ```
 
 **Required:** `mainEntity` array with at least one `Question` → `acceptedAnswer` → `Answer.text`.
-**Rich result:** FAQ dropdowns in SERP (Google may show 2–4 questions).
+**Rich result:** FAQ dropdowns in SERP (Google may show 2 to 4 questions).
 
 ---
 
@@ -147,7 +147,7 @@ Remove any optional field you can't populate with real data — empty or fake va
 ```
 
 **Required for rich results:** `name`, `applicationCategory`, `operatingSystem`, `offers` (with `price` + `priceCurrency`).
-**Optional:** `aggregateRating` — **only add if you have real, verifiable reviews**. Fake ratings trigger Google manual actions.
+**Optional:** `aggregateRating`, **only add if you have real, verifiable reviews**. Fake ratings trigger Google manual actions.
 **Rich result:** Software info panel with price and category.
 
 ---
@@ -179,7 +179,7 @@ Remove any optional field you can't populate with real data — empty or fake va
 ```
 
 **Required:** `name`, `url`.
-**Recommended:** `logo` (PNG, min 112×112), `sameAs` (social profile URLs — feeds Google's knowledge graph), `contactPoint`.
+**Recommended:** `logo` (PNG, min 112×112), `sameAs` (social profile URLs, feeds Google's knowledge graph), `contactPoint`.
 **Rich result:** Knowledge panel eligibility (not guaranteed).
 
 ---
@@ -393,13 +393,13 @@ Remove any optional field you can't populate with real data — empty or fake va
 ```
 
 **Required:** One of `cssSelector` (array) or `xpath` (array).
-**Note:** `SpeakableSpecification` is always nested inside another schema (usually `WebPage` or `Article`). Point CSS selectors at sections that read well out of context — avoid selectors that grab navigation, forms, or raw lists.
+**Note:** `SpeakableSpecification` is always nested inside another schema (usually `WebPage` or `Article`). Point CSS selectors at sections that read well out of context: avoid selectors that grab navigation, forms, or raw lists.
 
 ---
 
 ## Combined `@graph` Example
 
-**When to use:** Bundling multiple schemas on a single page (common for homepages — Organization + WebSite + FAQPage all in one block). A single `@graph` array keeps related schemas explicitly linked via `@id` references and avoids duplicate `@context` declarations.
+**When to use:** Bundling multiple schemas on a single page (common for homepages, Organization + WebSite + FAQPage all in one block). A single `@graph` array keeps related schemas explicitly linked via `@id` references and avoids duplicate `@context` declarations.
 
 ```json
 {
@@ -471,7 +471,7 @@ Remove any optional field you can't populate with real data — empty or fake va
 
 Before deploying any schema block:
 
-- [ ] Parses as valid JSON (`JSON.parse` without errors — no trailing commas, no single quotes)
+- [ ] Parses as valid JSON (`JSON.parse` without errors, no trailing commas, no single quotes)
 - [ ] All `url` / `@id` / image fields are absolute URLs with `https://`
 - [ ] Dates are ISO 8601 (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM:SS+00:00`)
 - [ ] Required fields for the `@type` are all present (see per-type requirements above)

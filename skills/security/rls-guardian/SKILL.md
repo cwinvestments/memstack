@@ -2,17 +2,17 @@
 name: memstack-security-rls-guardian
 description: "Use this skill when creating or altering database tables in Supabase or PostgreSQL projects. Triggers include: CREATE TABLE, ALTER TABLE, migration files, 'RLS', 'row level security', 'new table', 'database schema'. Enforces Row Level Security policies on every table to prevent unauthorized data access. Do NOT use for general SQL queries or non-schema database tasks."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# RLS Guardian — Enforcing Row Level Security...
+# RLS Guardian: Enforcing Row Level Security...
 *Enforces Row Level Security on every Supabase table creation, ensuring no table goes live without proper access policies. Provides 4 policy patterns, migration templates, pre-commit checks, and audit queries to find unprotected tables.*
 
 ## Activation
 
 When this skill activates, output:
 
-`RLS Guardian — Enforcing Row Level Security...`
+`RLS Guardian: Enforcing Row Level Security...`
 
 Then execute the protocol below.
 
@@ -24,8 +24,8 @@ Then execute the protocol below.
 | User creates or edits a migration file | ACTIVE |
 | User says "new table", "database schema", "add table" | ACTIVE |
 | User says "RLS", "row level security", "table policies" | ACTIVE |
-| User asks for a general RLS audit of existing tables | DORMANT — use RLS Checker |
-| User asks a general SQL query unrelated to schema | DORMANT — do not activate |
+| User asks for a general RLS audit of existing tables | DORMANT: use RLS Checker |
+| User asks a general SQL query unrelated to schema | DORMANT: do not activate |
 
 ## Common Mistakes
 
@@ -68,9 +68,9 @@ Does the table have a user_id column?
 ### Step 2: Write the Migration
 
 Every table migration MUST include 3 parts in this order:
-1. `CREATE TABLE` — the schema
-2. `ALTER TABLE ENABLE ROW LEVEL SECURITY` — the lock
-3. `CREATE POLICY` — the keys (all 4 operations)
+1. `CREATE TABLE`: the schema
+2. `ALTER TABLE ENABLE ROW LEVEL SECURITY`: the lock
+3. `CREATE POLICY`: the keys (all 4 operations)
 
 **Pattern A: User-scoped table**
 
@@ -302,7 +302,7 @@ ORDER BY tablename;
 **Find tables with RLS enabled but missing policies:**
 
 ```sql
--- Tables with RLS but no policies (locked out — no access at all)
+-- Tables with RLS but no policies (locked out, no access at all)
 SELECT t.tablename
 FROM pg_tables t
 LEFT JOIN pg_policies p ON t.tablename = p.tablename
@@ -343,7 +343,7 @@ ORDER BY t.tablename;
 -- Mark as system table with comment, enable RLS with no policies
 -- This blocks ALL access except service role (which bypasses RLS)
 ALTER TABLE cron_jobs ENABLE ROW LEVEL SECURITY;
-COMMENT ON TABLE cron_jobs IS 'rls:system — service role only, no user access';
+COMMENT ON TABLE cron_jobs IS 'rls:system, service role only, no user access';
 ```
 
 **Tables with soft-delete:**
@@ -373,7 +373,7 @@ CREATE POLICY "Viewers can only read"
   );
 ```
 
-**ALTER TABLE — adding columns:**
+**ALTER TABLE: adding columns:**
 
 ```sql
 -- When adding a sensitive column to an existing table,
@@ -415,7 +415,7 @@ When generating a migration that includes a table, output:
 ## Completion
 
 ```
-RLS Guardian — Enforced!
+RLS Guardian: Enforced!
 
 Table: [name]
 Pattern: [user-scoped / org-scoped / public-read / junction / system]
@@ -427,4 +427,4 @@ Checklist: All items passed
 
 ## Level History
 
-- **Lv.1** — Base: 5 table classification patterns (user-scoped, org-scoped, public-read, junction, system), decision tree for pattern selection, 4 complete migration templates with RLS + all CRUD policies, pre-commit checklist (10 items), 3 audit queries (unprotected tables, missing policies, incomplete coverage), special case handling (system tables, soft-delete, row-level roles, ALTER TABLE). (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 5 table classification patterns (user-scoped, org-scoped, public-read, junction, system), decision tree for pattern selection, 4 complete migration templates with RLS + all CRUD policies, pre-commit checklist (10 items), 3 audit queries (unprotected tables, missing policies, incomplete coverage), special case handling (system tables, soft-delete, row-level roles, ALTER TABLE). (Origin: MemStack Pro v3.2, Mar 2026)

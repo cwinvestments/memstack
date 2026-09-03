@@ -5,14 +5,14 @@ version: 1.0.0
 ---
 
 
-# 👁️ Sight — The Hidden Becomes Clear
+# 👁️ Sight: The Hidden Becomes Clear
 *Generate Mermaid diagrams showing project architecture, schema, and data flow.*
 
 ## Activation
 
 When this skill activates, output:
 
-`👁️ Sight — The hidden becomes clear.`
+`👁️ Sight: The hidden becomes clear.`
 
 Then execute the protocol below.
 
@@ -20,11 +20,11 @@ Then execute the protocol below.
 
 | Context | Status |
 |---------|--------|
-| **User asks for a diagram or visualization** | ACTIVE — generate diagram |
-| **User says "draw", "diagram", "architecture"** | ACTIVE — generate diagram |
-| **User asks to "show" or "map" the structure** | ACTIVE — generate diagram |
-| **Discussing diagrams conceptually** | DORMANT — do not activate |
-| **User is looking at existing diagrams** | DORMANT — do not activate |
+| **User asks for a diagram or visualization** | ACTIVE: generate diagram |
+| **User says "draw", "diagram", "architecture"** | ACTIVE: generate diagram |
+| **User asks to "show" or "map" the structure** | ACTIVE: generate diagram |
+| **Discussing diagrams conceptually** | DORMANT: do not activate |
+| **User is looking at existing diagrams** | DORMANT: do not activate |
 
 ## Protocol
 
@@ -58,7 +58,7 @@ Then execute the protocol below.
 **User:** "draw the AdminStack database schema"
 
 ```
-👁️ Sight — The hidden becomes clear.
+👁️ Sight: The hidden becomes clear.
 
 ​```mermaid
 erDiagram
@@ -83,5 +83,5 @@ erDiagram
 
 ## Level History
 
-- **Lv.1** — Base: Mermaid diagram generation from codebase analysis. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message, diagram type detection. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.1**: Base: Mermaid diagram generation from codebase analysis. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, context guard, activation message, diagram type detection. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

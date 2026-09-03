@@ -1,4 +1,4 @@
-# Session Handoff — {project_name}
+# Session Handoff: {project_name}
 
 **Date:** {date}
 **Session Duration:** {duration}

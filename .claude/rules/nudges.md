@@ -1,4 +1,4 @@
-# Nudges — Gentle Redirects for Better Outcomes
+# Nudges: Gentle Redirects for Better Outcomes
 
 ## Nudge 1: Research Mode Redirect
 

@@ -2,17 +2,17 @@
 name: memstack-development-migration-planner
 description: "Use this skill when the user says 'migration', 'schema change', 'database migration', 'alter table', 'add column', 'change type', 'rollback plan', or needs safe database schema evolution with zero-downtime strategies. Do NOT use for initial database design (use database-architect) or code refactoring."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Migration Planner — Planning database migration...
+# Migration Planner: Planning database migration...
 *Plans safe database schema migrations with zero-downtime strategies, rollback procedures, data validation checkpoints, and version tracking for PostgreSQL, MySQL, and SQLite.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Migration Planner — Planning database migration...`
+`Migration Planner: Planning database migration...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "migration", "schema change", "database migration" | ACTIVE |
 | User says "alter table", "add column", "change type", "rollback plan" | ACTIVE |
 | User wants to evolve an existing database schema safely | ACTIVE |
-| User wants to design a new database from scratch | DORMANT — use Database Architect |
-| User wants to refactor application code | DORMANT — use Refactor Planner |
+| User wants to design a new database from scratch | DORMANT: use Database Architect |
+| User wants to refactor application code | DORMANT: use Refactor Planner |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Database** — what engine? (PostgreSQL, MySQL, SQLite, MongoDB)
-> 2. **Current schema** — what does the table/schema look like now?
-> 3. **Target schema** — what should it look like after migration?
-> 4. **Data volume** — how many rows in affected tables?
-> 5. **Downtime tolerance** — zero-downtime required, or maintenance window OK?
-> 6. **Migration tool** — what do you use? (Prisma, Knex, Flyway, Alembic, raw SQL, other)
+> 1. **Database**: what engine? (PostgreSQL, MySQL, SQLite, MongoDB)
+> 2. **Current schema**: what does the table/schema look like now?
+> 3. **Target schema**: what should it look like after migration?
+> 4. **Data volume**: how many rows in affected tables?
+> 5. **Downtime tolerance**: zero-downtime required, or maintenance window OK?
+> 6. **Migration tool**: what do you use? (Prisma, Knex, Flyway, Alembic, raw SQL, other)
 
 ### Step 2: Classify the Migration
 
@@ -227,7 +227,7 @@ Every migration MUST have a tested rollback:
 - Alembic: `alembic downgrade -1`
 
 ### Manual Rollback SQL
-[Exact SQL to reverse the migration — tested before deploying forward]
+[Exact SQL to reverse the migration: tested before deploying forward]
 
 ### Rollback Verification
 After rolling back, verify:
@@ -345,7 +345,7 @@ Assemble everything into an execution plan:
 
 ### Post-Migration
 - [ ] Run validation checklist (Step 6)
-- [ ] Verify application logs — no errors
+- [ ] Verify application logs: no errors
 - [ ] Monitor query performance for 24 hours
 - [ ] Update schema documentation
 - [ ] Close migration ticket
@@ -380,34 +380,34 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
 ## Output Format
 
 ```markdown
-# Migration Plan — [Description]
+# Migration Plan: [Description]
 
 ## Classification
-[From Step 2 — change types, risk levels, strategies]
+[From Step 2: change types, risk levels, strategies]
 
 ## Migration SQL
-[From Step 3 — forward migration with safe patterns]
+[From Step 3, forward migration with safe patterns]
 
 ## Backfill Strategy
-[From Step 4 — batch processing plan, if data migration needed]
+[From Step 4, batch processing plan, if data migration needed]
 
 ## Rollback Plan
-[From Step 5 — rollback SQL + point of no return]
+[From Step 5, rollback SQL + point of no return]
 
 ## Validation
-[From Step 6 — pre/post checks with expected values]
+[From Step 6, pre/post checks with expected values]
 
 ## Execution Plan
-[From Step 7 — phased checklist with time estimates]
+[From Step 7, phased checklist with time estimates]
 
 ## Version
-[From Step 8 — migration file naming and tracking]
+[From Step 8, migration file naming and tracking]
 ```
 
 ## Completion
 
 ```
-Migration Planner — Complete!
+Migration Planner: Complete!
 
 Database: [Engine]
 Changes: [X] schema changes planned
@@ -418,7 +418,7 @@ Rollback tested: [Yes/No]
 
 Next steps:
 1. Test migration on staging with production-size data
-2. Test rollback on staging — verify clean reversal
+2. Test rollback on staging: verify clean reversal
 3. Run validation queries after staging migration
 4. Schedule production migration: [suggested window]
 5. Execute migration following the phased checklist
@@ -427,4 +427,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 10 migration types with risk/lock classification, 6 safe migration patterns (add nullable, add NOT NULL 3-step, rename 3-phase, type swap, concurrent index, NOT VALID FK), batch backfill with sizing guide, rollback procedures with point-of-no-return, pre/post validation checkpoints, phased execution plan template, version tracking conventions for 5 tools. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 10 migration types with risk/lock classification, 6 safe migration patterns (add nullable, add NOT NULL 3-step, rename 3-phase, type swap, concurrent index, NOT VALID FK), batch backfill with sizing guide, rollback procedures with point-of-no-return, pre/post validation checkpoints, phased execution plan template, version tracking conventions for 5 tools. (Origin: MemStack Pro v3.2, Mar 2026)

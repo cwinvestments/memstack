@@ -2,17 +2,17 @@
 name: memstack-deployment-railway-deploy
 description: "Use this skill when the user says 'deploy to Railway', 'Railway setup', 'railway-deploy', or needs to deploy a Node.js, Python, or Docker application to Railway with environment variables, custom domains, and monitoring. Do NOT use for Netlify, Vercel, or Hetzner deployments."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🚂 Railway Deploy — Pre-flight check and deploy to Railway...
+# 🚂 Railway Deploy: Pre-flight check and deploy to Railway...
 *Validates project configuration, environment variables, and deployment readiness before pushing to Railway.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🚂 Railway Deploy — Running pre-flight checks...`
+`🚂 Railway Deploy: Running pre-flight checks...`
 
 Then execute the protocol below.
 
@@ -68,8 +68,8 @@ ls Dockerfile Procfile nixpacks.toml railway.toml 2>/dev/null
 |------|---------|-----------|
 | `Dockerfile` | Explicit container build | Recommended for complex projects |
 | `Procfile` | Process start command | Optional if start script exists |
-| `nixpacks.toml` | Nixpacks build config | Optional — auto-detected |
-| `railway.toml` | Railway-specific settings | Optional — build/deploy overrides |
+| `nixpacks.toml` | Nixpacks build config | Optional: auto-detected |
+| `railway.toml` | Railway-specific settings | Optional: build/deploy overrides |
 
 If none exist, check that nixpacks can auto-detect:
 - Node.js: `package.json` must have `start` script or `main` field
@@ -97,9 +97,9 @@ Check for these common categories:
 | URLs | `FRONTEND_URL`, `BACKEND_URL`, `CORS_ORIGIN` |
 
 **Output:** List each variable with status:
-- ✅ Set in `.env.example` — verify it's configured in Railway dashboard
-- ⚠️ Referenced in code but not in `.env.example` — add to Railway
-- ❌ Hardcoded value found — extract to environment variable
+- ✅ Set in `.env.example`, verify it's configured in Railway dashboard
+- ⚠️ Referenced in code but not in `.env.example`: add to Railway
+- ❌ Hardcoded value found: extract to environment variable
 
 **Remind user:** "Set these in Railway dashboard → Variables tab. Never commit actual values."
 
@@ -116,7 +116,7 @@ cat Procfile 2>/dev/null || cat pyproject.toml 2>/dev/null | grep -A5 '\[tool.po
 Verify:
 - **Build command** exists and produces output (e.g., `npm run build` → `dist/` or `.next/`)
 - **Start command** uses production mode (not `dev` or `nodemon`)
-- **Port** reads from `process.env.PORT` or `os.environ["PORT"]` — Railway assigns this dynamically
+- **Port** reads from `process.env.PORT` or `os.environ["PORT"]`: Railway assigns this dynamically
 
 **Flag if:** Start command uses hardcoded port (e.g., `app.listen(3000)` without PORT env fallback).
 
@@ -130,10 +130,10 @@ grep -r "localhost:5432\|localhost:3306\|localhost:6379\|127.0.0.1" --include="*
 ```
 
 Railway internal networking rules:
-- ✅ `${{Postgres.DATABASE_URL}}` — Railway reference variable
-- ✅ `*.railway.internal:5432` — internal hostname (no egress cost)
-- ❌ `localhost:5432` — won't resolve in Railway container
-- ❌ Public Railway URL with port — adds latency, uses egress bandwidth
+- ✅ `${{Postgres.DATABASE_URL}}`: Railway reference variable
+- ✅ `*.railway.internal:5432`, internal hostname (no egress cost)
+- ❌ `localhost:5432`, won't resolve in Railway container
+- ❌ Public Railway URL with port, adds latency, uses egress bandwidth
 
 **Flag if:** Any hardcoded `localhost` or `127.0.0.1` database URLs found.
 
@@ -179,7 +179,7 @@ grep -rn "localhost\|127\.0\.0\.1" --include="*.ts" --include="*.js" --include="
 **Output pre-deploy summary:**
 
 ```
-🚂 Railway Deploy — Pre-flight Complete
+🚂 Railway Deploy: Pre-flight Complete
 
 Project: [name] ([type])
 Build: ✅ passes
@@ -206,11 +206,11 @@ After deployment completes:
 - Or via CLI: `railway rollback`
 
 **If deploy fails:**
-1. Check build logs first — dependency or build script errors
-2. Check runtime logs — missing env vars show as undefined/null errors
-3. Check health check timeout — app may be starting slowly (increase timeout in Settings)
+1. Check build logs first, dependency or build script errors
+2. Check runtime logs, missing env vars show as undefined/null errors
+3. Check health check timeout, app may be starting slowly (increase timeout in Settings)
 4. Verify Railway service is connected to correct GitHub branch
 
 ## Level History
 
-- **Lv.1** — Base: Project detection, env var verification, build validation, database connection checks, health endpoint, pre/post-deploy checklists. Based on AdminStack, DeedStack, AlgoStack, and EpsteinScan Railway deployments. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Project detection, env var verification, build validation, database connection checks, health endpoint, pre/post-deploy checklists. Based on AdminStack, DeedStack, AlgoStack, and EpsteinScan Railway deployments. (Origin: MemStack Pro v3.2, Mar 2026)

@@ -2,17 +2,17 @@
 name: memstack-seo-ai-search-visibility
 description: "Use this skill when the user says 'AI search', 'AI visibility', 'ChatGPT ranking', 'Perplexity optimization', 'GEO', 'generative engine optimization', or needs to optimize content for AI-powered search engines and LLM citations. Do NOT use for traditional SEO audits or Google Ads."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🤖 AI Search Visibility — Optimizing for AI search engines...
-*Evaluates and optimizes content for citation by AI search engines (ChatGPT, Perplexity, Google AI Overview, Claude) — checking crawler access, content structure, llms.txt, and AI-friendly patterns.*
+# 🤖 AI Search Visibility: Optimizing for AI search engines...
+*Evaluates and optimizes content for citation by AI search engines (ChatGPT, Perplexity, Google AI Overview, Claude): checking crawler access, content structure, llms.txt, and AI-friendly patterns.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🤖 AI Search Visibility — Analyzing AI search readiness...`
+`🤖 AI Search Visibility: Analyzing AI search readiness...`
 
 Then execute the protocol below.
 
@@ -22,7 +22,7 @@ Then execute the protocol below.
 | User says "ChatGPT ranking" or "Perplexity" or "AI overview" | ACTIVE |
 | User says "llms.txt" or "AI visibility" | ACTIVE |
 | Optimizing content for AI-generated citations and references | ACTIVE |
-| Traditional SEO (meta tags, keywords) | DORMANT — use site-audit or meta-tag-optimizer |
+| Traditional SEO (meta tags, keywords) | DORMANT, use site-audit or meta-tag-optimizer |
 | Building AI products (not optimizing for AI search) | DORMANT |
 
 ### Anti-patterns
@@ -127,11 +127,11 @@ grep -rn "^##.*\?\|^###.*\?" --include="*.md" --include="*.mdx" . | grep -v node
 
 | Pattern | Why It Gets Skipped |
 |---------|-------------------|
-| Marketing superlatives | "The best, most amazing, incredible tool" — no information content |
-| Vague descriptions | "We help businesses grow" — not citable, not specific |
-| Gated content | Behind login/paywall — AI can't access or cite it |
-| Image-only information | Charts, infographics without text summaries — AI can't read images |
-| Heavy JavaScript rendering | Content that requires JS execution to appear — many bots don't render JS |
+| Marketing superlatives | "The best, most amazing, incredible tool": no information content |
+| Vague descriptions | "We help businesses grow": not citable, not specific |
+| Gated content | Behind login/paywall, AI can't access or cite it |
+| Image-only information | Charts, infographics without text summaries, AI can't read images |
+| Heavy JavaScript rendering | Content that requires JS execution to appear, many bots don't render JS |
 
 ### Step 3: Optimize Content Structure for AI
 
@@ -139,22 +139,22 @@ Transform existing content to be more AI-citation-friendly:
 
 **For each key page, ensure:**
 
-1. **Opening definition** — first paragraph directly defines or explains the topic
-2. **Clear headings as questions** — H2/H3 headings phrased as questions users ask
-3. **Direct answers below headings** — first sentence after each heading is the answer
-4. **Structured lists** — steps, features, and comparisons as numbered/bulleted lists
-5. **Data and specifics** — concrete numbers, dates, and facts over vague claims
-6. **Author expertise signals** — mention qualifications, experience, or data sources
+1. **Opening definition**: first paragraph directly defines or explains the topic
+2. **Clear headings as questions**: H2/H3 headings phrased as questions users ask
+3. **Direct answers below headings**: first sentence after each heading is the answer
+4. **Structured lists**: steps, features, and comparisons as numbered/bulleted lists
+5. **Data and specifics**: concrete numbers, dates, and facts over vague claims
+6. **Author expertise signals**: mention qualifications, experience, or data sources
 
 **Before/after example:**
 
 ```markdown
-# BEFORE (marketing copy — AI skips this)
+# BEFORE (marketing copy: AI skips this)
 ## Why Choose Acme?
 Acme is the leading project management solution that helps teams
 collaborate better and deliver faster. Our innovative platform...
 
-# AFTER (AI-citable — direct, structured, specific)
+# AFTER (AI-citable: direct, structured, specific)
 ## What is Acme?
 Acme is a project management platform for remote teams that combines
 task tracking, real-time collaboration, and automated reporting.
@@ -169,38 +169,38 @@ task tracking, real-time collaboration, and automated reporting.
 
 ### Step 3.5: Apply Princeton GEO Methods to Content
 
-Princeton's 2023 GEO study (Aggarwal et al., arXiv:2311.09735, accepted at KDD 2024) tested nine optimization methods on Perplexity.ai and measured consistent visibility deltas vs. unoptimized baselines. Apply these to any page targeting AI citation — they translate directly into rewrites, not just crawler hygiene.
+Princeton's 2023 GEO study (Aggarwal et al., arXiv:2311.09735, accepted at KDD 2024) tested nine optimization methods on Perplexity.ai and measured consistent visibility deltas vs. unoptimized baselines. Apply these to any page targeting AI citation, they translate directly into rewrites, not just crawler hygiene.
 
-**The 9 GEO methods — ranked by measured visibility boost:**
+**The 9 GEO methods, ranked by measured visibility boost:**
 
 | Method | Visibility Δ | What to do | Example rewrite |
 |---|---|---|---|
 | **Cite Sources** | **+40%** | Add authoritative references with attribution | "According to a 2024 Stanford study (Chen et al.), AI tools improved developer productivity by 55%." |
 | **Statistics Addition** | **+37%** | Include specific numbers and data points | "67% of Fortune 500 companies use AI chatbots, handling 85% of routine inquiries." |
 | **Quotation Addition** | **+30%** | Expert quotes with attribution | "'We'll see the first one-person billion-dollar company within years,' said Sam Altman, OpenAI CEO." |
-| **Authoritative Tone** | **+25%** | Confident, expert language | "This demonstrably improves X" — not "This might help with X, I think." |
+| **Authoritative Tone** | **+25%** | Confident, expert language | "This demonstrably improves X", not "This might help with X, I think." |
 | **Simplification** (easy-to-understand) | **+20%** | Rephrase jargon for broader accessibility | "RAG works like a research assistant: it finds relevant info, then writes an answer from it." |
-| **Technical Terms** | **+18%** | Precise domain terminology where it fits | "LCP exceeds 4 seconds, CLS scores 0.3" — not "the page is slow." |
+| **Technical Terms** | **+18%** | Precise domain terminology where it fits | "LCP exceeds 4 seconds, CLS scores 0.3", not "the page is slow." |
 | **Unique Terminology** | **+15%** | Vary vocabulary; avoid repetition | Use synonyms and contextual variations rather than the same phrase 10 times. |
-| **Fluency Optimization** | **+15–30%** | Clean sentence flow, transitions, short paragraphs | Logical progression, 2–3 sentence paragraphs, transition words between sections. |
-| ~~Keyword Stuffing~~ | **−10%** | **AVOID** — actively reduces AI visibility | ❌ "SEO SEO best SEO for all your SEO SEO needs." |
+| **Fluency Optimization** | **+15 to 30%** | Clean sentence flow, transitions, short paragraphs | Logical progression, 2 to 3 sentence paragraphs, transition words between sections. |
+| ~~Keyword Stuffing~~ | **−10%** | **AVOID**: actively reduces AI visibility | ❌ "SEO SEO best SEO for all your SEO SEO needs." |
 
 **Best-performing combinations** (pairs tested in the Princeton research outperform individual methods):
 
 | Combination | Best for |
 |---|---|
-| **Fluency + Statistics** | Highest overall boost across domains — universal starting point |
+| **Fluency + Statistics** | Highest overall boost across domains: universal starting point |
 | **Citations + Authoritative Tone** | Professional / B2B / thought leadership content |
 | **Simplification + Statistics** | Consumer-facing content and general audiences |
 | **Technical Terms + Citations** | Academic, scientific, and highly technical content |
 
-**Domain-specific method matrix** — which methods to emphasize per vertical (and which to avoid):
+**Domain-specific method matrix**: which methods to emphasize per vertical (and which to avoid):
 
 | Vertical | Apply | Avoid |
 |---|---|---|
-| **Technology** | Technical Terms + Citations + Statistics | Oversimplification — audience expects depth |
+| **Technology** | Technical Terms + Citations + Statistics | Oversimplification: audience expects depth |
 | **Business / Finance** | Statistics + Authoritative Tone + Citations | Vague claims, superlatives without data |
-| **Healthcare** | Simplification + Statistics + Citations | Jargon overload — accessibility matters |
+| **Healthcare** | Simplification + Statistics + Citations | Jargon overload: accessibility matters |
 | **Legal** | Citations + Quotations + Authoritative Tone | Informal language, hedging |
 | **Education** | Simplification + Examples + Structure | Excessive complexity or abstraction |
 | **E-commerce** | Statistics + Social Proof + Clear Benefits | Feature dumps without outcomes |
@@ -213,7 +213,7 @@ Princeton's 2023 GEO study (Aggarwal et al., arXiv:2311.09735, accepted at KDD 2
 
 **Reference:** Aggarwal, P., Murahari, V., Rajpurohit, T., Kalyan, A., Narasimhan, K., & Deshpande, A. (2023). *GEO: Generative Engine Optimization.* arXiv:2311.09735. Accepted at KDD 2024 (30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining).
 
-**Platform-specific tuning:** For how each AI search engine (ChatGPT, Perplexity, Google AI Overview, Copilot, Claude) actually ranks and cites content — with measured stats on citation share, freshness windows, and per-platform format preferences — see [`../site-audit/references/platform-ranking-factors.md`](../site-audit/references/platform-ranking-factors.md). The Princeton methods above are universal; the platform reference tells you where to spend effort first based on your audience.
+**Platform-specific tuning:** For how each AI search engine (ChatGPT, Perplexity, Google AI Overview, Copilot, Claude) actually ranks and cites content (with measured stats on citation share, freshness windows, and per-platform format preferences) see [`../site-audit/references/platform-ranking-factors.md`](../site-audit/references/platform-ranking-factors.md). The Princeton methods above are universal; the platform reference tells you where to spend effort first based on your audience.
 
 ### Step 4: Add llms.txt File
 
@@ -259,7 +259,7 @@ When referencing our content, please use:
 
 Place at `public/llms.txt` so it's accessible at `https://domain.com/llms.txt`.
 
-**Also consider `llms-full.txt`** — a more detailed version with complete documentation or content summaries for AI systems that want deeper context.
+**Also consider `llms-full.txt`**: a more detailed version with complete documentation or content summaries for AI systems that want deeper context.
 
 ### Step 5: Optimize for Featured Snippets / AI Overview
 
@@ -288,8 +288,8 @@ Track whether your content appears in AI search results:
 
 **Manual checks:**
 1. Search your brand name in ChatGPT, Perplexity, and Google AI Overview
-2. Search your key topics — does AI cite your content?
-3. Ask AI "What is [your product]?" — do you appear?
+2. Search your key topics, does AI cite your content?
+3. Ask AI "What is [your product]?": do you appear?
 
 **Server-side monitoring:**
 
@@ -315,7 +315,7 @@ grep -i "gptbot\|perplexitybot\|claudebot\|chatgpt" access.log | wc -l
 ### Step 7: Output AI Readiness Scorecard
 
 ```
-🤖 AI Search Visibility — Scorecard Complete
+🤖 AI Search Visibility: Scorecard Complete
 
 Site: [domain]
 Pages analyzed: [count]
@@ -335,16 +335,16 @@ Content structure:
   Expert credentials:    [✅ / ❌] Author expertise signals present
 
 AI-specific files:
-  llms.txt:     [✅ Present / ❌ Missing — create one]
+  llms.txt:     [✅ Present / ❌ Missing, create one]
   robots.txt:   [✅ AI rules defined / ⚠️ No AI-specific rules]
   Schema:       [✅ / ❌] JSON-LD structured data present
 
 Content recommendations:
-  1. [Highest priority — e.g., "Add direct definitions to top 5 pages"]
-  2. [Second priority — e.g., "Convert H2 headings to question format"]
-  3. [Third priority — e.g., "Add llms.txt with site description"]
-  4. [Fourth — e.g., "Add comparison tables to product pages"]
-  5. [Fifth — e.g., "Create FAQ page with schema markup"]
+  1. [Highest priority, e.g., "Add direct definitions to top 5 pages"]
+  2. [Second priority, e.g., "Convert H2 headings to question format"]
+  3. [Third priority, e.g., "Add llms.txt with site description"]
+  4. [Fourth, e.g., "Add comparison tables to product pages"]
+  5. [Fifth, e.g., "Create FAQ page with schema markup"]
 
 Next steps:
 1. Implement content recommendations above
@@ -356,4 +356,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: AI crawler access verification (GPTBot, PerplexityBot, ClaudeBot, Google-Extended), content structure analysis for citation likelihood, AI-friendly content optimization, llms.txt guidance, featured snippet/AI overview optimization, AI search monitoring, readiness scorecard. Based on EpsteinScan PerplexityBot experience. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: AI crawler access verification (GPTBot, PerplexityBot, ClaudeBot, Google-Extended), content structure analysis for citation likelihood, AI-friendly content optimization, llms.txt guidance, featured snippet/AI overview optimization, AI search monitoring, readiness scorecard. Based on EpsteinScan PerplexityBot experience. (Origin: MemStack Pro v3.2, Mar 2026)

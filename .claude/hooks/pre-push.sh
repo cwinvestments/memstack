@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack — Pre-Push Hook
+# MemStack: Pre-Push Hook
 # Deterministic pre-push check: build verification + commit format + secrets scan
 # Exit 0 = allow, exit 2 = block. Block reasons go to stdout and stderr both,
 # because a caller blocked by exit 2 is handed stderr only.
@@ -52,7 +52,7 @@ else
 fi
 
 # --- Check 1: Uncommitted changes (modified/staged tracked files only) ---
-# Filter out untracked files (??) — they don't affect the push
+# Filter out untracked files (??), they don't affect the push
 if git status --porcelain 2>/dev/null | grep -qE '^[^?]'; then
     say_block "SEAL: Uncommitted changes detected. Commit before pushing."
     say_block "$(git status --short)"
@@ -77,7 +77,7 @@ elif [ -f "Makefile" ]; then
         exit 2
     fi
 elif [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
-    echo "SEAL: Python project detected — skipping build check."
+    echo "SEAL: Python project detected: skipping build check."
 fi
 
 # --- Check 3: Commit message format ---
@@ -86,7 +86,7 @@ fi
 LAST_MSG=$(git log -1 --pretty=%s 2>/dev/null || echo "")
 if [ -n "$LAST_MSG" ]; then
     if ! echo "$LAST_MSG" | grep -qE '^\[.+\]|^(feat|fix|docs|refactor|style|test|chore)(\(.+\))?:'; then
-        echo "SEAL: Warning — last commit doesn't follow [ProjectName] or conventional format: $LAST_MSG"
+        echo "SEAL: Warning, last commit doesn't follow [ProjectName] or conventional format: $LAST_MSG"
         # Warning only, don't block
     fi
 fi

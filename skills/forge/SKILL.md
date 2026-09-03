@@ -5,14 +5,14 @@ version: 1.0.0
 ---
 
 
-# 🔨 Forge — Creating New Enchantment...
+# 🔨 Forge: Creating New Enchantment...
 *Create new MemStack skills or improve existing ones.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔨 Forge — Creating new enchantment...`
+`🔨 Forge: Creating new enchantment...`
 
 Then execute the protocol below.
 
@@ -36,9 +36,9 @@ Then execute the protocol below.
 
 3. **Write the file** to `$MEMSTACK_PATH/skills/{name}.md`
 
-4. **Update MEMSTACK.md** — add a new row to the Skill Index table
+4. **Update MEMSTACK.md**: add a new row to the Skill Index table
 
-5. **Confirm creation** — show the skill summary
+5. **Confirm creation**: show the skill summary
 
 ### Improving an existing skill:
 
@@ -59,18 +59,18 @@ Then execute the protocol below.
 **User:** "forge a new skill called Beacon for health check pinging"
 
 ```
-🔨 Forge — Creating new enchantment...
+🔨 Forge: Creating new enchantment...
 
 Creating: Beacon
 Emoji: 🔔 | Type: Passive | Triggers: "health check", "ping", "uptime"
 
 Writing: skills/beacon.md ✓
-Updating: MEMSTACK.md — added row #N ✓
+Updating: MEMSTACK.md: added row #N ✓
 
 Beacon is ready. Triggers: "health check", "ping", "uptime"
 ```
 
 ## Level History
 
-- **Lv.1** — Base: Skill file generation and index updates. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, v2.1 format generation, level tracking. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.1**: Base: Skill file generation and index updates. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, v2.1 format generation, level tracking. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

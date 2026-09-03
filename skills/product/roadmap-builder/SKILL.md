@@ -2,17 +2,17 @@
 name: memstack-product-roadmap-builder
 description: "Use this skill when the user says 'roadmap', 'product roadmap', 'quarterly plan', 'now/next/later', 'OKRs', or needs strategic planning with themes, milestones, resource allocation, and stakeholder-ready views. Do NOT use for MVP scoping or sprint-level planning."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Roadmap Builder — Building product roadmap...
+# Roadmap Builder: Building product roadmap...
 *Creates a strategic product roadmap in Now/Next/Later format with quarterly themes, milestones, dependency mapping, resource allocation, and stakeholder communication templates.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Roadmap Builder — Building product roadmap...`
+`Roadmap Builder: Building product roadmap...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "roadmap", "product roadmap", "quarterly plan" | ACTIVE |
 | User says "now/next/later" or "OKRs" | ACTIVE |
 | User wants to plan product direction for 3-12 months | ACTIVE |
-| User wants to scope an MVP | DORMANT — use MVP Scoper |
-| User wants sprint-level stories | DORMANT — use User Story Generator |
+| User wants to scope an MVP | DORMANT: use MVP Scoper |
+| User wants sprint-level stories | DORMANT: use User Story Generator |
 
 ## Common Mistakes
 
@@ -42,29 +42,29 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product** — what product are you roadmapping?
-> 2. **Current state** — what's been built? What's the current version?
-> 3. **Company goals** — what's the business trying to achieve this year?
-> 4. **User feedback** — what are the top 5 user requests or complaints?
-> 5. **Competitive pressure** — what are competitors shipping that matters?
-> 6. **Resources** — team size, key constraints, upcoming changes?
+> 1. **Product**: what product are you roadmapping?
+> 2. **Current state**: what's been built? What's the current version?
+> 3. **Company goals**: what's the business trying to achieve this year?
+> 4. **User feedback**: what are the top 5 user requests or complaints?
+> 5. **Competitive pressure**: what are competitors shipping that matters?
+> 6. **Resources**: team size, key constraints, upcoming changes?
 
 ### Step 2: Define Strategic Themes
 
-Themes are the "why" behind your roadmap — outcomes, not features.
+Themes are the "why" behind your roadmap: outcomes, not features.
 
 **Theme template:**
 
 ```markdown
 ### Theme: [Theme Name]
 
-**Outcome:** [What success looks like — measurable]
+**Outcome:** [What success looks like, measurable]
 **Time horizon:** [Now / Next / Later]
 **Business driver:** [Revenue / Retention / Acquisition / Efficiency]
 **Key metric:** [Specific metric this theme moves]
 
 **Initiatives under this theme:**
-1. [Initiative A — concrete work that delivers on this theme]
+1. [Initiative A, concrete work that delivers on this theme]
 2. [Initiative B]
 3. [Initiative C]
 ```
@@ -87,7 +87,7 @@ Themes are the "why" behind your roadmap — outcomes, not features.
 **Roadmap template:**
 
 ```markdown
-## Now (Q[X] [Year]) — [Quarter Theme]
+## Now (Q[X] [Year]): [Quarter Theme]
 
 ### Theme 1: [Theme Name]
 | Initiative | Description | Owner | Target | Status |
@@ -102,18 +102,18 @@ Themes are the "why" behind your roadmap — outcomes, not features.
 
 ---
 
-## Next (Q[X+1] [Year]) — [Quarter Theme]
+## Next (Q[X+1] [Year]): [Quarter Theme]
 
 ### Theme 3: [Theme Name]
-- [Initiative D] — [One-line description]
-- [Initiative E] — [One-line description]
+- [Initiative D]: [One-line description]
+- [Initiative E]: [One-line description]
 
 ### Theme 4: [Theme Name]
-- [Initiative F] — [One-line description]
+- [Initiative F]: [One-line description]
 
 ---
 
-## Later ([Year] H2) — [Direction]
+## Later ([Year] H2): [Direction]
 
 ### Theme 5: [Theme Name]
 - [Exploratory direction 1]
@@ -143,7 +143,7 @@ Critical path: A → C → E (any delay cascades)
 ```
 
 **Dependency rules:**
-- Highlight the critical path — the longest chain of dependent work
+- Highlight the critical path, the longest chain of dependent work
 - Flag external dependencies (other teams, vendors, regulatory) as high risk
 - If an initiative has 3+ dependencies, consider splitting it or re-sequencing
 
@@ -155,8 +155,8 @@ Critical path: A → C → E (any delay cascades)
 |-------|-----------|--------|--------------|
 | [Theme 1] | [X] devs | [X] designers | [X]% |
 | [Theme 2] | [X] devs | [X] designers | [X]% |
-| Tech debt / maintenance | [X] devs | — | 15-20% |
-| Bug fixes / support | [X] devs | — | 10% |
+| Tech debt / maintenance | [X] devs | none | 15-20% |
+| Bug fixes / support | [X] devs | none | 10% |
 | **Total** | | | **100%** |
 
 **Allocation rules:**
@@ -172,7 +172,7 @@ Critical path: A → C → E (any delay cascades)
 ```markdown
 ## Q[X] Objectives & Key Results
 
-### Objective 1: [Outcome statement — inspirational but measurable]
+### Objective 1: [Outcome statement: inspirational but measurable]
 - KR1: [Metric] from [current] to [target]
 - KR2: [Metric] from [current] to [target]
 - KR3: [Metric] from [current] to [target]
@@ -186,16 +186,16 @@ Critical path: A → C → E (any delay cascades)
 
 | Milestone | Date | Owner | Definition of Done |
 |-----------|------|-------|-------------------|
-| [Milestone 1] | [Date] | [Team] | [What "done" means — specific, verifiable] |
+| [Milestone 1] | [Date] | [Team] | [What "done" means: specific, verifiable] |
 | [Milestone 2] | [Date] | [Team] | [Definition of done] |
 | [Milestone 3] | [Date] | [Team] | [Definition of done] |
 | **Quarter review** | [End of quarter] | PM | All OKRs scored, next quarter planned |
 
 **OKR scoring (end of quarter):**
-- **0.0-0.3:** Failed — significant miss, understand why
-- **0.4-0.6:** Partial — progress made, needs another quarter
-- **0.7-1.0:** Success — target met or exceeded
-- **Sweet spot: 0.7** — means targets were ambitious but achievable
+- **0.0-0.3:** Failed: significant miss, understand why
+- **0.4-0.6:** Partial, progress made, needs another quarter
+- **0.7-1.0:** Success: target met or exceeded
+- **Sweet spot: 0.7**: means targets were ambitious but achievable
 
 ### Step 7: Create Stakeholder Views
 
@@ -204,7 +204,7 @@ Different audiences need different roadmap views:
 **Executive view (1 page):**
 
 ```markdown
-# Product Roadmap — Q[X]-Q[X+2] [Year]
+# Product Roadmap, Q[X]-Q[X+2] [Year]
 
 ## Vision: [One-line product vision]
 
@@ -216,25 +216,25 @@ Different audiences need different roadmap views:
 | Q[X+2] | [Theme 4] | [Exploratory] | [Potential impact] |
 
 **Key risks:** [1-2 biggest risks in plain language]
-**Resource ask:** [What you need from leadership — headcount, budget, decisions]
+**Resource ask:** [What you need from leadership: headcount, budget, decisions]
 ```
 
 **Sales/customer view:**
 
 ```markdown
-# What's Coming — [Product Name]
+# What's Coming: [Product Name]
 
 ## Shipping Now (This Quarter)
-- [Feature/improvement] — [Customer benefit in their language]
-- [Feature/improvement] — [Customer benefit]
+- [Feature/improvement], [Customer benefit in their language]
+- [Feature/improvement]: [Customer benefit]
 
 ## Coming Next
-- [Planned initiative] — [Customer benefit]
-- [Planned initiative] — [Customer benefit]
+- [Planned initiative]: [Customer benefit]
+- [Planned initiative]: [Customer benefit]
 
 ## Exploring
-- [Direction] — we're researching how to [solve X]
-- [Direction] — early exploration of [area]
+- [Direction], we're researching how to [solve X]
+- [Direction]: early exploration of [area]
 
 *Dates and specifics may change. Updated quarterly.*
 ```
@@ -242,7 +242,7 @@ Different audiences need different roadmap views:
 **Engineering view:**
 
 ```markdown
-# Engineering Roadmap — Q[X]
+# Engineering Roadmap: Q[X]
 
 ## Committed Work
 | Initiative | Epic | Points | Team | Sprint Target |
@@ -262,28 +262,28 @@ Different audiences need different roadmap views:
 ## Output Format
 
 ```markdown
-# Product Roadmap — [Product Name]
+# Product Roadmap: [Product Name]
 
 ## Strategic Context
 - **Vision:** [One-line vision]
 - **Annual goal:** [Primary business goal]
-- **Planning period:** Q[X] — Q[X+2] [Year]
+- **Planning period:** Q[X]: Q[X+2] [Year]
 - **Team size:** [X engineers, X designers]
 
 ## Themes
-[From Step 2 — 3-5 themes with outcomes]
+[From Step 2, 3-5 themes with outcomes]
 
 ## Now/Next/Later Roadmap
-[From Step 3 — detailed Now, directional Next, thematic Later]
+[From Step 3: detailed Now, directional Next, thematic Later]
 
 ## Dependencies
-[From Step 4 — dependency map with critical path]
+[From Step 4, dependency map with critical path]
 
 ## Resource Allocation
-[From Step 5 — team allocation by theme]
+[From Step 5: team allocation by theme]
 
 ## OKRs & Milestones
-[From Step 6 — quarterly OKRs with milestone timeline]
+[From Step 6, quarterly OKRs with milestone timeline]
 
 ## Stakeholder Views
 ### Executive Summary
@@ -295,7 +295,7 @@ Different audiences need different roadmap views:
 ## Completion
 
 ```
-Roadmap Builder — Complete!
+Roadmap Builder: Complete!
 
 Planning horizon: [X quarters]
 Themes: [Count]
@@ -315,4 +315,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Strategic theme definition (outcome-based, not feature-based), Now/Next/Later roadmap format with certainty levels, dependency mapping with critical path, resource allocation with tech debt/bug budget, quarterly OKRs with scoring guide, milestone timeline, 3 stakeholder views (executive, customer, engineering). (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Strategic theme definition (outcome-based, not feature-based), Now/Next/Later roadmap format with certainty levels, dependency mapping with critical path, resource allocation with tech debt/bug budget, quarterly OKRs with scoring guide, milestone timeline, 3 stakeholder views (executive, customer, engineering). (Origin: MemStack Pro v3.2, Mar 2026)

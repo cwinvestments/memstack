@@ -2,17 +2,17 @@
 name: memstack-product-user-story-generator
 description: "Use this skill when the user says 'user stories', 'write stories', 'backlog', 'sprint planning', 'acceptance criteria', or needs prioritized stories with Given/When/Then criteria and story point estimates. Do NOT use for full PRDs or detailed feature specs."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# User Story Generator — Generating user stories...
+# User Story Generator: Generating user stories...
 *Produces prioritized user stories with Given/When/Then acceptance criteria, story point estimates, story mapping across epics, and MoSCoW prioritization for sprint planning.*
 
 ## Activation
 
 When this skill activates, output:
 
-`User Story Generator — Generating user stories...`
+`User Story Generator: Generating user stories...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "user stories", "write stories", "backlog" | ACTIVE |
 | User says "sprint planning" or "acceptance criteria" | ACTIVE |
 | User wants to break work into estimable, assignable stories | ACTIVE |
-| User wants a full product requirements document | DORMANT — use PRD Writer |
-| User wants a detailed spec for one feature | DORMANT — use Feature Spec |
+| User wants a full product requirements document | DORMANT: use PRD Writer |
+| User wants a detailed spec for one feature | DORMANT: use Feature Spec |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Feature/epic** — what area are you writing stories for?
-> 2. **Personas** — who are the users? (roles, permissions, experience levels)
-> 3. **Existing context** — is there a PRD, feature spec, or design to reference?
-> 4. **Sprint goal** — what are you trying to ship this sprint?
-> 5. **Team capacity** — how many story points can the team handle? (helps scope)
+> 1. **Feature/epic**: what area are you writing stories for?
+> 2. **Personas**: who are the users? (roles, permissions, experience levels)
+> 3. **Existing context**: is there a PRD, feature spec, or design to reference?
+> 4. **Sprint goal**: what are you trying to ship this sprint?
+> 5. **Team capacity**: how many story points can the team handle? (helps scope)
 
 ### Step 2: Identify Epics & Themes
 
@@ -204,7 +204,7 @@ Place each story on the matrix. Sprint should be loaded with Quick Wins and Stra
 **Sprint planning output:**
 
 ```markdown
-## Sprint [X] Backlog — [Sprint Goal]
+## Sprint [X] Backlog: [Sprint Goal]
 
 **Capacity:** [X] story points
 **Duration:** [2 weeks]
@@ -221,10 +221,10 @@ Place each story on the matrix. Sprint should be loaded with Quick Wins and Stra
 | **Total** | | **13** | | | |
 
 ### Stretch Goals (if capacity)
-| US-005 | [Title] | 2 | Could | — | None |
+| US-005 | [Title] | 2 | Could | none | None |
 
 ### Not This Sprint
-| US-008 | [Title] | 8 | Won't | — | Needs design |
+| US-008 | [Title] | 8 | Won't | none | Needs design |
 ```
 
 **Sprint planning rules:**
@@ -236,7 +236,7 @@ Place each story on the matrix. Sprint should be loaded with Quick Wins and Stra
 ## Output Format
 
 ```markdown
-# User Stories — [Feature/Epic Name]
+# User Stories: [Feature/Epic Name]
 
 ## Story Map
 [Epic/theme overview from Step 2]
@@ -269,7 +269,7 @@ Place each story on the matrix. Sprint should be loaded with Quick Wins and Stra
 ## Completion
 
 ```
-User Story Generator — Complete!
+User Story Generator: Complete!
 
 Epics: [Count]
 Total stories: [Count]
@@ -289,4 +289,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Epic/theme identification, story map layout, story template (As a/I want to/So that), Given/When/Then acceptance criteria, Fibonacci story points with estimation heuristic, spike story template, MoSCoW prioritization, value/effort matrix, sprint backlog organization with capacity planning, definition of done checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Epic/theme identification, story map layout, story template (As a/I want to/So that), Given/When/Then acceptance criteria, Fibonacci story points with estimation heuristic, spike story template, MoSCoW prioritization, value/effort matrix, sprint backlog organization with capacity planning, definition of done checklist. (Origin: MemStack Pro v3.2, Mar 2026)

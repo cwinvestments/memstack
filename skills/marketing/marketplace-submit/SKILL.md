@@ -4,7 +4,7 @@ description: "Use when the user says 'submit to marketplace', 'publish my skill'
 version: 1.0.0
 ---
 
-# Marketplace Submit — Preparing marketplace submission...
+# Marketplace Submit: Preparing marketplace submission...
 *Step-by-step guide to submit skills, plugins, or tools to community marketplaces via pull request.*
 
 ## Activation
@@ -14,8 +14,8 @@ version: 1.0.0
 | User says "submit to marketplace" or "publish my skill" | ACTIVE |
 | User says "share this skill" or "list on marketplace" | ACTIVE |
 | User says "submit plugin" or "publish to community" | ACTIVE |
-| User wants to build a skill | NOT this skill — use Forge |
-| User wants to write plugin code | NOT this skill — use standard development |
+| User wants to build a skill | NOT this skill: use Forge |
+| User wants to write plugin code | NOT this skill: use standard development |
 
 ## Context Guard
 
@@ -181,4 +181,4 @@ Do NOT submit proprietary or Pro skills to public marketplaces.
 
 ## Level History
 
-- **Lv.1** — Base: Multi-marketplace submission guide with PR templates, fork workflow, tracking. (Origin: MemStack v3.5, Apr 2026)
+- **Lv.1**: Base: Multi-marketplace submission guide with PR templates, fork workflow, tracking. (Origin: MemStack v3.5, Apr 2026)

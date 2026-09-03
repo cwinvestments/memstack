@@ -2,17 +2,17 @@
 name: memstack-content-newsletter
 description: "Use this skill when the user says 'newsletter', 'email newsletter', 'weekly digest', 'subscriber growth', 'open rates', or needs subject lines, content structure, sponsorship placement, and growth tactics for email newsletters. Do NOT use for lead magnets or content pipelines."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Newsletter — Writing email newsletter edition...
+# Newsletter: Writing email newsletter edition...
 *Produces an email newsletter edition with subject line formulas, section structure, personalization, link placement strategy, growth tactics, and engagement optimization.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Newsletter — Writing email newsletter edition...`
+`Newsletter: Writing email newsletter edition...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "newsletter", "email newsletter", "weekly digest" | ACTIVE |
 | User says "subscriber growth" or "open rates" | ACTIVE |
 | User wants to write a newsletter edition or start a newsletter | ACTIVE |
-| User wants a lead magnet with email capture | DORMANT — use Lead Magnet |
-| User wants a full content automation pipeline | DORMANT — use Content Pipeline |
+| User wants a lead magnet with email capture | DORMANT: use Lead Magnet |
+| User wants a full content automation pipeline | DORMANT: use Content Pipeline |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Topic/niche** — what's the newsletter about?
-> 2. **Audience** — who reads it? (role, industry, experience level)
-> 3. **Frequency** — weekly, biweekly, or monthly?
-> 4. **Type** — curated links, original essays, tips, industry news, or mixed?
-> 5. **Current state** — new or existing? (subscriber count, open rates)
-> 6. **Monetization** — free, paid, or sponsored?
+> 1. **Topic/niche**: what's the newsletter about?
+> 2. **Audience**: who reads it? (role, industry, experience level)
+> 3. **Frequency**: weekly, biweekly, or monthly?
+> 4. **Type**: curated links, original essays, tips, industry news, or mixed?
+> 5. **Current state**: new or existing? (subscriber count, open rates)
+> 6. **Monetization**: free, paid, or sponsored?
 
 ### Step 2: Write the Subject Line
 
@@ -58,7 +58,7 @@ If the user hasn't provided details, ask:
 | **Curiosity gap** | [Topic]: The [thing] nobody talks about | "Pricing: The metric nobody tracks" |
 | **Numbered value** | [X] [things] to [outcome] this week | "5 tools to ship faster this week" |
 | **Question** | Why [common practice] [doesn't work / is wrong]? | "Why your landing page isn't converting?" |
-| **Personal** | I [did thing] — here's what happened | "I quit meetings for a month" |
+| **Personal** | I [did thing], here's what happened | "I quit meetings for a month" |
 | **Direct value** | How to [outcome] (in [constraint]) | "How to write copy that converts (in 20 min)" |
 | **Current event** | [Event/trend]: What it means for [audience] | "GPT-5: What it means for developers" |
 
@@ -67,14 +67,14 @@ If the user hasn't provided details, ask:
 - No ALL CAPS, no spam triggers ("FREE", "ACT NOW", "!!!")
 - Preview text (first 90 characters of email) should complement, not repeat the subject
 - A/B test 2 subjects per send (most platforms support this)
-- Track open rates by subject formula — double down on what works
+- Track open rates by subject formula, double down on what works
 
 ### Step 3: Design Section Structure
 
 **Newsletter format template:**
 
 ```markdown
-# [Newsletter Name] — [Edition Title or Number]
+# [Newsletter Name]: [Edition Title or Number]
 
 ## Intro (2-3 sentences)
 [Personal note, context for this edition, or a hook that frames the content]
@@ -82,7 +82,7 @@ If the user hasn't provided details, ask:
 ---
 
 ## [Section 1: Primary Content] (60% of newsletter)
-[Your main value — original insight, deep dive, or featured piece]
+[Your main value: original insight, deep dive, or featured piece]
 [Include one primary CTA link]
 
 ---
@@ -117,7 +117,7 @@ If the user hasn't provided details, ask:
 | **Tip of the Week** | One actionable tactic they can use today | Quick win |
 | **Community Spotlight** | Reader question, testimonial, or submission | Build community |
 | **Sponsor Section** | Sponsored content (clearly labeled) | Monetization |
-| **Poll/Question** | Ask readers something — drives replies | Engagement signal |
+| **Poll/Question** | Ask readers something: drives replies | Engagement signal |
 
 ### Step 4: Write the Edition
 
@@ -157,7 +157,7 @@ If the user hasn't provided details, ask:
 **Rules:**
 - 1 primary link per edition (the ONE thing you want them to click)
 - 3-5 secondary links maximum (curated content, resources)
-- No more than 8 total links (including footer) — too many dilutes clicks
+- No more than 8 total links (including footer): too many dilutes clicks
 - Use descriptive anchor text, not raw URLs
 - Track clicks with UTM parameters: `?utm_source=newsletter&utm_medium=email&utm_campaign=edition-[N]`
 
@@ -210,7 +210,7 @@ If the user hasn't provided details, ask:
 ## Output Format
 
 ```markdown
-# [Newsletter Name] — Edition [#]
+# [Newsletter Name]: Edition [#]
 
 **Subject:** [Subject line]
 **Preview text:** [90 characters]
@@ -231,7 +231,7 @@ If the user hasn't provided details, ask:
 ## Completion
 
 ```
-Newsletter — Complete!
+Newsletter: Complete!
 
 Edition: [#/Title]
 Subject line: "[Subject]"
@@ -249,4 +249,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 6 subject line formulas, section structure template (intro, deep dive, quick hits, closer), body writing rules with personalization techniques, link placement hierarchy (primary + secondary), 7 growth channels with expected results, retention metrics with red flags, send time optimization, pre-send checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 6 subject line formulas, section structure template (intro, deep dive, quick hits, closer), body writing rules with personalization techniques, link placement hierarchy (primary + secondary), 7 growth channels with expected results, retention metrics with red flags, send time optimization, pre-send checklist. (Origin: MemStack Pro v3.2, Mar 2026)

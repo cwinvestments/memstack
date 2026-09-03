@@ -2,26 +2,26 @@
 name: memstack-deployment-ci-cd-pipeline
 description: "Use this skill when the user says 'CI/CD', 'GitHub Actions', 'pipeline', 'continuous integration', 'continuous deployment', 'ci-cd-pipeline', 'automate deploys', or needs to set up automated build, test, and deployment pipelines. Do NOT use for one-time manual deployments."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔄 CI/CD Pipeline — Continuous Integration & Deployment
+# 🔄 CI/CD Pipeline: Continuous Integration & Deployment
 *Detect project type and generate a complete CI/CD pipeline with lint, test, build, deploy stages, rollback strategy, and environment management.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔄 CI/CD Pipeline — Designing your pipeline...`
+`🔄 CI/CD Pipeline: Designing your pipeline...`
 
 | Context | Status |
 |---------|--------|
 | **User says "CI/CD", "pipeline", "GitHub Actions"** | ACTIVE |
 | **User wants automated testing and deployment** | ACTIVE |
 | **User mentions branch strategy, deploy gates, or rollbacks** | ACTIVE |
-| **User wants Docker setup (CI/CD is secondary)** | DORMANT — see docker-setup |
-| **User wants server provisioning (not pipeline)** | DORMANT — see hetzner-setup |
-| **User wants to deploy to a specific platform only** | DORMANT — see railway-deploy or netlify-deploy |
+| **User wants Docker setup (CI/CD is secondary)** | DORMANT: see docker-setup |
+| **User wants server provisioning (not pipeline)** | DORMANT: see hetzner-setup |
+| **User wants to deploy to a specific platform only** | DORMANT, see railway-deploy or netlify-deploy |
 
 ## Protocol
 
@@ -49,7 +49,7 @@ Auto-detect from project files and recommend CI/CD platform:
 | Monorepo (`packages/`) | GitHub Actions with matrix/path filters | Need per-package CI |
 | Self-hosted server | GitHub Actions → SSH deploy | Push-based deployment |
 
-**Default recommendation: GitHub Actions** — free for public repos, 2,000 min/month for private.
+**Default recommendation: GitHub Actions**: free for public repos, 2,000 min/month for private.
 
 ### Step 3: Design Pipeline Stages
 
@@ -93,10 +93,10 @@ main (production)
 
 | Branch | Deploys To | CI Runs | Auto-Deploy? |
 |--------|-----------|---------|-------------|
-| `feature/*` | — | Lint + Test | No |
+| `feature/*` | none | Lint + Test | No |
 | `develop` | Staging | Lint + Test + Build + Deploy | Yes |
 | `main` | Production | Lint + Test + Build + Deploy | Yes (or manual gate) |
-| `hotfix/*` | — | Lint + Test | No (merge to main to deploy) |
+| `hotfix/*` | none | Lint + Test | No (merge to main to deploy) |
 
 **Branch protection rules:**
 ```
@@ -119,7 +119,7 @@ develop:
 
 Three environments with escalating secrets:
 
-LOCAL (.env.local — never committed):
+LOCAL (.env.local, never committed):
   DATABASE_URL=postgresql://localhost:5432/app_dev
   API_KEY=dev_test_key
   NODE_ENV=development
@@ -157,7 +157,7 @@ Repository → Settings → Environments:
 
 ### Step 6: Generate Pipeline Config
 
-**GitHub Actions — Node.js project:**
+**GitHub Actions: Node.js project:**
 
 ```yaml
 name: CI/CD Pipeline
@@ -278,14 +278,14 @@ jobs:
               echo "Health check passed"
               exit 0
             fi
-            echo "Attempt $i: HTTP $STATUS — retrying in 10s..."
+            echo "Attempt $i: HTTP $STATUS, retrying in 10s..."
             sleep 10
           done
           echo "Health check failed after 5 attempts"
           exit 1
 ```
 
-**GitHub Actions — Python project:**
+**GitHub Actions: Python project:**
 
 ```yaml
 name: CI/CD Pipeline
@@ -358,7 +358,7 @@ jobs:
     steps:
       - name: Rollback deployment
         run: |
-          echo "Deployment verification failed — rolling back"
+          echo "Deployment verification failed: rolling back"
           # Option A: Revert to previous Docker image
           # docker pull $REGISTRY/app:previous && docker tag $REGISTRY/app:previous $REGISTRY/app:latest
           # Option B: Railway rollback
@@ -369,17 +369,17 @@ jobs:
         run: |
           curl -X POST "${{ secrets.SLACK_WEBHOOK }}" \
             -H 'Content-Type: application/json' \
-            -d '{"text":"🔴 Deployment rolled back — health check failed on ${{ github.ref }}"}'
+            -d '{"text":"🔴 Deployment rolled back, health check failed on ${{ github.ref }}"}'
 ```
 
 **Rollback strategies by deployment target:**
 
 | Target | Rollback Method | Speed | Data Safety |
 |--------|----------------|-------|------------|
-| **Vercel** | Instant rollback in dashboard or CLI | Instant | Safe — immutable deploys |
-| **Railway** | `railway rollback` or dashboard | Instant | Safe — previous deploy preserved |
-| **Netlify** | Deploy previous build in dashboard | Instant | Safe — immutable deploys |
-| **Docker** | Tag previous image as `latest`, restart | Seconds | Safe — images preserved |
+| **Vercel** | Instant rollback in dashboard or CLI | Instant | Safe: immutable deploys |
+| **Railway** | `railway rollback` or dashboard | Instant | Safe: previous deploy preserved |
+| **Netlify** | Deploy previous build in dashboard | Instant | Safe: immutable deploys |
+| **Docker** | Tag previous image as `latest`, restart | Seconds | Safe: images preserved |
 | **VPS/PM2** | `git revert` + `pm2 restart` | Minutes | Check DB migrations first |
 | **Kubernetes** | `kubectl rollout undo` | Seconds | Check DB migrations first |
 
@@ -495,4 +495,4 @@ Lint → Test → Build → Deploy → Verify
 
 ## Level History
 
-- **Lv.1** — Base: Auto-detect project type, 5-stage pipeline (lint/test/build/deploy/verify), GitHub Actions configs for Node.js and Python, simplified GitFlow branch strategy, environment variable management with GitHub Environments, automated rollback on health check failure, Slack notifications, setup checklist. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1**: Base: Auto-detect project type, 5-stage pipeline (lint/test/build/deploy/verify), GitHub Actions configs for Node.js and Python, simplified GitFlow branch strategy, environment variable management with GitHub Environments, automated rollback on health check failure, Slack notifications, setup checklist. (Origin: MemStack v3.2, Mar 2026)

@@ -2,17 +2,17 @@
 name: memstack-seo-schema-markup
 description: "Use this skill when the user says 'add schema', 'schema markup', 'JSON-LD', 'structured data', 'rich results', 'rich snippets', or is adding or fixing schema.org structured data for better search result appearance. Do NOT use for meta tag optimization or full SEO audits."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 📊 Schema Markup — Generating structured data for rich results...
-*Identifies applicable schema types, generates valid JSON-LD blocks, and verifies against Google's Rich Results requirements — ready to paste into page head.*
+# 📊 Schema Markup: Generating structured data for rich results...
+*Identifies applicable schema types, generates valid JSON-LD blocks, and verifies against Google's Rich Results requirements, ready to paste into page head.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📊 Schema Markup — Analyzing pages for schema opportunities...`
+`📊 Schema Markup, Analyzing pages for schema opportunities...`
 
 Then execute the protocol below.
 
@@ -21,8 +21,8 @@ Then execute the protocol below.
 | User says "add schema" or "schema markup" or "JSON-LD" | ACTIVE |
 | User says "structured data" or "rich results" or "rich snippets" | ACTIVE |
 | Adding or fixing schema.org data on any page | ACTIVE |
-| Doing a full SEO audit (broader scope) | DORMANT — use site-audit |
-| Optimizing meta tags (not schema) | DORMANT — use meta-tag-optimizer |
+| Doing a full SEO audit (broader scope) | DORMANT: use site-audit |
+| Optimizing meta tags (not schema) | DORMANT: use meta-tag-optimizer |
 
 ### Anti-patterns
 
@@ -36,7 +36,7 @@ Then execute the protocol below.
 
 ## Protocol
 
-For ready-to-paste JSON-LD templates covering all 10 common schema types (FAQPage, WebPage, Article, SoftwareApplication, Organization, Product, HowTo, BreadcrumbList, LocalBusiness, SpeakableSpecification) plus a combined `@graph` bundle, see [`references/schema-templates.md`](./references/schema-templates.md). The step-by-step generation logic below still applies — the reference file is a copy-paste library, not a replacement for the per-page-type mapping in Step 1.
+For ready-to-paste JSON-LD templates covering all 10 common schema types (FAQPage, WebPage, Article, SoftwareApplication, Organization, Product, HowTo, BreadcrumbList, LocalBusiness, SpeakableSpecification) plus a combined `@graph` bundle, see [`references/schema-templates.md`](./references/schema-templates.md). The step-by-step generation logic below still applies. The reference file is a copy-paste library, not a replacement for the per-page-type mapping in Step 1.
 
 ### Step 1: Identify Applicable Schema Types
 
@@ -58,13 +58,13 @@ grep -rn "application/ld+json\|schema.org" --include="*.tsx" --include="*.jsx" -
 | About | `Organization` | `Person` (for founders) | Knowledge panel |
 | Product/Pricing | `Product` | `Offer`, `AggregateRating` | Product rich results (price, rating) |
 | Blog post | `Article` | `Person` (author), `ImageObject` | Article rich results |
-| FAQ page | `FAQPage` | — | FAQ dropdowns in SERP |
+| FAQ page | `FAQPage` | none | FAQ dropdowns in SERP |
 | How-to guide | `HowTo` | `HowToStep` | How-to rich results |
 | Contact/Local | `LocalBusiness` | `PostalAddress`, `GeoCoordinates` | Local pack |
 | SaaS/Software | `SoftwareApplication` | `Offer` | Software rich results |
 | Event page | `Event` | `Place`, `Offer` | Event rich results |
 | Recipe | `Recipe` | `NutritionInformation` | Recipe card |
-| All pages | `BreadcrumbList` | — | Breadcrumb trail |
+| All pages | `BreadcrumbList` | none | Breadcrumb trail |
 
 ### Step 2: Generate Organization Schema
 
@@ -123,8 +123,8 @@ For blog posts and articles:
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "[Post Title — max 110 chars]",
-  "description": "[Post description — max 155 chars]",
+  "headline": "[Post Title: max 110 chars]",
+  "description": "[Post description: max 155 chars]",
   "image": "https://[domain]/blog/[slug]/hero.jpg",
   "datePublished": "[YYYY-MM-DDT00:00:00Z]",
   "dateModified": "[YYYY-MM-DDT00:00:00Z]",
@@ -199,7 +199,7 @@ For FAQ pages or sections:
       "name": "[Question text]",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "[Answer text — can include basic HTML: links, bold, lists]"
+        "text": "[Answer text: can include basic HTML: links, bold, lists]"
       }
     },
     {
@@ -284,7 +284,7 @@ Add JSON-LD as a script tag in your page component or layout. Use `JSON.stringif
 ### Step 9: Output Schema Blocks
 
 ```
-📊 Schema Markup — Complete
+📊 Schema Markup: Complete
 
 Pages analyzed: [count]
 Schema blocks generated: [count]
@@ -312,4 +312,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Schema type identification by page type, JSON-LD generation (Organization, WebSite, Article, SoftwareApplication, FAQPage, BreadcrumbList), Google Rich Results verification checklist, ready-to-paste code blocks. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Schema type identification by page type, JSON-LD generation (Organization, WebSite, Article, SoftwareApplication, FAQPage, BreadcrumbList), Google Rich Results verification checklist, ready-to-paste code blocks. (Origin: MemStack Pro v3.2, Mar 2026)

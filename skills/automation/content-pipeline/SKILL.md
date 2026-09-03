@@ -2,17 +2,17 @@
 name: memstack-automation-content-pipeline
 description: "Use this skill when the user says 'content pipeline', 'content automation', 'auto-publish', 'repurpose content', 'multi-platform publishing', or needs end-to-end content workflow from ideation through cross-platform formatting and publishing. Do NOT use for single social media posts or individual blog posts."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Content Pipeline — Automating content workflow...
+# Content Pipeline: Automating content workflow...
 *Automates end-to-end content workflows from ideation through draft, review, approval, cross-platform formatting, scheduling, and publishing with CMS integration and image optimization.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Content Pipeline — Automating content workflow...`
+`Content Pipeline: Automating content workflow...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "content pipeline", "content automation", "auto-publish" | ACTIVE |
 | User says "repurpose content" or "multi-platform publishing" | ACTIVE |
 | User wants to automate content creation through distribution | ACTIVE |
-| User wants a single blog post | DORMANT — use Blog Post |
-| User wants a single social media post | DORMANT — use Twitter Thread or TikTok Script |
+| User wants a single blog post | DORMANT: use Blog Post |
+| User wants a single social media post | DORMANT, use Twitter Thread or TikTok Script |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Content types** — what do you produce? (blog, newsletter, social, video, podcast)
-> 2. **Platforms** — where do you publish? (website, Twitter/X, LinkedIn, Instagram, YouTube, email)
-> 3. **Frequency** — how often? (daily, 3x/week, weekly)
-> 4. **Team** — who's involved? (writer, editor, designer, social manager)
-> 5. **CMS** — what do you use? (WordPress, Ghost, Notion, Webflow, headless CMS)
-> 6. **Current process** — what's manual today that should be automated?
+> 1. **Content types**: what do you produce? (blog, newsletter, social, video, podcast)
+> 2. **Platforms**: where do you publish? (website, Twitter/X, LinkedIn, Instagram, YouTube, email)
+> 3. **Frequency**: how often? (daily, 3x/week, weekly)
+> 4. **Team**: who's involved? (writer, editor, designer, social manager)
+> 5. **CMS**: what do you use? (WordPress, Ghost, Notion, Webflow, headless CMS)
+> 6. **Current process**: what's manual today that should be automated?
 
 ### Step 2: Design Pipeline Stages
 
@@ -123,7 +123,7 @@ sharp(sourceImage)
 
 ### Step 5: Scheduling Strategy
 
-**Optimal posting times (general — adjust to your analytics):**
+**Optimal posting times (general: adjust to your analytics):**
 
 | Platform | Best Days | Best Times (ET) | Frequency |
 |----------|----------|----------------|-----------|
@@ -141,11 +141,11 @@ sharp(sourceImage)
 
 | Day | Blog | Twitter | LinkedIn | Newsletter | Instagram |
 |-----|------|---------|----------|-----------|-----------|
-| Mon | — | [Thread from Friday's blog] | — | — | [Quote card] |
-| Tue | [New post: Topic] | [3 promo tweets] | [Post: summary] | [Weekly send] | — |
-| Wed | — | [Engagement thread] | — | — | [Carousel] |
-| Thu | — | [Tips thread] | [Article share] | — | [Behind-scenes] |
-| Fri | [New post: Topic] | [3 promo tweets] | [Post: summary] | — | [Quote card] |
+| Mon | none | [Thread from Friday's blog] | none | none | [Quote card] |
+| Tue | [New post: Topic] | [3 promo tweets] | [Post: summary] | [Weekly send] | none |
+| Wed | none | [Engagement thread] | none | none | [Carousel] |
+| Thu | none | [Tips thread] | [Article share] | none | [Behind-scenes] |
+| Fri | [New post: Topic] | [3 promo tweets] | [Post: summary] | none | [Quote card] |
 ```
 
 ### Step 6: CMS Integration Patterns
@@ -214,13 +214,13 @@ Score = (Engagement Rate × 40%) + (Conversion Rate × 40%) + (Shares × 20%)
 ## Output Format
 
 ```markdown
-# Content Pipeline — [Brand/Product Name]
+# Content Pipeline: [Brand/Product Name]
 
 ## Pipeline Stages
 [Stage diagram and definitions from Step 2]
 
 ## Repurposing Matrix
-[From Step 3 — source → platform transformations]
+[From Step 3: source → platform transformations]
 
 ## Image Specs
 [Platform-specific sizes from Step 4]
@@ -238,7 +238,7 @@ Score = (Engagement Rate × 40%) + (Conversion Rate × 40%) + (Shares × 20%)
 ## Completion
 
 ```
-Content Pipeline — Complete!
+Content Pipeline: Complete!
 
 Platforms: [Count] ([list])
 Content types: [Count]
@@ -256,4 +256,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 8-stage pipeline (ideation through monitoring), content repurposing matrix (blog/video/podcast → 5 platforms), platform image specs with automated processing, optimal posting times, content calendar template, CMS integration patterns (headless API, social scheduling), engagement monitoring with content scoring formula. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 8-stage pipeline (ideation through monitoring), content repurposing matrix (blog/video/podcast → 5 platforms), platform image specs with automated processing, optimal posting times, content calendar template, CMS integration patterns (headless API, social scheduling), engagement monitoring with content scoring formula. (Origin: MemStack Pro v3.2, Mar 2026)

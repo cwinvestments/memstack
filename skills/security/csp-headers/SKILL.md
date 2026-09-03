@@ -2,26 +2,26 @@
 name: memstack-security-csp-headers
 description: "Use this skill when the user says 'CSP', 'Content-Security-Policy', 'security headers', 'HSTS', 'X-Frame-Options', 'clickjacking', 'unsafe-inline', 'unsafe-eval', or needs to audit, generate, or fix HTTP security headers for a web application. Do NOT use for API route audits or dependency scanning."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🛡️ CSP Headers — Security Headers Auditor & Generator
+# 🛡️ CSP Headers: Security Headers Auditor & Generator
 *Audit existing security headers, identify overly permissive directives, and generate a production-ready Content-Security-Policy with companion headers.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🛡️ CSP Headers — Auditing your security headers...`
+`🛡️ CSP Headers: Auditing your security headers...`
 
 | Context | Status |
 |---------|--------|
 | **User says "CSP", "security headers", "Content-Security-Policy"** | ACTIVE |
 | **User wants to fix unsafe-inline, unsafe-eval, or wildcard directives** | ACTIVE |
 | **User mentions HSTS, X-Frame-Options, or Permissions-Policy** | ACTIVE |
-| **User wants a full OWASP security audit (not just headers)** | DORMANT — see owasp-top10 |
-| **User wants to scan for secrets in code** | DORMANT — see secrets-scanner |
-| **User wants API-level security (auth, rate limiting)** | DORMANT — see api-audit |
+| **User wants a full OWASP security audit (not just headers)** | DORMANT: see owasp-top10 |
+| **User wants to scan for secrets in code** | DORMANT: see secrets-scanner |
+| **User wants API-level security (auth, rate limiting)** | DORMANT: see api-audit |
 
 ## Protocol
 
@@ -39,11 +39,11 @@ Ask the user for:
 Check for CSP and security headers in all possible locations:
 
 **Where to look:**
-1. **Middleware** — Express/Next.js middleware setting response headers
-2. **Config files** — `next.config.js` (`headers()` function), `nginx.conf`, `Caddyfile`
-3. **Meta tags** — `<meta http-equiv="Content-Security-Policy" content="...">` in HTML
-4. **Hosting config** — `vercel.json`, `netlify.toml`, `_headers` file
-5. **Reverse proxy** — Nginx/Caddy/Apache header directives
+1. **Middleware**: Express/Next.js middleware setting response headers
+2. **Config files**: `next.config.js` (`headers()` function), `nginx.conf`, `Caddyfile`
+3. **Meta tags**: `<meta http-equiv="Content-Security-Policy" content="...">` in HTML
+4. **Hosting config**: `vercel.json`, `netlify.toml`, `_headers` file
+5. **Reverse proxy**: Nginx/Caddy/Apache header directives
 
 ```
 ── EXISTING HEADERS FOUND ─────────────────
@@ -69,7 +69,7 @@ Permissions-Policy:
   [current value or "MISSING"]
 
 X-XSS-Protection:
-  [current value or "MISSING — deprecated but still useful for older browsers"]
+  [current value or "MISSING, deprecated but still useful for older browsers"]
 ```
 
 ### Step 3: Audit CSP Directives
@@ -79,9 +79,9 @@ If a CSP exists, audit each directive for security issues:
 | Directive | Current Value | Issue | Severity | Fix |
 |-----------|--------------|-------|----------|-----|
 | `default-src` | `*` | Allows loading from any origin | 🔴 Critical | Restrict to known origins |
-| `script-src` | `'unsafe-inline'` | Allows inline scripts — XSS vector | 🔴 Critical | Use nonces or hashes |
-| `script-src` | `'unsafe-eval'` | Allows dynamic code execution — injection risk | 🟡 High | Remove, refactor code |
-| `style-src` | `'unsafe-inline'` | Allows inline styles — less severe | 🟠 Medium | Use nonces if feasible |
+| `script-src` | `'unsafe-inline'` | Allows inline scripts, XSS vector | 🔴 Critical | Use nonces or hashes |
+| `script-src` | `'unsafe-eval'` | Allows dynamic code execution, injection risk | 🟡 High | Remove, refactor code |
+| `style-src` | `'unsafe-inline'` | Allows inline styles, less severe | 🟠 Medium | Use nonces if feasible |
 | `img-src` | `*` | Allows images from any origin | 🟠 Medium | Restrict to known CDNs |
 | `frame-ancestors` | missing | No clickjacking protection | 🟡 High | Add `'self'` or `'none'` |
 | `connect-src` | missing | No restriction on fetch/XHR targets | 🟠 Medium | Restrict to API origins |
@@ -108,36 +108,36 @@ Identify all external resources the application loads:
 ── RESOURCE INVENTORY ─────────────────────
 
 Scripts (script-src):
-  - https://www.googletagmanager.com    — Google Tag Manager
-  - https://js.stripe.com               — Stripe.js
-  - https://cdn.jsdelivr.net             — jsDelivr CDN
-  - 'self'                               — Own domain scripts
+  - https://www.googletagmanager.com:     Google Tag Manager
+  - https://js.stripe.com:                Stripe.js
+  - https://cdn.jsdelivr.net:              jsDelivr CDN
+  - 'self':                                Own domain scripts
 
 Styles (style-src):
-  - https://fonts.googleapis.com         — Google Fonts CSS
-  - 'self'                               — Own stylesheets
-  - 'unsafe-inline'                      — Needed for: [reason]
+  - https://fonts.googleapis.com:          Google Fonts CSS
+  - 'self':                                Own stylesheets
+  - 'unsafe-inline':                       Needed for: [reason]
 
 Fonts (font-src):
-  - https://fonts.gstatic.com            — Google Fonts files
-  - 'self'                               — Self-hosted fonts
+  - https://fonts.gstatic.com:             Google Fonts files
+  - 'self':                                Self-hosted fonts
 
 Images (img-src):
-  - https://res.cloudinary.com           — Cloudinary images
-  - https://*.githubusercontent.com      — GitHub avatars
-  - data:                                — Data URI images
-  - 'self'                               — Own images
+  - https://res.cloudinary.com:            Cloudinary images
+  - https://*.githubusercontent.com:       GitHub avatars
+  - data::                                 Data URI images
+  - 'self':                                Own images
 
 Connections (connect-src):
-  - https://api.example.com              — Own API
-  - https://api.stripe.com               — Stripe API
-  - https://www.google-analytics.com     — Analytics
-  - 'self'                               — Same-origin requests
+  - https://api.example.com:               Own API
+  - https://api.stripe.com:                Stripe API
+  - https://www.google-analytics.com:      Analytics
+  - 'self':                                Same-origin requests
 
 Frames (frame-src):
-  - https://js.stripe.com                — Stripe checkout iframe
-  - https://www.youtube.com              — Embedded videos
-  - 'none'                               — If no iframes needed
+  - https://js.stripe.com:                 Stripe checkout iframe
+  - https://www.youtube.com:               Embedded videos
+  - 'none':                                If no iframes needed
 ```
 
 ### Step 5: Generate Recommended CSP
@@ -212,13 +212,13 @@ CSP alone isn't enough. Generate the full security headers suite:
 ```
 ── COMPLETE SECURITY HEADERS ──────────────
 
-# HSTS — Force HTTPS for all future visits
+# HSTS, Force HTTPS for all future visits
 Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 
 # Prevent MIME type sniffing attacks
 X-Content-Type-Options: nosniff
 
-# Clickjacking protection (legacy — frame-ancestors in CSP is preferred)
+# Clickjacking protection (legacy, frame-ancestors in CSP is preferred)
 X-Frame-Options: SAMEORIGIN
 
 # Control referrer information leakage
@@ -240,7 +240,7 @@ X-XSS-Protection: 0
 | `X-Frame-Options` | Prevent clickjacking (legacy, CSP preferred) | `SAMEORIGIN` or `DENY` |
 | `Referrer-Policy` | Control referer header leakage | `strict-origin-when-cross-origin` |
 | `Permissions-Policy` | Disable unused browser APIs | Disable camera, mic, geo unless needed |
-| `X-XSS-Protection` | Legacy XSS filter | `0` (disable — can cause issues, CSP is better) |
+| `X-XSS-Protection` | Legacy XSS filter | `0` (disable, can cause issues, CSP is better) |
 
 ### Step 7: Report-Only Mode
 
@@ -285,7 +285,7 @@ app.post('/api/csp-report', express.json({ type: 'application/csp-report' }), (r
 ```
 
 **Common violations to expect:**
-- Browser extensions injecting scripts (ignore — not your code)
+- Browser extensions injecting scripts (ignore: not your code)
 - Inline styles from third-party libraries (add nonce or hash)
 - Data URIs for images (add `data:` to `img-src` if needed)
 - Dynamic code execution in legacy libraries (refactor or whitelist as last resort)
@@ -438,4 +438,4 @@ Score: [A+ / A / B / C / D / F]
 
 ## Level History
 
-- **Lv.1** — Base: CSP directive audit with severity classification, external resource inventory, nonce/hash-based inline script handling, companion headers suite (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy), framework-specific implementations (Next.js, Express, Nginx, Caddy, Vercel), report-only deployment strategy, security grade. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1**: Base: CSP directive audit with severity classification, external resource inventory, nonce/hash-based inline script handling, companion headers suite (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy), framework-specific implementations (Next.js, Express, Nginx, Caddy, Vercel), report-only deployment strategy, security grade. (Origin: MemStack v3.2, Mar 2026)

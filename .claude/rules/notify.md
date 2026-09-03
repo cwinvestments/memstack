@@ -8,7 +8,7 @@ There are two notification triggers:
 
 When you are about to run a command that will trigger an approval prompt (file writes, compound commands, potentially dangerous operations), **split it into two separate steps**:
 
-**Step 1 — Voice notification (standalone Bash call):**
+**Step 1, Voice notification (standalone Bash call):**
 
 Run the TTS command as its own isolated tool call. Do not combine it with any other tool call in the same response.
 
@@ -16,7 +16,7 @@ Run the TTS command as its own isolated tool call. Do not combine it with any ot
 - **macOS:** `say "Claude needs your attention"`
 - **Linux:** `spd-say "Claude needs your attention" || espeak "Claude needs your attention" || echo -e '\a'`
 
-**Step 2 — Actual command:**
+**Step 2: Actual command:**
 
 Only after the TTS call completes, run the actual command that requires approval in the next response.
 

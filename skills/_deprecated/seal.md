@@ -1,13 +1,13 @@
 ---
 name: seal
-description: "DEPRECATED v3.0 — Replaced by native CC hook at .claude/hooks/pre-push.sh. Kept as fallback for CC versions without hook support. Original: MUST use when committing code, pushing to git, or completing any task."
+description: "DEPRECATED v3.0, Replaced by native CC hook at .claude/hooks/pre-push.sh. Kept as fallback for CC versions without hook support. Original: MUST use when committing code, pushing to git, or completing any task."
 deprecated: true
 replaced_by: ".claude/hooks/pre-push.sh"
 ---
 
-# 🔒 Seal — Clean Commits, Every Time
+# 🔒 Seal: Clean Commits, Every Time
 
-> **DEPRECATED in MemStack v3.0** — This skill is now a deterministic CC hook.
+> **DEPRECATED in MemStack v3.0**: This skill is now a deterministic CC hook.
 > See `.claude/hooks/pre-push.sh` and `.claude/settings.json`.
 > This file is preserved as fallback for older CC versions without hook support.
 *The guardian that ensures every push is build-verified and properly formatted.*
@@ -16,7 +16,7 @@ replaced_by: ".claude/hooks/pre-push.sh"
 
 When this skill activates, output:
 
-`🔒 Seal — Clean commits, every time.`
+`🔒 Seal: Clean commits, every time.`
 
 Then execute the protocol below.
 
@@ -24,17 +24,17 @@ Then execute the protocol below.
 
 | Context | Status | Priority |
 |---------|--------|----------|
-| **User says "commit" with intent to create a git commit** | ACTIVE — full protocol | P1 |
-| **User explicitly says "push" or "ship it"** | DEFER to Deploy — Seal handles commit step only | P2 |
-| **User explicitly says "skip build check"** | ACTIVE — skip step 1 only | P1 |
-| **Discussing git concepts ("what is a commit", "how does push work")** | DORMANT | — |
-| **Reading git logs, blame, or history** | DORMANT | — |
-| **User says "deploy" or "build"** | DORMANT — Deploy skill handles this | — |
-| **Mid-task coding (user hasn't asked to commit)** | DORMANT — don't interrupt | — |
-| **Amending or rebasing (user managing git history)** | DORMANT — don't interfere | — |
+| **User says "commit" with intent to create a git commit** | ACTIVE: full protocol | P1 |
+| **User explicitly says "push" or "ship it"** | DEFER to Deploy, Seal handles commit step only | P2 |
+| **User explicitly says "skip build check"** | ACTIVE, skip step 1 only | P1 |
+| **Discussing git concepts ("what is a commit", "how does push work")** | DORMANT | none |
+| **Reading git logs, blame, or history** | DORMANT | none |
+| **User says "deploy" or "build"** | DORMANT, Deploy skill handles this | none |
+| **Mid-task coding (user hasn't asked to commit)** | DORMANT: don't interrupt | none |
+| **Amending or rebasing (user managing git history)** | DORMANT: don't interfere | none |
 
 ### Deconfliction with Deploy
-Seal handles **commits**. Deploy handles **pushes and deployments**. When a user says "push", Deploy activates and may invoke Seal's commit protocol as a sub-step. Seal should NOT independently activate on "push" — it waits for Deploy to call it.
+Seal handles **commits**. Deploy handles **pushes and deployments**. When a user says "push", Deploy activates and may invoke Seal's commit protocol as a sub-step. Seal should NOT independently activate on "push", it waits for Deploy to call it.
 
 ## Protocol
 
@@ -42,7 +42,7 @@ Seal handles **commits**. Deploy handles **pushes and deployments**. When a user
    ```bash
    npm run build 2>&1 | tail -20
    ```
-   If build fails — STOP. Fix errors before proceeding.
+   If build fails: STOP. Fix errors before proceeding.
 
 2. **Check git status:**
    ```bash
@@ -57,7 +57,7 @@ Seal handles **commits**. Deploy handles **pushes and deployments**. When a user
 
 4. **Generate commit message** using config.json format:
    - Default: `[ProjectName] Brief description of change`
-   - Be specific — describe WHAT changed and WHY
+   - Be specific, describe WHAT changed and WHY
    - Add `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
 
 5. **Commit and push:**
@@ -69,7 +69,7 @@ Seal handles **commits**. Deploy handles **pushes and deployments**. When a user
    git push
    ```
 
-6. **Verify push succeeded** — run `git status` after push.
+6. **Verify push succeeded**: run `git status` after push.
 
 ## Mandatory Rules
 - NEVER commit with `--no-verify`
@@ -82,7 +82,7 @@ Seal handles **commits**. Deploy handles **pushes and deployments**. When a user
 **User:** "commit this"
 
 ```
-🔒 Seal — Clean commits, every time.
+🔒 Seal: Clean commits, every time.
 
 Build check:  ✓ passed
 Staging:      3 files (page.tsx, route.ts, migration.sql)
@@ -92,6 +92,6 @@ Push:         main → origin/main ✓
 
 ## Level History
 
-- **Lv.1** — Base: Build check, staged commits, descriptive messages. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, mandatory rules, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-- **Lv.3** — DEPRECATED: Replaced by deterministic CC hook `.claude/hooks/pre-push.sh`. Skill preserved as fallback. (Origin: MemStack v3.0, Feb 2026)
+- **Lv.1**: Base: Build check, staged commits, descriptive messages. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, context guard, mandatory rules, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3**: DEPRECATED: Replaced by deterministic CC hook `.claude/hooks/pre-push.sh`. Skill preserved as fallback. (Origin: MemStack v3.0, Feb 2026)

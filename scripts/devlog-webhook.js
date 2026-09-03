@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// devlog-webhook.js — fire-and-forget DevLog webhook for the Diary skill.
+// devlog-webhook.js: fire-and-forget DevLog webhook for the Diary skill.
 //
 // WHY THIS FILE EXISTS
 // --------------------
@@ -17,7 +17,7 @@
 // "=>" fat-arrow as an output-redirection operator. The token right after ">"
 // becomes the redirect target, so CMD creates a 0-byte file literally named
 //   console.error('Devlog
-// in whatever directory the diary was saved from — one junk file per save.
+// in whatever directory the diary was saved from, one junk file per save.
 //
 // Moving the JS into a real file run BY PATH removes every inline quoting and
 // redirection hazard: there are no quotes for the shell to mis-pair and no ">"
@@ -33,7 +33,7 @@
 //
 // What is NOT swallowed is visibility: each outcome prints exactly one line to
 // stderr (prefixed "devlog-webhook:") so a broken pipeline is distinguishable
-// from a working one in the Diary hook output. Behavior is unchanged — only
+// from a working one in the Diary hook output. Behavior is unchanged: only
 // diagnostics were added.
 //   * MEMSTACK_DEVLOG_WEBHOOK not set      -> stderr line, exit 0, nothing sent.
 //   * DEVLOG_KEY not set                   -> stderr line, exit 0, nothing sent.
@@ -51,37 +51,37 @@ function log(msg) {
 async function main() {
   const url = process.env.MEMSTACK_DEVLOG_WEBHOOK;
   if (!url) {
-    log('MEMSTACK_DEVLOG_WEBHOOK is not set — nothing sent.');
+    log('MEMSTACK_DEVLOG_WEBHOOK is not set: nothing sent.');
     return;
   }
 
   const key = process.env.DEVLOG_KEY;
   if (!key) {
-    log('DEVLOG_KEY is not set — nothing sent.');
+    log('DEVLOG_KEY is not set: nothing sent.');
     return;
   }
 
   // Global fetch requires Node 18+. If it's missing, no-op rather than crash.
   if (typeof fetch !== 'function') {
-    log('global fetch unavailable (needs Node 18+) — nothing sent.');
+    log('global fetch unavailable (needs Node 18+): nothing sent.');
     return;
   }
 
   // Read the diary markdown that was just written.
   const mdPath = process.argv[2];
   if (!mdPath) {
-    log('no diary path argument given — nothing sent.');
+    log('no diary path argument given: nothing sent.');
     return;
   }
   let diary;
   try {
     diary = require('fs').readFileSync(mdPath, 'utf8');
   } catch (err) {
-    log('could not read diary at ' + mdPath + ': ' + err.message + ' — nothing sent.');
+    log('could not read diary at ' + mdPath + ': ' + err.message + '. Nothing sent.');
     return;
   }
   if (!diary || !diary.trim()) {
-    log('diary at ' + mdPath + ' is empty — nothing sent.');
+    log('diary at ' + mdPath + ' is empty: nothing sent.');
     return;
   }
 
@@ -100,10 +100,10 @@ async function main() {
     } else {
       let body = '';
       try { body = (await res.text()).slice(0, 200); } catch { /* body unreadable */ }
-      log('webhook returned HTTP ' + res.status + ' — treated as NOT sent. Body: ' + body);
+      log('webhook returned HTTP ' + res.status + ': treated as NOT sent. Body: ' + body);
     }
   } catch (err) {
-    log('network error: ' + err.message + ' — nothing sent.');
+    log('network error: ' + err.message + '. Nothing sent.');
   } finally {
     clearTimeout(timer);
   }

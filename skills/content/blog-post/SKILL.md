@@ -2,17 +2,17 @@
 name: memstack-content-blog-post
 description: "Use this skill when the user says 'write blog post', 'blog post about', 'write article', 'create blog', 'content for blog', 'write post', or is creating long-form written content for a blog or publication. Do NOT use for landing page copy, email sequences, or social media posts."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# ✍️ Blog Post — Writing SEO-optimized blog post...
+# ✍️ Blog Post: Writing SEO-optimized blog post...
 *Produces a complete, publish-ready blog post with SEO metadata, structured sections, readability optimization, and internal linking suggestions.*
 
 ## Activation
 
 When this skill activates, output:
 
-`✍️ Blog Post — Gathering topic and audience details...`
+`✍️ Blog Post, Gathering topic and audience details...`
 
 Then execute the protocol below.
 
@@ -21,8 +21,8 @@ Then execute the protocol below.
 | User says "write blog post" or "blog post about" | ACTIVE |
 | User says "write article" or "create blog" or "write post" | ACTIVE |
 | Creating long-form content for a website or publication | ACTIVE |
-| Writing landing page copy (short-form, conversion-focused) | DORMANT — use landing-page-copy |
-| Writing email content | DORMANT — use email-sequence |
+| Writing landing page copy (short-form, conversion-focused) | DORMANT: use landing-page-copy |
+| Writing email content | DORMANT: use email-sequence |
 | Writing social media posts | DORMANT |
 
 ### Anti-patterns
@@ -42,11 +42,11 @@ Then execute the protocol below.
 If the user hasn't provided details, ask:
 
 > I need a few details for the blog post:
-> 1. **Topic** — what's this post about?
-> 2. **Target audience** — who are you writing for? (developers, business owners, beginners, etc.)
-> 3. **Target keyword** — what search term should this rank for?
-> 4. **Tone** — casual/conversational, professional, technical, inspirational?
-> 5. **Desired length** — short (800 words), standard (1,200-1,500), long-form (2,000+)?
+> 1. **Topic**: what's this post about?
+> 2. **Target audience**: who are you writing for? (developers, business owners, beginners, etc.)
+> 3. **Target keyword**: what search term should this rank for?
+> 4. **Tone**: casual/conversational, professional, technical, inspirational?
+> 5. **Desired length**: short (800 words), standard (1,200-1,500), long-form (2,000+)?
 
 If the user provides partial info, infer what you can and ask only for what's missing.
 
@@ -55,9 +55,9 @@ If the user provides partial info, infer what you can and ask only for what's mi
 Before writing, build a structured outline:
 
 1. **Identify 3-5 key points** the post must cover
-2. **Find supporting data** — statistics, examples, or case studies that strengthen each point
-3. **Note counterarguments** — addressing objections builds credibility
-4. **Determine the unique angle** — what perspective makes this post different from the top 10 results?
+2. **Find supporting data**: statistics, examples, or case studies that strengthen each point
+3. **Note counterarguments**: addressing objections builds credibility
+4. **Determine the unique angle**: what perspective makes this post different from the top 10 results?
 
 **Outline template:**
 
@@ -68,13 +68,13 @@ Before writing, build a structured outline:
 **Target keyword:** [primary keyword]
 **Secondary keywords:** [2-3 related terms]
 
-1. Hook intro — [opening strategy: bold claim / stat / question / story]
-2. [Section H2] — [key point + supporting evidence]
-3. [Section H2] — [key point + supporting evidence]
-4. [Section H2] — [key point + supporting evidence]
-5. [Section H2] — [key point + counterargument addressed]
-6. Actionable takeaways — [summary of what to do next]
-7. CTA conclusion — [what you want the reader to do]
+1. Hook intro, [opening strategy: bold claim / stat / question / story]
+2. [Section H2]: [key point + supporting evidence]
+3. [Section H2]: [key point + supporting evidence]
+4. [Section H2]: [key point + supporting evidence]
+5. [Section H2]: [key point + counterargument addressed]
+6. Actionable takeaways, [summary of what to do next]
+7. CTA conclusion, [what you want the reader to do]
 ```
 
 Present the outline for user approval before writing the full post.
@@ -82,9 +82,9 @@ Present the outline for user approval before writing the full post.
 ### Step 3: Write SEO Metadata
 
 ```markdown
-**Title:** [60 characters max — include target keyword, power word, specific benefit]
-**Meta description:** [155 characters max — summarize the value, include keyword, end with implicit CTA]
-**URL slug:** [target-keyword-in-slug — lowercase, hyphens, no filler words]
+**Title:** [60 characters max: include target keyword, power word, specific benefit]
+**Meta description:** [155 characters max: summarize the value, include keyword, end with implicit CTA]
+**URL slug:** [target-keyword-in-slug: lowercase, hyphens, no filler words]
 ```
 
 **Title formula options:**
@@ -111,12 +111,12 @@ Present the outline for user approval before writing the full post.
 
 The intro must accomplish three things in three paragraphs (or fewer):
 
-1. **Hook** — bold claim, surprising stat, relatable pain point, or provocative question
-2. **Relevance** — why this matters to the reader right now
-3. **Promise** — what they'll know or be able to do after reading
+1. **Hook**: bold claim, surprising stat, relatable pain point, or provocative question
+2. **Relevance**: why this matters to the reader right now
+3. **Promise**: what they'll know or be able to do after reading
 
 ```markdown
-[Hook sentence — bold claim or surprising stat]
+[Hook sentence, bold claim or surprising stat]
 
 [1-2 sentences connecting to reader's situation]
 
@@ -139,7 +139,7 @@ Each section follows this structure:
 
 [Supporting evidence: stat, example, case study, or expert quote]
 
-[Practical explanation — how this applies to the reader]
+[Practical explanation, how this applies to the reader]
 
 [Specific example or actionable step]
 
@@ -150,7 +150,7 @@ Each section follows this structure:
 
 **Body writing rules:**
 - Paragraphs: max 3-4 sentences each (walls of text kill readability)
-- Sentences: vary length — mix short punchy sentences with longer explanatory ones
+- Sentences: vary length, mix short punchy sentences with longer explanatory ones
 - Use H3 subheadings to break up sections longer than 300 words
 - Include the target keyword in at least 2 H2 headings (naturally, not forced)
 - Use bullet points or numbered lists for any set of 3+ items
@@ -170,15 +170,15 @@ Each section follows this structure:
 ### Step 5: Write Conclusion and CTA
 
 ```markdown
-## [Takeaway heading — not "Conclusion"]
+## [Takeaway heading: not "Conclusion"]
 
 [Summarize the 3 most important points in 2-3 sentences]
 
 [Restate the benefit: what the reader can now do]
 
-**[CTA — what you want them to do next:]**
-- Subscribe/newsletter: "Get [topic] tips weekly — subscribe below"
-- Product: "Try [product] free — [link]"
+**[CTA, what you want them to do next:]**
+- Subscribe/newsletter: "Get [topic] tips weekly: subscribe below"
+- Product: "Try [product] free: [link]"
 - Share: "Found this useful? Share it with your team"
 - Next post: "Read next: [related post title]"
 - Comment: "What's your experience with [topic]? Drop a comment"
@@ -249,7 +249,7 @@ image: "/blog/[slug]/hero.jpg"
 **Output summary:**
 
 ```
-✍️ Blog Post — Complete
+✍️ Blog Post: Complete
 
 Title: [title] ([character count] chars)
 Meta description: [description] ([character count] chars)
@@ -277,4 +277,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Topic gathering, research/outline, SEO metadata (title 60 chars, meta 155 chars), structured sections with H2s, readability targets (Flesch-Kincaid grade 8), internal/external linking, image suggestions with alt text, publish-ready markdown output. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Topic gathering, research/outline, SEO metadata (title 60 chars, meta 155 chars), structured sections with H2s, readability targets (Flesch-Kincaid grade 8), internal/external linking, image suggestions with alt text, publish-ready markdown output. (Origin: MemStack Pro v3.2, Mar 2026)

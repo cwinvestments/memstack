@@ -2,17 +2,17 @@
 name: memstack-marketing-sales-funnel
 description: "Use this skill when the user says 'sales funnel', 'funnel', 'conversion funnel', 'customer journey', or wants to map the complete customer journey from stranger to repeat buyer with copy hooks and conversion targets. Do NOT use for ad copy creation or time-bound launch plans."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Sales Funnel — Mapping customer journey from stranger to buyer...
+# Sales Funnel: Mapping customer journey from stranger to buyer...
 *Maps the complete customer journey across TOFU/MOFU/BOFU stages with page templates, copy hooks, conversion targets, and optimization checklist.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Sales Funnel — Mapping customer journey from stranger to buyer...`
+`Sales Funnel, Mapping customer journey from stranger to buyer...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "sales funnel", "funnel", "conversion funnel" | ACTIVE |
 | User says "customer journey" or "buyer journey" | ACTIVE |
 | User wants to map awareness → conversion → retention flow | ACTIVE |
-| User wants ad copy only (no funnel structure) | DORMANT — use Facebook Ad or Google Ad |
-| User wants a time-bound launch plan | DORMANT — use Launch Plan |
+| User wants ad copy only (no funnel structure) | DORMANT, use Facebook Ad or Google Ad |
+| User wants a time-bound launch plan | DORMANT: use Launch Plan |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product/service** — what are you selling? (price point, delivery model)
-> 2. **Business model** — B2B SaaS, B2C e-commerce, info product, service business?
-> 3. **Target audience** — who is the ideal buyer? (demographics, pain points)
-> 4. **Current state** — do you have existing traffic, email list, or social following?
-> 5. **Primary goal** — lead generation, direct sales, subscription, or booking calls?
+> 1. **Product/service**: what are you selling? (price point, delivery model)
+> 2. **Business model**: B2B SaaS, B2C e-commerce, info product, service business?
+> 3. **Target audience**: who is the ideal buyer? (demographics, pain points)
+> 4. **Current state**: do you have existing traffic, email list, or social following?
+> 5. **Primary goal**: lead generation, direct sales, subscription, or booking calls?
 
 ### Step 2: Define Funnel Type
 
@@ -60,7 +60,7 @@ Select the funnel architecture based on business model:
 | **Service Business** | Consultation Funnel | Content → Lead Magnet → Case Study → Application → Call → Close |
 | **Subscription** | Value Ladder | Free Content → Low-Ticket → Core Offer → Premium → VIP |
 
-### Step 3: Map TOFU (Top of Funnel) — Awareness
+### Step 3: Map TOFU (Top of Funnel): Awareness
 
 **Goal:** Attract strangers and create awareness. Conversion target: 2-5% to MOFU.
 
@@ -82,14 +82,14 @@ Select the funnel architecture based on business model:
 └── Exit intent popup: Alternative offer or discount
 ```
 
-**Copy formula — Problem-Agitation-Solution (PAS):**
+**Copy formula: Problem-Agitation-Solution (PAS):**
 1. **Problem:** "Struggling with [pain point]?"
 2. **Agitation:** "Every day you wait, [consequence gets worse]"
 3. **Solution:** "Download our free [resource] to [specific outcome]"
 
 **KPIs:** Traffic volume, email opt-in rate (target: 25-40% on dedicated landing pages), cost per lead
 
-### Step 4: Map MOFU (Middle of Funnel) — Consideration
+### Step 4: Map MOFU (Middle of Funnel): Consideration
 
 **Goal:** Nurture leads and build trust. Conversion target: 5-15% to BOFU.
 
@@ -98,7 +98,7 @@ Select the funnel architecture based on business model:
 2. **Email 2 (Day 2):** Share a relevant story/case study
 3. **Email 3 (Day 4):** Teach a framework (demonstrate expertise)
 4. **Email 4 (Day 7):** Address top objection with proof
-5. **Email 5 (Day 10):** Soft pitch — introduce the solution
+5. **Email 5 (Day 10):** Soft pitch: introduce the solution
 
 **MOFU content types:**
 - Case studies with specific results ("How [Customer] achieved [Result] in [Timeframe]")
@@ -122,11 +122,11 @@ Select the funnel architecture based on business model:
 
 **KPIs:** Email open rate (target: 30%+), click-through rate (target: 3-5%), content engagement time
 
-### Step 5: Map BOFU (Bottom of Funnel) — Decision
+### Step 5: Map BOFU (Bottom of Funnel): Decision
 
 **Goal:** Convert qualified leads into buyers. Conversion target: 2-10% depending on price point.
 
-**BOFU page template — Sales Page:**
+**BOFU page template: Sales Page:**
 
 ```
 [Sales Page Structure]
@@ -150,11 +150,11 @@ Select the funnel architecture based on business model:
 - Anchoring: Show the "full value" before the actual price
 - Decoy: Include a middle tier that makes the top tier look like a deal
 - Urgency: "Offer expires [date]" or "Only [X] spots remaining"
-- Risk reversal: "30-day money-back guarantee — no questions asked"
+- Risk reversal: "30-day money-back guarantee: no questions asked"
 
 **KPIs:** Sales page conversion rate, average order value, cart abandonment rate (target: <70%)
 
-### Step 6: Map Post-Purchase — Retention & Expansion
+### Step 6: Map Post-Purchase: Retention & Expansion
 
 **Goal:** Maximize lifetime value and generate referrals.
 
@@ -214,7 +214,7 @@ For each funnel stage, verify:
 Deliver the complete funnel as a structured document:
 
 ```markdown
-# [Product/Service] — Sales Funnel Architecture
+# [Product/Service]: Sales Funnel Architecture
 
 ## Funnel Overview
 - **Type:** [Funnel type from Step 2]
@@ -222,24 +222,24 @@ Deliver the complete funnel as a structured document:
 - **Price point:** [Amount]
 - **Estimated funnel conversion:** [X]% end-to-end
 
-## Stage 1: TOFU — Awareness
+## Stage 1: TOFU, Awareness
 **Traffic sources:** [List]
 **Lead magnet:** [Description]
 **Landing page headline:** "[Headline]"
 **Target conversion:** [X]% opt-in rate
 
-## Stage 2: MOFU — Consideration
+## Stage 2: MOFU, Consideration
 **Nurture sequence:** [5-email summary]
 **Key content pieces:** [List]
 **Target conversion:** [X]% to BOFU
 
-## Stage 3: BOFU — Decision
+## Stage 3: BOFU, Decision
 **Sales page headline:** "[Headline]"
 **Value stack:** [List of inclusions with values]
 **Guarantee:** [Risk reversal offer]
 **Target conversion:** [X]% purchase rate
 
-## Stage 4: Post-Purchase — Retention
+## Stage 4: Post-Purchase, Retention
 **Onboarding sequence:** [Summary]
 **Upsell offer:** [Description]
 **Referral mechanism:** [Description]
@@ -254,7 +254,7 @@ Deliver the complete funnel as a structured document:
 ## Completion
 
 ```
-Sales Funnel — Complete!
+Sales Funnel: Complete!
 
 Funnel type: [Type]
 Stages mapped: 4 (TOFU → MOFU → BOFU → Retention)
@@ -272,4 +272,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: TOFU/MOFU/BOFU architecture, funnel type selection by business model, page templates per stage, copy formulas (PAS), nurture sequence structure, pricing psychology triggers, post-purchase retention flow, conversion optimization checklist, tech stack recommendations, KPIs per stage. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: TOFU/MOFU/BOFU architecture, funnel type selection by business model, page templates per stage, copy formulas (PAS), nurture sequence structure, pricing psychology triggers, post-purchase retention flow, conversion optimization checklist, tech stack recommendations, KPIs per stage. (Origin: MemStack Pro v3.2, Mar 2026)

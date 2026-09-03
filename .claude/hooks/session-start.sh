@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# MemStack v3.3 — Session Start Hook
+# MemStack v3.3: Session Start Hook
 # 1. MemStack™ skill injection (project-type-aware)
 # 2. Auto-indexes CLAUDE.md into SQLite project_context
 # 3. Reports session start to monitoring API
 # Note: the TokenStack proxy is started on demand via
 #       'python -m memstack_skill_loader dashboard --with-proxy', not by this hook.
-# Always exit 0 — should never block work
+# Always exit 0: should never block work
 #
 # Triggered by: SessionStart hook event
 
@@ -60,7 +60,7 @@ else
     SKILL_HINTS="deployment, security, testing"
 fi
 
-# Inject skill context — structured JSON output for CC additionalContext
+# Inject skill context, structured JSON output for CC additionalContext
 # Uses <IMPORTANT> tags to compete with other plugin injections
 ADDITIONAL_CONTEXT="<IMPORTANT>
 # MemStack - Your Primary Skill Source

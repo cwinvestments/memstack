@@ -8,7 +8,7 @@ You have access to a `memstack-skills` MCP server with professional skills cover
 - Any git operation beyond simple commits
 - Any infrastructure or DevOps task
 - Any task where the user asks "how should I..." or "what's the best way to..."
-- Any task you're unsure about — check if a skill exists first
+- Any task you're unsure about, check if a skill exists first
 
 ## ALWAYS call `list_skills` when:
 - The user asks "what skills are available" or similar
@@ -21,7 +21,7 @@ You have access to a `memstack-skills` MCP server with professional skills cover
 - Chat/conversation that doesn't involve a task
 
 ## Tool names:
-- `find_skill` — semantic search by task description
-- `list_skills` — browse full catalog
-- `get_skill` — fetch specific skill by name
-- `reindex_skills` — rebuild index after skill changes
+- `find_skill`: semantic search by task description
+- `list_skills`: browse full catalog
+- `get_skill`: fetch specific skill by name
+- `reindex_skills`: rebuild index after skill changes

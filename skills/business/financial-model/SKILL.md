@@ -2,17 +2,17 @@
 name: memstack-business-financial-model
 description: "Use this skill when the user says 'financial model', 'projections', 'revenue forecast', 'unit economics', 'break-even', 'cash flow', or mentions MRR, churn, CAC, LTV, or runway. Builds monthly projections with scenario modeling. Do NOT use for pricing strategy or invoice generation."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Financial Model — Building financial projections...
+# Financial Model: Building financial projections...
 *Builds monthly revenue projections, expense forecasts, unit economics (CAC, LTV, payback), break-even analysis, cash flow tracking, and scenario modeling (best/base/worst).*
 
 ## Activation
 
 When this skill activates, output:
 
-`Financial Model — Building financial projections...`
+`Financial Model: Building financial projections...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "financial model", "projections", "revenue forecast" | ACTIVE |
 | User mentions MRR, churn, CAC, LTV, runway, or break-even | ACTIVE |
 | User wants to forecast revenue, expenses, or cash flow | ACTIVE |
-| User wants to set pricing tiers | DORMANT — use Pricing Strategy |
-| User wants to generate an invoice | DORMANT — use Invoice Generator |
+| User wants to set pricing tiers | DORMANT: use Pricing Strategy |
+| User wants to generate an invoice | DORMANT: use Invoice Generator |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Business model** — SaaS, e-commerce, service, marketplace, or other?
-> 2. **Revenue streams** — subscriptions, one-time sales, services, ads?
-> 3. **Current numbers** — existing revenue, customers, growth rate?
-> 4. **Pricing** — price points, tiers, average revenue per user?
-> 5. **Costs** — known fixed and variable costs?
-> 6. **Funding** — bootstrapped or funded? Current cash balance?
+> 1. **Business model**: SaaS, e-commerce, service, marketplace, or other?
+> 2. **Revenue streams**: subscriptions, one-time sales, services, ads?
+> 3. **Current numbers**: existing revenue, customers, growth rate?
+> 4. **Pricing**: price points, tiers, average revenue per user?
+> 5. **Costs**: known fixed and variable costs?
+> 6. **Funding**: bootstrapped or funded? Current cash balance?
 
 ### Step 2: Revenue Model
 
@@ -65,9 +65,9 @@ Where:
 
 | Month | Starting | New | Churned | Ending | MRR | ARR |
 |-------|---------|-----|---------|--------|-----|-----|
-| 1 | 0 | [X] | 0 | [X] | $[X] | — |
-| 2 | [X] | [X] | [X] | [X] | $[X] | — |
-| 3 | [X] | [X] | [X] | [X] | $[X] | — |
+| 1 | 0 | [X] | 0 | [X] | $[X] | none |
+| 2 | [X] | [X] | [X] | [X] | $[X] | none |
+| 3 | [X] | [X] | [X] | [X] | $[X] | none |
 | ... | | | | | | |
 | 12 | [X] | [X] | [X] | [X] | $[X] | $[X] |
 
@@ -116,9 +116,9 @@ Payback Period:
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| ARPU (monthly) | $[X] | — | — |
+| ARPU (monthly) | $[X] | none | none |
 | Monthly churn rate | [X]% | <5% | [OK / At Risk] |
-| CAC | $[X] | — | — |
+| CAC | $[X] | none | none |
 | LTV | $[X] | >3× CAC | [OK / At Risk] |
 | LTV:CAC ratio | [X]:1 | >3:1 | [OK / At Risk] |
 | Payback period | [X] months | <12 months | [OK / At Risk] |
@@ -226,25 +226,25 @@ Example:
 ## Output Format
 
 ```markdown
-# Financial Model — [Business Name]
+# Financial Model: [Business Name]
 
 ## Revenue Model
-[From Step 2 — monthly revenue projections]
+[From Step 2: monthly revenue projections]
 
 ## Unit Economics
-[From Step 3 — CAC, LTV, payback, margins]
+[From Step 3: CAC, LTV, payback, margins]
 
 ## Expense Forecast
-[From Step 4 — fixed + variable costs]
+[From Step 4: fixed + variable costs]
 
 ## Break-Even Analysis
-[From Step 5 — break-even point + P&L]
+[From Step 5, break-even point + P&L]
 
 ## Scenario Analysis
-[From Step 6 — worst/base/best]
+[From Step 6: worst/base/best]
 
 ## Cash Flow
-[From Step 7 — monthly cash flow + key dates]
+[From Step 7, monthly cash flow + key dates]
 
 ## Key Assumptions
 [List every assumption with the value used]
@@ -253,7 +253,7 @@ Example:
 ## Completion
 
 ```
-Financial Model — Complete!
+Financial Model: Complete!
 
 Business model: [Type]
 12-month ARR (base case): $[X]
@@ -272,4 +272,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Revenue models (SaaS, e-commerce, service), unit economics (CAC, LTV, payback, LTV:CAC, gross margin), expense forecast (fixed + variable), break-even analysis with P&L projection, 3-scenario modeling (worst/base/best), cash flow timeline with key dates (cash-positive, break-even, runway). (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Revenue models (SaaS, e-commerce, service), unit economics (CAC, LTV, payback, LTV:CAC, gross margin), expense forecast (fixed + variable), break-even analysis with P&L projection, 3-scenario modeling (worst/base/best), cash flow timeline with key dates (cash-positive, break-even, runway). (Origin: MemStack Pro v3.2, Mar 2026)

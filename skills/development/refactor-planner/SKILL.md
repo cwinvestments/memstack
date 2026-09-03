@@ -2,17 +2,17 @@
 name: memstack-development-refactor-planner
 description: "Use this skill when the user says 'refactor', 'refactoring plan', 'code cleanup', 'reduce duplication', 'simplify code', 'tech debt', 'god class', 'tight coupling', or needs to systematically improve existing code. Identifies targets, assesses risk, and builds incremental execution plans. Do NOT use for writing new features or database migrations."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Refactor Planner — Planning systematic code improvement...
+# Refactor Planner: Planning systematic code improvement...
 *Identifies code smells, assesses refactoring risk, selects appropriate patterns, and builds incremental execution plans with rollback strategies and verification checkpoints.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Refactor Planner — Planning systematic code improvement...`
+`Refactor Planner: Planning systematic code improvement...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "refactor", "refactoring plan", "code cleanup" | ACTIVE |
 | User says "tech debt", "god class", "tight coupling", "reduce duplication" | ACTIVE |
 | User wants to improve existing code structure without changing behavior | ACTIVE |
-| User wants to write a new feature | DORMANT — use Feature Spec |
-| User wants to change database schema | DORMANT — use Migration Planner |
+| User wants to write a new feature | DORMANT: use Feature Spec |
+| User wants to change database schema | DORMANT: use Migration Planner |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Target** — what code needs refactoring? (file, module, class, or system)
-> 2. **Pain point** — what's the specific problem? (hard to modify, duplicated, slow, confusing)
-> 3. **Test coverage** — does the target code have tests? (yes, partial, none)
-> 4. **Constraints** — any deadlines, frozen APIs, or deployment concerns?
-> 5. **Language/framework** — what tech stack?
+> 1. **Target**: what code needs refactoring? (file, module, class, or system)
+> 2. **Pain point**: what's the specific problem? (hard to modify, duplicated, slow, confusing)
+> 3. **Test coverage**: does the target code have tests? (yes, partial, none)
+> 4. **Constraints**: any deadlines, frozen APIs, or deployment concerns?
+> 5. **Language/framework**: what tech stack?
 
 ### Step 2: Identify Code Smells
 
@@ -68,7 +68,7 @@ Scan the target code for these smell categories:
 |-------|----------|----------|
 | **Feature envy** | Method uses another class's data more than its own | Medium |
 | **Inappropriate intimacy** | Classes access each other's private internals | High |
-| **Message chains** | `a.getB().getC().getD().doThing()` — chain >2 deep | Medium |
+| **Message chains** | `a.getB().getC().getD().doThing()`: chain >2 deep | Medium |
 | **Middle man** | Class delegates nearly everything to another class | Low |
 
 **Dispensables (unnecessary):**
@@ -91,7 +91,7 @@ Scan the target code for these smell categories:
 **Code smell report:**
 
 ```markdown
-## Code Smell Report — [Target]
+## Code Smell Report: [Target]
 
 | # | Smell | Location | Severity | Lines Affected |
 |---|-------|----------|----------|---------------|
@@ -178,7 +178,7 @@ Structure the refactoring into safe, incremental phases:
 **Phase template:**
 
 ```markdown
-## Refactoring Plan — [Target]
+## Refactoring Plan: [Target]
 
 ### Phase 0: Safety Net (do this first)
 - [ ] Add characterization tests for current behavior
@@ -269,31 +269,31 @@ Define before/after metrics:
 ## Output Format
 
 ```markdown
-# Refactoring Plan — [Target]
+# Refactoring Plan: [Target]
 
 ## Code Smell Report
-[From Step 2 — smells identified with severity and location]
+[From Step 2, smells identified with severity and location]
 
 ## Risk Assessment
-[From Step 3 — risk matrix for each target]
+[From Step 3, risk matrix for each target]
 
 ## Pattern Selection
-[From Step 4 — matched patterns with estimated effort]
+[From Step 4, matched patterns with estimated effort]
 
 ## Execution Plan
-[From Step 5 — phased plan with verification checkpoints]
+[From Step 5, phased plan with verification checkpoints]
 
 ## Rollback Strategy
-[From Step 6 — revert method per phase + abort criteria]
+[From Step 6, revert method per phase + abort criteria]
 
 ## Success Metrics
-[From Step 7 — before/after targets]
+[From Step 7: before/after targets]
 ```
 
 ## Completion
 
 ```
-Refactor Planner — Complete!
+Refactor Planner: Complete!
 
 Target: [Target name]
 Smells found: [X] ([X] high, [X] medium, [X] low)
@@ -312,4 +312,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 4 code smell categories (bloaters, couplers, dispensables, change preventers) with 16 specific smells, 5-factor risk matrix, 12 refactoring patterns in 3 groups (extraction, simplification, structural), phased execution plan template, rollback strategy with abort criteria, before/after metrics tracking. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 4 code smell categories (bloaters, couplers, dispensables, change preventers) with 16 specific smells, 5-factor risk matrix, 12 refactoring patterns in 3 groups (extraction, simplification, structural), phased execution plan template, rollback strategy with abort criteria, before/after metrics tracking. (Origin: MemStack Pro v3.2, Mar 2026)

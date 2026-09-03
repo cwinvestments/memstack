@@ -5,14 +5,14 @@ version: 1.0.0
 ---
 
 
-# 📍 State — Updating Project State...
+# 📍 State: Updating Project State...
 *Maintain a living document of where you are right now in a project.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📍 State — Updating project state...`
+`📍 State: Updating project state...`
 
 Then execute the protocol below.
 
@@ -20,12 +20,12 @@ Then execute the protocol below.
 
 | Context | Status | Priority |
 |---------|--------|----------|
-| **User says "update state", "save state", "project state"** | ACTIVE — update STATE.md | P1 |
-| **User says "where was I", "where did I leave off"** | ACTIVE — read and present STATE.md | P1 |
-| **User starts a session and STATE.md exists** | ACTIVE — read silently, use as context | P2 |
-| **User says "save diary" or "log session"** | DORMANT — Diary handles full session logs | — |
-| **User says "save project" or "handoff"** | DORMANT — Project skill handles lifecycle | — |
-| **User asks to recall past sessions** | DORMANT — Echo handles historical recall | — |
+| **User says "update state", "save state", "project state"** | ACTIVE: update STATE.md | P1 |
+| **User says "where was I", "where did I leave off"** | ACTIVE, read and present STATE.md | P1 |
+| **User starts a session and STATE.md exists** | ACTIVE, read silently, use as context | P2 |
+| **User says "save diary" or "log session"** | DORMANT, Diary handles full session logs | none |
+| **User says "save project" or "handoff"** | DORMANT, Project skill handles lifecycle | none |
+| **User asks to recall past sessions** | DORMANT, Echo handles historical recall | none |
 
 ## Protocol
 
@@ -47,7 +47,7 @@ Then execute the protocol below.
    - What task/phase is actively being worked on right now
    - Decisions made during this session (with rationale)
    - Open blockers or unanswered questions
-   - Explicit next steps (not vague — specific enough to resume cold)
+   - Explicit next steps (not vague, specific enough to resume cold)
    - Key files modified recently
 
 2. **Check git status** for uncommitted work:
@@ -61,7 +61,7 @@ Then execute the protocol below.
    *Last updated: {YYYY-MM-DD HH:MM}*
 
    ## Currently Working On
-   {Active task or phase — be specific}
+   {Active task or phase: be specific}
 
    ## Decisions Made
    - {Decision}: {Rationale}
@@ -70,14 +70,14 @@ Then execute the protocol below.
    - [ ] {Blocker description}
 
    ## Next Steps
-   1. {Immediate next action — specific enough to start cold}
+   1. {Immediate next action, specific enough to start cold}
    2. {Following action}
 
    ## Recently Modified Files
-   - {file path} — {what changed}
+   - {file path}: {what changed}
 
    ## Uncommitted Changes
-   {List any unstaged/uncommitted work, or "None — clean working tree"}
+   {List any unstaged/uncommitted work, or "None: clean working tree"}
    ```
 
 4. **Confirm** with a brief summary of what was saved.
@@ -86,10 +86,10 @@ Then execute the protocol below.
 
 | Skill | What it tracks | When |
 |-------|---------------|------|
-| **State** | Current snapshot — where you are *right now* | During session, living document |
-| **Diary** | Historical log — what you *did* in a session | End of session, append-only |
-| **Project** | Project lifecycle — handoff between sessions | Session boundaries |
-| **Work** | Task list — what *needs to be done* | When planning/tracking todos |
+| **State** | Current snapshot, where you are *right now* | During session, living document |
+| **Diary** | Historical log, what you *did* in a session | End of session, append-only |
+| **Project** | Project lifecycle, handoff between sessions | Session boundaries |
+| **Work** | Task list, what *needs to be done* | When planning/tracking todos |
 
 State is the **present tense** complement to Diary's **past tense**. State tells you where to resume; Diary tells you what happened.
 
@@ -98,7 +98,7 @@ State is the **present tense** complement to Diary's **past tense**. State tells
 - User's description of current state (or auto-detected from session)
 
 ## Outputs
-- `{project_dir}/.claude/STATE.md` — updated living document
+- `{project_dir}/.claude/STATE.md`: updated living document
 - Brief confirmation summary
 
 ## Example Usage
@@ -106,7 +106,7 @@ State is the **present tense** complement to Diary's **past tense**. State tells
 **User:** "update state"
 
 ```
-📍 State — Updating project state...
+📍 State: Updating project state...
 
 Saved: C:\Projects\AdminStack\.claude\STATE.md
 
@@ -119,4 +119,4 @@ This will auto-load next session for seamless pickup.
 
 ## Level History
 
-- **Lv.1** — Base: Living STATE.md creation and update protocol. Read via Work Step 0 or manual invocation. Deconfliction with Diary/Project/Work. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.1**: Base: Living STATE.md creation and update protocol. Read via Work Step 0 or manual invocation. Deconfliction with Diary/Project/Work. (Origin: MemStack v3.1, Feb 2026)

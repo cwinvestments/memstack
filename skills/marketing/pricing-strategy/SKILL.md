@@ -2,17 +2,17 @@
 name: memstack-marketing-pricing-strategy
 description: "Use this skill when the user says 'pricing strategy', 'how to price', 'pricing model', 'tier structure', 'pricing psychology', or needs to design pricing tiers, apply pricing psychology, and plan A/B price tests. Do NOT use for competitor pricing comparison alone."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Pricing Strategy — Designing pricing model...
+# Pricing Strategy: Designing pricing model...
 *Designs pricing tiers using cost-plus, value-based, and competitor-based models with psychology triggers, tier structure templates, and A/B test plans.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Pricing Strategy — Designing pricing model...`
+`Pricing Strategy: Designing pricing model...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "pricing strategy", "how to price", "pricing model" | ACTIVE |
 | User says "tier structure" or "pricing psychology" | ACTIVE |
 | User wants to design or redesign their pricing | ACTIVE |
-| User wants competitor pricing comparison only | DORMANT — use Competitor Analysis |
-| User wants to create an invoice | DORMANT — use Invoice Generator |
+| User wants competitor pricing comparison only | DORMANT: use Competitor Analysis |
+| User wants to create an invoice | DORMANT: use Invoice Generator |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product/service** — what are you pricing? (SaaS, physical product, service, course)
-> 2. **Costs** — what does it cost to deliver? (COGS, hosting, labor)
-> 3. **Target customer** — freelancer, SMB, mid-market, or enterprise?
-> 4. **Current pricing** — is this a new product or a re-pricing?
-> 5. **Competitors** — what do alternatives cost?
-> 6. **Value delivered** — what outcome or ROI does the customer get?
+> 1. **Product/service**: what are you pricing? (SaaS, physical product, service, course)
+> 2. **Costs**: what does it cost to deliver? (COGS, hosting, labor)
+> 3. **Target customer**: freelancer, SMB, mid-market, or enterprise?
+> 4. **Current pricing**: is this a new product or a re-pricing?
+> 5. **Competitors**: what do alternatives cost?
+> 6. **Value delivered**: what outcome or ROI does the customer get?
 
 ### Step 2: Select Pricing Model
 
@@ -117,14 +117,14 @@ Your position:
 | **Billing** | Monthly or annual | Annual (15-20% discount) | Annual contract |
 | **Seats/usage** | 1 user / [limit] | Up to [X] users / [limit] | Unlimited |
 | **Feature 1** | Basic | Full | Full |
-| **Feature 2** | — | Full | Full |
-| **Feature 3** | — | — | Full |
+| **Feature 2** | none | Full | Full |
+| **Feature 3** | none | none | Full |
 | **Support** | Email | Priority email | Dedicated CSM |
-| **SLA** | — | — | 99.9% uptime |
+| **SLA** | none | none | 99.9% uptime |
 
 **Tier design rules:**
 1. **Starter** must be useful on its own (not crippled). It proves value and creates habit.
-2. **Professional** is the target tier — design the page to highlight it ("Most Popular").
+2. **Professional** is the target tier, design the page to highlight it ("Most Popular").
 3. **Enterprise** exists for price anchoring even if you have few enterprise buyers.
 4. Each tier should have 1-2 clear upgrade triggers (the feature you hit a wall without).
 
@@ -144,12 +144,12 @@ Your position:
 | **Anchoring** | Show the highest price first (or "value" price before actual price) | First number seen sets the reference point |
 | **Decoy effect** | Make the middle tier the obvious best deal (closest to top tier, much cheaper) | The "bad deal" tier makes the target tier look irresistible |
 | **Charm pricing** | $97, $197, $497 instead of $100, $200, $500 | Left-digit effect: $97 feels closer to $90 than $100 |
-| **Annual discount** | "Save 20% with annual billing" — show monthly equivalent | Increases LTV, reduces churn, feels like a deal |
+| **Annual discount** | "Save 20% with annual billing": show monthly equivalent | Increases LTV, reduces churn, feels like a deal |
 | **Price framing** | "$8/day" instead of "$249/month" | Smaller daily number is easier to justify |
 | **Loss aversion** | "You're losing $X/month without this" instead of "Save $X/month" | Pain of loss is 2x stronger than joy of gain |
 | **Social proof at price** | "Join 5,000+ teams on Pro" next to the tier | Reduces purchase anxiety at the moment of decision |
 | **Risk reversal** | 30-day money-back guarantee prominently displayed | Removes fear of making the wrong choice |
-| **Urgency** | "Launch price — increases to $[higher] on [date]" | Deadline accelerates decisions |
+| **Urgency** | "Launch price, increases to $[higher] on [date]" | Deadline accelerates decisions |
 
 **Pricing page layout (top to bottom):**
 1. Headline: Value proposition (not "Pricing")
@@ -166,11 +166,11 @@ Your position:
 
 | Priority | Test | Expected Impact |
 |----------|------|----------------|
-| 1 | Price point ($97 vs $127 vs $147) | High — directly affects revenue and conversion |
-| 2 | Annual vs monthly default | Medium — affects LTV and churn |
-| 3 | Tier naming and positioning | Medium — affects which tier people choose |
-| 4 | Feature bundling across tiers | Medium — affects upgrade rate |
-| 5 | Guarantee (30-day vs 60-day vs none) | Low-Medium — affects conversion confidence |
+| 1 | Price point ($97 vs $127 vs $147) | High, directly affects revenue and conversion |
+| 2 | Annual vs monthly default | Medium: affects LTV and churn |
+| 3 | Tier naming and positioning | Medium, affects which tier people choose |
+| 4 | Feature bundling across tiers | Medium: affects upgrade rate |
+| 5 | Guarantee (30-day vs 60-day vs none) | Low-Medium: affects conversion confidence |
 
 **A/B test protocol:**
 1. Test ONE variable at a time
@@ -187,7 +187,7 @@ Ask 50-100 target customers these four questions:
 3. At what price would this be a **great deal**?
 4. At what price would this be **so cheap** you'd question quality?
 
-Plot the four curves — the intersection defines your acceptable price range.
+Plot the four curves, the intersection defines your acceptable price range.
 
 ### Step 7: Build Pricing Migration Plan (Re-pricing)
 
@@ -217,9 +217,9 @@ What you get:
 - [New feature/improvement 1]
 - [New feature/improvement 2]
 
-Your plan won't change until [date — 60+ days out].
+Your plan won't change until [date: 60+ days out].
 
-If you have questions, reply to this email — I read every response.
+If you have questions, reply to this email: I read every response.
 
 [Name]
 ```
@@ -227,14 +227,14 @@ If you have questions, reply to this email — I read every response.
 ## Output Format
 
 ```markdown
-# Pricing Strategy — [Product Name]
+# Pricing Strategy: [Product Name]
 
 ## Pricing Model
 - **Model:** [Value-based / Competitor-based / etc.]
 - **Rationale:** [Why this model fits]
 
 ## Price Calculation
-[Show the math — cost basis, value calculation, or competitor benchmarks]
+[Show the math: cost basis, value calculation, or competitor benchmarks]
 
 ## Tier Structure
 [3-column tier comparison table]
@@ -255,11 +255,11 @@ If you have questions, reply to this email — I read every response.
 ## Completion
 
 ```
-Pricing Strategy — Complete!
+Pricing Strategy: Complete!
 
 Pricing model: [Model]
 Tiers: [Count] ([names])
-Recommended price range: $[low] — $[high]/mo
+Recommended price range: $[low], $[high]/mo
 Psychology triggers: [Count] applied
 A/B tests queued: [Count]
 
@@ -273,4 +273,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 6 pricing models with decision framework, cost-plus/value-based/competitor-based calculation methods, 3-tier template with design rules, 9 pricing psychology triggers with implementation, pricing page layout guide, A/B test protocol (priority-ordered with Van Westendorp), price migration plan with email template. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 6 pricing models with decision framework, cost-plus/value-based/competitor-based calculation methods, 3-tier template with design rules, 9 pricing psychology triggers with implementation, pricing page layout guide, A/B test protocol (priority-ordered with Van Westendorp), price migration plan with email template. (Origin: MemStack Pro v3.2, Mar 2026)

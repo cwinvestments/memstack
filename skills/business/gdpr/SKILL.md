@@ -2,17 +2,17 @@
 name: memstack-business-gdpr
 description: "Use this skill when the user says 'GDPR', 'data protection', 'privacy compliance', 'DPA', 'DSAR', 'data subject request', 'cookie consent', 'privacy audit', 'CCPA', or asks 'do I need GDPR for this repo'. Scans the repository to detect what personal data is collected, classifies sensitivity, determines whether GDPR applies and how critical it is, then reports required roles, obligations, and remediation. Do NOT use for general security audits (use owasp-top10) or contract drafting (use contract-template)."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# GDPR — Personal-data assessment from the repo...
+# GDPR: Personal-data assessment from the repo...
 *Scans a repository for evidence of personal data collection, classifies sensitivity under GDPR, decides whether GDPR applies and how critical the obligations are, and reports the required roles, articles to satisfy, and remediation plan.*
 
 ## Activation
 
 When this skill activates, output:
 
-`GDPR — Personal-data assessment from the repo...`
+`GDPR, Personal-data assessment from the repo...`
 
 Then execute the protocol below.
 
@@ -24,9 +24,9 @@ Then execute the protocol below.
 | User asks "do I need GDPR", "does GDPR apply to this project" | ACTIVE |
 | User says "DSAR", "right to be forgotten", "cookie consent", "DPA" | ACTIVE |
 | User asks about CCPA, LGPD, PIPEDA, UK GDPR | ACTIVE |
-| User wants a generic security audit | DORMANT — use owasp-top10 |
-| User wants a service agreement or NDA | DORMANT — use contract-template |
-| User wants RLS / database access policies | DORMANT — use rls-checker |
+| User wants a generic security audit | DORMANT: use owasp-top10 |
+| User wants a service agreement or NDA | DORMANT: use contract-template |
+| User wants RLS / database access policies | DORMANT: use rls-checker |
 
 ## Common Mistakes
 
@@ -45,7 +45,7 @@ Then execute the protocol below.
 
 ### Step 1: Scan the repo for personal-data signals
 
-Don't ask the user what they collect — find out from the code. Run discovery against every relevant surface:
+Don't ask the user what they collect, find out from the code. Run discovery against every relevant surface:
 
 **Database schemas / migrations**
 ```bash
@@ -104,7 +104,7 @@ Record findings in a working table:
 | db/schema.sql L43 | users.phone | Yes | Identifier |
 | src/forms/Profile.tsx L18 | dob input | Yes | Identifier (age) |
 | src/forms/Health.tsx L7 | medical_conditions | Yes | **Special category (Art 9)** |
-| package.json | posthog-js | Yes — behavioral | Behavioral |
+| package.json | posthog-js | Yes: behavioral | Behavioral |
 | src/api/users.ts L88 | logger.info(req.body) | Possible PII leak | Risk |
 ```
 
@@ -116,16 +116,16 @@ Bucket every confirmed finding into one or more of:
 
 | Class | Examples | GDPR Treatment |
 |-------|----------|----------------|
-| **Identifier** | name, email, phone, address, account ID, IP | Standard personal data — Art 6 lawful basis required |
+| **Identifier** | name, email, phone, address, account ID, IP | Standard personal data, Art 6 lawful basis required |
 | **Financial** | card number, bank account, billing address | Standard personal data + PCI scope considerations |
 | **Location** | precise GPS, geo, IP-derived city | Standard personal data; precise location may require explicit consent |
 | **Behavioral** | clickstream, page views, session recording, fingerprint | Standard personal data; consent for non-essential cookies/tracking |
 | **Government ID** | passport, SSN, national ID, driver's licence | Standard personal data but elevated risk; often national-law restricted |
-| **Special category — Art 9** | health, biometric, genetic, race, ethnicity, religion, political, sexual orientation, trade-union | **Prohibited unless** an Art 9(2) condition applies — almost always **explicit consent** |
-| **Children's data — Art 8** | any data from users under 16 (age varies 13–16 by member state) | Requires parental consent for information-society services |
-| **Criminal data — Art 10** | offences, convictions | Only under official authority or specific national law |
+| **Special category (Art 9** | health, biometric, genetic, race, ethnicity, religion, political, sexual orientation, trade-union | **Prohibited unless** an Art 9(2) condition applies) almost always **explicit consent** |
+| **Children's data, Art 8** | any data from users under 16 (age varies 13 to 16 by member state) | Requires parental consent for information-society services |
+| **Criminal data, Art 10** | offences, convictions | Only under official authority or specific national law |
 
-### Step 3: Verdict — does GDPR apply, and how critical?
+### Step 3: Verdict: does GDPR apply, and how critical?
 
 ```markdown
 | Question | Answer |
@@ -157,12 +157,12 @@ Based on the verdict, list which roles the project must staff:
 
 | Role | Triggered When | Status |
 |------|---------------|--------|
-| **Controller** (Art 4(7)) | Project decides purposes and means of processing — almost always you | Required |
+| **Controller** (Art 4(7)) | Project decides purposes and means of processing: almost always you | Required |
 | **Joint controllers** (Art 26) | Shared decisions with another org | Check |
 | **Processor** (Art 4(8)) | You process data on behalf of another controller | Check |
 | **DPO** (Art 37) | Public authority, OR core activities = large-scale systematic monitoring, OR core activities = large-scale special category | Required if any trigger |
 | **Art 27 EU representative** | Controller/processor not established in EU but processes EU data, AND processing is not occasional | Required if any trigger |
-| **Internal owner** | Every project — accountable for GDPR posture day-to-day | Required |
+| **Internal owner** | Every project, accountable for GDPR posture day-to-day | Required |
 
 ### Step 5: Map required articles to fulfill
 
@@ -170,22 +170,22 @@ Only list the articles that actually trigger for this project, with a one-line "
 
 | Article | Obligation | Triggered? | Concrete action |
 |---------|------------|------------|----------------|
-| Art 5 — Principles | Lawfulness, fairness, transparency, purpose limitation, minimisation, accuracy, storage limitation, integrity, accountability | Always | Document each principle is met |
-| Art 6 — Lawful basis | Pick one of 6 bases per processing activity | Always | Add lawful basis column to ROPA |
-| Art 7 — Conditions for consent | If any basis is consent | If consent | Implement explicit, granular, withdrawable consent UI |
-| Art 8 — Children | If under-16 users | If children | Parental consent flow |
-| Art 9 — Special category | If health/biometric/etc. | If Art 9 data | Explicit consent + extra safeguards |
-| Art 13/14 — Transparency | Privacy notice at collection | Always | Publish privacy policy that mirrors actual processing |
-| Art 15–22 — Subject rights | Access, rectification, erasure, restriction, portability, objection, ADM | Always | Implement DSAR endpoint + 30-day SLA |
-| Art 25 — Privacy by design | Default settings minimise data | Always | Code review checklist |
-| Art 28 — Processors | Written DPA before processing | If any processor | Sign DPAs with every vendor |
-| Art 30 — ROPA | Record of Processing Activities | If 250+ employees OR not occasional OR Art 9 | Maintain ROPA |
-| Art 32 — Security | TIA-equivalent technical/organisational measures | Always | Document encryption, access control, backups |
-| Art 33 — Breach to authority | 72h notification | Always | Breach runbook |
-| Art 34 — Breach to subjects | Without undue delay if high risk | Always | Subject notification template |
-| Art 35 — DPIA | High-risk processing | If profiling/large scale/Art 9 | Run DPIA before launch |
-| Art 37–39 — DPO | If triggered (see Step 4) | If triggered | Appoint and publish |
-| Chapter V — Transfers | International transfers | If any | SCCs / adequacy / BCRs + TIA |
+| Art 5: Principles | Lawfulness, fairness, transparency, purpose limitation, minimisation, accuracy, storage limitation, integrity, accountability | Always | Document each principle is met |
+| Art 6, Lawful basis | Pick one of 6 bases per processing activity | Always | Add lawful basis column to ROPA |
+| Art 7: Conditions for consent | If any basis is consent | If consent | Implement explicit, granular, withdrawable consent UI |
+| Art 8, Children | If under-16 users | If children | Parental consent flow |
+| Art 9, Special category | If health/biometric/etc. | If Art 9 data | Explicit consent + extra safeguards |
+| Art 13/14, Transparency | Privacy notice at collection | Always | Publish privacy policy that mirrors actual processing |
+| Art 15 to 22: Subject rights | Access, rectification, erasure, restriction, portability, objection, ADM | Always | Implement DSAR endpoint + 30-day SLA |
+| Art 25, Privacy by design | Default settings minimise data | Always | Code review checklist |
+| Art 28, Processors | Written DPA before processing | If any processor | Sign DPAs with every vendor |
+| Art 30, ROPA | Record of Processing Activities | If 250+ employees OR not occasional OR Art 9 | Maintain ROPA |
+| Art 32: Security | TIA-equivalent technical/organisational measures | Always | Document encryption, access control, backups |
+| Art 33, Breach to authority | 72h notification | Always | Breach runbook |
+| Art 34, Breach to subjects | Without undue delay if high risk | Always | Subject notification template |
+| Art 35, DPIA | High-risk processing | If profiling/large scale/Art 9 | Run DPIA before launch |
+| Art 37 to 39, DPO | If triggered (see Step 4) | If triggered | Appoint and publish |
+| Chapter V, Transfers | International transfers | If any | SCCs / adequacy / BCRs + TIA |
 
 ### Step 6: Gap analysis from the repo
 
@@ -196,7 +196,7 @@ For each triggered article in Step 5, check whether the repo already has evidenc
 |------------|-------------------|-----|
 | Privacy policy (Art 13) | ❌ Not found | Draft from ROPA |
 | Cookie banner (ePrivacy + Art 6) | ✅ src/components/CookieBanner.tsx | Verify reject is equally prominent |
-| DSAR endpoint (Art 15–22) | ❌ Not found | Implement /api/account/export and /api/account/delete |
+| DSAR endpoint (Art 15 to 22) | ❌ Not found | Implement /api/account/export and /api/account/delete |
 | DPA with Stripe (Art 28) | ❓ Unknown | Confirm signed, store reference |
 | Breach runbook (Art 33) | ❌ Not found | Create docs/security/breach-runbook.md |
 | ROPA (Art 30) | ❌ Not found | Draft from Step 1 inventory |
@@ -206,14 +206,14 @@ For each triggered article in Step 5, check whether the repo already has evidenc
 ### Step 7: Produce the assessment report
 
 ```markdown
-## GDPR Assessment — [Project Name]
+## GDPR Assessment: [Project Name]
 
 **Date:** [YYYY-MM-DD]
 **Verdict:** GDPR **[APPLIES / DOES NOT APPLY / APPLIES AS BEST PRACTICE]**
 **Criticality:** [🟥 CRITICAL / 🟧 HIGH / 🟨 MEDIUM / 🟩 LOW / None]
 
 ### Why this verdict
-[2–4 sentences referencing the specific data found in Step 1: e.g. "The repo collects user emails, phone numbers, dates of birth, and self-reported medical conditions through src/forms/Health.tsx. The medical_conditions field is special category data under Article 9, which elevates the project to CRITICAL regardless of user geography."]
+[2 to 4 sentences referencing the specific data found in Step 1: e.g. "The repo collects user emails, phone numbers, dates of birth, and self-reported medical conditions through src/forms/Health.tsx. The medical_conditions field is special category data under Article 9, which elevates the project to CRITICAL regardless of user geography."]
 
 ### Personal data inventory
 [Table from Step 1, filtered to confirmed personal data]
@@ -231,16 +231,16 @@ For each triggered article in Step 5, check whether the repo already has evidenc
 [Table from Step 6]
 
 ### Remediation plan (priority order)
-1. **🟥 [Critical fix]** — [what + which file/system + estimated effort]
-2. **🟧 [High fix]** — ...
-3. **🟨 [Medium fix]** — ...
-4. **🟩 [Low / hardening]** — ...
+1. **🟥 [Critical fix]**: [what + which file/system + estimated effort]
+2. **🟧 [High fix]**: ...
+3. **🟨 [Medium fix]**: ...
+4. **🟩 [Low / hardening]**: ...
 
 ### What to do if you ignore this
-[1–3 sentences naming the concrete legal exposure: maximum fines under Art 83 are €20M or 4% of global annual turnover, whichever is higher; supervisory authority enforcement; reputational damage; civil claims under Art 82.]
+[1 to 3 sentences naming the concrete legal exposure: maximum fines under Art 83 are €20M or 4% of global annual turnover, whichever is higher; supervisory authority enforcement; reputational damage; civil claims under Art 82.]
 
 ### Recommended next steps
-1. [Owner] — [Action] — [Due]
+1. [Owner], [Action], [Due]
 2. ...
 ```
 
@@ -251,7 +251,7 @@ Deliver the Step 7 report as markdown. Save under `docs/compliance/gdpr-assessme
 ## Completion
 
 ```
-GDPR — Assessment complete!
+GDPR: Assessment complete!
 
 Verdict: [APPLIES / DOES NOT APPLY / BEST PRACTICE]
 Criticality: [tier]
@@ -270,4 +270,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: repo-driven scan across schemas/forms/DTOs/auth/analytics/cookies/logging/third parties, sensitivity classification (identifier/financial/location/behavioral/Art 9/Art 8/Art 10), verdict matrix with 7 scenarios, role mapping (Controller/Processor/DPO/Art 27 rep), 16-article obligation map, repo gap analysis, full assessment report with criticality tier, why-this-verdict section, remediation priority list, and exposure summary. (Origin: MemStack Pro v3.6, Apr 2026)
+- **Lv.1**: Base: repo-driven scan across schemas/forms/DTOs/auth/analytics/cookies/logging/third parties, sensitivity classification (identifier/financial/location/behavioral/Art 9/Art 8/Art 10), verdict matrix with 7 scenarios, role mapping (Controller/Processor/DPO/Art 27 rep), 16-article obligation map, repo gap analysis, full assessment report with criticality tier, why-this-verdict section, remediation priority list, and exposure summary. (Origin: MemStack Pro v3.6, Apr 2026)

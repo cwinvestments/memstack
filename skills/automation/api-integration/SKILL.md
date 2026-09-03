@@ -2,17 +2,17 @@
 name: memstack-automation-api-integration
 description: "Use this skill when the user says 'API integration', 'connect APIs', 'sync data', 'data mapping', 'rate limiting', or needs system-to-system connectors with authentication, rate limit handling, and error recovery. Generates API integration code with authentication (OAuth, API key, JWT), request/response mapping, rate limit handling, error recovery with circuit breakers, and sync monitoring. Do NOT use for visual n8n workflows or webhook receiving."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# API Integration — Building system connector...
+# API Integration: Building system connector...
 *Develops system-to-system connectors with REST/GraphQL patterns, authentication flows, rate limit handling, data mapping, error recovery, and SDK wrapper generation.*
 
 ## Activation
 
 When this skill activates, output:
 
-`API Integration — Building system connector...`
+`API Integration: Building system connector...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "API integration", "connect APIs", "sync data" | ACTIVE |
 | User says "data mapping" or "rate limiting" | ACTIVE |
 | User needs to build a connector between two systems | ACTIVE |
-| User wants a visual n8n workflow | DORMANT — use n8n Workflow Builder |
-| User wants to receive webhooks | DORMANT — use Webhook Designer |
+| User wants a visual n8n workflow | DORMANT: use n8n Workflow Builder |
+| User wants to receive webhooks | DORMANT: use Webhook Designer |
 
 ## Common Mistakes
 
@@ -42,21 +42,21 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Source system** — where does the data come from? (API name, docs URL)
-> 2. **Destination** — where does it go? (your DB, another API, file)
-> 3. **Data** — what entities are synced? (users, orders, products, events)
-> 4. **Direction** — one-way, two-way, or event-driven?
-> 5. **Auth** — how does the API authenticate? (API key, OAuth 2.0, JWT, Basic)
-> 6. **Volume** — how much data? How often? (1K records/day vs 1M)
+> 1. **Source system**: where does the data come from? (API name, docs URL)
+> 2. **Destination**: where does it go? (your DB, another API, file)
+> 3. **Data**: what entities are synced? (users, orders, products, events)
+> 4. **Direction**: one-way, two-way, or event-driven?
+> 5. **Auth**: how does the API authenticate? (API key, OAuth 2.0, JWT, Basic)
+> 6. **Volume**: how much data? How often? (1K records/day vs 1M)
 
 ### Step 2: Implement Authentication
 
 | Auth Type | Implementation | Token Lifecycle |
 |-----------|---------------|----------------|
-| **API Key** | Header: `X-API-Key: {key}` or query param | Static — rotate manually |
-| **Bearer Token** | Header: `Authorization: Bearer {token}` | Expires — refresh needed |
+| **API Key** | Header: `X-API-Key: {key}` or query param | Static: rotate manually |
+| **Bearer Token** | Header: `Authorization: Bearer {token}` | Expires: refresh needed |
 | **OAuth 2.0** | Auth code flow → access + refresh tokens | Auto-refresh on 401 |
-| **JWT** | Sign claims → `Authorization: Bearer {jwt}` | Short-lived — re-sign |
+| **JWT** | Sign claims → `Authorization: Bearer {jwt}` | Short-lived: re-sign |
 | **Basic Auth** | Header: `Authorization: Basic {base64}` | Static |
 | **HMAC** | Sign request body → custom header | Per-request signing |
 
@@ -281,7 +281,7 @@ async function incrementalSync(integration: string): Promise<void> {
 - [ ] Retry logic with exponential backoff for 429 and 5xx responses
 - [ ] Pagination handles all pages (not just page 1)
 - [ ] Data mapper validates required fields before writing
-- [ ] Sync state persisted — can resume from last checkpoint on failure
+- [ ] Sync state persisted, can resume from last checkpoint on failure
 - [ ] Structured logging with correlation IDs
 - [ ] Secrets in environment variables or secrets manager
 - [ ] Error alerts configured (Slack, email, or PagerDuty)
@@ -290,7 +290,7 @@ async function incrementalSync(integration: string): Promise<void> {
 ## Output Format
 
 ```markdown
-# API Integration — [Source] → [Destination]
+# API Integration: [Source] → [Destination]
 
 ## Overview
 - **Direction:** [One-way / Two-way / Event-driven]
@@ -321,7 +321,7 @@ async function incrementalSync(integration: string): Promise<void> {
 ## Completion
 
 ```
-API Integration — Complete!
+API Integration: Complete!
 
 Integration: [Source] → [Destination]
 Entities synced: [List]
@@ -340,4 +340,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 6 auth patterns (API key, Bearer, OAuth 2.0 with refresh, JWT, Basic, HMAC), reactive + proactive rate limiting (token bucket), declarative data mapper with transformations, 4 pagination patterns with generic async generator, incremental sync with checkpoint-based recovery, sync state table, production checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 6 auth patterns (API key, Bearer, OAuth 2.0 with refresh, JWT, Basic, HMAC), reactive + proactive rate limiting (token bucket), declarative data mapper with transformations, 4 pagination patterns with generic async generator, incremental sync with checkpoint-based recovery, sync state table, production checklist. (Origin: MemStack Pro v3.2, Mar 2026)

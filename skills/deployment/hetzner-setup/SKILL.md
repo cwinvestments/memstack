@@ -2,26 +2,26 @@
 name: memstack-deployment-hetzner-setup
 description: "Use this skill when the user says 'Hetzner', 'VPS setup', 'server provisioning', 'deploy to VPS', 'hetzner-setup', 'cloud server', or needs to provision, harden, and deploy applications to a Hetzner Cloud server with Docker, Nginx/Caddy, SSL, and monitoring. Do NOT use for managed platform deployments like Railway or Netlify."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🖥️ Hetzner Setup — VPS Provisioning & Deployment
+# 🖥️ Hetzner Setup: VPS Provisioning & Deployment
 *Provision a Hetzner Cloud server with security hardening, reverse proxy, SSL, database setup, monitoring, and automated backups.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🖥️ Hetzner Setup — Provisioning your server...`
+`🖥️ Hetzner Setup: Provisioning your server...`
 
 | Context | Status |
 |---------|--------|
 | **User says "Hetzner", "VPS setup", "server provisioning"** | ACTIVE |
 | **User wants to deploy to a cloud server (Hetzner specifically)** | ACTIVE |
 | **User mentions SSH hardening, fail2ban, or server security** | ACTIVE |
-| **User wants Docker containerization guidance** | DORMANT — see docker-setup |
-| **User wants CI/CD pipeline (not server setup)** | DORMANT — see ci-cd-pipeline |
-| **User wants managed hosting (Railway, Netlify, Vercel)** | DORMANT — see railway-deploy or netlify-deploy |
+| **User wants Docker containerization guidance** | DORMANT: see docker-setup |
+| **User wants CI/CD pipeline (not server setup)** | DORMANT: see ci-cd-pipeline |
+| **User wants managed hosting (Railway, Netlify, Vercel)** | DORMANT, see railway-deploy or netlify-deploy |
 
 ## Protocol
 
@@ -46,7 +46,7 @@ Match workload to Hetzner Cloud server:
 | **CPX31** | 4 | 8 GB | 160 GB | 20 TB | ~$13/mo | High-perf apps (AMD EPYC), scrapers |
 | **CPX41** | 8 | 16 GB | 240 GB | 20 TB | ~$24/mo | Large apps, multiple services |
 | **CPX51** | 16 | 32 GB | 360 GB | 20 TB | ~$47/mo | Heavy workloads, large databases |
-| **CCX13** | 2 | 8 GB | 80 GB | 20 TB | ~$13/mo | Dedicated vCPU — consistent performance |
+| **CCX13** | 2 | 8 GB | 80 GB | 20 TB | ~$13/mo | Dedicated vCPU: consistent performance |
 
 **Recommendation logic:**
 - Scraper/background worker → **CPX31** (AMD EPYC, burst-friendly)
@@ -324,7 +324,7 @@ sudo -u postgres createuser --interactive appuser
 sudo -u postgres createdb appdb -O appuser
 sudo -u postgres psql -c "ALTER USER appuser PASSWORD 'CHANGE_ME_STRONG_PASSWORD';"
 
-# Listen only on localhost (default — safe)
+# Listen only on localhost (default: safe)
 # For remote access, use SSH tunnel, never expose port 5432
 ```
 
@@ -376,7 +376,7 @@ if [ "$HTTP_CODE" != "200" ]; then
   echo "ALERT: App health check failed (HTTP $HTTP_CODE)"
   curl -X POST "https://hooks.slack.com/services/XXX" \
     -H 'Content-Type: application/json' \
-    -d "{\"text\":\"🔴 App health check failed on $(hostname) — HTTP ${HTTP_CODE}\"}"
+    -d "{\"text\":\"🔴 App health check failed on $(hostname): HTTP ${HTTP_CODE}\"}"
 fi
 ```
 
@@ -507,7 +507,7 @@ Present the complete server setup:
 
 ```
 ━━━ HETZNER SERVER SETUP ━━━━━━━━━━━━━━━━━
-Instance: [type] — [vCPU] vCPU, [RAM] GB RAM
+Instance: [type], [vCPU] vCPU, [RAM] GB RAM
 Location: [datacenter]
 OS: Ubuntu [version] LTS
 Cost: ~$[X]/mo
@@ -565,4 +565,4 @@ Off-site: [storage solution]
 
 ## Level History
 
-- **Lv.1** — Base: Hetzner instance selection matrix, full provisioning script (SSH hardening, UFW, fail2ban, unattended upgrades, swap, kernel tuning), Docker and direct deployment, Caddy/Nginx reverse proxy with auto-SSL, PostgreSQL/Redis setup, health monitoring with alerts, backup strategy (snapshots + DB dumps + off-site), hardening checklist. Based on CPX31 production experience. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1**: Base: Hetzner instance selection matrix, full provisioning script (SSH hardening, UFW, fail2ban, unattended upgrades, swap, kernel tuning), Docker and direct deployment, Caddy/Nginx reverse proxy with auto-SSL, PostgreSQL/Redis setup, health monitoring with alerts, backup strategy (snapshots + DB dumps + off-site), hardening checklist. Based on CPX31 production experience. (Origin: MemStack v3.2, Mar 2026)

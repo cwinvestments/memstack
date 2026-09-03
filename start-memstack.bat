@@ -77,7 +77,7 @@ pause
 goto :eof
 
 REM ============================================================
-REM  link <project-path> — Create .claude junction to MemStack
+REM  link <project-path>: Create .claude junction to MemStack
 REM ============================================================
 :link_project
 set "TARGET=%~2"
@@ -102,13 +102,13 @@ if exist "%TARGET%\.claude" (
     REM Check if it's already a junction (reparse point)
     dir "%TARGET%" /AL 2>nul | findstr /C:".claude" >nul 2>&1
     if %errorlevel% equ 0 (
-        REM It's a junction — remove it so we can recreate with current path
+        REM It's a junction, remove it so we can recreate with current path
         echo.
         echo  Updating existing junction...
         rmdir "%TARGET%\.claude"
         goto :create_junction
     )
-    REM It's a real directory — merge MemStack rules into it without destroying user files
+    REM It's a real directory, merge MemStack rules into it without destroying user files
     echo.
     echo  MERGE: %TARGET%\.claude exists as a real folder.
     echo  Copying MemStack rules into existing .claude directory...

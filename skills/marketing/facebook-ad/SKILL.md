@@ -2,17 +2,17 @@
 name: memstack-marketing-facebook-ad
 description: "Use this skill when the user says 'facebook ad', 'FB ad', 'Meta ad', 'Instagram ad', or needs social media ad copy with targeting, creative direction, and A/B test plans for Meta Ads Manager. Do NOT use for Google search ads or organic social content."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Facebook Ad — Creating Meta ad campaign...
+# Facebook Ad: Creating Meta ad campaign...
 *Creates complete ad campaigns with audience targeting, ad copy variations, creative direction, budget allocation, and A/B testing protocol for Meta Ads Manager.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Facebook Ad — Creating Meta ad campaign...`
+`Facebook Ad: Creating Meta ad campaign...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "Facebook ad", "FB ad", "Meta ad", "Instagram ad" | ACTIVE |
 | User needs social media ad copy with targeting | ACTIVE |
 | User wants to run paid campaigns on Meta platforms | ACTIVE |
-| User wants Google Search or Display ads | DORMANT — use Google Ad |
-| User wants organic social media content | DORMANT — not an ad skill |
+| User wants Google Search or Display ads | DORMANT: use Google Ad |
+| User wants organic social media content | DORMANT: not an ad skill |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product/service** — what are you promoting? (name, price, URL)
-> 2. **Objective** — leads, sales, traffic, or brand awareness?
-> 3. **Target audience** — who is the ideal customer? (age, interests, pain points)
-> 4. **Budget** — daily or monthly ad spend?
-> 5. **Existing assets** — do you have customer testimonials, product photos, or video?
-> 6. **Previous campaigns** — any past Meta ads data to build on?
+> 1. **Product/service**: what are you promoting? (name, price, URL)
+> 2. **Objective**: leads, sales, traffic, or brand awareness?
+> 3. **Target audience**: who is the ideal customer? (age, interests, pain points)
+> 4. **Budget**: daily or monthly ad spend?
+> 5. **Existing assets**: do you have customer testimonials, product photos, or video?
+> 6. **Previous campaigns**: any past Meta ads data to build on?
 
 ### Step 2: Define Campaign Structure
 
@@ -55,15 +55,15 @@ Build the campaign using Meta's three-tier hierarchy:
 
 ```
 Campaign (1 objective)
-├── Ad Set 1: [Audience A] — $[budget]/day
+├── Ad Set 1: [Audience A], $[budget]/day
 │   ├── Ad 1: [Hook A + Creative A]
 │   ├── Ad 2: [Hook B + Creative A]
 │   └── Ad 3: [Hook A + Creative B]
-├── Ad Set 2: [Audience B] — $[budget]/day
+├── Ad Set 2: [Audience B], $[budget]/day
 │   ├── Ad 1: [Hook A + Creative A]
 │   ├── Ad 2: [Hook B + Creative A]
 │   └── Ad 3: [Hook A + Creative B]
-└── Ad Set 3: [Lookalike/Retargeting] — $[budget]/day
+└── Ad Set 3: [Lookalike/Retargeting], $[budget]/day
     ├── Ad 1: [Social proof hook]
     ├── Ad 2: [Urgency hook]
     └── Ad 3: [Testimonial creative]
@@ -82,7 +82,7 @@ Campaign (1 objective)
 
 ### Step 3: Build Audience Targeting
 
-**Audience A — Interest-based (cold):**
+**Audience A: Interest-based (cold):**
 - Age: [range]
 - Gender: [if relevant]
 - Location: [countries/regions]
@@ -90,32 +90,32 @@ Campaign (1 objective)
 - Behaviors: [purchase behavior, device usage]
 - Audience size target: 1-5 million
 
-**Audience B — Narrowed interest stack:**
+**Audience B: Narrowed interest stack:**
 - Must match: [Interest 1] AND [Interest 2]
 - Exclude: [competitors' audiences or existing customers]
 - Audience size target: 500K-2M
 
-**Audience C — Lookalike:**
+**Audience C: Lookalike:**
 - Source: Customer list, website visitors, or video viewers
 - Lookalike %: Start at 1% (closest match), test up to 3%
 - Country: Same as primary market
 
 **Retargeting audiences (create separately):**
-- Website visitors (last 30 days) — exclude purchasers
-- Video viewers (75%+ watched) — last 60 days
-- Engagement (Instagram/Facebook) — last 90 days
-- Cart abandoners — last 14 days
+- Website visitors (last 30 days): exclude purchasers
+- Video viewers (75%+ watched): last 60 days
+- Engagement (Instagram/Facebook): last 90 days
+- Cart abandoners: last 14 days
 
 ### Step 4: Write Ad Copy Variations
 
 Write 3 copy variations for each hook type:
 
-**Hook Type 1 — Problem-Agitation:**
+**Hook Type 1: Problem-Agitation:**
 ```
 Primary text:
 [Problem question that stops the scroll]
 
-[Agitation — what happens if they don't solve it]
+[Agitation, what happens if they don't solve it]
 
 [Introduce your solution in 1-2 sentences]
 
@@ -130,10 +130,10 @@ Description: [Supporting detail or urgency, 20 words max]
 CTA button: [Learn More / Shop Now / Sign Up / Get Offer]
 ```
 
-**Hook Type 2 — Social Proof:**
+**Hook Type 2: Social Proof:**
 ```
 Primary text:
-"[Customer testimonial quote — specific result]"
+"[Customer testimonial quote: specific result]"
 
 [Bridge: Explain how others are getting the same result]
 
@@ -149,7 +149,7 @@ Description: [Star rating, customer count, or guarantee]
 CTA button: [Get Started / Try Free / Shop Now]
 ```
 
-**Hook Type 3 — Direct Offer:**
+**Hook Type 3: Direct Offer:**
 ```
 Primary text:
 [Bold claim or stat that grabs attention]
@@ -171,7 +171,7 @@ CTA button: [Get Offer / Claim Discount / Buy Now]
 ```
 
 **Ad copy rules:**
-- Primary text: 125 characters visible before "See more" — front-load the hook
+- Primary text: 125 characters visible before "See more": front-load the hook
 - Headline: 40 characters max for full display
 - Description: 25 characters max on mobile
 - Use line breaks for readability (no walls of text)
@@ -189,7 +189,7 @@ CTA button: [Get Offer / Claim Discount / Buy Now]
 - Hook: First 3 seconds must stop the scroll (movement, text, question)
 - Length: 15-30 seconds for cold traffic, 30-60 seconds for retargeting
 - Structure: Hook → Problem → Solution → Proof → CTA
-- Captions: Always add — 85% of videos are watched without sound
+- Captions: Always add, 85% of videos are watched without sound
 - Thumbnail: Custom frame that works as a static image
 
 **Creative testing matrix:**
@@ -214,7 +214,7 @@ CTA button: [Get Offer / Claim Discount / Buy Now]
 - Start with: Lowest cost (automatic bidding)
 - Switch to: Cost cap once you know your target CPA
 - Set cost cap at: 1.2x your target CPA (gives algorithm room)
-- Never: Set bid cap too low — the algorithm won't spend and won't learn
+- Never: Set bid cap too low, the algorithm won't spend and won't learn
 
 **Scaling rules:**
 - Horizontal scaling: Duplicate winning ad set to new audiences
@@ -224,7 +224,7 @@ CTA button: [Get Offer / Claim Discount / Buy Now]
 ### Step 7: A/B Testing Protocol
 
 **Test priority order:**
-1. **Audiences** (biggest impact) — Test 3+ audiences first
+1. **Audiences** (biggest impact): Test 3+ audiences first
 2. **Creative format** (image vs. video vs. carousel)
 3. **Hook/headline** (first thing people see)
 4. **Body copy** (supporting message)
@@ -250,13 +250,13 @@ CTA button: [Get Offer / Claim Discount / Buy Now]
 Deliver the complete campaign as:
 
 ```markdown
-# Meta Ad Campaign — [Product/Service Name]
+# Meta Ad Campaign: [Product/Service Name]
 
 ## Campaign Settings
 - **Objective:** [Objective]
 - **Daily budget:** $[amount] ([X] ad sets × $[amount] each)
 - **Optimization event:** [Event]
-- **Schedule:** [Start date] — ongoing
+- **Schedule:** [Start date]: ongoing
 
 ## Audiences
 ### Ad Set 1: [Audience name]
@@ -296,7 +296,7 @@ Deliver the complete campaign as:
 ## Completion
 
 ```
-Facebook Ad — Complete!
+Facebook Ad: Complete!
 
 Campaign objective: [Objective]
 Ad sets: [Count] audiences
@@ -316,4 +316,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Campaign structure (3-tier hierarchy), audience targeting (interest, narrowed, lookalike, retargeting), 3 copy formulas (problem-agitation, social proof, direct offer), creative direction (image + video specs), budget allocation by phase, bidding strategy, scaling rules, A/B testing protocol with priority order and log template. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Campaign structure (3-tier hierarchy), audience targeting (interest, narrowed, lookalike, retargeting), 3 copy formulas (problem-agitation, social proof, direct offer), creative direction (image + video specs), budget allocation by phase, bidding strategy, scaling rules, A/B testing protocol with priority order and log template. (Origin: MemStack Pro v3.2, Mar 2026)

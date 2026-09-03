@@ -2,17 +2,17 @@
 name: memstack-deployment-domain-ssl
 description: "Use this skill when the user says 'setup domain', 'configure DNS', 'SSL certificate', 'domain-ssl', 'custom domain', 'HTTPS setup', or needs to configure DNS records, SSL certificates, and custom domains for any hosting provider. Do NOT use for full deployment workflows."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔒 Domain & SSL — Verifying domain, DNS, and certificate configuration...
+# 🔒 Domain & SSL: Verifying domain, DNS, and certificate configuration...
 *Validates DNS records, SSL certificates, redirects, HSTS, and domain health across all managed properties.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔒 Domain & SSL — Running domain health checks...`
+`🔒 Domain & SSL: Running domain health checks...`
 
 Then execute the protocol below.
 
@@ -51,7 +51,7 @@ dig +short CNAME www.example.com
 # TXT records (verification, SPF, DKIM)
 dig +short TXT example.com
 
-# MX records (email routing — check for conflicts)
+# MX records (email routing, check for conflicts)
 dig +short MX example.com
 
 # NS records (authoritative nameservers)
@@ -68,9 +68,9 @@ dig +short NS example.com
 | Cloudflare (proxied) | A | Cloudflare IPs (check dashboard) |
 
 **Check for conflicts:**
-- ❌ A record AND CNAME on the same subdomain — CNAME takes precedence, A is ignored
-- ❌ Multiple A records pointing to different providers — causes random routing
-- ❌ Missing TXT record for domain verification — some providers require this
+- ❌ A record AND CNAME on the same subdomain, CNAME takes precedence, A is ignored
+- ❌ Multiple A records pointing to different providers: causes random routing
+- ❌ Missing TXT record for domain verification: some providers require this
 
 **Flag if:** DNS records don't match the expected hosting provider configuration.
 
@@ -89,7 +89,7 @@ echo | openssl s_client -connect example.com:443 -servername example.com 2>/dev/
 
 **Verify:**
 - ✅ Certificate is valid (not expired)
-- ✅ Certificate covers the correct domain(s) — check Subject Alternative Names
+- ✅ Certificate covers the correct domain(s): check Subject Alternative Names
 - ✅ Certificate chain is complete (no missing intermediates)
 - ✅ Auto-renewal is configured (Let's Encrypt certs expire every 90 days)
 - ✅ Certificate issuer matches expected provider (Let's Encrypt, Cloudflare, AWS ACM)
@@ -98,7 +98,7 @@ echo | openssl s_client -connect example.com:443 -servername example.com 2>/dev/
 | Days Until Expiry | Status | Action |
 |-------------------|--------|--------|
 | > 30 days | ✅ Healthy | No action |
-| 15–30 days | ⚠️ Warning | Verify auto-renewal is working |
+| 15 to 30 days | ⚠️ Warning | Verify auto-renewal is working |
 | < 15 days | ❌ Critical | Manually trigger renewal immediately |
 | Expired | 🚨 Down | Site showing security warnings to visitors |
 
@@ -123,10 +123,10 @@ https://example.com     → 200 (canonical)
 ```
 
 **Verify:**
-- ✅ Only ONE canonical URL returns 200 — all others 301 redirect to it
-- ✅ Redirects use 301 (permanent), not 302 (temporary) — 301 is cacheable and SEO-friendly
+- ✅ Only ONE canonical URL returns 200, all others 301 redirect to it
+- ✅ Redirects use 301 (permanent), not 302 (temporary), 301 is cacheable and SEO-friendly
 - ✅ Redirect chain is at most 1 hop (http://www → https://apex, not http://www → https://www → https://apex)
-- ❌ Both www and non-www return 200 — duplicate content, split SEO
+- ❌ Both www and non-www return 200: duplicate content, split SEO
 
 ### Step 4: Check HSTS Headers
 
@@ -176,13 +176,13 @@ done
 **Propagation timeline:**
 | Record Type | Typical Propagation | Max Propagation |
 |-------------|-------------------|-----------------|
-| A / AAAA | 5–30 minutes | 48 hours |
-| CNAME | 5–30 minutes | 48 hours |
-| TXT | 5–60 minutes | 48 hours |
-| NS | 24–48 hours | 72 hours |
-| MX | 1–4 hours | 48 hours |
+| A / AAAA | 5 to 30 minutes | 48 hours |
+| CNAME | 5 to 30 minutes | 48 hours |
+| TXT | 5 to 60 minutes | 48 hours |
+| NS | 24 to 48 hours | 72 hours |
+| MX | 1 to 4 hours | 48 hours |
 
-**Flag if:** Different DNS resolvers return different values after 2+ hours — likely a TTL issue or misconfigured record.
+**Flag if:** Different DNS resolvers return different values after 2+ hours, likely a TTL issue or misconfigured record.
 
 ### Step 6: Check for Mixed Content
 
@@ -200,11 +200,11 @@ grep -rn "http://" --include="*.ts" --include="*.tsx" --include="*.js" --include
 ```
 
 **Common mixed content sources:**
-- ❌ Hardcoded `http://` image URLs — change to `https://` or protocol-relative `//`
-- ❌ Third-party scripts loaded over HTTP — update to HTTPS CDN URL
-- ❌ API endpoints using `http://` — update to `https://`
-- ❌ CSS `url()` references with `http://` — update to `https://`
-- ✅ `http://localhost` in development code — acceptable, won't appear in production build
+- ❌ Hardcoded `http://` image URLs, change to `https://` or protocol-relative `//`
+- ❌ Third-party scripts loaded over HTTP, update to HTTPS CDN URL
+- ❌ API endpoints using `http://`: update to `https://`
+- ❌ CSS `url()` references with `http://`: update to `https://`
+- ✅ `http://localhost` in development code, acceptable, won't appear in production build
 
 **Flag if:** Any `http://` references found in production build output (excluding localhost and XML namespaces).
 
@@ -230,7 +230,7 @@ echo | openssl s_client -connect example.com:443 -servername example.com 2>/dev/
 | Registrar access | Quarterly | Login works, 2FA enabled, recovery email current |
 | Nameserver delegation | After registrar changes | NS records point to correct DNS provider |
 
-**Domain inventory — track for each property:**
+**Domain inventory: track for each property:**
 ```
 Domain:       example.com
 Registrar:    [Namecheap / GoDaddy / Cloudflare / Google Domains]
@@ -254,7 +254,7 @@ echo | openssl s_client -connect example.com:443 -servername example.com 2>/dev/
 
 Wildcard certs (`*.example.com`) cover all subdomains at one level:
 - ✅ Covers: `app.example.com`, `api.example.com`, `www.example.com`
-- ❌ Does NOT cover: `example.com` (apex) — need separate SAN entry
+- ❌ Does NOT cover: `example.com` (apex): need separate SAN entry
 - ❌ Does NOT cover: `staging.api.example.com` (two levels deep)
 
 **Subdomain routing patterns:**
@@ -277,7 +277,7 @@ When multiple domains point to the same app (e.g., `deedstack.com` and `www.deed
 **Output domain health report:**
 
 ```
-🔒 Domain & SSL — Health Report
+🔒 Domain & SSL: Health Report
 
 Domain: example.com
 DNS:         ✅ A record → 76.76.21.21 (Vercel)
@@ -297,4 +297,4 @@ No issues found. Next check recommended: 2026-04-01
 
 ## Level History
 
-- **Lv.1** — Base: DNS verification, SSL certificate checks, www/non-www redirects, HSTS validation, DNS propagation testing, mixed content scanning, domain monitoring checklist, multi-domain/wildcard setup. Based on managing adminstack.pro, epsteinscan.org, deedstack.com, and related properties. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: DNS verification, SSL certificate checks, www/non-www redirects, HSTS validation, DNS propagation testing, mixed content scanning, domain monitoring checklist, multi-domain/wildcard setup. Based on managing adminstack.pro, epsteinscan.org, deedstack.com, and related properties. (Origin: MemStack Pro v3.2, Mar 2026)

@@ -2,17 +2,17 @@
 name: memstack-automation-webhook-designer
 description: "Use this skill when the user says 'webhook', 'webhook handler', 'webhook endpoint', 'receive events', 'HMAC verification', 'idempotency', or needs secure webhook handlers with signature verification, retry handling, and dead letter queues. Do NOT use for full n8n workflows or scheduled tasks."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Webhook Designer — Designing webhook handler...
+# Webhook Designer: Designing webhook handler...
 *Creates secure webhook handlers with endpoint design, payload validation, HMAC signature verification, retry logic, idempotency, logging, and dead letter queues.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Webhook Designer — Designing webhook handler...`
+`Webhook Designer: Designing webhook handler...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "webhook", "webhook handler", "webhook endpoint" | ACTIVE |
 | User says "receive events", "HMAC verification", "idempotency" | ACTIVE |
 | User wants to build an endpoint that receives external events | ACTIVE |
-| User wants a full n8n automation workflow | DORMANT — use n8n Workflow Builder |
-| User wants a scheduled/cron job | DORMANT — use Cron Scheduler |
+| User wants a full n8n automation workflow | DORMANT: use n8n Workflow Builder |
+| User wants a scheduled/cron job | DORMANT: use Cron Scheduler |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Source** — what service sends the webhook? (Stripe, GitHub, Shopify, custom)
-> 2. **Events** — which events do you need to handle? (e.g., payment.completed, push)
-> 3. **Payload** — what does the payload look like? (JSON schema or example)
-> 4. **Auth** — how does the source authenticate? (HMAC, bearer token, IP whitelist)
-> 5. **Processing** — what should happen when an event arrives?
-> 6. **Framework** — what's your stack? (Next.js, Express, FastAPI, etc.)
+> 1. **Source**: what service sends the webhook? (Stripe, GitHub, Shopify, custom)
+> 2. **Events**: which events do you need to handle? (e.g., payment.completed, push)
+> 3. **Payload**: what does the payload look like? (JSON schema or example)
+> 4. **Auth**: how does the source authenticate? (HMAC, bearer token, IP whitelist)
+> 5. **Processing**: what should happen when an event arrives?
+> 6. **Framework**: what's your stack? (Next.js, Express, FastAPI, etc.)
 
 ### Step 2: Design Endpoint
 
@@ -281,7 +281,7 @@ logWebhook('failed', { deliveryId, error: err.message, attempt: 3 });
 ## Output Format
 
 ```markdown
-# Webhook Handler — [Source] Events
+# Webhook Handler: [Source] Events
 
 ## Endpoint
 - **URL:** POST /api/webhooks/[source]
@@ -310,7 +310,7 @@ logWebhook('failed', { deliveryId, error: err.message, attempt: 3 });
 ## Completion
 
 ```
-Webhook Designer — Complete!
+Webhook Designer: Complete!
 
 Source: [Service name]
 Endpoint: POST /api/webhooks/[source]
@@ -329,4 +329,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Endpoint design with handler flow, HMAC-SHA256 signature verification (6 provider patterns), timestamp replay protection, delivery-ID idempotency with DB schema, event router with handler registry, dead letter queue with retry/backoff, structured logging, monitoring checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Endpoint design with handler flow, HMAC-SHA256 signature verification (6 provider patterns), timestamp replay protection, delivery-ID idempotency with DB schema, event router with handler registry, dead letter queue with retry/backoff, structured logging, monitoring checklist. (Origin: MemStack Pro v3.2, Mar 2026)

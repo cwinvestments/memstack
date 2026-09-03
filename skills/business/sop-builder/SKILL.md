@@ -2,17 +2,17 @@
 name: memstack-business-sop-builder
 description: "Use this skill when the user says 'create SOP', 'write SOP', 'standard operating procedure', 'document process', 'process documentation', 'runbook', 'playbook', or is creating step-by-step documentation for a repeatable process. Do NOT use for project proposals or scope documents."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 📋 SOP Builder — Documenting standard operating procedure...
+# 📋 SOP Builder: Documenting standard operating procedure...
 *Generates a structured Standard Operating Procedure with numbered steps, prerequisites, decision points, verification checkpoints, rollback steps, and time estimates.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📋 SOP Builder — Identifying process and building procedure...`
+`📋 SOP Builder, Identifying process and building procedure...`
 
 Then execute the protocol below.
 
@@ -49,11 +49,11 @@ If the user hasn't specified the process, ask:
 > - Setting up a new project
 
 Then gather:
-1. **Process name** — clear, specific title
-2. **Audience** — who will follow this SOP? (developer, ops, new hire, non-technical)
-3. **Trigger** — what event kicks off this process? (PR merged, customer request, scheduled)
-4. **Frequency** — how often is this run? (daily, weekly, per release, ad-hoc)
-5. **Critical?** — does failure cause downtime, data loss, or revenue impact?
+1. **Process name**: clear, specific title
+2. **Audience**: who will follow this SOP? (developer, ops, new hire, non-technical)
+3. **Trigger**: what event kicks off this process? (PR merged, customer request, scheduled)
+4. **Frequency**: how often is this run? (daily, weekly, per release, ad-hoc)
+5. **Critical?**: does failure cause downtime, data loss, or revenue impact?
 
 ### Step 2: Define Prerequisites
 
@@ -90,7 +90,7 @@ List everything needed before starting:
 ```
 
 **Rules:**
-- Every tool, login, and permission is listed — no assumptions
+- Every tool, login, and permission is listed: no assumptions
 - Include "how to get access" for each system (not just "you need access")
 - Include a pre-flight checklist the operator runs before step 1
 
@@ -126,9 +126,9 @@ Each step follows a strict format:
 
 **Step writing rules:**
 - Start every step title with an **action verb** (Run, Open, Navigate, Verify, Configure)
-- No vague steps ("set up the environment") — every action is copy-pasteable or clickable
+- No vague steps ("set up the environment"), every action is copy-pasteable or clickable
 - Include the **exact command**, **exact URL**, or **exact menu path**
-- Mark whether each step **can fail** — if yes, it needs verification and failure handling
+- Mark whether each step **can fail**: if yes, it needs verification and failure handling
 - Time estimates help the operator know if something is taking too long
 
 ### Step 4: Add Decision Points
@@ -160,7 +160,7 @@ For steps with branching logic, use clear if/then formatting:
 **Decision point rules:**
 - Every `can fail: Yes` step gets a decision table
 - Cover the 3-5 most common failure modes (not just happy path)
-- Include "unknown error" row — operators need to know what to do when nothing matches
+- Include "unknown error" row, operators need to know what to do when nothing matches
 - Use bold warnings for steps where continuing on failure causes cascading damage
 
 ### Step 5: Add Verification Checkpoints
@@ -188,7 +188,7 @@ Do not skip checks "because it worked last time."
 **Checkpoint rules:**
 - Place checkpoints before irreversible actions (deployment, data migration, public release)
 - Every check has a specific command or action to run and an expected result
-- Emphasize that ALL checks must pass — no skipping
+- Emphasize that ALL checks must pass: no skipping
 
 ### Step 6: Include Rollback Steps
 
@@ -275,7 +275,7 @@ Output the complete SOP:
 | **Trigger** | [When to run this process] |
 | **Frequency** | [How often] |
 | **Estimated time** | [Happy path total] |
-| **Critical** | [Yes/No — does failure cause downtime?] |
+| **Critical** | [Yes/No: does failure cause downtime?] |
 
 ---
 
@@ -313,7 +313,7 @@ Output the complete SOP:
 **Output summary:**
 
 ```
-📋 SOP Builder — Complete
+📋 SOP Builder: Complete
 
 Process: [name]
 Audience: [who]
@@ -332,4 +332,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Process identification, prerequisites with access/tools, numbered steps with action verbs, decision point tables, verification checkpoints, rollback procedures, time estimates, versioned final document with change log. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Process identification, prerequisites with access/tools, numbered steps with action verbs, decision point tables, verification checkpoints, rollback procedures, time estimates, versioned final document with change log. (Origin: MemStack Pro v3.2, Mar 2026)

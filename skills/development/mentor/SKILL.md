@@ -4,7 +4,7 @@ description: "Use when the user says 'teach me', 'explain as you go', 'mentor mo
 version: 1.0.0
 ---
 
-# Mentor — Activating mentor mode...
+# Mentor: Activating mentor mode...
 *Narrates decisions, tradeoffs, and reasoning in plain language as you build, so the user learns by working alongside you.*
 
 ## Activation
@@ -14,15 +14,15 @@ version: 1.0.0
 | User says "teach me" or "mentor mode" | ACTIVE |
 | User says "explain as you go" or "walk me through" | ACTIVE |
 | User says "help me learn" or "learning mode" | ACTIVE |
-| User wants a code review after the fact | NOT this skill — use Code Reviewer |
-| User wants debugging help | NOT this skill — debug directly |
+| User wants a code review after the fact | NOT this skill: use Code Reviewer |
+| User wants debugging help | NOT this skill: debug directly |
 
 ## Context Guard
 
 - Do NOT use for post-hoc code review (that's code-reviewer)
 - Do NOT use for debugging existing bugs (debug directly)
 - Do NOT use for documentation writing
-- This skill changes HOW you work — narrating as you go — not WHAT you build
+- This skill changes HOW you work (narrating as you go) not WHAT you build
 
 ## How Mentor Mode Works
 
@@ -70,7 +70,7 @@ Not every line of code needs explanation. Focus narration on these moments:
 
 ### Architecture decisions
 - "I'm putting this in a separate file because..."
-- "This could be a class or a function — I'm choosing a function because..."
+- "This could be a class or a function, I'm choosing a function because..."
 - "I'm using composition over inheritance here because..."
 
 ### Library/tool choices
@@ -79,14 +79,14 @@ Not every line of code needs explanation. Focus narration on these moments:
 - "I'd normally use X but your project already uses Y, so..."
 
 ### Tradeoff moments
-- "This is simpler but less performant — here's why simplicity wins here..."
+- "This is simpler but less performant, here's why simplicity wins here..."
 - "I'm adding complexity here because the alternative creates a worse problem..."
 - "This violates DRY but that's intentional because..."
 
 ### Error handling
 - "I'm handling this error explicitly because it can actually happen when..."
 - "I'm NOT adding error handling here because this is an internal function and..."
-- "This try/catch is broad — normally I'd narrow it, but here..."
+- "This try/catch is broad, normally I'd narrow it, but here..."
 
 ### Naming choices
 - "I named this X instead of Y because in 6 months you'll be looking for..."
@@ -97,7 +97,7 @@ Not every line of code needs explanation. Focus narration on these moments:
 - Obvious syntax (importing modules, standard boilerplate)
 - Things the user explicitly said they already know
 - Trivial changes (fixing a typo, adjusting whitespace)
-- Every single line — narrate decision points, not keystrokes
+- Every single line, narrate decision points, not keystrokes
 
 ## Adapting to feedback
 
@@ -117,7 +117,7 @@ User: "Add authentication to this Express app"
 [Before action]
 Why I'm choosing this approach:
 I'm using express-session with a session store rather than JWT because your app
-already has a database and server-rendered pages — sessions are simpler here and
+already has a database and server-rendered pages, sessions are simpler here and
 you don't need stateless auth for a single-server app.
 
 What I considered and rejected:
@@ -132,9 +132,9 @@ Added session middleware, a login route that validates credentials and sets
 req.session.userId, and a requireAuth middleware that protects routes.
 
 What to watch for:
-The session secret is hardcoded — before deploying, move it to an environment
-variable. Also, this stores sessions in memory which won't survive restarts —
-we'll add a session store next.
+The session secret is hardcoded, before deploying, move it to an environment
+variable. Also, this stores sessions in memory which won't survive restarts.
+We'll add a session store next.
 ```
 
 ## Ending mentor mode
@@ -162,4 +162,4 @@ Mentor session summary:
 
 ## Level History
 
-- **Lv.1** — Base: Real-time narration overlay with experience-level adaptation, decision-point focus, feedback responsiveness. (Origin: MemStack v3.5, Apr 2026)
+- **Lv.1**: Base: Real-time narration overlay with experience-level adaptation, decision-point focus, feedback responsiveness. (Origin: MemStack v3.5, Apr 2026)

@@ -2,17 +2,17 @@
 name: memstack-seo-keyword-research
 description: "Use this skill when the user says 'keyword research', 'find keywords', 'keyword strategy', 'search terms', 'keyword opportunities', or needs to identify target keywords with search volume, difficulty, and content mapping. Do NOT use for full site audits or ad keyword groups."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔑 Keyword Research — Identifying target keywords and content gaps...
+# 🔑 Keyword Research: Identifying target keywords and content gaps...
 *Analyzes the niche, existing content, and competitor landscape to produce a prioritized keyword map with search intent, difficulty estimates, and page assignments.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔑 Keyword Research — Analyzing niche and identifying opportunities...`
+`🔑 Keyword Research, Analyzing niche and identifying opportunities...`
 
 Then execute the protocol below.
 
@@ -22,8 +22,8 @@ Then execute the protocol below.
 | User says "content gaps" or "keyword strategy" or "search terms" | ACTIVE |
 | Planning content strategy based on search demand | ACTIVE |
 | Optimizing existing pages with better keywords | ACTIVE |
-| Writing content (keywords already chosen) | DORMANT — use blog-post |
-| Running a full site audit | DORMANT — use site-audit |
+| Writing content (keywords already chosen) | DORMANT: use blog-post |
+| Running a full site audit | DORMANT: use site-audit |
 
 ### Anti-patterns
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 If the user hasn't provided details, ask:
 
 > I need context for keyword research:
-> 1. **Niche/industry** — what market are you in?
-> 2. **Product or service** — what do you sell or offer?
-> 3. **Target audience** — who are you trying to reach? (role, demographics, pain points)
-> 4. **Competitors** — 2-3 competitor domains (or I'll identify them)
-> 5. **Current site** — URL if live, or list of existing pages
-> 6. **Goal** — more traffic, more signups, more sales, thought leadership?
+> 1. **Niche/industry**: what market are you in?
+> 2. **Product or service**: what do you sell or offer?
+> 3. **Target audience**: who are you trying to reach? (role, demographics, pain points)
+> 4. **Competitors**: 2-3 competitor domains (or I'll identify them)
+> 5. **Current site**: URL if live, or list of existing pages
+> 6. **Goal**: more traffic, more signups, more sales, thought leadership?
 
 ### Step 2: Analyze Existing Content
 
@@ -174,7 +174,7 @@ Assign each keyword to a specific page (existing or to be created):
 ```
 
 **Mapping rules:**
-- One primary keyword per page — no keyword cannibalization
+- One primary keyword per page: no keyword cannibalization
 - Group related keywords on the same page (primary + 3-5 secondary)
 - Homepage targets the broadest commercial keyword
 - Blog posts target informational and long-tail keywords
@@ -196,13 +196,13 @@ Classify and prioritize every keyword:
 
 | | Low Difficulty | High Difficulty |
 |---|---------------|----------------|
-| **High Intent** | ✅ Do first — quick wins with revenue impact | ⏳ Worth the investment — build authority content |
-| **Low Intent** | ⚡ Easy traffic — good for brand awareness | ❌ Skip — high effort, low return |
+| **High Intent** | ✅ Do first (quick wins with revenue impact | ⏳ Worth the investment) build authority content |
+| **Low Intent** | ⚡ Easy traffic (good for brand awareness | ❌ Skip) high effort, low return |
 
 ### Step 8: Output Keyword Map
 
 ```
-🔑 Keyword Research — Complete
+🔑 Keyword Research: Complete
 
 Niche: [industry/market]
 Site: [domain]
@@ -218,11 +218,11 @@ Content to create: [count] new pages recommended
 Content to optimize: [count] existing pages with improvements
 
 Top 5 priority keywords:
-  1. [keyword] — [volume] / [difficulty] — [action: create/optimize] [page]
-  2. [keyword] — [volume] / [difficulty] — [action] [page]
-  3. [keyword] — [volume] / [difficulty] — [action] [page]
-  4. [keyword] — [volume] / [difficulty] — [action] [page]
-  5. [keyword] — [volume] / [difficulty] — [action] [page]
+  1. [keyword], [volume] / [difficulty], [action: create/optimize] [page]
+  2. [keyword], [volume] / [difficulty], [action] [page]
+  3. [keyword], [volume] / [difficulty], [action] [page]
+  4. [keyword], [volume] / [difficulty], [action] [page]
+  5. [keyword], [volume] / [difficulty], [action] [page]
 
 Quick wins (low difficulty, high intent):
   - [keyword] → [page to create/optimize]
@@ -238,4 +238,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Niche gathering, existing content analysis, primary keyword generation with evaluation criteria, long-tail variations, competitor content gap analysis, keyword-to-page mapping, search intent classification and prioritization, formatted keyword map output. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Niche gathering, existing content analysis, primary keyword generation with evaluation criteria, long-tail variations, competitor content gap analysis, keyword-to-page mapping, search intent classification and prioritization, formatted keyword map output. (Origin: MemStack Pro v3.2, Mar 2026)

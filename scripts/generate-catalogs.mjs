@@ -6,15 +6,15 @@
 //           SKILL-REFERENCE.md -> full file
 //
 // Grouping: authoritative `category` from skills.public.json (which flows from
-//           categories.py upstream). The generator NEVER reassigns a category —
-//           it only orders the 10 sections (presentation, unavoidable).
+//           categories.py upstream). The generator NEVER reassigns a category.
+//           It only orders the 10 sections (presentation, unavoidable).
 // Identity: slug (Decision 2 = Option A). No display names, no triggers, no
-//           overlay — those have no authoritative public source and are exactly
+//           overlay, those have no authoritative public source and are exactly
 //           the unsourced data that drifts. Columns are 100% loader-sourced:
 //           README   = slug + what
 //           SKILL-REF = slug + what + not_for (authoritative anti-triggers).
 //
-// Modes   : (default) preview to _generated/*.preview.md — touches NO doc
+// Modes   : (default) preview to _generated/*.preview.md: touches NO doc
 //           --write   splice README regions + write SKILL-REFERENCE.md
 //           --check   regenerate, diff committed docs, exit 1 on drift
 // No deps; node: builtins only; offline-deterministic; fail-loud validation.
@@ -29,7 +29,7 @@ const GEN = join(__dirname, "_generated");
 const README = join(REPO_ROOT, "README.md");
 const SKILLREF = join(REPO_ROOT, "SKILL-REFERENCE.md");
 
-// --- presentation constants (SECTION ORDER ONLY — never reassigns a skill) ----
+// --- presentation constants (SECTION ORDER ONLY: never reassigns a skill) ----
 const CATEGORY_ORDER = [
   "Core", "Security", "Deployment", "Development", "Business",
   "Content", "SEO & GEO", "Marketing", "Product", "Automation",
@@ -63,7 +63,7 @@ if (pro.length !== 44) die(`expected 44 Pro skills, got ${pro.length}`);
 
 for (const s of skills) {
   if (!CATEGORY_ORDER.includes(s.category))
-    die(`skill "${s.slug}" has category "${s.category}" not in CATEGORY_ORDER — add it deliberately`);
+    die(`skill "${s.slug}" has category "${s.category}" not in CATEGORY_ORDER. Add it deliberately`);
   const d = descs[s.slug];
   if (!d || !d.what || !String(d.what).trim())
     die(`skill "${s.slug}" has no "what" in skill_descriptions.json`);
@@ -87,12 +87,12 @@ const esc = (t) => String(t).replace(/\|/g, "\\|").trim(); // pipe-safe table ce
 const whatOf = (s) => esc(descs[s.slug].what);
 const notForOf = (s) => {
   const v = descs[s.slug].not_for;
-  return v && String(v).trim() ? esc(v) : "—";
+  return v && String(v).trim() ? esc(v) : "none";
 };
 const catHeaderCount = (arr) => {
   const f = arr.filter((s) => !s.isPro).length;
   const p = arr.length - f;
-  return p > 0 ? `${arr.length} — ${f} free + ${p} Pro` : `${arr.length} skills`;
+  return p > 0 ? `${arr.length}: ${f} free + ${p} Pro` : `${arr.length} skills`;
 };
 
 // ============================================================================
@@ -113,17 +113,17 @@ function readmeCatalog() {
 function readmeProList() {
   const slugs = pro.map((s) => s.slug).sort();
   const list = slugs.map((x) => `\`${x}\``).join(", ");
-  return `**Pro-exclusive skills (${slugs.length}):** ${list} — these require an active Pro license.`;
+  return `**Pro-exclusive skills (${slugs.length}):** ${list}. These require an active Pro license.`;
 }
 
 function skillReference() {
   const out = [];
   const nCat = CATEGORY_ORDER.length;
-  out.push("# MemStack™ — Skill Quick Reference", "");
+  out.push("# MemStack™: Skill Quick Reference", "");
   out.push(
     `> **${skills.length} skills across ${nCat} categories** (${free.length} free + ${pro.length} Pro-exclusive). Describe your task and the matching skill activates.`,
     ">",
-    "> Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key — activate via Dashboard Settings or `activate_license()` in Claude Code.",
+    "> Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key, activate via Dashboard Settings or `activate_license()` in Claude Code.",
     "",
     "---",
     "",
@@ -136,7 +136,7 @@ function skillReference() {
     out.push("", "---", "");
   }
   out.push(
-    `*MemStack™ v${SKILLREF_VERSION} — ${skills.length} skills across ${nCat} categories (${free.length} free + ${pro.length} Pro-exclusive), one prompt away.*`,
+    `*MemStack™ v${SKILLREF_VERSION}, ${skills.length} skills across ${nCat} categories (${free.length} free + ${pro.length} Pro-exclusive), one prompt away.*`,
     "",
   );
   return out.join("\n");
@@ -155,7 +155,7 @@ function spliceRegion(text, begin, end, body, label) {
 function extractRegion(text, begin, end, label) {
   const i = text.indexOf(begin);
   const j = text.indexOf(end);
-  if (i === -1 || j === -1 || j < i) die(`README markers for ${label} not found — has --write run yet?`);
+  if (i === -1 || j === -1 || j < i) die(`README markers for ${label} not found, has --write run yet?`);
   return text.slice(i + begin.length, j).trim();
 }
 
@@ -213,6 +213,6 @@ if (mode === "--write") {
   writeFileSync(join(GEN, "README-prolist.preview.md"), prolist + "\n");
   writeFileSync(join(GEN, "SKILL-REFERENCE.preview.md"), skillref);
   console.log(
-    "\n[preview] wrote _generated/{README-catalog,README-prolist,SKILL-REFERENCE}.preview.md — no docs touched.",
+    "\n[preview] wrote _generated/{README-catalog,README-prolist,SKILL-REFERENCE}.preview.md: no docs touched.",
   );
 }

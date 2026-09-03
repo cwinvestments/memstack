@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# MemStack v3.3.2 — SessionStart Context Loader
+# MemStack v3.3.2: SessionStart Context Loader
 # Injects a brief context summary from recent diary + observation files
 # into .claude/session-context.md for CC to read at session start
-# Always exit 0 — must never block session startup
+# Always exit 0, must never block session startup
 #
 # Triggered by: SessionStart hook event
 
@@ -61,7 +61,7 @@ if [ -n "$OBS_FILES" ]; then
     while IFS= read -r file; do
         [ -z "$file" ] && continue
         FNAME=$(basename "$file" 2>/dev/null || echo "unknown")
-        # Extract last 20 entries (tail of file — most recent observations)
+        # Extract last 20 entries (tail of file, most recent observations)
         EXCERPT=$(tail -60 "$file" 2>/dev/null || echo "(unreadable)")
         OBS_CONTENT="${OBS_CONTENT}
 #### ${FNAME}
@@ -79,7 +79,7 @@ fi
 TMPFILE="${OUTFILE}.tmp.$$"
 
 cat > "$TMPFILE" <<HEADER
-# Session Context — Auto-Generated
+# Session Context: Auto-Generated
 > Injected by session-context-load.sh at ${TODAY}
 > Sources: ${DIARY_COUNT} diary entries, ${OBS_COUNT} observation files
 
@@ -132,7 +132,7 @@ if [ "$TOTAL_LINES" -gt "$MAX_LINES" ] 2>/dev/null; then
     mv "${TMPFILE}.trimmed" "$TMPFILE" 2>/dev/null || true
 fi
 
-# --- Move into place (idempotent — overwrites previous) ---
+# --- Move into place (idempotent, overwrites previous) ---
 mv "$TMPFILE" "$OUTFILE" 2>/dev/null || {
     # Fallback: direct copy if mv fails
     cp "$TMPFILE" "$OUTFILE" 2>/dev/null || true

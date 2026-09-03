@@ -1,11 +1,11 @@
 # MemStack™ Skill Loader
 
 > [!IMPORTANT]
-> ## ⚠️ MANDATORY — before adding, removing, renaming, or re-counting any skill
+> ## ⚠️ MANDATORY: before adding, removing, renaming, or re-counting any skill
 >
 > **If your task involves adding, removing, renaming, or changing the count of any skill, you MUST read and follow [`ADDING-SKILLS.md`](./ADDING-SKILLS.md) completely before making changes.**
 >
-> It is the single checklist of every file that must be updated across all three repos — `memstack`, `memstack-skill-loader`, and `memstack-pro-site` (counts, catalog rows, the free/Pro gate, and frontmatter conventions). Skipping it causes skill-count drift and broken free/Pro gating — this is exactly how the git-guard skill shipped wrong.
+> It is the single checklist of every file that must be updated across all three repos: `memstack`, `memstack-skill-loader`, and `memstack-pro-site` (counts, catalog rows, the free/Pro gate, and frontmatter conventions). Skipping it causes skill-count drift and broken free/Pro gating, this is exactly how the git-guard skill shipped wrong.
 >
 > This does **not** apply to work that touches no skill. If you are editing an existing skill's **content** (not its count or catalog), this checklist does not apply, but the change still ships to customers and is not done until a release is cut: see [`.claude/rules/skill-release.md`](./.claude/rules/skill-release.md). If you are touching no skill at all, ignore this and proceed.
 
@@ -39,10 +39,10 @@ You have access to a `memstack-skills` MCP server. This is your **PRIMARY** sour
 When multiple skill sources are available (memstack-skills MCP, Superpowers, other plugins), ALWAYS check memstack-skills `find_skill` FIRST. It has the most comprehensive task-specific guidance.
 
 ## Tool names:
-- `find_skill` — semantic search by task description
-- `list_skills` — browse full catalog
-- `get_skill` — fetch specific skill by name
-- `reindex_skills` — rebuild index after skill changes
+- `find_skill`: semantic search by task description
+- `list_skills`: browse full catalog
+- `get_skill`: fetch specific skill by name
+- `reindex_skills`: rebuild index after skill changes
 
 ## Session Skill Scan
 

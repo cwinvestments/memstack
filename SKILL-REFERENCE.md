@@ -1,8 +1,8 @@
-# MemStack™ — Skill Quick Reference
+# MemStack™: Skill Quick Reference
 
 > **130 skills across 10 categories** (86 free + 44 Pro-exclusive). Describe your task and the matching skill activates.
 >
-> Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key — activate via Dashboard Settings or `activate_license()` in Claude Code.
+> Pro-exclusive skills are marked with **[PRO]**. Requires a Pro license key, activate via Dashboard Settings or `activate_license()` in Claude Code.
 
 ---
 
@@ -10,21 +10,21 @@
 
 | Skill | What It Does | Not For |
 |-------|-------------|---------|
-| `compress` | Monitor and manage TokenStack™ context compression for Claude Code sessions, tracking proxy status and token savings. | — |
-| `diary` | Save a structured session diary capturing what was built, decisions made, and next steps at the end of a productive session. | — |
-| `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. | — |
+| `compress` | Monitor and manage TokenStack™ context compression for Claude Code sessions, tracking proxy status and token savings. | none |
+| `diary` | Save a structured session diary capturing what was built, decisions made, and next steps at the end of a productive session. | none |
+| `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. | none |
 | `goal` | Structure a task into TASK, WHY, OUTCOME, CONSTRAINTS, and a required VERIFICATION criterion before execution begins, so 'done' is defined and provable up front. | Tracking or updating an existing task list (use work) or step-by-step guidance mid-execution. |
-| `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. | — |
-| `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. | — |
+| `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. | none |
+| `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. | none |
 | `token-optimization` | Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard. | Live proxy status or troubleshooting (use Compress). |
 | `burn` **[PRO]** | Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts. | Choosing a model, proxy-level compression, or billing/subscription changes. |
 | `checkpoint` **[PRO]** | Capture state and context before risky changes so you can roll back if things go wrong, creating structured save points with decision context and file states. | End-of-session diary, cross-session restore, or git commits. |
-| `consolidate` **[PRO]** | Compress a week of diary entries into actionable insights and cross-project pattern summaries. | — |
+| `consolidate` **[PRO]** | Compress a week of diary entries into actionable insights and cross-project pattern summaries. | none |
 | `context-db` **[PRO]** | Store and query structured project knowledge in a per-project SQLite database, reducing token usage by returning only relevant facts instead of reading full CLAUDE.md. | Session logging or memory recall. |
 | `council` **[PRO]** | Run a structured multi-perspective debate with four voices analyzing tradeoffs before making significant technical decisions. | Simple factual questions, implementation tasks, or debugging. |
 | `governor-pro` **[PRO]** | Enforce discipline guardrails for agentic coding: think before coding, no sycophancy, no infinite loops, verify before claiming done. | Tier/scope governance (Prototype/MVP/Production). |
 | `model-router` **[PRO]** | Route tasks to the right AI model based on complexity, cost, and speed requirements, saving money without sacrificing quality where it matters. | Building AI applications or configuring providers. |
-| `multi-agent` **[PRO]** | Orchestrate multiple Claude Code instances as a coordinated team where a Manager delegates, a Builder implements, and a Reviewer verifies. | — |
+| `multi-agent` **[PRO]** | Orchestrate multiple Claude Code instances as a coordinated team where a Manager delegates, a Builder implements, and a Reviewer verifies. | none |
 | `session-restore` **[PRO]** | Create structured snapshots capturing decisions, context, and next actions for seamless cross-session continuity and handoffs. | Diary logging or project memory. |
 
 ---
@@ -70,22 +70,22 @@
 | `api-designer` | Produce production-ready Next.js App Router API routes with auth guards, Zod validation, typed responses, and consistent error handling. | API security audits or database design. |
 | `changelog-generator` | Generate a formatted CHANGELOG.md from git commit history, grouped by type and ready for release. | Diary entries, git log viewing, or commit message writing. |
 | `code-reviewer` | Conduct a systematic code review across security, performance, maintainability, error handling, testing, and accessibility with severity-ranked findings and specific fixes. | Refactoring plans or test generation. |
-| `familiar` | Break large tasks into coordinated Claude Code session prompts for parallel execution across multiple instances. | — |
-| `forge` | Create new MemStack skills or improve existing ones with proper structure and progressive disclosure. | — |
+| `familiar` | Break large tasks into coordinated Claude Code session prompts for parallel execution across multiple instances. | none |
+| `forge` | Create new MemStack skills or improve existing ones with proper structure and progressive disclosure. | none |
 | `mentor` | Narrate decisions, tradeoffs, and reasoning in plain language as you build, so the user learns by working alongside you. | Code review or debugging. |
 | `migration-planner` | Plan safe database schema migrations with zero-downtime strategies, rollback procedures, data validation checkpoints, and version tracking. | Initial database design or code refactoring. |
 | `performance-audit` | Identify and prioritize performance bottlenecks across frontend, backend, and network layers with measured impact and fix priority. | Code reviews or security audits. |
-| `project` | Save and restore project state between Claude Code sessions for seamless handoffs when context is running low. | — |
+| `project` | Save and restore project state between Claude Code sessions for seamless handoffs when context is running low. | none |
 | `refactor-planner` | Identify code smells, assess refactoring risk, select appropriate patterns, and build incremental execution plans with rollback strategies and verification checkpoints. | Writing new features or database migrations. |
-| `shard` | Split monolithic files into focused, maintainable modules when working with files over 1000 lines. | — |
-| `state` | Maintain a living document of where you are right now in a project, loading current context at session start. | — |
+| `shard` | Split monolithic files into focused, maintainable modules when working with files over 1000 lines. | none |
+| `state` | Maintain a living document of where you are right now in a project, loading current context at session start. | none |
 | `test-writer` | Generate comprehensive test suites with unit, integration, and e2e tests, proper mocking strategies, edge case coverage, naming conventions, and CI integration patterns. | Refactoring plans or database migrations. |
-| `verify` | Review completed work against requirements before committing to ensure nothing was missed. | — |
+| `verify` | Review completed work against requirements before committing to ensure nothing was missed. | none |
 | `webapp-testing` | Produce Playwright end-to-end tests that verify real user flows in a browser for web application QA. | Unit tests, API tests, or non-browser testing. |
-| `work` | Track tasks, manage plans, and survive Claude Code compacts with three operating modes for staying organized across sessions. | — |
+| `work` | Track tasks, manage plans, and survive Claude Code compacts with three operating modes for staying organized across sessions. | none |
 | `api-docs` **[PRO]** | Fetch current API documentation via Context Hub before writing code that calls external APIs, ensuring code targets the latest API surface instead of stale training data. | Internal project APIs or code explanation. |
 | `api-load-tester` **[PRO]** | Design and run load tests to measure API throughput, find bottlenecks under stress, and validate scalability using tools like k6 and Artillery. | Unit testing, code profiling, query optimization, or CDN configuration. |
-| `branching` **[PRO]** | Enforce a dev-branch workflow where all work happens on dev and merges to master only after review. | — |
+| `branching` **[PRO]** | Enforce a dev-branch workflow where all work happens on dev and merges to master only after review. | none |
 | `claude-api-helper` **[PRO]** | Generate correct Anthropic API integration code for Python and TypeScript covering messages, streaming, tool use, batches, vision, and prompt caching with proper error handling. | Claude Code CLI usage or MCP server development. |
 | `codebase-index` **[PRO]** | Generate compact markdown index files from the codebase so Claude Code can skip the exploration phase, saving approximately 50K tokens per session. | One-off file searches or symbol lookups. |
 | `database-architect` **[PRO]** | Produce production-ready Supabase/Postgres schemas with proper naming, relationships, RLS policies, indexes, and migration SQL. | Schema migration of existing tables or code refactoring. |
@@ -116,12 +116,12 @@
 | `financial-model` | Build monthly revenue projections, expense forecasts, unit economics (CAC, LTV, payback), break-even analysis, cash flow tracking, and scenario modeling. | Pricing strategy or invoice generation. |
 | `freelancer-toolkit` | Produce time tracking sheets, invoice calculations, and project analytics for freelancers managing multiple clients and billable hours. | General invoice templates or proposal writing. |
 | `gdpr` | Scan a repository for personal data collection, classify sensitivity under GDPR, determine whether GDPR applies, and report required roles, obligations, and remediation. | General security audits or contract drafting. |
-| `governor` | Enforce tier-appropriate complexity and prevent over-engineering by matching project maturity to appropriate scope and patterns. | — |
+| `governor` | Enforce tier-appropriate complexity and prevent over-engineering by matching project maturity to appropriate scope and patterns. | none |
 | `invoice-generator` | Generate professional invoices with line items, tax calculations, payment terms, due dates, and payment instructions as structured markdown ready for PDF conversion. | Contracts or financial projections. |
 | `licensing` | Scan a repository for every license that touches the product (deps, vendored code, fonts, assets), then produce a per-package verdict table for commercial use readiness. | Vulnerability scanning or contract drafting. |
 | `proposal-writer` | Generate a professional project proposal with executive summary, deliverables, tiered pricing, timeline, and terms ready to send as PDF or email. | Contracts, invoices, or onboarding. |
-| `quill` | Generate professional client quotations and proposals with itemized pricing and terms. | — |
-| `scan` | Analyze a project's codebase complexity and generate pricing recommendations for freelance or consulting engagements. | — |
+| `quill` | Generate professional client quotations and proposals with itemized pricing and terms. | none |
+| `scan` | Analyze a project's codebase complexity and generate pricing recommendations for freelance or consulting engagements. | none |
 | `scope-of-work` | Generate a formal Scope of Work document with objectives, deliverables, acceptance criteria, in/out scope definitions, work breakdown structure, and milestones. | Proposals, contracts, or invoicing. |
 | `sop-builder` | Generate a structured Standard Operating Procedure with numbered steps, prerequisites, decision points, verification checkpoints, rollback steps, and time estimates. | Project proposals or scope documents. |
 | `meeting-insights-analyzer` **[PRO]** | Extract decisions, action items, key insights, and behavioral patterns from meeting transcripts or notes. | Scheduling meetings or writing agendas. |
@@ -135,7 +135,7 @@
 |-------|-------------|---------|
 | `blog-post` | Produce a complete, publish-ready blog post with SEO metadata, structured sections, readability optimization, and internal linking suggestions. | Landing page copy, email sequences, or social media posts. |
 | `email-sequence` | Produce a complete multi-email sequence with subject lines, preview text, body copy, CTAs, and A/B test suggestions ready to load into any email platform. | Newsletters or single marketing emails. |
-| `humanize` | Remove AI tells and rewrite content to sound like a human wrote it, making text feel natural rather than machine-generated. | — |
+| `humanize` | Remove AI tells and rewrite content to sound like a human wrote it, making text feel natural rather than machine-generated. | none |
 | `landing-page-copy` | Produce structured landing page copy blocks (hero, problem, solution, features, social proof, FAQ, CTA) ready to drop into any template or design. | Blog posts or email sequences. |
 | `newsletter` | Produce an email newsletter edition with subject line formulas, section structure, personalization, link placement strategy, growth tactics, and engagement optimization. | Lead magnets or content pipelines. |
 | `product-description` | Create conversion-optimized product descriptions with feature-to-benefit conversion, sensory language, SEO keywords, and platform-specific formats for Amazon, Shopify, and Etsy. | Pricing strategy or sales funnels. |
@@ -206,4 +206,4 @@
 
 ---
 
-*MemStack™ v3.5.4 — 130 skills across 10 categories (86 free + 44 Pro-exclusive), one prompt away.*
+*MemStack™ v3.5.4, 130 skills across 10 categories (86 free + 44 Pro-exclusive), one prompt away.*

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Echo Skill — Session Indexer
+Echo Skill: Session Indexer
 Indexes memory/sessions/*.md and memory/plans/*.md into a local LanceDB
 vector database for semantic search.
 

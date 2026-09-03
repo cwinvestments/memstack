@@ -2,17 +2,17 @@
 name: memstack-content-product-description
 description: "Use this skill when the user says 'product description', 'product listing', 'product copy', 'Amazon listing', 'Shopify listing', 'e-commerce copy', or needs conversion-optimized product descriptions with benefit-driven headlines and platform-specific SEO. Do NOT use for pricing strategy or sales funnels."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Product Description — Writing product copy...
+# Product Description: Writing product copy...
 *Creates conversion-optimized product descriptions with feature-to-benefit conversion, sensory language, SEO keywords, A/B variants, and platform-specific formats for Amazon, Shopify, and Etsy.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Product Description — Writing product copy...`
+`Product Description: Writing product copy...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "product description", "product listing", "product copy" | ACTIVE |
 | User says "Amazon listing", "Shopify listing", "e-commerce copy" | ACTIVE |
 | User wants to write or improve copy for a product listing | ACTIVE |
-| User wants to set pricing | DORMANT — use Pricing Strategy |
-| User wants a full sales funnel | DORMANT — use Sales Funnel |
+| User wants to set pricing | DORMANT: use Pricing Strategy |
+| User wants a full sales funnel | DORMANT: use Sales Funnel |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product** — what is it? (name, category, physical/digital)
-> 2. **Features** — what are its key specs and features? (list 5-10)
-> 3. **Audience** — who buys this? (demographics, use case, pain point)
-> 4. **Platform** — where is it listed? (Amazon, Shopify, Etsy, other)
-> 5. **Price point** — what does it cost? (affects copy tone and positioning)
-> 6. **Competitors** — what are the top 3 alternatives? (for differentiation)
+> 1. **Product**: what is it? (name, category, physical/digital)
+> 2. **Features**: what are its key specs and features? (list 5-10)
+> 3. **Audience**: who buys this? (demographics, use case, pain point)
+> 4. **Platform**: where is it listed? (Amazon, Shopify, Etsy, other)
+> 5. **Price point**: what does it cost? (affects copy tone and positioning)
+> 6. **Competitors**: what are the top 3 alternatives? (for differentiation)
 
 ### Step 2: Feature-to-Benefit Conversion
 
@@ -76,17 +76,17 @@ Transform every feature into a customer benefit:
 **Universal structure:**
 
 ```markdown
-## [Product Title — Keyword-Rich, Benefit-Driven]
+## [Product Title: Keyword-Rich, Benefit-Driven]
 
 ### Opening Hook (1-2 sentences)
 [Address the pain point or desire. Create an "I need that" reaction.]
 
 ### Key Benefits (bullet points)
-• [Benefit 1] — [supporting detail]
-• [Benefit 2] — [supporting detail]
-• [Benefit 3] — [supporting detail]
-• [Benefit 4] — [supporting detail]
-• [Benefit 5] — [supporting detail]
+• [Benefit 1], [supporting detail]
+• [Benefit 2], [supporting detail]
+• [Benefit 3], [supporting detail]
+• [Benefit 4], [supporting detail]
+• [Benefit 5]: [supporting detail]
 
 ### Body Description (2-3 short paragraphs)
 [Paint a picture of using the product. Use sensory language.
@@ -115,28 +115,28 @@ Address the top objection. Include social proof if available.]
 
 ```markdown
 ## Product Title (200 characters max)
-[Brand] [Product Name] — [Key Benefit] [Key Feature] [Size/Variant] — [Use Case]
-Example: "EcoBottle Premium Insulated Water Bottle — Keeps Drinks Cold 24 Hours — BPA-Free Stainless Steel, 32oz — Perfect for Hiking & Gym"
+[Brand] [Product Name] ([Key Benefit] [Key Feature] [Size/Variant]) [Use Case]
+Example: "EcoBottle Premium Insulated Water Bottle, Keeps Drinks Cold 24 Hours, BPA-Free Stainless Steel, 32oz: Perfect for Hiking & Gym"
 
 ## Bullet Points (5 bullets, 200 chars each)
-• [BENEFIT IN CAPS] — [Explanation]. [Spec detail].
-• [BENEFIT IN CAPS] — [Explanation]. [Spec detail].
-• [BENEFIT IN CAPS] — [Explanation]. [Spec detail].
-• [BENEFIT IN CAPS] — [Explanation]. [Spec detail].
-• [BENEFIT IN CAPS] — [Explanation]. [Spec detail].
+• [BENEFIT IN CAPS]: [Explanation]. [Spec detail].
+• [BENEFIT IN CAPS]: [Explanation]. [Spec detail].
+• [BENEFIT IN CAPS]: [Explanation]. [Spec detail].
+• [BENEFIT IN CAPS]: [Explanation]. [Spec detail].
+• [BENEFIT IN CAPS]: [Explanation]. [Spec detail].
 
 ## Product Description (2000 chars max)
 [Rich HTML-formatted description with headers, paragraphs, and bold text]
 
 ## Backend Keywords (250 bytes)
-[Hidden keywords separated by spaces — no commas, no repeats, no brand names]
+[Hidden keywords separated by spaces: no commas, no repeats, no brand names]
 ```
 
 **Shopify product page:**
 
 ```markdown
 ## Product Title
-[Concise, descriptive, SEO-friendly — 60-70 characters]
+[Concise, descriptive, SEO-friendly: 60-70 characters]
 
 ## Price + Compare-at Price (if on sale)
 
@@ -157,7 +157,7 @@ Example: "EcoBottle Premium Insulated Water Bottle — Keeps Drinks Cold 24 Hour
 [Technical details table]
 
 ## SEO
-- Meta title: [Product] — [Benefit] | [Brand] (60 chars)
+- Meta title: [Product]: [Benefit] | [Brand] (60 chars)
 - Meta description: [Compelling summary with CTA] (155 chars)
 - URL handle: /products/[keyword-slug]
 ```
@@ -166,11 +166,11 @@ Example: "EcoBottle Premium Insulated Water Bottle — Keeps Drinks Cold 24 Hour
 
 ```markdown
 ## Title (140 characters)
-[Keywords first: "Handmade [Product] for [Occasion] — [Key Feature] [Material] [Size]"]
+[Keywords first: "Handmade [Product] for [Occasion]: [Key Feature] [Material] [Size]"]
 
 ## Description (first 160 chars appear in search)
-[Hook sentence first — this shows in search preview]
-[Full description with story element — why you made this, materials used, care instructions]
+[Hook sentence first: this shows in search preview]
+[Full description with story element: why you made this, materials used, care instructions]
 [Size guide / dimensions]
 [Shipping information]
 [Care instructions]
@@ -181,7 +181,7 @@ Example: "EcoBottle Premium Insulated Water Bottle — Keeps Drinks Cold 24 Hour
 [Focus on: material, use case, recipient, occasion, style]
 
 ## Attributes
-[Fill ALL available attributes — material, color, occasion, style]
+[Fill ALL available attributes: material, color, occasion, style]
 ```
 
 ### Step 5: SEO Keyword Integration
@@ -197,9 +197,9 @@ Example: "EcoBottle Premium Insulated Water Bottle — Keeps Drinks Cold 24 Hour
 
 **Keyword placement rules:**
 - Primary keyword appears in: title, first bullet/sentence, one subheading
-- Don't keyword-stuff — read it aloud; if it sounds robotic, rewrite
-- Backend keywords (Amazon) or tags (Etsy) are invisible — use them for synonyms and misspellings
-- Use natural language — "water bottle that keeps drinks cold" beats "cold water bottle insulated"
+- Don't keyword-stuff, read it aloud; if it sounds robotic, rewrite
+- Backend keywords (Amazon) or tags (Etsy) are invisible, use them for synonyms and misspellings
+- Use natural language, "water bottle that keeps drinks cold" beats "cold water bottle insulated"
 
 ### Step 6: Write A/B Variants
 
@@ -221,7 +221,7 @@ double-wall vacuum insulation to keep your drinks cold all day..."
 - Headline approach (benefit-led vs. problem-led)
 - Bullet point order (most popular benefit first vs. most unique)
 - Description length (short punchy vs. detailed comprehensive)
-- CTA text ("Add to Cart" vs. "Get Yours Now" vs. "Buy Now — Free Shipping")
+- CTA text ("Add to Cart" vs. "Get Yours Now" vs. "Buy Now: Free Shipping")
 
 ### Step 7: Pre-Publish Checklist
 
@@ -234,13 +234,13 @@ double-wall vacuum insulation to keep your drinks cold all day..."
 - [ ] Price and shipping info are accurate
 - [ ] Social proof included if available (reviews, awards, "bestseller")
 - [ ] Scannability: bullets, bold, short paragraphs
-- [ ] Read aloud — does it sound natural and persuasive?
+- [ ] Read aloud, does it sound natural and persuasive?
 - [ ] Mobile preview checked (most shopping is mobile)
 
 ## Output Format
 
 ```markdown
-# Product Description — [Product Name]
+# Product Description: [Product Name]
 
 ## Platform: [Amazon / Shopify / Etsy]
 ## Primary Keyword: [Keyword]
@@ -261,7 +261,7 @@ double-wall vacuum insulation to keep your drinks cold all day..."
 ## Completion
 
 ```
-Product Description — Complete!
+Product Description: Complete!
 
 Product: [Name]
 Platform: [Platform]
@@ -280,4 +280,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Feature-to-benefit conversion formula, sensory language guide (5 senses), universal product description structure, platform-specific formats (Amazon, Shopify, Etsy), SEO keyword integration with placement rules, A/B testing variants (benefit-led vs. problem-led), pre-publish checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Feature-to-benefit conversion formula, sensory language guide (5 senses), universal product description structure, platform-specific formats (Amazon, Shopify, Etsy), SEO keyword integration with placement rules, A/B testing variants (benefit-led vs. problem-led), pre-publish checklist. (Origin: MemStack Pro v3.2, Mar 2026)

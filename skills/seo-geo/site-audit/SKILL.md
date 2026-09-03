@@ -2,17 +2,17 @@
 name: memstack-seo-site-audit
 description: "Use this skill when the user says 'SEO audit', 'site audit', 'check SEO', 'audit my site', 'SEO check', 'technical SEO', or is evaluating a website's search engine optimization health, meta tags, performance, or structured data. Do NOT use for keyword research or schema markup generation alone."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔎 Site Audit — Running comprehensive SEO audit...
-*Scans every page for meta tags, heading hierarchy, broken links, image optimization, Core Web Vitals, robots/sitemap, performance, and structured data — producing a prioritized fix list.*
+# 🔎 Site Audit: Running comprehensive SEO audit...
+*Scans every page for meta tags, heading hierarchy, broken links, image optimization, Core Web Vitals, robots/sitemap, performance, and structured data, producing a prioritized fix list.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔎 Site Audit — Scanning site for SEO issues...`
+`🔎 Site Audit, Scanning site for SEO issues...`
 
 Then execute the protocol below.
 
@@ -21,9 +21,9 @@ Then execute the protocol below.
 | User says "SEO audit" or "site audit" or "check SEO" | ACTIVE |
 | User says "technical SEO" or "audit my site" | ACTIVE |
 | Evaluating a website's overall search health | ACTIVE |
-| Optimizing specific meta tags (not full audit) | DORMANT — use meta-tag-optimizer |
-| Adding schema markup (not auditing) | DORMANT — use schema-markup |
-| Researching keywords (not auditing) | DORMANT — use keyword-research |
+| Optimizing specific meta tags (not full audit) | DORMANT: use meta-tag-optimizer |
+| Adding schema markup (not auditing) | DORMANT: use schema-markup |
+| Researching keywords (not auditing) | DORMANT: use keyword-research |
 
 ### Anti-patterns
 
@@ -37,7 +37,7 @@ Then execute the protocol below.
 
 ## Protocol
 
-For how each AI search engine ranks and cites content (ChatGPT, Perplexity, Google AI Overview, Copilot, Claude, and Google traditional as baseline), see [`references/platform-ranking-factors.md`](./references/platform-ranking-factors.md). Use it to prioritize fixes — a client whose audience is primarily on Perplexity benefits most from FAQ schema and PDF-friendly pages, while a ChatGPT-first audience needs backlinks and 30-day-fresh content.
+For how each AI search engine ranks and cites content (ChatGPT, Perplexity, Google AI Overview, Copilot, Claude, and Google traditional as baseline), see [`references/platform-ranking-factors.md`](./references/platform-ranking-factors.md). Use it to prioritize fixes, a client whose audience is primarily on Perplexity benefits most from FAQ schema and PDF-friendly pages, while a ChatGPT-first audience needs backlinks and 30-day-fresh content.
 
 ### Step 0: Live site snapshot (optional, for deployed URLs)
 
@@ -47,9 +47,9 @@ If the site is already deployed, run the bundled stdlib-only audit script for a 
 python scripts/live_audit.py https://example.com
 ```
 
-No API keys, no pip installs, no external dependencies — pure Python 3 stdlib (`urllib`, `html.parser`, `json`). It fetches the page once and checks title, meta description, heading hierarchy, image alt attributes, JSON-LD structured data, canonical URL, Open Graph tags, robots meta, viewport, `robots.txt` (including AI bot rules), `sitemap.xml`, page load time, and internal vs. external link counts. Output uses the same severity format (🔴 Critical / 🟠 High / 🟡 Medium / 🔵 Low) as the scorecard in Step 9, and the script exit code reflects severity (`0` clean, `1` high, `2` critical) so it can also gate CI.
+No API keys, no pip installs, no external dependencies: pure Python 3 stdlib (`urllib`, `html.parser`, `json`). It fetches the page once and checks title, meta description, heading hierarchy, image alt attributes, JSON-LD structured data, canonical URL, Open Graph tags, robots meta, viewport, `robots.txt` (including AI bot rules), `sitemap.xml`, page load time, and internal vs. external link counts. Output uses the same severity format (🔴 Critical / 🟠 High / 🟡 Medium / 🔵 Low) as the scorecard in Step 9, and the script exit code reflects severity (`0` clean, `1` high, `2` critical) so it can also gate CI.
 
-Use this for deployed-URL audits; use Steps 1-8 below for source-tree scans of unshipped code. The two are complementary — the live script confirms what actually reaches crawlers, the grep steps catch issues before they ship.
+Use this for deployed-URL audits; use Steps 1-8 below for source-tree scans of unshipped code. The two are complementary, the live script confirms what actually reaches crawlers, the grep steps catch issues before they ship.
 
 ---
 
@@ -250,30 +250,30 @@ grep -rn "Organization\|Product\|Article\|BreadcrumbList\|FAQPage\|WebSite" --in
 | Local business | LocalBusiness (with address, hours) | Local pack, knowledge panel |
 | Breadcrumbs | BreadcrumbList | Breadcrumb trail in SERP |
 
-**Flag if:** No structured data found at all — this is a significant missed opportunity for rich results in search.
+**Flag if:** No structured data found at all, this is a significant missed opportunity for rich results in search.
 
 ### Step 9: Output Scorecard
 
 ```
-🔎 Site Audit — Complete
+🔎 Site Audit: Complete
 
 Site: [domain]
 Pages scanned: [count]
 Overall score: [X/100]
 
 Category scores:
-  Meta tags:        [X/10] — [count] issues
-  Heading hierarchy: [X/10] — [count] issues
-  Broken links:      [X/10] — [count] issues
-  Image optimization: [X/10] — [count] issues
-  Core Web Vitals:   [X/10] — [count] issues
-  Robots/sitemap:    [X/10] — [count] issues
-  Performance:       [X/10] — [count] issues
-  Structured data:   [X/10] — [count] issues
+  Meta tags:        [X/10], [count] issues
+  Heading hierarchy: [X/10], [count] issues
+  Broken links:      [X/10], [count] issues
+  Image optimization: [X/10], [count] issues
+  Core Web Vitals:   [X/10], [count] issues
+  Robots/sitemap:    [X/10], [count] issues
+  Performance:       [X/10], [count] issues
+  Structured data:   [X/10]: [count] issues
 
 Priority fix list (by impact):
   🔴 Critical: [count]
-    1. [Most impactful issue — e.g., "No sitemap.xml found"]
+    1. [Most impactful issue, e.g., "No sitemap.xml found"]
     2. [Second issue]
   🟠 High: [count]
     3. [Issue]
@@ -284,10 +284,10 @@ Priority fix list (by impact):
     6. [Issue]
 
 Page-by-page breakdown:
-  / (homepage)           — Score: [X/10] — [issues summary]
-  /about                 — Score: [X/10] — [issues summary]
-  /blog/[slug]           — Score: [X/10] — [issues summary]
-  /pricing               — Score: [X/10] — [issues summary]
+  / (homepage), Score: [X/10], [issues summary]
+  /about, Score: [X/10], [issues summary]
+  /blog/[slug], Score: [X/10], [issues summary]
+  /pricing, Score: [X/10], [issues summary]
 
 Next steps:
 1. Fix all Critical issues immediately
@@ -299,4 +299,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Meta tag scanning, heading hierarchy, broken link detection, image optimization, Core Web Vitals code patterns, robots.txt/sitemap.xml, page performance, structured data presence, scored page-by-page output with prioritized fix list. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Meta tag scanning, heading hierarchy, broken link detection, image optimization, Core Web Vitals code patterns, robots.txt/sitemap.xml, page performance, structured data presence, scored page-by-page output with prioritized fix list. (Origin: MemStack Pro v3.2, Mar 2026)

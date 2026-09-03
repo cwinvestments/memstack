@@ -1,4 +1,4 @@
-# MemStack Pro — Gitleaks configuration
+# MemStack Pro: Gitleaks configuration
 # Excludes test fixtures, example files, and non-sensitive directories
 
 title = "MemStack Pro Gitleaks Config"

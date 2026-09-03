@@ -1,4 +1,4 @@
-# Project Snapshot — {project_name}
+# Project Snapshot: {project_name}
 
 **Date:** {date}
 **Version:** {version}

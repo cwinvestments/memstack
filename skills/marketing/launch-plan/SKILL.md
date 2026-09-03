@@ -2,17 +2,17 @@
 name: memstack-marketing-launch-plan
 description: "Use this skill when the user says 'launch plan', 'product launch', 'go-to-market', 'launch calendar', or needs a day-by-day launch timeline with pre-launch, launch week, and post-launch task checklists. Do NOT use for ongoing funnel design or ad copy alone."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Launch Plan — Planning product launch...
+# Launch Plan: Planning product launch...
 *Develops a day-by-day launch timeline with pre-launch buildup, launch week execution, post-launch optimization, channel strategy, PR outreach templates, and metrics tracking.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Launch Plan — Planning product launch...`
+`Launch Plan: Planning product launch...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "launch plan", "product launch", "go-to-market" | ACTIVE |
 | User says "launch calendar" or "launch timeline" | ACTIVE |
 | User is preparing to release a new product or feature | ACTIVE |
-| User wants an ongoing sales funnel (not time-bound) | DORMANT — use Sales Funnel |
-| User wants ad copy only | DORMANT — use Facebook Ad or Google Ad |
+| User wants an ongoing sales funnel (not time-bound) | DORMANT: use Sales Funnel |
+| User wants ad copy only | DORMANT, use Facebook Ad or Google Ad |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product/service** — what are you launching? (name, description, price)
-> 2. **Launch date** — when does it go live?
-> 3. **Audience size** — email list, social followers, existing customers?
-> 4. **Launch type** — new product, major update, beta → GA, or seasonal promotion?
-> 5. **Channels** — email, social, ads, PR, partnerships, affiliates?
-> 6. **Launch offer** — special pricing, bonus, or early-bird deal?
+> 1. **Product/service**: what are you launching? (name, description, price)
+> 2. **Launch date**: when does it go live?
+> 3. **Audience size**: email list, social followers, existing customers?
+> 4. **Launch type**: new product, major update, beta → GA, or seasonal promotion?
+> 5. **Channels**: email, social, ads, PR, partnerships, affiliates?
+> 6. **Launch offer**: special pricing, bonus, or early-bird deal?
 
 ### Step 2: Define Launch Type & Timeline
 
@@ -77,15 +77,15 @@ If the user hasn't provided details, ask:
 
 | Day | Task | Channel | Owner |
 |-----|------|---------|-------|
-| T-14 | Send teaser email #1 — "Something's coming" | Email | Marketing |
+| T-14 | Send teaser email #1, "Something's coming" | Email | Marketing |
 | T-12 | Behind-the-scenes social post (product development) | Social | Content |
 | T-10 | Send PR pitch to media list | PR | Marketing |
-| T-8 | Teaser email #2 — reveal a feature/benefit | Email | Marketing |
+| T-8 | Teaser email #2, reveal a feature/benefit | Email | Marketing |
 | T-7 | Publish blog post related to the problem you solve | Blog | Content |
 | T-5 | Social proof post (beta user testimonial or preview) | Social | Content |
-| T-3 | Teaser email #3 — "Launching in 3 days" with preview | Email | Marketing |
+| T-3 | Teaser email #3, "Launching in 3 days" with preview | Email | Marketing |
 | T-2 | Notify affiliates/partners: "Go live in 48 hours" | Partners | Marketing |
-| T-1 | Final prep — test checkout, verify tracking, stage all content | Internal | All |
+| T-1 | Final prep: test checkout, verify tracking, stage all content | Internal | All |
 
 **Pre-launch email sequence:**
 
@@ -98,17 +98,17 @@ CTA: "Want early access? Join the waitlist"
 Email 2 (T-8): [Reveal]
 Subject: Here's what we've been building
 Body: Show one key feature/benefit. Share the "why" story.
-CTA: "Reply and tell me — would this help you?"
+CTA: "Reply and tell me: would this help you?"
 
 Email 3 (T-3): [Countdown]
 Subject: 3 days until launch (and a special deal)
 Body: Reveal the launch offer. Create urgency with deadline.
-CTA: "Mark your calendar — [launch date] at [time]"
+CTA: "Mark your calendar: [launch date] at [time]"
 ```
 
 ### Step 4: Launch Week (Days 1-7)
 
-**Day 1 — Launch Day:**
+**Day 1: Launch Day:**
 
 | Time | Task | Channel |
 |------|------|---------|
@@ -118,14 +118,14 @@ CTA: "Mark your calendar — [launch date] at [time]"
 | 9:00 AM | Go live on Product Hunt (if applicable) | PH |
 | 10:00 AM | Activate paid ads (if planned) | Ads |
 | 12:00 PM | Share in communities (Reddit, Slack, Discord) | Community |
-| 3:00 PM | Send affiliate notification — "We're live!" | Partners |
-| 6:00 PM | Evening social post — first results/reactions | Social |
+| 3:00 PM | Send affiliate notification: "We're live!" | Partners |
+| 6:00 PM | Evening social post: first results/reactions | Social |
 | 9:00 PM | Check metrics: traffic, signups, revenue | Analytics |
 
 **Launch email template:**
 
 ```
-Subject: It's live — [Product Name] is here
+Subject: It's live, [Product Name] is here
 Preview: [One-line benefit + launch offer]
 
 [Name],
@@ -139,7 +139,7 @@ Here's what you get:
 → [Benefit 2]
 → [Benefit 3]
 
-Launch special: [Offer details — discount, bonus, early-bird price]
+Launch special: [Offer details: discount, bonus, early-bird price]
 This offer expires [deadline].
 
 [CTA Button: Get [Product] Now →]
@@ -148,24 +148,24 @@ This offer expires [deadline].
 
 [Signature]
 
-P.S. [Restate urgency — "This price goes up on [date]"]
+P.S. [Restate urgency, "This price goes up on [date]"]
 ```
 
-**Days 2-5 — Momentum:**
+**Days 2-5: Momentum:**
 
 | Day | Email | Social | Other |
 |-----|-------|--------|-------|
-| Day 2 | Social proof email — first customer results | Share customer reactions | Respond to all comments/questions |
+| Day 2 | Social proof email, first customer results | Share customer reactions | Respond to all comments/questions |
 | Day 3 | FAQ/objection handling email | Demo video or walkthrough | Track and fix any UX issues |
 | Day 4 | Case study or deep-dive on one feature | User testimonial post | Re-engage waitlist non-openers |
-| Day 5 | Scarcity email — "X spots left" or "3 days left" | Countdown post | Activate retargeting ads |
+| Day 5 | Scarcity email, "X spots left" or "3 days left" | Countdown post | Activate retargeting ads |
 
-**Days 6-7 — Close:**
+**Days 6-7: Close:**
 
 | Day | Email | Social |
 |-----|-------|--------|
-| Day 6 | "Last chance" — 24 hours remaining | Urgency stories/posts |
-| Day 7 | Final email — "Doors close at midnight" (send twice: AM + PM) | "Final hours" post |
+| Day 6 | "Last chance", 24 hours remaining | Urgency stories/posts |
+| Day 7 | Final email, "Doors close at midnight" (send twice: AM + PM) | "Final hours" post |
 
 ### Step 5: Post-Launch Phase (Days 8-30)
 
@@ -190,7 +190,7 @@ Hi [Name],
 
 I'm [Your Name], [title] at [Company].
 
-We just launched [Product Name] — [one sentence: what it does and why it matters].
+We just launched [Product Name], [one sentence: what it does and why it matters].
 
 This is relevant to your audience because:
 • [Angle 1: trend, problem, or market shift]
@@ -223,21 +223,21 @@ Best,
 
 | Metric | Pre-Launch Target | Launch Target | Track With |
 |--------|------------------|--------------|------------|
-| Waitlist signups | 500+ | — | Email platform |
+| Waitlist signups | 500+ | none | Email platform |
 | Email open rate | 35%+ | 40%+ | Email platform |
 | Email click rate | 5%+ | 8%+ | Email platform |
-| Landing page visitors | — | 5,000+ (day 1) | Google Analytics |
-| Conversion rate | — | 2-5% | Checkout analytics |
-| Revenue | — | $[target] | Payment processor |
+| Landing page visitors | none | 5,000+ (day 1) | Google Analytics |
+| Conversion rate | none | 2-5% | Checkout analytics |
+| Revenue | none | $[target] | Payment processor |
 | Social mentions | 10+/week | 50+/day | Social monitoring |
-| Press coverage | — | 3+ articles | Manual tracking |
-| Customer satisfaction | — | 4.5+ stars | Survey/reviews |
-| Refund rate | — | <5% | Payment processor |
+| Press coverage | none | 3+ articles | Manual tracking |
+| Customer satisfaction | none | 4.5+ stars | Survey/reviews |
+| Refund rate | none | <5% | Payment processor |
 
 ## Output Format
 
 ```markdown
-# Launch Plan — [Product Name]
+# Launch Plan: [Product Name]
 
 ## Launch Overview
 - **Product:** [Name and one-line description]
@@ -272,7 +272,7 @@ Best,
 ## Completion
 
 ```
-Launch Plan — Complete!
+Launch Plan: Complete!
 
 Launch date: [Date]
 Pre-launch duration: [X weeks]
@@ -291,4 +291,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Launch type selection with timeline defaults, 4-week pre-launch task calendar, launch day hour-by-hour schedule, 7-day launch window email/social cadence, post-launch 30-day optimization, PR pitch template with outreach targets, metrics tracking dashboard with benchmarks, email templates (teaser, reveal, countdown, launch, close). (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Launch type selection with timeline defaults, 4-week pre-launch task calendar, launch day hour-by-hour schedule, 7-day launch window email/social cadence, post-launch 30-day optimization, PR pitch template with outreach targets, metrics tracking dashboard with benchmarks, email templates (teaser, reveal, countdown, launch, close). (Origin: MemStack Pro v3.2, Mar 2026)

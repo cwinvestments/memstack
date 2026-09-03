@@ -1,4 +1,4 @@
-# Project Memory — {project_name}
+# Project Memory: {project_name}
 
 ## Identity
 - **Name**: {project_name}

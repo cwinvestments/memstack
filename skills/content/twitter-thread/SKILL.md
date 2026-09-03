@@ -2,17 +2,17 @@
 name: memstack-content-twitter-thread
 description: "Use this skill when the user says 'twitter thread', 'tweet thread', 'X thread', 'viral thread', or wants to create a multi-tweet narrative with hook tweets, data points, and CTAs. Do NOT use for TikTok scripts, newsletters, or LinkedIn posts."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Twitter Thread — Writing viral thread...
+# Twitter Thread: Writing viral thread...
 *Creates multi-tweet threads (5-15 posts) with hook formulas, narrative arc, engagement tactics, data points, CTA placement, and scheduling strategy.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Twitter Thread — Writing viral thread...`
+`Twitter Thread: Writing viral thread...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "twitter thread", "tweet thread", "X thread" | ACTIVE |
 | User says "viral thread" or wants multi-tweet content | ACTIVE |
 | User wants to share insights, stories, or frameworks on Twitter/X | ACTIVE |
-| User wants a TikTok or Reels script | DORMANT — use TikTok Script |
-| User wants a newsletter | DORMANT — use Newsletter |
+| User wants a TikTok or Reels script | DORMANT: use TikTok Script |
+| User wants a newsletter | DORMANT: use Newsletter |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Topic** — what's the thread about?
-> 2. **Angle** — personal story, tactical how-to, hot take, data breakdown, or curated list?
-> 3. **Goal** — followers, engagement, traffic to a link, or brand awareness?
-> 4. **Length** — short (5-7 tweets), medium (8-12), or long (13-15)?
-> 5. **Key points** — what are the 3-5 main takeaways?
+> 1. **Topic**: what's the thread about?
+> 2. **Angle**: personal story, tactical how-to, hot take, data breakdown, or curated list?
+> 3. **Goal**: followers, engagement, traffic to a link, or brand awareness?
+> 4. **Length**: short (5-7 tweets), medium (8-12), or long (13-15)?
+> 5. **Key points**: what are the 3-5 main takeaways?
 
 ### Step 2: Choose Thread Structure
 
@@ -75,7 +75,7 @@ The hook tweet determines 90% of thread performance.
 
 **Hook rules:**
 - Maximum 2 lines visible without expanding (keep under 180 characters)
-- Create a curiosity gap — make them need to read tweet 2
+- Create a curiosity gap, make them need to read tweet 2
 - End with a colon `:` or "Here's what I learned:" to signal more is coming
 - No links in tweet 1 (links reduce reach by 50%+)
 
@@ -86,7 +86,7 @@ The hook tweet determines 90% of thread performance.
 - Use line breaks for readability
 - Short sentences. Punchy paragraphs.
 - Include a mini-hook every 3-4 tweets to retain scrollers
-- Use numbered tweets (`1/`, `2/`) OR natural flow (no numbers) — don't mix
+- Use numbered tweets (`1/`, `2/`) OR natural flow (no numbers): don't mix
 
 **Formatting patterns:**
 
@@ -160,7 +160,7 @@ The winner? [Finding].
 - [ ] CTA in the final tweet is clear and specific
 - [ ] No links in tweet 1 (put links in last tweet or reply)
 - [ ] Thread length matches content depth (don't pad, don't rush)
-- [ ] Read the full thread aloud — does it flow naturally?
+- [ ] Read the full thread aloud: does it flow naturally?
 
 **Scheduling strategy:**
 - Best times: Weekdays 8-10 AM or 12-1 PM (audience's timezone)
@@ -171,7 +171,7 @@ The winner? [Finding].
 ## Output Format
 
 ```markdown
-# Twitter/X Thread — [Topic]
+# Twitter/X Thread: [Topic]
 
 **Structure:** [Story / Listicle / Framework / etc.]
 **Length:** [X] tweets
@@ -181,7 +181,7 @@ The winner? [Finding].
 ## Thread
 
 **Tweet 1 (Hook):**
-[Hook tweet — under 180 chars]
+[Hook tweet: under 180 chars]
 
 **Tweet 2:**
 [Body tweet]
@@ -195,13 +195,13 @@ The winner? [Finding].
 [Closing CTA tweet]
 
 **Reply to thread:**
-[Link or bonus content — posted as a reply to tweet 1]
+[Link or bonus content, posted as a reply to tweet 1]
 ```
 
 ## Completion
 
 ```
-Twitter Thread — Complete!
+Twitter Thread: Complete!
 
 Topic: [Topic]
 Structure: [Type]
@@ -210,7 +210,7 @@ Hook type: [Formula used]
 CTA: [Primary action]
 
 Next steps:
-1. Read the full thread aloud — trim anything that doesn't flow
+1. Read the full thread aloud, trim anything that doesn't flow
 2. Schedule for [optimal time] using a scheduling tool
 3. Self-retweet 6-8 hours after posting
 4. Engage with every reply in the first 2 hours (boosts algorithm)
@@ -219,4 +219,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 5 thread structures (story, listicle, framework, contrarian, before/after), 6 hook formulas with examples, body tweet formatting patterns, engagement re-hooks, CTA formulas by goal (6 types), scheduling strategy, full thread checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 5 thread structures (story, listicle, framework, contrarian, before/after), 6 hook formulas with examples, body tweet formatting patterns, engagement re-hooks, CTA formulas by goal (6 types), scheduling strategy, full thread checklist. (Origin: MemStack Pro v3.2, Mar 2026)

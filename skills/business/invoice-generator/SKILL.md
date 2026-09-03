@@ -2,17 +2,17 @@
 name: memstack-business-invoice-generator
 description: "Use this skill when the user says 'invoice', 'generate invoice', 'create invoice', 'bill client', 'line items', 'payment terms', or needs professional invoices with tax calculations and payment instructions. Do NOT use for contracts or financial projections."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Invoice Generator — Creating professional invoice...
-*Generates professional invoices with line items, tax calculations, payment terms, due dates, and payment instructions — output as structured markdown ready for PDF conversion.*
+# Invoice Generator: Creating professional invoice...
+*Generates professional invoices with line items, tax calculations, payment terms, due dates, and payment instructions. Output as structured markdown ready for PDF conversion.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Invoice Generator — Creating professional invoice...`
+`Invoice Generator: Creating professional invoice...`
 
 Then execute the protocol below.
 
@@ -23,15 +23,15 @@ Then execute the protocol below.
 | User says "invoice", "generate invoice", "create invoice", "bill client" | ACTIVE |
 | User says "line items" or "payment terms" | ACTIVE |
 | User needs a professional invoice for a client | ACTIVE |
-| User wants a contract or service agreement | DORMANT — use Contract Template |
-| User wants financial projections | DORMANT — use Financial Model |
+| User wants a contract or service agreement | DORMANT: use Contract Template |
+| User wants financial projections | DORMANT: use Financial Model |
 
 ## Common Mistakes
 
 | Mistake | Why It's Wrong |
 |---------|---------------|
 | "No invoice number" | Sequential invoice numbers are required for accounting and tax compliance. |
-| "Vague line items" | "Consulting — $5,000" invites disputes. Itemize by deliverable, hours, or phase. |
+| "Vague line items" | "Consulting: $5,000" invites disputes. Itemize by deliverable, hours, or phase. |
 | "No payment terms" | Without explicit terms (Net 30, due on receipt), clients have no obligation to pay on time. |
 | "Skip tax line" | Even if tax is $0, show the tax line. It demonstrates professionalism and compliance. |
 | "No late payment terms" | Without stated consequences, you have no leverage on overdue invoices. |
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Client** — company name, contact person, billing address
-> 2. **Your business** — business name, address, tax ID / EIN (if applicable)
-> 3. **Line items** — what are you billing for? (description, quantity, rate)
-> 4. **Payment terms** — Net 30, Net 15, due on receipt?
-> 5. **Tax** — applicable tax rate? (state sales tax, VAT, or exempt)
-> 6. **Currency** — USD, EUR, GBP, etc.?
+> 1. **Client**: company name, contact person, billing address
+> 2. **Your business**: business name, address, tax ID / EIN (if applicable)
+> 3. **Line items**: what are you billing for? (description, quantity, rate)
+> 4. **Payment terms**: Net 30, Net 15, due on receipt?
+> 5. **Tax**: applicable tax rate? (state sales tax, VAT, or exempt)
+> 6. **Currency**: USD, EUR, GBP, etc.?
 
 ### Step 2: Generate Invoice Number
 
@@ -80,7 +80,7 @@ Example: INV-202603-001
 
 **Line item rules:**
 - Each line should describe a specific deliverable or time period
-- Include enough detail to prevent client questions ("Website development" → "Homepage redesign — responsive layout, 3 revision rounds")
+- Include enough detail to prevent client questions ("Website development" → "Homepage redesign, responsive layout, 3 revision rounds")
 - For hourly work: include date range and total hours
 - For project work: reference the SOW or contract phase
 - For expenses: mark as "Reimbursable expense" with receipt reference
@@ -137,7 +137,7 @@ Account number: [XXXXXXXXX]
 Reference: [Invoice number]
 
 **Online Payment:**
-Pay online: [Payment link — Stripe, PayPal, or Square invoice URL]
+Pay online: [Payment link: Stripe, PayPal, or Square invoice URL]
 
 **Check:**
 Make payable to: [Business name]
@@ -234,7 +234,7 @@ Deliver the complete invoice in the template format from Step 6, ready to be:
 ## Completion
 
 ```
-Invoice Generator — Complete!
+Invoice Generator: Complete!
 
 Invoice #: [Number]
 Client: [Name]
@@ -255,4 +255,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Invoice numbering convention, detailed line items with totals/tax/discount, 6 payment term options, late payment clause, early payment discount, 4 payment method templates (bank, online, check, wire), complete invoice template, recurring invoice schedule, automation tips. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Invoice numbering convention, detailed line items with totals/tax/discount, 6 payment term options, late payment clause, early payment discount, 4 payment method templates (bank, online, check, wire), complete invoice template, recurring invoice schedule, automation tips. (Origin: MemStack Pro v3.2, Mar 2026)

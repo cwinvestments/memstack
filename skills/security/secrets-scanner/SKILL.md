@@ -2,18 +2,18 @@
 name: memstack-security-secrets-scanner
 description: "Use this skill when the user says 'scan for secrets', 'check for leaked keys', 'secrets scanner', 'hardcoded credentials', 'API key leak', or needs to detect exposed secrets in source code. Do NOT use for dependency vulnerabilities or RLS auditing."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
 
-# 🔑 Secrets Scanner — Scanning for Exposed Credentials...
+# 🔑 Secrets Scanner: Scanning for Exposed Credentials...
 *Scan a codebase for hardcoded secrets, leaked API keys, and credential exposure across files and git history.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔑 Secrets Scanner — Scanning for Exposed Credentials...`
+`🔑 Secrets Scanner: Scanning for Exposed Credentials...`
 
 Then execute the protocol below.
 
@@ -21,21 +21,21 @@ Then execute the protocol below.
 
 | Context | Status |
 |---------|--------|
-| **User asks to scan for secrets/keys** | ACTIVE — full scan |
-| **User mentions credential exposure** | ACTIVE — full scan |
-| **User asks about .env security** | ACTIVE — targeted .env audit |
-| **Pre-deployment security review** | ACTIVE — full scan |
-| **User is creating .env files** | DORMANT — let them work |
+| **User asks to scan for secrets/keys** | ACTIVE: full scan |
+| **User mentions credential exposure** | ACTIVE: full scan |
+| **User asks about .env security** | ACTIVE: targeted .env audit |
+| **Pre-deployment security review** | ACTIVE: full scan |
+| **User is creating .env files** | DORMANT: let them work |
 
 ## ⚠️ Enforcement lives in CLAUDE.md, not here
 
 **This skill cannot be the control that prevents secret leaks.** Skill matching is semantic and
-probabilistic — it misses. In a real session that leaked a live SendGrid production key, the
+probabilistic: it misses. In a real session that leaked a live SendGrid production key, the
 query "rotate object storage credentials S3 bucket key move secrets rotation" scored this skill
 at **0.24** and it never loaded. The task was credential handling end to end.
 
-Therefore the *hard rule* ("never print a secret value") belongs in always-loaded context —
-a project `CLAUDE.md` block — which loads unconditionally regardless of matching, MCP
+Therefore the *hard rule* ("never print a secret value") belongs in always-loaded context,
+a project `CLAUDE.md` block, which loads unconditionally regardless of matching, MCP
 reachability, or hooks. **This skill carries the operational how-to below; `CLAUDE.md` carries
 the prohibition.** If you are reading this skill and the project has no secrets block in
 `CLAUDE.md`, adding one is the highest-value fix available, ahead of any scan.
@@ -46,11 +46,11 @@ the prohibition.** If you are reading this skill and the project has no secrets 
 
 Redaction by denylist is the single most common way secrets leak during "safe" inspection.
 A pattern that redacts `KEY=`, `SECRET=`, `PASSWORD=` looks thorough and silently fails on
-`SENDGRID_API_KEY_PROD=`, `STRIPE_SECRET_KEY_TEST=`, `DB_PASSWORD_2=` — any suffixed variant.
+`SENDGRID_API_KEY_PROD=`, `STRIPE_SECRET_KEY_TEST=`, `DB_PASSWORD_2=`: any suffixed variant.
 **Never enumerate what to hide. Emit only what is provably safe: names.**
 
 ```bash
-# ✅ Variable names only — values are never read into the output stream
+# ✅ Variable names only, values are never read into the output stream
 cut -d= -f1 .env | grep -vE '^#|^$' | sort
 
 # ✅ Whole-file structure with every value destroyed before display
@@ -59,10 +59,10 @@ sed 's/=.*/=<redacted>/' .env
 # ✅ Existence / non-emptiness as a boolean
 grep -qE '^VARNAME=.+' .env && echo set || echo unset
 
-# ❌ NEVER — denylist; misses every suffixed variant
+# ❌ NEVER, denylist; misses every suffixed variant
 sed -E 's/(KEY|SECRET|PASSWORD)=.*/\1=[REDACTED]/' .env
 
-# ❌ NEVER — "just the first few characters" is still printing the secret
+# ❌ NEVER, "just the first few characters" is still printing the secret
 sed -E 's/=(.{6}).*/=\1…/' .env
 ```
 
@@ -72,7 +72,7 @@ Most real questions ("is it the right key?", "did the paste get mangled?", "do p
 match?") are answerable without the value:
 
 ```bash
-# Length — catches truncated/padded pastes. A stray trailing "." in a 64-char R2 secret
+# Length: catches truncated/padded pastes. A stray trailing "." in a 64-char R2 secret
 # produced SignatureDoesNotMatch and was diagnosed purely from length + charset.
 awk -F= '/^VARNAME=/{print length($2)}' .env
 
@@ -80,7 +80,7 @@ awk -F= '/^VARNAME=/{print length($2)}' .env
 grep '^VARNAME=' .env | cut -d= -f2- | tr -d '"' \
   | grep -qE '^[0-9a-f]{64}$' && echo "64-hex OK" || echo "unexpected format"
 
-# Fingerprint — safe to log, paste, and compare across machines
+# Fingerprint: safe to log, paste, and compare across machines
 grep '^VARNAME=' .env | cut -d= -f2- | tr -d '"' | sha256sum | cut -c1-8
 
 # Do two environments hold the same value? Compare fingerprints, never values.
@@ -93,7 +93,7 @@ python -c "from werkzeug.security import check_password_hash; print(check_passwo
 
 ### Atomic .env editing
 
-Never edit `.env` in place, and never leave a plaintext backup — a `.env.bak` recreates exactly
+Never edit `.env` in place, and never leave a plaintext backup. A `.env.bak` recreates exactly
 the exposure that rotation exists to remove.
 
 ```python
@@ -106,7 +106,7 @@ os.write(fd, b'\n'.join(out)); os.fsync(fd); os.close(fd)
 os.chmod(tmp, st.st_mode & 0o777); os.chown(tmp, st.st_uid, st.st_gid)
 os.replace(tmp, p)                                        # atomic; no half-written window
 
-# Prove correctness by reporting WHICH KEYS changed — never the values
+# Prove correctness by reporting WHICH KEYS changed: never the values
 after = open(p, 'rb').read().split(b'\n')
 diffs = [i for i, (a, b) in enumerate(zip(orig.split(b'\n'), after)) if a != b]
 print("changed keys:", [after[i].split(b'=')[0].decode() for i in diffs])
@@ -118,7 +118,7 @@ silently rewrites every line ending in a CRLF file, turning a one-line edit into
 ### Secrets that do not look like secrets
 
 - **Capability URLs.** An unguessable object key, presigned URL, or invite link *is* a
-  credential — its security is precisely that nobody has seen it. Printing one to a transcript,
+  credential, its security is precisely that nobody has seen it. Printing one to a transcript,
   a commit message, or a log destroys it. Treat like a password.
 - **Endpoints containing account IDs.** `https://<account-id>.r2.cloudflarestorage.com` is not
   a credential but is an infrastructure identifier; prefer not to broadcast it.
@@ -128,7 +128,7 @@ silently rewrites every line ending in a CRLF file, turning a one-line edit into
 ### If a secret prints anyway
 
 1. **Stop.** Do not finish the task first.
-2. **Flag it immediately and explicitly** — name the variable, say where it went.
+2. **Flag it immediately and explicitly**: name the variable, say where it went.
 3. **Rotation is mandatory**, not a judgement call. A value in a transcript is compromised
    regardless of who you think can read the transcript.
 4. **Audit the same output for co-leaked values** before rotating, so rotation happens once.
@@ -175,7 +175,7 @@ grep -rn "password\s*[:=]\s*['\"][^'\"]\{4,\}['\"]\|PASSWORD\s*=\s*['\"][^'\"]\{
 grep -rn "BEGIN.*PRIVATE KEY\|BEGIN RSA PRIVATE\|BEGIN EC PRIVATE\|BEGIN DSA PRIVATE\|BEGIN OPENSSH PRIVATE" \
   --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" --include="*.pem" --include="*.key" --include="*.yaml" --include="*.yml" --include="*.md" .
 ```
-Flag as CRITICAL if found in any tracked file. Private keys should never be committed — use environment variables or secret managers.
+Flag as CRITICAL if found in any tracked file. Private keys should never be committed, use environment variables or secret managers.
 
 **Base64-Encoded Secrets:**
 ```bash
@@ -188,7 +188,7 @@ grep -rn "\(secret\|key\|token\|password\|credential\).*['\"][ ]*[A-Za-z0-9+/]\{
 grep -rn "Buffer\.from(['\"][A-Za-z0-9+/]\{20,\}=*['\"].*base64\|atob(['\"][A-Za-z0-9+/]\{20,\}" \
   --include="*.ts" --include="*.tsx" --include="*.js" .
 ```
-Flag as WARNING if a base64 string is assigned to a variable with `secret`, `key`, `token`, or `password` in its name. Developers sometimes base64-encode secrets thinking it hides them — it doesn't.
+Flag as WARNING if a base64 string is assigned to a variable with `secret`, `key`, `token`, or `password` in its name. Developers sometimes base64-encode secrets thinking it hides them: it doesn't.
 
 **Connection Strings:**
 ```bash
@@ -202,7 +202,7 @@ grep -rn "supabase\.co.*service_role\|firebaseio\.com.*AIza" --include="*.ts" --
 **Exclude false positives:**
 - Files in `node_modules/`, `.git/`, `dist/`, `.next/`
 - Test fixtures with obviously fake values (e.g., `sk_test_fake123`)
-- Environment variable references (`process.env.STRIPE_SECRET_KEY` is safe — the variable itself, not a value)
+- Environment variable references (`process.env.STRIPE_SECRET_KEY` is safe, the variable itself, not a value)
 - Documentation showing example formats
 
 ### Step 2: Audit .env File Security (Check 2)
@@ -276,7 +276,7 @@ grep -rn "password\|secret\|token\|api_key" \
 
 **Flag as CRITICAL if:**
 - Real secret values are hardcoded in any deployment config file
-- `netlify.toml` `[build.environment]` section contains secret values (these are committed to git — use Netlify UI environment variables instead)
+- `netlify.toml` `[build.environment]` section contains secret values (these are committed to git, use Netlify UI environment variables instead)
 - `vercel.json` contains environment variable values (use `vercel env` CLI or Dashboard instead)
 
 **Flag as WARNING if:**
@@ -300,7 +300,7 @@ grep -rn "process\.env\.\(.*SECRET\|.*KEY\|.*TOKEN\|.*PASSWORD\|.*DATABASE_URL\)
 
 **Correct pattern:**
 ```typescript
-// Good — validated at startup
+// Good: validated at startup
 import { z } from 'zod';
 const env = z.object({
   DATABASE_URL: z.string().url(),
@@ -383,7 +383,7 @@ Git history checked: <yes/no>
 | # | File | Line | Type | Pattern | Risk | Status |
 |---|------|------|------|---------|------|--------|
 | 1 | src/lib/stripe.ts | 14 | Stripe Secret Key | sk_live_... | 🔴 CRIT | Hardcoded |
-| 2 | .env | — | Environment File | .env tracked | 🔴 CRIT | In git |
+| 2 | .env | none | Environment File | .env tracked | 🔴 CRIT | In git |
 | 3 | docker-compose.yml | 23 | Database Password | password= | ⚠️ WARN | Inline |
 | 4 | src/app/page.tsx | 8 | Server Env in Client | DATABASE_URL | 🔴 CRIT | Client-exposed |
 | 5 | README.md | 45 | API Key Example | sk_test_... | ℹ️ INFO | Test key |
@@ -391,7 +391,7 @@ Git history checked: <yes/no>
 ## Critical Issues
 1. **Stripe secret key hardcoded** in `src/lib/stripe.ts:14`
    → Fix: Move to `.env.local` as `STRIPE_SECRET_KEY`, reference via `process.env.STRIPE_SECRET_KEY`
-   → Then: Rotate the key in Stripe Dashboard immediately — it's been committed
+   → Then: Rotate the key in Stripe Dashboard immediately: it's been committed
 
 2. **.env file tracked in git**
    → Fix: `git rm --cached .env && echo ".env" >> .gitignore && git commit`
@@ -407,8 +407,8 @@ Git history checked: <yes/no>
 
 ## Environment File Audit
 - .gitignore: ✅ Contains .env patterns
-- .env tracked: 🔴 Yes — remove immediately
-- .env.example: ⚠️ Missing — create with placeholder values
+- .env tracked: 🔴 Yes: remove immediately
+- .env.example: ⚠️ Missing: create with placeholder values
 - Env validation: ⚠️ No startup validation found
 
 ## Summary
@@ -451,7 +451,7 @@ STRIPE_WEBHOOK_SECRET=whsec_your-secret
 
 Before rotating any exposed credential, verify:
 
-1. **Is the secret actively used in production?** Check deployment environment variables (Vercel/Netlify/Railway dashboard) to see if the exposed value matches what's currently configured. If the production value is already different, the exposure is historical only — still rotate, but priority is lower.
+1. **Is the secret actively used in production?** Check deployment environment variables (Vercel/Netlify/Railway dashboard) to see if the exposed value matches what's currently configured. If the production value is already different, the exposure is historical only, still rotate, but priority is lower.
 2. **What services depend on this secret?** A Stripe key rotation affects webhook verification, payment processing, and customer portal links. Map all dependencies before rotating.
 3. **Can you rotate without downtime?** Some services (Stripe, AWS) support rolling two active keys simultaneously. Others (single JWT secret) require coordinated deployment.
 4. **Who else has access?** If the repo is public or shared with contractors, assume the secret is fully compromised regardless of git history depth.
@@ -470,7 +470,7 @@ Before rotating any exposed credential, verify:
 
 Always conclude with:
 
-1. **Rotate** any exposed credentials immediately — assume they've been compromised (see pre-rotation checklist above)
+1. **Rotate** any exposed credentials immediately, assume they've been compromised (see pre-rotation checklist above)
 2. **Add `.env` patterns to `.gitignore`** before any new commits
 3. **Create `.env.example`** with placeholder values for onboarding
 4. **Use env validation** (`@t3-oss/env-nextjs` or Zod schema) to catch missing vars at startup
@@ -511,11 +511,11 @@ Always conclude with:
 
 ## Automated Hook Coverage
 
-The MemStack Pro hook system provides **automatic, production-grade secrets detection** before every commit and push — no manual invocation required.
+The MemStack Pro hook system provides **automatic, production-grade secrets detection** before every commit and push: no manual invocation required.
 
-**Pre-Commit Hook** — Scans all staged files before any `git commit`. Detects 700+ credential formats across every major cloud provider, SaaS API, private key format, and authentication token type. Blocks the commit if secrets are found, with redacted output showing what was detected and where.
+**Pre-Commit Hook**: Scans all staged files before any `git commit`. Detects 700+ credential formats across every major cloud provider, SaaS API, private key format, and authentication token type. Blocks the commit if secrets are found, with redacted output showing what was detected and where.
 
-**Pre-Push Hook** — Full working-tree scan before any `git push`. Catches secrets that may have been committed across multiple commits since the last push. Also detects `.env` files in unpushed commits.
+**Pre-Push Hook**: Full working-tree scan before any `git push`. Catches secrets that may have been committed across multiple commits since the last push. Also detects `.env` files in unpushed commits.
 
 **Coverage includes:**
 - Cloud provider credentials (AWS, GCP, Azure, DigitalOcean, Hetzner, etc.)
@@ -528,21 +528,21 @@ The MemStack Pro hook system provides **automatic, production-grade secrets dete
 - CI/CD tokens, container registry credentials
 - Custom high-entropy string detection
 
-**Fallback behavior:** If the production scanner is not installed, hooks silently fall back to the built-in 5-keyword regex scan (Step 1 patterns). Scanning is never skipped — only the depth of detection changes.
+**Fallback behavior:** If the production scanner is not installed, hooks silently fall back to the built-in 5-keyword regex scan (Step 1 patterns). Scanning is never skipped, only the depth of detection changes.
 
-This manual skill remains available for **deep audits** — git history analysis, client-side exposure checks, env validation, Docker inspection, and remediation planning that go beyond what automated hooks cover.
+This manual skill remains available for **deep audits**: git history analysis, client-side exposure checks, env validation, Docker inspection, and remediation planning that go beyond what automated hooks cover.
 
 ## Related Skills
 
-- **api-audit** — Audit API routes for auth/authz vulnerabilities
-- **rls-checker** — Audit Supabase RLS policies
-- **dependency-audit** — Check for vulnerable npm packages
+- **api-audit**: Audit API routes for auth/authz vulnerabilities
+- **rls-checker**: Audit Supabase RLS policies
+- **dependency-audit**: Check for vulnerable npm packages
 
 ## Level History
 
-- **Lv.1** — Base: 7-check scan (hardcoded secrets, .env audit, config/docs, env validation, client exposure, git history, Docker), pattern reference for 14+ secret formats, .env.example generation, remediation guide. Derived from real credential incidents across AdminStack, EpsteinScan, and 10+ production projects. (Origin: MemStack Pro v1.0, Mar 2026)
-- **Lv.2** — Audit feedback: Added deployment platform config scan (Netlify, Vercel, Railway, Render, Fly.io), base64-encoded secret detection, private key block detection (RSA/EC/DSA/OpenSSH PEM), pre-rotation checklist with dependency mapping and priority matrix. (Origin: AdminStack audit, Mar 2026)
-- **Lv.3** — Hook integration: Documented automated pre-commit and pre-push hook coverage (700+ credential formats), fallback behavior, and relationship between manual skill audits and automated hook scanning. (Origin: MemStack Pro v3.3.3, Mar 2026)
+- **Lv.1**: Base: 7-check scan (hardcoded secrets, .env audit, config/docs, env validation, client exposure, git history, Docker), pattern reference for 14+ secret formats, .env.example generation, remediation guide. Derived from real credential incidents across AdminStack, EpsteinScan, and 10+ production projects. (Origin: MemStack Pro v1.0, Mar 2026)
+- **Lv.2**: Audit feedback: Added deployment platform config scan (Netlify, Vercel, Railway, Render, Fly.io), base64-encoded secret detection, private key block detection (RSA/EC/DSA/OpenSSH PEM), pre-rotation checklist with dependency mapping and priority matrix. (Origin: AdminStack audit, Mar 2026)
+- **Lv.3**: Hook integration: Documented automated pre-commit and pre-push hook coverage (700+ credential formats), fallback behavior, and relationship between manual skill audits and automated hook scanning. (Origin: MemStack Pro v3.3.3, Mar 2026)
 
 ## Pro Feature
 

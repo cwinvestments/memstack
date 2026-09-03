@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.2 — Post-Commit Hook
+# MemStack v3.2: Post-Commit Hook
 # Post-commit verification: debug artifact scan + secrets check
 # Exit 0 = allow, exit 1 = warning (non-blocking)
 #
@@ -26,7 +26,7 @@ if [ -n "$DEBUG_HITS" ]; then
     echo "DEPLOY: Debug artifacts found in committed files:"
     printf '%b\n' "$DEBUG_HITS"
     echo "DEPLOY: Consider removing before pushing."
-    # Non-blocking warning — exit 0
+    # Non-blocking warning: exit 0
 fi
 
 # --- Check 2: Secrets in committed files ---
@@ -44,13 +44,13 @@ if [ -n "$SECRETS_FOUND" ]; then
     echo "DEPLOY: Possible secrets in committed files:"
     printf '%b\n' "$SECRETS_FOUND"
     echo "DEPLOY: Review before pushing. Use git reset --soft HEAD~1 to undo."
-    # Warning only — the commit already happened
+    # Warning only, the commit already happened
 fi
 
 # --- Check 3: Commit message format validation ---
 COMMIT_MSG=$(git log -1 --pretty=%s)
 if echo "$COMMIT_MSG" | grep -qE '^\[.+\]|^(feat|fix|docs|refactor|style|test|chore)(\(.+\))?:'; then
-    echo "DEPLOY: Commit format OK — $COMMIT_MSG"
+    echo "DEPLOY: Commit format OK, $COMMIT_MSG"
 else
     echo "DEPLOY: Commit message doesn't follow [Project] or conventional format: $COMMIT_MSG"
 fi

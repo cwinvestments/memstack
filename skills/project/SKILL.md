@@ -5,14 +5,14 @@ version: 1.0.0
 ---
 
 
-# 💾 Project — Saving Project State...
+# 💾 Project: Saving Project State...
 *Save and restore project state between CC sessions for seamless handoffs.*
 
 ## Activation
 
 When this skill activates, output:
 
-`💾 Project — Saving project state...`
+`💾 Project: Saving project state...`
 
 Then execute the protocol below.
 
@@ -70,10 +70,10 @@ Then execute the protocol below.
 
 ## Example Usage
 
-**User:** "context is running low — save project"
+**User:** "context is running low: save project"
 
 ```
-💾 Project — Saving project state...
+💾 Project: Saving project state...
 
 Saved: memory/projects/adminstack-2026-02-18.md
 
@@ -93,6 +93,6 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Session state capture and handoff generation. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, activation message, template integration. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-- **Lv.3** — Advanced: SQLite-backed project context, combined restore from DB + sessions + plan. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
+- **Lv.1**: Base: Session state capture and handoff generation. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, activation message, template integration. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3**: Advanced: SQLite-backed project context, combined restore from DB + sessions + plan. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)

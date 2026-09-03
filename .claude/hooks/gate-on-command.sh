@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# MemStack — Hook command gate dispatcher
+# MemStack: Hook command gate dispatcher
 #
 # Claude Code delivers hook input as a single JSON document on the hook
-# process's STDIN. There is no CLAUDE_TOOL_INPUT environment variable — the
+# process's STDIN. There is no CLAUDE_TOOL_INPUT environment variable: the
 # registrations this script replaces gated on one, so they expanded to the
 # empty string and never ran a single time. The payload's shape is:
 #
@@ -15,8 +15,8 @@
 # object, so for Bash the command text is tool_input.command.
 #
 # This script reads that payload, extracts tool_input.command, and runs the
-# target script only when the command contains PATTERN as a literal substring
-# — the semantics the previous grep-based registration intended.
+# target script only when the command contains PATTERN as a literal substring,
+# the semantics the previous grep-based registration intended.
 #
 # Usage:
 #   gate-on-command.sh [--critical] PATTERN SCRIPT
@@ -29,7 +29,7 @@
 #               skipping silently, because a silent no-op is the exact defect
 #               this script exists to repair
 #
-# Exit codes: on a match, the target script's own exit code, unchanged — 2
+# Exit codes: on a match, the target script's own exit code, unchanged: 2
 # blocks the tool call. Everything else exits 0, so a gate that cannot make a
 # decision fails open and never blocks work on a parsing problem.
 #

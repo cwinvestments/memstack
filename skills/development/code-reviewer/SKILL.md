@@ -2,17 +2,17 @@
 name: memstack-development-code-reviewer
 description: "Use this skill when the user says 'review code', 'code review', 'check my code', 'audit this', 'review PR', 'review changes', 'what\'s wrong with this', or is requesting a structured review of code quality, security, performance, or maintainability. Do NOT use for refactoring plans or test generation."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔍 Code Reviewer — Reviewing code for issues and improvements...
-*Systematic code review across security, performance, maintainability, error handling, testing, and accessibility — with severity-ranked findings and specific fixes.*
+# 🔍 Code Reviewer: Reviewing code for issues and improvements...
+*Systematic code review across security, performance, maintainability, error handling, testing, and accessibility, with severity-ranked findings and specific fixes.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔍 Code Reviewer — Scanning for issues...`
+`🔍 Code Reviewer: Scanning for issues...`
 
 Then execute the protocol below.
 
@@ -48,7 +48,7 @@ Then execute the protocol below.
 
 ### Step 1: Security Review
 
-Scan for security vulnerabilities — this category takes priority.
+Scan for security vulnerabilities: this category takes priority.
 
 **Authentication gaps:**
 
@@ -145,7 +145,7 @@ grep -rn "export " --include="*.ts" --include="*.tsx" . | grep -v node_modules |
 
 Flag these patterns:
 - Functions/components that are never imported
-- Commented-out code blocks (delete it — git has history)
+- Commented-out code blocks (delete it: git has history)
 - Unused variables, imports, or parameters
 - Feature flags for features that shipped months ago
 
@@ -156,7 +156,7 @@ Flag these patterns:
 - Same error handling try/catch in every handler (extract to wrapper)
 
 **Naming clarity:**
-- Single-letter variables outside of loops (`d`, `x`, `t` — what are these?)
+- Single-letter variables outside of loops (`d`, `x`, `t`: what are these?)
 - Boolean variables without `is`/`has`/`should` prefix (`active` vs `isActive`)
 - Functions that don't describe their action (`process()`, `handle()`, `doStuff()`)
 - Inconsistent naming between related files (camelCase in one, snake_case in another)
@@ -184,7 +184,7 @@ Flag these patterns:
 - Fire-and-forget promises (no `await`, no `.catch()`, no `void`)
 
 **Error quality:**
-- Generic `catch (e) { throw e }` (adds nothing — let it propagate or add context)
+- Generic `catch (e) { throw e }` (adds nothing, let it propagate or add context)
 - Swallowed errors: `catch (e) {}` (at minimum, log them)
 - Stack traces or internal details exposed to users in API responses
 - Missing error boundaries in React component trees
@@ -294,16 +294,16 @@ file: app/api/organizations/[orgId]/route.ts
 After reviewing all files, output a summary:
 
 ```
-🔍 Code Review — Complete
+🔍 Code Review: Complete
 
 Files reviewed: [count]
 Issues found: [total]
 
 By severity:
-  🔴 Critical: [count] — fix before merge
-  🟠 High:     [count] — fix this sprint
-  🟡 Medium:   [count] — fix when touching the file
-  🔵 Low:      [count] — consider for future
+  🔴 Critical: [count], fix before merge
+  🟠 High:     [count], fix this sprint
+  🟡 Medium:   [count], fix when touching the file
+  🔵 Low:      [count]: consider for future
 
 By category:
   Security:        [count] issues
@@ -325,4 +325,4 @@ Estimated fix effort:
 
 ## Level History
 
-- **Lv.1** — Base: Six-category systematic review (security, performance, maintainability, error handling, testing, accessibility), severity-ranked findings, per-file reports with specific code fixes, summary with prioritized action items. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Six-category systematic review (security, performance, maintainability, error handling, testing, accessibility), severity-ranked findings, per-file reports with specific code fixes, summary with prioritized action items. (Origin: MemStack Pro v3.2, Mar 2026)

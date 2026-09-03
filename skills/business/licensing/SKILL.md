@@ -2,17 +2,17 @@
 name: memstack-business-licensing
 description: "Use this skill when the user says 'licensing', 'license audit', 'can I use this commercially', 'OSS license check', 'license compatibility', 'GPL', 'MIT', 'AGPL', 'copyleft'. Scans the repository for every dependency and asset license, then produces a per-package verdict table: ready for commercial use, citation/attribution required, more information needed, or commercial use not allowed. Do NOT use for vulnerability scanning (use dependency-audit) or contract drafting (use contract-template)."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Licensing — Commercial-use license audit from the repo...
+# Licensing: Commercial-use license audit from the repo...
 *Scans a repository for every license that touches the product (deps, vendored code, fonts, assets), then produces a per-package verdict table marking each as Ready, Citation Required, Needs Info, or Not Allowed for commercial use.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Licensing — Commercial-use license audit from the repo...`
+`Licensing, Commercial-use license audit from the repo...`
 
 Then execute the protocol below.
 
@@ -24,8 +24,8 @@ Then execute the protocol below.
 | User asks "can I use this commercially?" or "is this safe to ship?" | ACTIVE |
 | User mentions GPL, AGPL, LGPL, MPL, MIT, BSD, Apache, copyleft | ACTIVE |
 | User is preparing to ship, sell, or relicense a product | ACTIVE |
-| User wants security vulnerability scanning | DORMANT — use dependency-audit |
-| User wants a service contract or NDA | DORMANT — use contract-template |
+| User wants security vulnerability scanning | DORMANT: use dependency-audit |
+| User wants a service contract or NDA | DORMANT: use contract-template |
 
 ## Common Mistakes
 
@@ -38,13 +38,13 @@ Then execute the protocol below.
 | "License from package.json metadata is authoritative" | The actual `LICENSE` file in upstream source is authoritative. Metadata is often wrong, missing, or outdated. |
 | "BSL / SSPL / Elastic / Commons Clause are open source" | They are not OSI-approved and usually restrict commercial hosting or competition. Read the actual terms. |
 
-**Disclaimer:** Produces a license inventory and risk assessment, not legal advice. License interpretation — especially copyleft scope, "linking", and SaaS triggers — is contested. Engage IP counsel before shipping high-stakes products.
+**Disclaimer:** Produces a license inventory and risk assessment, not legal advice. License interpretation (especially copyleft scope, "linking", and SaaS triggers) is contested. Engage IP counsel before shipping high-stakes products.
 
 ## Protocol
 
 ### Step 1: Confirm the distribution model
 
-Just one question — the verdict logic depends on it:
+Just one question, the verdict logic depends on it:
 
 > How is the product distributed?
 > - **A. SaaS / hosted** (users access over the network, no binary handed out)
@@ -56,7 +56,7 @@ Default to A if the repo contains web framework code (Next.js, FastAPI, Rails, e
 
 ### Step 2: Scan the repo for every license source
 
-Walk every manifest, lockfile, vendored directory, and asset folder. Never trust a single source — cross-check.
+Walk every manifest, lockfile, vendored directory, and asset folder. Never trust a single source: cross-check.
 
 | Stack | Manifest | Discovery command |
 |-------|----------|-------------------|
@@ -69,8 +69,8 @@ Walk every manifest, lockfile, vendored directory, and asset folder. Never trust
 | PHP | `composer.json`, `composer.lock` | `composer licenses --format=json` |
 | .NET | `*.csproj`, `packages.lock.json` | `dotnet list package --include-transitive` + `nuget-license` |
 | Container base images | `Dockerfile` | `syft <image> -o spdx-json` then read package licenses |
-| Vendored / submodules | `vendor/`, `third_party/`, `.gitmodules` | walk directories — look for `LICENSE`, `LICENSE.md`, `COPYING`, `NOTICE` |
-| Fonts / icons / media | `assets/`, `public/`, `static/` | check each asset's source license — **commonly missed** |
+| Vendored / submodules | `vendor/`, `third_party/`, `.gitmodules` | walk directories: look for `LICENSE`, `LICENSE.md`, `COPYING`, `NOTICE` |
+| Fonts / icons / media | `assets/`, `public/`, `static/` | check each asset's source license: **commonly missed** |
 | Snippets and copy-pasted code | comments, headers | `grep -rEin "Copyright|SPDX-License-Identifier"` |
 
 For everything found, capture:
@@ -100,23 +100,23 @@ Watch for **license changes between versions**:
 Pin to the last compliant version or migrate.
 
 Also check for:
-- **Dual licensing** ("MIT OR Apache-2.0") — pick the option you'll comply with and record the choice
-- **Commons Clause** layered on top of an OSI license — restricts "selling"
-- **Custom / vendor licenses** — read the actual terms verbatim
+- **Dual licensing** ("MIT OR Apache-2.0"), pick the option you'll comply with and record the choice
+- **Commons Clause** layered on top of an OSI license: restricts "selling"
+- **Custom / vendor licenses**: read the actual terms verbatim
 
 ### Step 4: Classify each license
 
 | Class | Examples | Commercial use allowed? | Reach |
 |-------|----------|------------------------|-------|
-| **Public domain** | CC0, Unlicense, WTFPL, 0BSD | Yes — no obligations | None |
-| **Permissive** | MIT, BSD-2/3, ISC, Apache-2.0, Zlib | Yes — preserve notice | None |
+| **Public domain** | CC0, Unlicense, WTFPL, 0BSD | Yes: no obligations | None |
+| **Permissive** | MIT, BSD-2/3, ISC, Apache-2.0, Zlib | Yes: preserve notice | None |
 | **Weak copyleft** | LGPL-2.1, LGPL-3.0, MPL-2.0, EPL-2.0 | Yes with obligations | File-level (MPL) or dynamic-linking carve-out (LGPL) |
-| **Strong copyleft** | GPL-2.0, GPL-3.0 | Yes — but derivative works become GPL on distribution | Whole derivative work |
-| **Network copyleft** | AGPL-3.0 | Yes — but SaaS triggers source disclosure | Whole derivative work + network use |
-| **Source-available (non-OSI)** | BSL, SSPL, Elastic v2, Commons Clause, RSAL, FSL | **Restricted** — usually no competing hosted service | Per terms |
+| **Strong copyleft** | GPL-2.0, GPL-3.0 | Yes, but derivative works become GPL on distribution | Whole derivative work |
+| **Network copyleft** | AGPL-3.0 | Yes, but SaaS triggers source disclosure | Whole derivative work + network use |
+| **Source-available (non-OSI)** | BSL, SSPL, Elastic v2, Commons Clause, RSAL, FSL | **Restricted**: usually no competing hosted service | Per terms |
 | **Creative Commons** | CC-BY, CC-BY-SA, CC-BY-NC, CC-BY-ND | NC = no commercial; SA = share-alike; ND = no derivatives | Per variant |
 | **Proprietary / commercial EULA** | Vendor SDKs, paid libraries | Per contract | Per contract |
-| **Unknown / no license** | No LICENSE file | **No — all rights reserved by default** | N/A |
+| **Unknown / no license** | No LICENSE file | **No, all rights reserved by default** | N/A |
 
 ### Step 5: Apply the verdict per package
 
@@ -164,7 +164,7 @@ This is the primary deliverable. One row per dependency, sorted by verdict sever
 | 📝 fastify | 4.26.0 | MIT | direct | 📝 Citation required | Add to THIRD_PARTY_LICENSES.md |
 | 📝 lodash | 4.17.21 | MIT | transitive | 📝 Citation required | Add to THIRD_PARTY_LICENSES.md |
 | 📝 protobufjs | 7.2.5 | BSD-3-Clause | transitive | 📝 Citation required | Add to THIRD_PARTY_LICENSES.md |
-| 📝 fonts/inter | — | OFL-1.1 | asset | 📝 Citation required | Include OFL.txt in assets/fonts/ |
+| 📝 fonts/inter | none | OFL-1.1 | asset | 📝 Citation required | Include OFL.txt in assets/fonts/ |
 | ✅ classnames | 2.5.1 | MIT | transitive | ✅ Ready | (already in attribution bundle) |
 | ✅ public-domain-pkg | 1.0.0 | CC0-1.0 | direct | ✅ Ready | None |
 ```
@@ -196,7 +196,7 @@ For Apache-2.0 deps, also preserve any upstream `NOTICE` file content.
 ### Step 8: Produce the report
 
 ```markdown
-## License Audit — [Project Name]
+## License Audit: [Project Name]
 
 **Date:** [YYYY-MM-DD]
 **Distribution model:** [A. SaaS / B. Binary / C. Library / D. Internal]
@@ -214,7 +214,7 @@ For Apache-2.0 deps, also preserve any upstream `NOTICE` file content.
 ### Commercial-use verdict
 **[CLEAR TO SHIP / CLEAR WITH CITATION OBLIGATIONS / BLOCKED]**
 
-[2–3 sentences explaining the verdict and naming the specific blockers if any.]
+[2 to 3 sentences explaining the verdict and naming the specific blockers if any.]
 
 ### Full verdict table
 [Table from Step 6]
@@ -223,9 +223,9 @@ For Apache-2.0 deps, also preserve any upstream `NOTICE` file content.
 [Either inline THIRD_PARTY_LICENSES.md content, or a list of packages that must appear in it]
 
 ### Remediation plan (priority order)
-1. **❌ [Blocker]** — [package] — [replace with X / remove feature Y / buy license / quarantine]
-2. **❓ [Unknown]** — [package] — [investigation step]
-3. **📝 [Attribution gap]** — [add to THIRD_PARTY_LICENSES.md]
+1. **❌ [Blocker]**: [package], [replace with X / remove feature Y / buy license / quarantine]
+2. **❓ [Unknown]**: [package]: [investigation step]
+3. **📝 [Attribution gap]**: [add to THIRD_PARTY_LICENSES.md]
 
 ### Recommended next steps
 1. Resolve every ❌ before shipping
@@ -243,7 +243,7 @@ Deliver the Step 8 report as markdown. Save under `docs/compliance/license-audit
 ## Completion
 
 ```
-Licensing — Audit complete!
+Licensing: Audit complete!
 
 Distribution model: [A / B / C / D]
 Dependencies analysed: [N direct + M transitive + K assets]
@@ -263,4 +263,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: distribution-model question, multi-language repo scan (Node/Python/Rust/Go/Java/Ruby/PHP/.NET/containers/vendored/assets), upstream LICENSE verification, version-change traps (Elastic/Mongo/Redis/Terraform/Sentry/HashiCorp), 9-class taxonomy, 4-verdict system (✅ Ready / 📝 Citation / ❓ Needs info / ❌ Not allowed), distribution-model verdict matrix, primary verdict table, attribution bundle generator, full report with summary counts and remediation plan. (Origin: MemStack Pro v3.6, Apr 2026)
+- **Lv.1**: Base: distribution-model question, multi-language repo scan (Node/Python/Rust/Go/Java/Ruby/PHP/.NET/containers/vendored/assets), upstream LICENSE verification, version-change traps (Elastic/Mongo/Redis/Terraform/Sentry/HashiCorp), 9-class taxonomy, 4-verdict system (✅ Ready / 📝 Citation / ❓ Needs info / ❌ Not allowed), distribution-model verdict matrix, primary verdict table, attribution bundle generator, full report with summary counts and remediation plan. (Origin: MemStack Pro v3.6, Apr 2026)

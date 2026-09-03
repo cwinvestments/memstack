@@ -2,26 +2,26 @@
 name: memstack-development-performance-audit
 description: "Use this skill when the user says 'performance audit', 'why is it slow', 'optimize performance', 'page speed', 'Core Web Vitals', 'lighthouse', 'load time', or needs to diagnose and fix frontend or backend performance issues. Do NOT use for code reviews or security audits."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🚀 Performance Audit — Full-Stack Performance Scanner
+# 🚀 Performance Audit: Full-Stack Performance Scanner
 *Identify and prioritize performance bottlenecks across frontend, backend, and network layers with measured impact and fix priority.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🚀 Performance Audit — Scanning for performance bottlenecks...`
+`🚀 Performance Audit: Scanning for performance bottlenecks...`
 
 | Context | Status |
 |---------|--------|
 | **User says "performance audit", "optimize", "slow app"** | ACTIVE |
 | **User mentions bundle size, N+1 queries, or Core Web Vitals** | ACTIVE |
 | **User wants to find memory leaks or unnecessary re-renders** | ACTIVE |
-| **User wants database schema optimization specifically** | DORMANT — see database-architect |
-| **User wants API design review (not performance)** | DORMANT — see api-designer |
-| **User wants general code quality review** | DORMANT — see code-reviewer |
+| **User wants database schema optimization specifically** | DORMANT: see database-architect |
+| **User wants API design review (not performance)** | DORMANT: see api-designer |
+| **User wants general code quality review** | DORMANT: see code-reviewer |
 
 ## Protocol
 
@@ -34,7 +34,7 @@ Ask the user for:
 - **Metrics**: Any existing performance data? (Lighthouse scores, APM dashboards)
 - **Priority**: User-facing speed or server-side efficiency?
 
-### Step 2: Frontend — Bundle Analysis
+### Step 2: Frontend: Bundle Analysis
 
 **Check bundle size and composition:**
 
@@ -92,14 +92,14 @@ npx vite-bundle-visualizer
     Fix: Add "sideEffects": false to package.json
 ```
 
-### Step 3: Frontend — Core Web Vitals
+### Step 3: Frontend: Core Web Vitals
 
 Audit for the three Core Web Vitals:
 
 ```
 ── CORE WEB VITALS AUDIT ──────────────────
 
-LCP (Largest Contentful Paint) — Target: < 2.5s
+LCP (Largest Contentful Paint), Target: < 2.5s
   Current: [measured or estimated]
   Issues found:
     [ ] Hero image not optimized (missing width/height, no lazy loading)
@@ -108,7 +108,7 @@ LCP (Largest Contentful Paint) — Target: < 2.5s
     [ ] Server response time > 600ms (TTFB too high)
     [ ] Third-party scripts blocking main thread
 
-FID / INP (Interaction to Next Paint) — Target: < 200ms
+FID / INP (Interaction to Next Paint), Target: < 200ms
   Current: [measured or estimated]
   Issues found:
     [ ] Long tasks on main thread (> 50ms blocks)
@@ -116,7 +116,7 @@ FID / INP (Interaction to Next Paint) — Target: < 200ms
     [ ] Synchronous XHR calls blocking interaction
     [ ] Event handlers doing expensive computation
 
-CLS (Cumulative Layout Shift) — Target: < 0.1
+CLS (Cumulative Layout Shift), Target: < 0.1
   Current: [measured or estimated]
   Issues found:
     [ ] Images without explicit dimensions (width/height)
@@ -142,7 +142,7 @@ import Image from 'next/image';
 <Image src="/hero.jpg" width={1200} height={600} priority alt="Hero" />
 ```
 
-### Step 4: Frontend — React Performance
+### Step 4: Frontend: React Performance
 
 **Unnecessary re-render detection:**
 
@@ -183,7 +183,7 @@ Rendering:
   [ ] Debounce/throttle scroll and resize handlers
 ```
 
-### Step 5: Backend — Database Performance
+### Step 5: Backend: Database Performance
 
 **N+1 query detection:**
 
@@ -242,7 +242,7 @@ ORDER BY seq_scan DESC;
 | Missing connection pooling | New connection per query | Connection overhead | Use pgBouncer or built-in pool |
 | Unoptimized JOINs | Joining on non-indexed columns | Slow JOINs | Index JOIN columns |
 
-### Step 6: Backend — API Performance
+### Step 6: Backend: API Performance
 
 **Over-fetching and under-fetching:**
 
@@ -292,7 +292,7 @@ Endpoint             Cacheable?   TTL          Strategy
 GET /api/products    Yes          5 min        CDN + browser Cache-Control
 GET /api/user/:id    Conditional  1 min        ETag / If-None-Match
 GET /api/config      Yes          1 hour       CDN, stale-while-revalidate
-POST /api/orders     No           —            Never cache mutations
+POST /api/orders     No,                       Never cache mutations
 GET /api/search      Maybe        30 sec       Vary by query params
 
 Missing headers:
@@ -301,7 +301,7 @@ Missing headers:
   [ ] No compression (gzip/brotli) on responses
 ```
 
-### Step 7: Backend — Memory & Resource Leaks
+### Step 7: Backend: Memory & Resource Leaks
 
 **Common memory leak patterns:**
 
@@ -445,7 +445,7 @@ Priority  Issue                          Impact    Effort   Category
 ```
 
 **Priority scoring:**
-- **P1 (Do now)**: High impact + Low-Medium effort — biggest wins
+- **P1 (Do now)**: High impact + Low-Medium effort: biggest wins
 - **P2 (Plan soon)**: Medium impact or High effort for high impact
 - **P3 (Backlog)**: Low impact or very high effort
 
@@ -482,4 +482,4 @@ Priority  Issue                          Impact    Effort   Category
 
 ## Level History
 
-- **Lv.1** — Base: Full-stack performance scanner covering frontend (bundle analysis, Core Web Vitals, React re-renders), backend (N+1 queries, missing indexes, API over-fetching, memory leaks), and network (compression, CDN, caching). Performance scorecard with priority-ranked fix list and impact estimates. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1**: Base: Full-stack performance scanner covering frontend (bundle analysis, Core Web Vitals, React re-renders), backend (N+1 queries, missing indexes, API over-fetching, memory leaks), and network (compression, CDN, caching). Performance scorecard with priority-ranked fix list and impact estimates. (Origin: MemStack v3.2, Mar 2026)

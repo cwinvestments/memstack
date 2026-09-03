@@ -2,17 +2,17 @@
 name: memstack-seo-meta-tag-optimizer
 description: "Use this skill when the user says 'meta tags', 'title tag', 'meta description', 'optimize meta', 'SERP preview', or needs to write or optimize HTML meta tags for better search visibility and click-through rates. Do NOT use for schema markup or full site audits."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🏷️ Meta Tag Optimizer — Scanning and optimizing page meta tags...
-*Scans all pages for existing meta tags, identifies issues, and generates optimized replacements — titles, descriptions, Open Graph, canonical URLs, and robots directives.*
+# 🏷️ Meta Tag Optimizer: Scanning and optimizing page meta tags...
+*Scans all pages for existing meta tags, identifies issues, and generates optimized replacements: titles, descriptions, Open Graph, canonical URLs, and robots directives.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🏷️ Meta Tag Optimizer — Scanning pages for meta tag issues...`
+`🏷️ Meta Tag Optimizer, Scanning pages for meta tag issues...`
 
 Then execute the protocol below.
 
@@ -21,8 +21,8 @@ Then execute the protocol below.
 | User says "optimize meta tags" or "fix meta tags" | ACTIVE |
 | User says "title tags" or "meta description" or "og tags" | ACTIVE |
 | Improving SEO for specific pages | ACTIVE |
-| Running a full site audit (broader scope) | DORMANT — use site-audit |
-| Adding structured data / JSON-LD | DORMANT — use schema-markup |
+| Running a full site audit (broader scope) | DORMANT: use site-audit |
+| Adding structured data / JSON-LD | DORMANT: use schema-markup |
 
 ### Anti-patterns
 
@@ -131,8 +131,8 @@ grep -rn "openGraph\|og:" --include="*.tsx" --include="*.ts" --include="*.html" 
 
 | Tag | Required | Specification |
 |-----|----------|--------------|
-| `og:title` | Yes | Can differ from `<title>` — optimize for social, not search |
-| `og:description` | Yes | Can differ from meta description — more casual tone ok |
+| `og:title` | Yes | Can differ from `<title>`, optimize for social, not search |
+| `og:description` | Yes | Can differ from meta description: more casual tone ok |
 | `og:image` | Yes | 1200x630px, < 5MB, shows product/brand/visual |
 | `og:url` | Yes | Canonical URL of the page |
 | `og:type` | Yes | `website` for homepage, `article` for blog posts |
@@ -193,7 +193,7 @@ grep -rn "robots\|noindex\|nofollow" --include="*.tsx" --include="*.ts" --includ
 | User profiles (if private) | `noindex, nofollow` | Privacy concern |
 
 **Pages that should NOT have `noindex`:**
-- ❌ Homepage, product pages, blog posts, pricing — these should all be indexed
+- ❌ Homepage, product pages, blog posts, pricing, these should all be indexed
 - Check: no accidental `noindex` on important pages (common after staging → production migration)
 
 ### Step 7: Generate Optimized Replacements
@@ -251,17 +251,17 @@ export const metadata: Metadata = {
 ### Step 8: Output Tag Report
 
 ```
-🏷️ Meta Tag Optimizer — Complete
+🏷️ Meta Tag Optimizer: Complete
 
 Pages scanned: [count]
 Issues found: [count]
 
 Summary:
-  Title tags:     [X/count] optimized — [count] need fixing
-  Descriptions:   [X/count] optimized — [count] need fixing
-  OG tags:        [X/count] complete — [count] missing
-  Canonical URLs: [X/count] correct — [count] missing or wrong
-  Robots meta:    [X/count] correct — [count] need review
+  Title tags:     [X/count] optimized, [count] need fixing
+  Descriptions:   [X/count] optimized, [count] need fixing
+  OG tags:        [X/count] complete, [count] missing
+  Canonical URLs: [X/count] correct, [count] missing or wrong
+  Robots meta:    [X/count] correct: [count] need review
 
 Page-by-page comparison:
 | Page | Title (current → recommended) | Description | OG | Canonical |
@@ -281,4 +281,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Page scanning, title tag audit (50-60 chars, keyword placement), meta description audit (150-155 chars, CTA), Open Graph tags (og:title/description/image), canonical URL verification, robots meta directives, optimized replacement generation, page-by-page comparison output. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Page scanning, title tag audit (50-60 chars, keyword placement), meta description audit (150-155 chars, CTA), Open Graph tags (og:title/description/image), canonical URL verification, robots meta directives, optimized replacement generation, page-by-page comparison output. (Origin: MemStack Pro v3.2, Mar 2026)

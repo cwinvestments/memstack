@@ -1,4 +1,4 @@
-# Current Session — {project_name}
+# Current Session: {project_name}
 
 ## Session Status
 - **Started**: {timestamp}

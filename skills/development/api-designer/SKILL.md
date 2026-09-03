@@ -2,17 +2,17 @@
 name: memstack-development-api-designer
 description: "Use this skill when the user says 'design API', 'API endpoints', 'REST API', 'API designer', 'route structure', 'API architecture', or is designing RESTful API routes, request/response schemas, and endpoint organization. Do NOT use for API security audits or database design."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔌 API Designer — Designing routes, validation, and handler patterns...
+# 🔌 API Designer: Designing routes, validation, and handler patterns...
 *Produces production-ready Next.js App Router API routes with auth guards, Zod validation, typed responses, and consistent error handling.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔌 API Designer — Designing API routes and handlers...`
+`🔌 API Designer, Designing API routes and handlers...`
 
 Then execute the protocol below.
 
@@ -105,7 +105,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { orgId: string } }
 ) {
-  // Step 1: Authenticate — who is this user?
+  // Step 1: Authenticate: who is this user?
   const auth = await getAuthContext(req);
   if (!auth) {
     return NextResponse.json(
@@ -114,7 +114,7 @@ export async function GET(
     );
   }
 
-  // Step 2: Authorize — can they access this org?
+  // Step 2: Authorize, can they access this org?
   const access = await verifyOrgAccess(auth.userId, params.orgId);
   if (!access) {
     return NextResponse.json(
@@ -208,11 +208,11 @@ export async function GET(req: NextRequest) {
 All responses follow a strict structure:
 
 ```typescript
-// Success responses — always wrap in { data }
+// Success responses: always wrap in { data }
 return NextResponse.json({ data: result });
 return NextResponse.json({ data: results, meta: { total, page, limit } });
 
-// Error responses — always wrap in { error }
+// Error responses: always wrap in { error }
 return NextResponse.json({ error: 'Not found' }, { status: 404 });
 return NextResponse.json(
   { error: 'Validation failed', details: zodError.flatten() },
@@ -260,13 +260,13 @@ Use the correct status code for each situation:
 | `400` | Bad Request | Malformed request (invalid JSON, wrong Content-Type) |
 | `401` | Unauthorized | Not authenticated (no token, expired session) |
 | `403` | Forbidden | Authenticated but not authorized (wrong org, wrong role) |
-| `404` | Not Found | Resource doesn't exist (or user can't see it — use 404 to avoid leaking existence) |
+| `404` | Not Found | Resource doesn't exist (or user can't see it, use 404 to avoid leaking existence) |
 | `409` | Conflict | Duplicate resource (unique constraint violation) |
 | `422` | Unprocessable Entity | Valid JSON but failed validation (Zod errors) |
 | `429` | Too Many Requests | Rate limit exceeded |
 | `500` | Internal Server Error | Unexpected server error (log details, return safe message) |
 
-**Key distinction — 401 vs 403 vs 404:**
+**Key distinction, 401 vs 403 vs 404:**
 - `401`: "I don't know who you are" → redirect to login
 - `403`: "I know who you are, but you can't do this" → show permission error
 - `404`: "This doesn't exist (or you can't know it exists)" → use for privacy-preserving access denial
@@ -361,17 +361,17 @@ export async function POST(req: NextRequest) {
       console.log(`Unhandled event type: ${event.type}`);
   }
 
-  // Always return 200 quickly — process async if needed
+  // Always return 200 quickly, process async if needed
   return NextResponse.json({ received: true });
 }
 ```
 
 **Webhook rules:**
 - Always verify signatures before processing
-- Return `200` quickly — do heavy processing async
-- Use `req.text()` not `req.json()` — signature verification needs raw body
-- Log unhandled event types (don't error on them — providers add new events)
-- Implement idempotency — webhooks can be sent multiple times
+- Return `200` quickly: do heavy processing async
+- Use `req.text()` not `req.json()`, signature verification needs raw body
+- Log unhandled event types (don't error on them: providers add new events)
+- Implement idempotency, webhooks can be sent multiple times
 
 ### Step 8: Generate TypeScript Interfaces
 
@@ -517,7 +517,7 @@ export async function POST(
 **Output summary:**
 
 ```
-🔌 API Designer — Routes Complete
+🔌 API Designer: Routes Complete
 
 Feature: [name]
 Routes: [count] endpoints across [count] resource groups
@@ -544,4 +544,4 @@ Rate-limited routes: [count]
 
 ## Level History
 
-- **Lv.1** — Base: Route structure design, auth guard chain (getAuthContext + verifyOrgAccess), Zod validation, consistent response format, HTTP status codes, rate limiting, webhook signature verification, TypeScript interfaces, full CRUD handler template. Based on AdminStack API patterns. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Route structure design, auth guard chain (getAuthContext + verifyOrgAccess), Zod validation, consistent response format, HTTP status codes, rate limiting, webhook signature verification, TypeScript interfaces, full CRUD handler template. Based on AdminStack API patterns. (Origin: MemStack Pro v3.2, Mar 2026)

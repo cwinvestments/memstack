@@ -2,17 +2,17 @@
 name: memstack-product-feedback-analyzer
 description: "Use this skill when the user says 'analyze feedback', 'feedback analysis', 'what are customers asking for', or has support tickets, reviews, or survey data to categorize, score, and prioritize into actionable reports. Do NOT use for competitor analysis or market research."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Feedback Analyzer — Analyzing customer feedback...
+# Feedback Analyzer: Analyzing customer feedback...
 *Categorizes, scores, and prioritizes customer feedback from support tickets, reviews, and surveys into actionable reports with feature request rankings, sentiment trends, and action items.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Feedback Analyzer — Analyzing customer feedback...`
+`Feedback Analyzer: Analyzing customer feedback...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "analyze feedback", "feedback analysis" | ACTIVE |
 | User says "what are customers asking for" | ACTIVE |
 | User has support tickets, reviews, or survey data to analyze | ACTIVE |
-| User wants competitor pricing or market analysis | DORMANT — use Competitor Analysis |
-| User wants to write a PRD from scratch | DORMANT — use PRD Writer |
+| User wants competitor pricing or market analysis | DORMANT: use Competitor Analysis |
+| User wants to write a PRD from scratch | DORMANT: use PRD Writer |
 
 ## Common Mistakes
 
@@ -32,7 +32,7 @@ Then execute the protocol below.
 |---------|---------------|
 | "Build what the loudest customer asks for" | Loudest ≠ most valuable. One enterprise client's niche request shouldn't override 500 users' common need. |
 | "Count votes to prioritize" | "Most requested" ignores impact and effort. A rarely requested feature might retain your best customers. |
-| "Ignore negative reviews" | 1-star reviews reveal real pain. Positive reviews confirm what works — negatives reveal what to fix. |
+| "Ignore negative reviews" | 1-star reviews reveal real pain. Positive reviews confirm what works, negatives reveal what to fix. |
 | "Read feedback literally" | Users describe symptoms, not root causes. "I need an export button" might mean "I can't get data out." |
 | "Analyze once, never again" | Feedback is a continuous signal. Batch-analyze monthly or quarterly to spot trends. |
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided feedback data, ask:
 
-> 1. **Source** — where is the feedback? (support tickets, app reviews, survey responses, social media, sales call notes)
-> 2. **Volume** — how much feedback? (helps determine analysis approach)
-> 3. **Time range** — what period does this cover?
-> 4. **Format** — text dump, CSV, spreadsheet, or screenshot?
-> 5. **Product context** — any recent launches, changes, or known issues?
+> 1. **Source**: where is the feedback? (support tickets, app reviews, survey responses, social media, sales call notes)
+> 2. **Volume**: how much feedback? (helps determine analysis approach)
+> 3. **Time range**: what period does this cover?
+> 4. **Format**: text dump, CSV, spreadsheet, or screenshot?
+> 5. **Product context**: any recent launches, changes, or known issues?
 
 **Supported input formats:**
 - Raw text (pasted feedback items)
@@ -108,7 +108,7 @@ Rate each feedback item and calculate aggregate sentiment:
 **Distribution:**
 - Very positive (★★): [X]% ([count])
 - Positive (★): [X]% ([count])
-- Neutral (—): [X]% ([count])
+- Neutral (=): [X]% ([count])
 - Negative (✗): [X]% ([count])
 - Very negative (✗✗): [X]% ([count])
 
@@ -128,7 +128,7 @@ Group related feature requests into themes:
 ```markdown
 ## Feature Request Themes
 
-### Theme 1: [Theme Name] — [X mentions]
+### Theme 1: [Theme Name], [X mentions]
 **User need:** [What users actually need, not what they asked for]
 
 | Request | Mentions | Example Quotes |
@@ -139,17 +139,17 @@ Group related feature requests into themes:
 
 **Root need:** [The underlying problem these requests share]
 **Potential solutions:**
-1. [Solution option A — simplest]
-2. [Solution option B — most complete]
+1. [Solution option A: simplest]
+2. [Solution option B: most complete]
 
 ---
 
-### Theme 2: [Theme Name] — [X mentions]
+### Theme 2: [Theme Name]: [X mentions]
 [Same format]
 ```
 
 **Theme extraction rules:**
-- Merge duplicates — "PDF export", "download as PDF", "save to PDF" = one request
+- Merge duplicates: "PDF export", "download as PDF", "save to PDF" = one request
 - Look for the root need behind surface requests
 - Group by problem, not by proposed solution
 - Note the user segment making each request (free vs. paid, new vs. veteran)
@@ -181,10 +181,10 @@ Score = (Reach × Impact × Confidence) ÷ Effort
 
 | Priority | RICE Range | Action |
 |----------|-----------|--------|
-| P0 — Do now | Top 20% of scores | Schedule for next sprint/quarter |
-| P1 — Plan | Middle 40% | Add to roadmap for next quarter |
-| P2 — Consider | Lower 30% | Keep in backlog, monitor volume |
-| P3 — Decline | Bottom 10% | Close with explanation, revisit if volume grows |
+| P0, Do now | Top 20% of scores | Schedule for next sprint/quarter |
+| P1, Plan | Middle 40% | Add to roadmap for next quarter |
+| P2, Consider | Lower 30% | Keep in backlog, monitor volume |
+| P3, Decline | Bottom 10% | Close with explanation, revisit if volume grows |
 
 ### Step 6: Identify Churn Signals
 
@@ -228,20 +228,20 @@ Flag feedback that indicates churn risk:
 ### Process Improvements
 | # | Action | Owner | Source |
 |---|--------|-------|--------|
-| 5 | [Set up feedback tagging in support tool] | Support | — |
-| 6 | [Schedule monthly feedback review] | Product | — |
+| 5 | [Set up feedback tagging in support tool] | Support | none |
+| 6 | [Schedule monthly feedback review] | Product | none |
 
 ### Communicate Back to Users
 | # | Action | Channel |
 |---|--------|---------|
-| 7 | "We heard you — [feature] is shipping in [timeframe]" | Email / Changelog |
-| 8 | "Known issue: [bug] — fix incoming [date]" | Status page |
+| 7 | "We heard you, [feature] is shipping in [timeframe]" | Email / Changelog |
+| 8 | "Known issue: [bug], fix incoming [date]" | Status page |
 ```
 
 ## Output Format
 
 ```markdown
-# Feedback Analysis — [Product Name]
+# Feedback Analysis: [Product Name]
 
 **Period:** [Date range]
 **Sources:** [List of sources]
@@ -269,13 +269,13 @@ Flag feedback that indicates churn risk:
 [Any notable trends: increasing complaints in area X, praise for recent change Y]
 
 ## Appendix: Raw Data
-[Categorized feedback table — every item with ID, summary, category, sentiment]
+[Categorized feedback table: every item with ID, summary, category, sentiment]
 ```
 
 ## Completion
 
 ```
-Feedback Analyzer — Complete!
+Feedback Analyzer: Complete!
 
 Feedback items analyzed: [Count]
 Sources: [List]
@@ -295,4 +295,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 8-category feedback classification, sentiment scoring (-2 to +2) with aggregate dashboard, feature request theme extraction with root need analysis, RICE prioritization framework (reach, impact, confidence, effort), churn signal identification with severity levels, action item generation (immediate/quarterly/process/communication), trends and patterns identification. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 8-category feedback classification, sentiment scoring (-2 to +2) with aggregate dashboard, feature request theme extraction with root need analysis, RICE prioritization framework (reach, impact, confidence, effort), churn signal identification with severity levels, action item generation (immediate/quarterly/process/communication), trends and patterns identification. (Origin: MemStack Pro v3.2, Mar 2026)

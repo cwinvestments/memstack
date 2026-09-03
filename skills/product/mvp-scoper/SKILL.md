@@ -2,17 +2,17 @@
 name: memstack-product-mvp-scoper
 description: "Use this skill when the user says 'MVP', 'minimum viable product', 'scope the MVP', 'what should I build first', 'strip to core', or needs to define the smallest build that validates a product hypothesis. Do NOT use for full PRDs or roadmap planning."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# MVP Scoper — Scoping minimum viable product...
+# MVP Scoper: Scoping minimum viable product...
 *Defines the smallest buildable product that validates a core hypothesis using feature triage, effort/impact scoring, a 2-week sprint scope, and success criteria.*
 
 ## Activation
 
 When this skill activates, output:
 
-`MVP Scoper — Scoping minimum viable product...`
+`MVP Scoper: Scoping minimum viable product...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "MVP", "minimum viable product", "scope the MVP" | ACTIVE |
 | User says "what should I build first" or "strip to core" | ACTIVE |
 | User has an idea and wants to know the smallest thing to build | ACTIVE |
-| User wants a full product requirements document | DORMANT — use PRD Writer |
-| User wants a roadmap beyond MVP | DORMANT — use Roadmap Builder |
+| User wants a full product requirements document | DORMANT: use PRD Writer |
+| User wants a roadmap beyond MVP | DORMANT: use Roadmap Builder |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Idea** — what are you building? (one paragraph)
-> 2. **Target user** — who is the first user? (be specific — not "everyone")
-> 3. **Problem** — what painful problem does this solve?
-> 4. **Assumption** — what's the riskiest assumption? (the thing that must be true for this to work)
-> 5. **Existing alternatives** — how do people solve this today?
+> 1. **Idea**: what are you building? (one paragraph)
+> 2. **Target user**: who is the first user? (be specific: not "everyone")
+> 3. **Problem**: what painful problem does this solve?
+> 4. **Assumption**: what's the riskiest assumption? (the thing that must be true for this to work)
+> 5. **Existing alternatives**: how do people solve this today?
 
 **Hypothesis template:**
 
@@ -80,7 +80,7 @@ Brain-dump every feature the user imagines, without filtering:
 3. [Feature C]
 4. [Feature D]
 ...
-[List everything — the filtering comes next]
+[List everything: the filtering comes next]
 ```
 
 **Goal:** Get everything out of the user's head so nothing feels "lost." This makes the cutting process psychologically easier.
@@ -99,18 +99,18 @@ Rate each feature on two axes:
 **Score = Impact ÷ Effort** (higher is better)
 
 **Impact criteria (how much does this feature validate the hypothesis?):**
-- **5:** Directly tests the core hypothesis — users can't use the MVP without it
+- **5:** Directly tests the core hypothesis, users can't use the MVP without it
 - **4:** Strongly supports the core experience
 - **3:** Nice to have, improves experience but not essential to the test
 - **2:** Quality-of-life improvement, not related to core hypothesis
 - **1:** Cool idea, but doesn't help validate anything right now
 
 **Effort criteria (how long to build it?):**
-- **1:** Hours — trivial implementation
-- **2:** 1-2 days — straightforward
-- **3:** 3-5 days — moderate complexity
-- **4:** 1-2 weeks — significant work
-- **5:** 2+ weeks — major undertaking
+- **1:** Hours: trivial implementation
+- **2:** 1-2 days: straightforward
+- **3:** 3-5 days: moderate complexity
+- **4:** 1-2 weeks: significant work
+- **5:** 2+ weeks: major undertaking
 
 ### Step 4: Apply the MVP Cut
 
@@ -126,7 +126,7 @@ Rate each feature on two axes:
 After bucketing, verify the Core features fit in a 2-week sprint (10 working days):
 
 ```markdown
-## MVP Scope — 2-Week Build
+## MVP Scope: 2-Week Build
 
 | Feature | Effort (days) | Notes |
 |---------|-------------|-------|
@@ -194,7 +194,7 @@ Is the riskiest assumption about DEMAND (will people want this)?
 
 | Result | Action |
 |--------|--------|
-| Hit primary metric | Proceed to v1.1 — add Deferred features |
+| Hit primary metric | Proceed to v1.1: add Deferred features |
 | Mixed results | Run 2-3 user interviews to understand why. Iterate MVP. |
 | Failed kill criteria | Pivot: change target user, problem, or solution |
 ```
@@ -208,17 +208,17 @@ Assemble the final MVP specification:
 
 | Layer | Recommendation | Rationale |
 |-------|---------------|-----------|
-| Frontend | [Framework] | [Why — speed, familiarity, ecosystem] |
+| Frontend | [Framework] | [Why: speed, familiarity, ecosystem] |
 | Backend | [Framework/service] | [Why] |
 | Database | [DB] | [Why] |
-| Hosting | [Platform] | [Why — deployment speed, free tier] |
+| Hosting | [Platform] | [Why: deployment speed, free tier] |
 | Auth | [Solution] | [Why] |
 
 ### Build vs Buy decisions:
 - [Component]: Build / Buy / Skip for MVP
-- Auth: Use [Clerk/Supabase Auth/NextAuth] — don't build auth from scratch
-- Payments: Use [Stripe] — don't build payment processing
-- Email: Use [Resend/SendGrid] — don't build email infrastructure
+- Auth: Use [Clerk/Supabase Auth/NextAuth], don't build auth from scratch
+- Payments: Use [Stripe], don't build payment processing
+- Email: Use [Resend/SendGrid], don't build email infrastructure
 ```
 
 **MVP build rule:** Buy or use existing services for everything except your core differentiator. Only build what makes your product unique.
@@ -226,7 +226,7 @@ Assemble the final MVP specification:
 ## Output Format
 
 ```markdown
-# MVP Scope — [Product Name]
+# MVP Scope: [Product Name]
 
 ## Hypothesis
 [From Step 1]
@@ -265,7 +265,7 @@ Assemble the final MVP specification:
 ## Completion
 
 ```
-MVP Scoper — Complete!
+MVP Scoper: Complete!
 
 Hypothesis: [One-line summary]
 MVP type: [Type]
@@ -285,4 +285,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Hypothesis template with riskiest assumption, feature brain-dump + impact/effort scoring, 3-bucket feature triage (core/defer/cut), 2-week sprint fit test, 6 MVP types with decision tree, success criteria with kill criteria, tech stack recommendation with build/buy guidance. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Hypothesis template with riskiest assumption, feature brain-dump + impact/effort scoring, 3-bucket feature triage (core/defer/cut), 2-week sprint fit test, 6 MVP types with decision tree, success criteria with kill criteria, tech stack recommendation with build/buy guidance. (Origin: MemStack Pro v3.2, Mar 2026)

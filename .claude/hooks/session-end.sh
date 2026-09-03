@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# MemStack v3.2 — Session End Hook
+# MemStack v3.2: Session End Hook
 # Reports session completion to monitoring webhook
-# Always exit 0 — monitoring should never block work
+# Always exit 0, monitoring should never block work
 #
 # Triggered by: Stop hook event
 

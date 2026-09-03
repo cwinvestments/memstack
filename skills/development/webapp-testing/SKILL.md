@@ -4,7 +4,7 @@ description: "Use when the user says 'write browser tests', 'test this page', 'p
 version: 1.0.0
 ---
 
-# Webapp Testing — Writing browser tests...
+# Webapp Testing: Writing browser tests...
 *Produces Playwright end-to-end tests that verify real user flows in a browser.*
 
 ## Activation
@@ -14,7 +14,7 @@ version: 1.0.0
 | User says "write browser tests" or "playwright test" | ACTIVE |
 | User says "test this page" or "e2e test" | ACTIVE |
 | User says "test the UI" or "browser test" | ACTIVE |
-| User wants unit tests or API tests | NOT this skill — use standard test patterns |
+| User wants unit tests or API tests | NOT this skill: use standard test patterns |
 | User wants load testing | NOT this skill |
 
 ## Context Guard
@@ -91,25 +91,25 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Feature Name', () => {
   test('should [expected behavior] when [action]', async ({ page }) => {
-    // Arrange — navigate to the page
+    // Arrange, navigate to the page
     await page.goto('/path');
 
-    // Act — perform user actions
+    // Act, perform user actions
     await page.getByRole('button', { name: 'Submit' }).click();
 
-    // Assert — verify the result
+    // Assert, verify the result
     await expect(page.getByText('Success')).toBeVisible();
   });
 });
 ```
 
 **Test writing rules:**
-1. Use `getByRole`, `getByLabel`, `getByText` over CSS selectors — they survive refactors
-2. One assertion per test where practical — clear failure messages
+1. Use `getByRole`, `getByLabel`, `getByText` over CSS selectors: they survive refactors
+2. One assertion per test where practical: clear failure messages
 3. Name tests as user stories: "should show error when email is invalid"
 4. Use `test.describe` to group related flows
 5. Add `test.beforeEach` for shared navigation/auth setup
-6. Never hardcode waits — use `expect` with auto-waiting or `waitForSelector`
+6. Never hardcode waits, use `expect` with auto-waiting or `waitForSelector`
 
 ### Step 4: Handle authentication flows
 
@@ -213,4 +213,4 @@ Run with: npx playwright test
 
 ## Level History
 
-- **Lv.1** — Base: Playwright test generation with role-based selectors, auth flows, common patterns, CI-ready config. (Origin: MemStack v3.5, Apr 2026)
+- **Lv.1**: Base: Playwright test generation with role-based selectors, auth flows, common patterns, CI-ready config. (Origin: MemStack v3.5, Apr 2026)

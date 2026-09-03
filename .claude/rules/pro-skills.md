@@ -1,7 +1,7 @@
-# MemStack Pro Skills — On-Demand Catalog
+# MemStack Pro Skills: On-Demand Catalog
 
 When a task matches a skill below, read the full SKILL.md from the listed path before proceeding.
-Do NOT memorize skill content from this catalog — always read the file fresh.
+Do NOT memorize skill content from this catalog, always read the file fresh.
 
 ## Security
 | Skill | Triggers | Path |

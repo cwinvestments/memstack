@@ -2,17 +2,17 @@
 name: memstack-marketing-competitor-analysis
 description: "Use this skill when the user says 'competitor analysis', 'competitive analysis', 'compare products', 'market positioning', 'competitive gaps', or needs pricing, feature, and messaging comparisons against competitors. Do NOT use for setting your own pricing strategy."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Competitor Analysis — Analyzing competitive landscape...
-*Provides a structured 5-point competitive analysis covering pricing, features, positioning, traffic sources, and weaknesses — output as a comparison matrix with strategic recommendations.*
+# Competitor Analysis: Analyzing competitive landscape...
+*Provides a structured 5-point competitive analysis covering pricing, features, positioning, traffic sources, and weaknesses. Output as a comparison matrix with strategic recommendations.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Competitor Analysis — Analyzing competitive landscape...`
+`Competitor Analysis: Analyzing competitive landscape...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "competitor analysis", "competitive analysis" | ACTIVE |
 | User says "compare products" or "market positioning" | ACTIVE |
 | User wants to understand competitive landscape before building/launching | ACTIVE |
-| User wants to set their own pricing | DORMANT — use Pricing Strategy |
-| User wants to write ad copy against competitors | DORMANT — use Facebook Ad or Google Ad |
+| User wants to set their own pricing | DORMANT: use Pricing Strategy |
+| User wants to write ad copy against competitors | DORMANT, use Facebook Ad or Google Ad |
 
 ## Common Mistakes
 
@@ -42,9 +42,9 @@ Then execute the protocol below.
 
 If the user hasn't provided competitors, ask:
 
-> 1. **Your product** — what do you offer? (name, category, price point)
-> 2. **Known competitors** — who do customers compare you to?
-> 3. **Market** — B2B or B2C? Industry vertical? Geographic focus?
+> 1. **Your product**: what do you offer? (name, category, price point)
+> 2. **Known competitors**: who do customers compare you to?
+> 3. **Market**: B2B or B2C? Industry vertical? Geographic focus?
 
 Then identify three competitor tiers:
 
@@ -94,13 +94,13 @@ Build a feature matrix for the top 15-20 features customers care about:
 | ... | | | | |
 
 **Feature rating scale:**
-- **Full** — feature is complete and polished
-- **Partial** — feature exists but limited or in beta
-- **None** — feature not available
-- **Superior** — best-in-class implementation
+- **Full**: feature is complete and polished
+- **Partial**: feature exists but limited or in beta
+- **None**: feature not available
+- **Superior**: best-in-class implementation
 
 **Feature analysis questions:**
-- Which features do ALL competitors have? (table stakes — you must have them)
+- Which features do ALL competitors have? (table stakes: you must have them)
 - Which features does NO competitor have? (potential differentiator if valuable)
 - Where are competitors weakest? (opportunity to excel)
 - What features do customers complain about most in reviews?
@@ -121,7 +121,7 @@ Homepage hero:
 - Headline: "[Exact text]"
 - Subheadline: "[Exact text]"
 - CTA: "[Button text]"
-- Social proof: "[What they show — logos, numbers, testimonials]"
+- Social proof: "[What they show: logos, numbers, testimonials]"
 ```
 
 **Positioning map:**
@@ -138,7 +138,7 @@ Plot competitors on a 2x2 matrix using the two most relevant axes for your marke
                    Affordable
 ```
 
-Place each competitor (and yourself) on the map. Identify the open quadrant — that's your positioning opportunity.
+Place each competitor (and yourself) on the map. Identify the open quadrant, that's your positioning opportunity.
 
 ### Step 5: Traffic & Distribution Analysis
 
@@ -165,8 +165,8 @@ For each competitor, research:
 
 For each competitor, extract weaknesses from:
 - **1-3 star reviews** on G2, Capterra, Trustpilot, App Store
-- **Reddit/Twitter complaints** — search "[competitor] sucks" or "[competitor] alternative"
-- **Churned customer feedback** — if you can find it
+- **Reddit/Twitter complaints**: search "[competitor] sucks" or "[competitor] alternative"
+- **Churned customer feedback**: if you can find it
 
 **Weakness categories:**
 
@@ -200,10 +200,10 @@ Based on the analysis, provide:
 **2. Feature priority (build these first):**
 | Priority | Feature | Rationale |
 |----------|---------|-----------|
-| P0 | [Feature] | Table stakes — every competitor has it |
+| P0 | [Feature] | Table stakes: every competitor has it |
 | P0 | [Feature] | Biggest competitor weakness |
-| P1 | [Feature] | Differentiator — no one does this well |
-| P2 | [Feature] | Nice-to-have — builds on P1 |
+| P1 | [Feature] | Differentiator, no one does this well |
+| P2 | [Feature] | Nice-to-have: builds on P1 |
 
 **3. Pricing recommendation:**
 > "[Pricing strategy] at [$X/mo] because [competitive gap or positioning reason]"
@@ -217,7 +217,7 @@ Based on the analysis, provide:
 ## Output Format
 
 ```markdown
-# Competitive Analysis — [Your Product] vs. [Market]
+# Competitive Analysis: [Your Product] vs. [Market]
 
 ## Competitor Overview
 | | Your Product | Comp A | Comp B | Comp C |
@@ -255,7 +255,7 @@ Based on the analysis, provide:
 ## Completion
 
 ```
-Competitor Analysis — Complete!
+Competitor Analysis: Complete!
 
 Competitors analyzed: [Count] ([direct] direct, [indirect] indirect)
 Pricing gaps found: [Count]
@@ -271,4 +271,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 3-tier competitor identification, pricing comparison matrix, feature comparison with rating scale, positioning & messaging capture (tagline, hero, 2x2 map), traffic & distribution channel analysis, weakness extraction from reviews/social, SWOT per competitor, 5-point strategic recommendations (positioning, features, pricing, channels, messaging). (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 3-tier competitor identification, pricing comparison matrix, feature comparison with rating scale, positioning & messaging capture (tagline, hero, 2x2 map), traffic & distribution channel analysis, weakness extraction from reviews/social, SWOT per competitor, 5-point strategic recommendations (positioning, features, pricing, channels, messaging). (Origin: MemStack Pro v3.2, Mar 2026)

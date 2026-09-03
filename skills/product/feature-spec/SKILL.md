@@ -2,17 +2,17 @@
 name: memstack-product-feature-spec
 description: "Use this skill when the user says 'feature spec', 'spec this feature', 'write a spec', 'functional requirements', or needs a detailed specification for one feature with user flows, edge cases, API definitions, and acceptance criteria. Do NOT use for full PRDs or user story generation."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Feature Spec — Writing feature specification...
+# Feature Spec: Writing feature specification...
 *Creates a detailed specification for a single feature including user story, acceptance criteria, user flows, edge cases, API definitions, dependencies, and effort estimate.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Feature Spec — Writing feature specification...`
+`Feature Spec: Writing feature specification...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "feature spec", "spec this feature", "write a spec" | ACTIVE |
 | User says "functional requirements" for a specific feature | ACTIVE |
 | User needs a detailed breakdown of ONE feature for engineering | ACTIVE |
-| User wants a full product requirements document | DORMANT — use PRD Writer |
-| User wants multiple user stories for sprint planning | DORMANT — use User Story Generator |
+| User wants a full product requirements document | DORMANT: use PRD Writer |
+| User wants multiple user stories for sprint planning | DORMANT: use User Story Generator |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Feature name** — what are you building?
-> 2. **User problem** — what problem does this feature solve?
-> 3. **Target user** — which persona uses this feature?
-> 4. **Context** — is this part of a larger project? What already exists?
-> 5. **Constraints** — timeline, tech stack, or design constraints?
+> 1. **Feature name**: what are you building?
+> 2. **User problem**: what problem does this feature solve?
+> 3. **Target user**: which persona uses this feature?
+> 4. **Context**: is this part of a larger project? What already exists?
+> 5. **Constraints**: timeline, tech stack, or design constraints?
 
 ### Step 2: Write Feature Brief
 
@@ -65,7 +65,7 @@ If the user hasn't provided details, ask:
 As a [persona], I want to [action] so that [outcome].
 
 ### Business Value
-- [Why this matters for the business — revenue, retention, efficiency]
+- [Why this matters for the business: revenue, retention, efficiency]
 - [Metric this feature is expected to move]
 
 ### Scope
@@ -87,15 +87,15 @@ As a [persona], I want to [action] so that [outcome].
 ### Primary Flow: [Action Name]
 
 **Entry point:** [Where/how the user accesses this feature]
-**Preconditions:** [What must be true — logged in, has permission, etc.]
+**Preconditions:** [What must be true: logged in, has permission, etc.]
 
-1. User [action — clicks, enters, selects]
-   → System [response — shows, loads, validates]
+1. User [action: clicks, enters, selects]
+   → System [response: shows, loads, validates]
 2. User [action]
    → System [response]
-3. User [action — confirms, submits]
-   → System [response — saves, sends, updates]
-4. User sees [confirmation — success message, updated state, redirect]
+3. User [action: confirms, submits]
+   → System [response: saves, sends, updates]
+4. User sees [confirmation: success message, updated state, redirect]
 
 **Exit state:** [What the system looks like after completion]
 ```
@@ -140,22 +140,22 @@ As a [persona], I want to [action] so that [outcome].
 
 #### POST /api/[resource]
 **Purpose:** [What this endpoint does]
-**Auth:** Required — [Bearer token / API key / session]
+**Auth:** Required, [Bearer token / API key / session]
 **Rate limit:** [X requests per minute]
 
 **Request:**
 ```json
 {
-  "field1": "string (required) — [description]",
-  "field2": "number (optional) — [description, default: X]",
-  "field3": "enum (required) — [allowed values: a, b, c]"
+  "field1": "string (required): [description]",
+  "field2": "number (optional): [description, default: X]",
+  "field3": "enum (required): [allowed values: a, b, c]"
 }
 ```
 
 **Response (200):**
 ```json
 {
-  "id": "string — [description]",
+  "id": "string: [description]",
   "field1": "string",
   "createdAt": "ISO 8601 datetime"
 }
@@ -246,7 +246,7 @@ Then [graceful handling]
 **Estimated effort:** [X days]
 
 ## 1. Feature Brief
-[From Step 2 — summary, user story, scope]
+[From Step 2: summary, user story, scope]
 
 ## 2. User Flows
 ### Primary Flow
@@ -273,7 +273,7 @@ Then [graceful handling]
 ## Completion
 
 ```
-Feature Spec — Complete!
+Feature Spec: Complete!
 
 Feature: [Name]
 User story: As a [persona], I want to [action] so that [outcome]
@@ -292,4 +292,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Feature brief template (summary, user story, scope), primary + alternative user flow documentation, edge case table with discovery checklist, API contract template (request, response, errors), Given/When/Then acceptance criteria, effort estimation table with confidence levels, dependency tracking. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Feature brief template (summary, user story, scope), primary + alternative user flow documentation, edge case table with discovery checklist, API contract template (request, response, errors), Given/When/Then acceptance criteria, effort estimation table with confidence levels, dependency tracking. (Origin: MemStack Pro v3.2, Mar 2026)

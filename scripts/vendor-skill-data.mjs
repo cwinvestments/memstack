@@ -7,7 +7,7 @@
 //
 // Run MANUALLY when loader skill data changes (not part of any build).
 // Loader is expected at ../memstack-skill-loader (override: MEMSTACK_LOADER_DIR).
-// No dependencies — node: builtins only, offline-deterministic.
+// No dependencies, node: builtins only, offline-deterministic.
 
 import { writeFileSync, mkdirSync, copyFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -24,7 +24,7 @@ const LOADER_DIR = resolve(
 
 // Public-safe sources only. skills.public.json = structural truth (slug/category/
 // isPro/version); skill_descriptions.json = what/not_for capability text. NO Pro
-// skill bodies cross this boundary — only names/tiers/categories/capability text.
+// skill bodies cross this boundary, only names/tiers/categories/capability text.
 const SOURCES = [
   { name: "skills.public.json", rel: "skills.public.json" },
   {
@@ -47,7 +47,7 @@ try {
     encoding: "utf8",
   }).trim();
 } catch {
-  /* leave "unknown" — provenance still records the path */
+  /* leave "unknown", provenance still records the path */
 }
 
 for (const s of SOURCES) {

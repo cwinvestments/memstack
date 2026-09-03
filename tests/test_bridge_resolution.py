@@ -135,7 +135,7 @@ def test_true_collision_reports_ambiguous_with_path_count(in_dir):
 
 
 def test_ambiguous_never_autoregisters_even_if_cwd_matches(in_dir):
-    """cwd corroboration must not override a genuine collision — picking one
+    """cwd corroboration must not override a genuine collision: picking one
     would silently attach the insight to the wrong project."""
     in_dir("twin")
     loader = FakeLoader({"twin": ["C:\\Projects\\Twin", "D:\\Work\\Twin"]})
@@ -171,7 +171,7 @@ def test_legacy_loader_without_find_still_autoregisters(in_dir):
 
 def test_legacy_loader_reports_collision_as_unrecognized_not_ambiguous(in_dir):
     """An old loader collapses 0 and 2+ to None, so ambiguity is unreportable.
-    That is the pre-existing limitation, not a regression — but it must still
+    That is the pre-existing limitation, not a regression, but it must still
     refuse rather than guess."""
     in_dir("elsewhere")
     loader = LegacyLoader({"twin": ["C:\\A\\Twin", "D:\\B\\Twin"]})

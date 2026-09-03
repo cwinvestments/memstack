@@ -1,6 +1,6 @@
-# Echo — Memory Recall Rule
+# Echo: Memory Recall Rule
 
-When the user references past sessions, asks "what did we do", "do you remember", "last session", "recall", or "continue from" — search memory using semantic vector search first, then SQLite.
+When the user references past sessions, asks "what did we do", "do you remember", "last session", "recall", or "continue from", search memory using semantic vector search first, then SQLite.
 
 ## Protocol
 1. Run: `python skills/echo/search.py "<keywords>" --top-k 5` for semantic vector search
@@ -13,4 +13,4 @@ When the user references past sessions, asks "what did we do", "do you remember"
 
 ## Ownership
 - "recall" / "remember" / "what did we do" = Echo (not Diary, not Project)
-- "save" / "log" = Diary territory — do not activate Echo for saving
+- "save" / "log" = Diary territory, do not activate Echo for saving

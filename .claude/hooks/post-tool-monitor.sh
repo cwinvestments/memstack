@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# MemStack — PostToolUse Observation Monitor
+# MemStack: PostToolUse Observation Monitor
 # Captures lightweight observations after Write/Edit/MultiEdit/Bash calls
 # Appends to .claude/observations/YYYY-MM-DD.md (daily file)
-# Always exit 0 — must never block tool completion
+# Always exit 0, must never block tool completion
 #
 # Triggered by: PostToolUse hook event (matcher: Write|Edit|MultiEdit|Bash)
 #
 # Input contract: Claude Code delivers hook input as a single JSON document on
 # this process's STDIN. CLAUDE_TOOL_NAME and CLAUDE_TOOL_INPUT do not exist.
 # This script previously read those two variables, so both expanded empty and
-# every entry it wrote recorded "unknown" and "unknown call" — 1053 of them
+# every entry it wrote recorded "unknown" and "unknown call": 1053 of them
 # between 2026-06-02 and 2026-08-05. The payload's shape is:
 #
 #   {"hook_event_name":"PostToolUse",
@@ -121,13 +121,13 @@ fi
 # Add header if new file
 if [ ! -f "$OUTFILE" ]; then
     cat >> "$OUTFILE" <<HEADER
-# Observations — ${TODAY}
+# Observations: ${TODAY}
 
 HEADER
 fi
 
 cat >> "$OUTFILE" <<ENTRY
-### ${TIMESTAMP} — ${TOOL_NAME}
+### ${TIMESTAMP}: ${TOOL_NAME}
 - **Summary:** ${SUMMARY}
 - **Working dir:** ${WORKING_DIR}
 

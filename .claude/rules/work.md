@@ -1,6 +1,6 @@
-# Work — Task Planning Rule
+# Work: Task Planning Rule
 
-When the user says "plan", "task", "todo", "priorities", "what's next", "copy plan", "append plan", or "resume plan" — activate structured planning with per-task status tracking in SQLite.
+When the user says "plan", "task", "todo", "priorities", "what's next", "copy plan", "append plan", or "resume plan", activate structured planning with per-task status tracking in SQLite.
 
 ## Protocol
 - **Step 0 (silent)**: Before any plan operation, read `STATE.md`, `CLAUDE.md`, recent diary entries, and git state to compile context. Do not show this step to the user.

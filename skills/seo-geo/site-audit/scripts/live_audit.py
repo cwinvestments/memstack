@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Live SEO/GEO audit — Python stdlib only, no API keys, no pip installs.
+Live SEO/GEO audit: Python stdlib only, no API keys, no pip installs.
 
 Fetches a deployed URL and checks title, meta description, heading
 hierarchy, image alt attributes, JSON-LD, canonical, Open Graph,
@@ -238,7 +238,7 @@ def check_robots_meta(p):
     if not content:
         return [], "default (indexable)"
     if "noindex" in content.lower():
-        return [("HIGH", "robots meta contains 'noindex' — page excluded from search")], content
+        return [("HIGH", "robots meta contains 'noindex': page excluded from search")], content
     return [], content
 
 
@@ -280,14 +280,14 @@ def check_robots_txt(base_url):
     # with status 200. A naive "status == 200" check would mark this 'present'.
     if _looks_like_html(body) or ctype == "text/html":
         return [
-            ("HIGH", f"robots.txt returned HTML instead of plain text (content-type: {ctype or 'unknown'}) — likely an auth redirect or route misconfig intercepting /robots.txt; crawlers cannot read the rules"),
+            ("HIGH", f"robots.txt returned HTML instead of plain text (content-type: {ctype or 'unknown'}): likely an auth redirect or route misconfig intercepting /robots.txt; crawlers cannot read the rules"),
         ], "broken (HTML response)"
 
     # Shape check: a real robots.txt has at least one User-agent directive
     lc = body.lower()
     if "user-agent:" not in lc:
         return [
-            ("HIGH", "robots.txt reachable but contains no 'User-agent:' directive — not a valid robots.txt response"),
+            ("HIGH", "robots.txt reachable but contains no 'User-agent:' directive: not a valid robots.txt response"),
         ], "broken (no User-agent directive)"
 
     mentioned = [b for b in AI_BOTS if b.lower() in lc]
@@ -308,14 +308,14 @@ def check_sitemap(base_url):
     # Same auth-redirect failure mode as robots.txt
     if _looks_like_html(body) or ctype == "text/html":
         return [
-            ("HIGH", f"sitemap.xml returned HTML instead of XML (content-type: {ctype or 'unknown'}) — likely an auth redirect or route misconfig intercepting /sitemap.xml; search engines cannot discover pages"),
+            ("HIGH", f"sitemap.xml returned HTML instead of XML (content-type: {ctype or 'unknown'}): likely an auth redirect or route misconfig intercepting /sitemap.xml; search engines cannot discover pages"),
         ], "broken (HTML response)"
 
     # Shape check: must contain <urlset> or <sitemapindex>
     body_lc = body.lower()
     if "<urlset" not in body_lc and "<sitemapindex" not in body_lc:
         return [
-            ("HIGH", "sitemap.xml reachable but contains no <urlset> or <sitemapindex> — not a valid XML sitemap"),
+            ("HIGH", "sitemap.xml reachable but contains no <urlset> or <sitemapindex>: not a valid XML sitemap"),
         ], "broken (not a valid sitemap)"
 
     return [], "present"
@@ -360,7 +360,7 @@ def main():
 
     url = args.url if args.url.startswith("http") else "https://" + args.url
 
-    print("🔎 Site Audit — Live URL Scan")
+    print("🔎 Site Audit: Live URL Scan")
     print("")
     print(f"Target: {url}")
 
@@ -423,7 +423,7 @@ def main():
     print(f"  🔴 Critical: {crit}    🟠 High: {high}    🟡 Medium: {med}    🔵 Low: {low}")
     print(f"  Total issues: {len(all_issues)}")
     print("")
-    print("🔎 Site Audit — Complete")
+    print("🔎 Site Audit: Complete")
 
     if crit > 0:
         sys.exit(2)

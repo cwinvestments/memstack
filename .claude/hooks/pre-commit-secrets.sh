@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# MemStack v3.3.3 — Pre-Commit Secrets Hook
+# MemStack v3.3.3: Pre-Commit Secrets Hook
 # Scans staged files for secrets before any commit
 # Exit 0 = allow, exit 2 = block
 #

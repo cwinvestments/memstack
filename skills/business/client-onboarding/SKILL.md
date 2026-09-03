@@ -2,17 +2,17 @@
 name: memstack-business-client-onboarding
 description: "Use this skill when the user says 'client onboarding', 'new client', 'onboard client', 'kickoff meeting', 'intake form', 'welcome email', or needs welcome sequences, questionnaires, and setup checklists for new clients. Do NOT use for contracts or invoicing."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Client Onboarding — Setting up new client...
+# Client Onboarding: Setting up new client...
 *Produces a complete client onboarding package with welcome email, intake questionnaire, kickoff meeting agenda, access provisioning checklist, expectations document, and 30/60/90-day check-in schedule.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Client Onboarding — Setting up new client...`
+`Client Onboarding: Setting up new client...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "client onboarding", "new client", "onboard client" | ACTIVE |
 | User says "kickoff meeting", "intake form", "welcome email" | ACTIVE |
 | User just signed a new client and needs to set up the engagement | ACTIVE |
-| User wants a contract or agreement | DORMANT — use Contract Template |
-| User wants to send an invoice | DORMANT — use Invoice Generator |
+| User wants a contract or agreement | DORMANT: use Contract Template |
+| User wants to send an invoice | DORMANT: use Invoice Generator |
 
 ## Common Mistakes
 
@@ -42,18 +42,18 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Client** — company name, primary contact, industry
-> 2. **Project** — what was sold? (service type, scope, deliverables)
-> 3. **Timeline** — start date, key milestones, end date
-> 4. **Communication** — preferred channel (email, Slack, calls)?
-> 5. **Access needed** — what systems, accounts, or assets do you need from them?
+> 1. **Client**: company name, primary contact, industry
+> 2. **Project**: what was sold? (service type, scope, deliverables)
+> 3. **Timeline**: start date, key milestones, end date
+> 4. **Communication**: preferred channel (email, Slack, calls)?
+> 5. **Access needed**: what systems, accounts, or assets do you need from them?
 
 ### Step 2: Send Welcome Email
 
 **Welcome email template:**
 
 ```
-Subject: Welcome aboard! Here's what happens next — [Your Company]
+Subject: Welcome aboard! Here's what happens next: [Your Company]
 
 Hi [Client Name],
 
@@ -61,15 +61,15 @@ Welcome to [Your Company]! We're excited to work with you on [Project Name].
 
 Here's what to expect in the next few days:
 
-1. **Intake questionnaire** (attached / linked below) — please complete
+1. **Intake questionnaire** (attached / linked below), please complete
    by [date, 2-3 business days]. This helps us understand your goals,
    preferences, and current setup.
 
-2. **Access provisioning** — we'll need a few logins and assets from you
+2. **Access provisioning**: we'll need a few logins and assets from you
    (details in the questionnaire). The sooner we have access, the sooner
    we can start.
 
-3. **Kickoff call** — I've sent a calendar invite for [date/time].
+3. **Kickoff call**: I've sent a calendar invite for [date/time].
    This is a [30/60]-minute call where we align on goals, timeline, and
    communication cadence.
 
@@ -135,7 +135,7 @@ Looking forward to getting started!
 **Kickoff meeting template (60 minutes):**
 
 ```markdown
-## Kickoff Meeting — [Client Name] × [Your Company]
+## Kickoff Meeting, [Client Name] × [Your Company]
 **Date:** [Date] | **Time:** [Time] | **Duration:** 60 min
 
 ### Attendees
@@ -168,9 +168,9 @@ Looking forward to getting started!
 - Confirm access items are provided or in progress
 
 **6. Immediate next steps (10 min)**
-- [ ] [Action item 1] — [Owner] — by [Date]
-- [ ] [Action item 2] — [Owner] — by [Date]
-- [ ] [Action item 3] — [Owner] — by [Date]
+- [ ] [Action item 1], [Owner], by [Date]
+- [ ] [Action item 2], [Owner], by [Date]
+- [ ] [Action item 3], [Owner], by [Date]
 
 **7. Questions & close (5 min)**
 - Open floor for any questions
@@ -197,7 +197,7 @@ Looking forward to getting started!
 ### Step 6: Expectations Document
 
 ```markdown
-## Working Agreement — [Client Name] × [Your Company]
+## Working Agreement: [Client Name] × [Your Company]
 
 ### Communication
 - **Primary channel:** [Email / Slack]
@@ -239,7 +239,7 @@ If anything feels off, reach out early:
 
 | Checkpoint | When | Focus | Format |
 |-----------|------|-------|--------|
-| **Week 1** | Day 5 | Quick pulse — any blockers? Access complete? | 15-min call or Slack |
+| **Week 1** | Day 5 | Quick pulse: any blockers? Access complete? | 15-min call or Slack |
 | **30 days** | Day 30 | Progress review, milestone check, feedback loop | 30-min call |
 | **60 days** | Day 60 | Mid-project review, scope check, quality audit | 30-min call |
 | **90 days** | Day 90 | Results review, project wrap-up or renewal | 45-min call |
@@ -254,7 +254,7 @@ If anything feels off, reach out early:
 ## Output Format
 
 ```markdown
-# Client Onboarding Package — [Client Name]
+# Client Onboarding Package: [Client Name]
 
 ## Welcome Email
 [From Step 2]
@@ -278,7 +278,7 @@ If anything feels off, reach out early:
 ## Completion
 
 ```
-Client Onboarding — Complete!
+Client Onboarding: Complete!
 
 Client: [Name]
 Project: [Project name]
@@ -297,4 +297,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Welcome email template, 24-question intake questionnaire, 60-minute kickoff meeting agenda, 10-item access provisioning checklist, working agreement (communication, deliverables, revisions, escalation), 30/60/90-day check-in schedule with agendas. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Welcome email template, 24-question intake questionnaire, 60-minute kickoff meeting agenda, 10-item access provisioning checklist, working agreement (communication, deliverables, revisions, escalation), 30/60/90-day check-in schedule with agendas. (Origin: MemStack Pro v3.2, Mar 2026)

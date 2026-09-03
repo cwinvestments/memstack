@@ -4,7 +4,7 @@ description: "Use when the user says 'track my time', 'freelancer invoice', 'bil
 version: 1.0.0
 ---
 
-# Freelancer Toolkit — Setting up freelancer workflows...
+# Freelancer Toolkit: Setting up freelancer workflows...
 *Produces time tracking sheets, invoice calculations, and project analytics for freelancers managing multiple clients.*
 
 ## Activation
@@ -14,8 +14,8 @@ version: 1.0.0
 | User says "track my time" or "billable hours" | ACTIVE |
 | User says "freelancer invoice" or "client billing" | ACTIVE |
 | User says "freelance finances" or "project hours" | ACTIVE |
-| User wants a formal proposal or SOW | NOT this skill — use Proposal Writer or Scope of Work |
-| User wants a generic invoice template | NOT this skill — use Invoice Generator |
+| User wants a formal proposal or SOW | NOT this skill, use Proposal Writer or Scope of Work |
+| User wants a generic invoice template | NOT this skill: use Invoice Generator |
 
 ## Context Guard
 
@@ -41,7 +41,7 @@ version: 1.0.0
 Create or update a tracking spreadsheet (CSV or markdown):
 
 ```markdown
-# Time Log — [Month Year]
+# Time Log: [Month Year]
 
 ## [Client Name]
 
@@ -56,7 +56,7 @@ Create or update a tracking spreadsheet (CSV or markdown):
 ```
 
 **Time tracking rules:**
-1. Log daily — reconstructing from memory loses hours
+1. Log daily, reconstructing from memory loses hours
 2. Separate billable from non-billable (admin, learning, invoicing)
 3. Round to nearest 15 minutes (0.25 hr increments)
 4. Include project and task for accurate per-project reporting
@@ -67,7 +67,7 @@ Create or update a tracking spreadsheet (CSV or markdown):
 Compute totals from the time log:
 
 ```markdown
-# Invoice Calculation — [Client Name] — [Period]
+# Invoice Calculation, [Client Name], [Period]
 
 | Project | Hours | Rate | Subtotal |
 |---------|-------|------|----------|
@@ -90,7 +90,7 @@ For fixed-price projects, track hours anyway for profitability analysis.
 Generate a freelancer dashboard:
 
 ```markdown
-# Freelance Analytics — [Month Year]
+# Freelance Analytics: [Month Year]
 
 ## Revenue Summary
 | Client | Invoiced | Paid | Outstanding |
@@ -124,7 +124,7 @@ Flag issues automatically:
 | Alert | Threshold | Action |
 |-------|-----------|--------|
 | Low utilization | < 70% billable | Review non-billable time, reduce admin overhead |
-| Client concentration | > 50% one client | Diversify — pursue new leads |
+| Client concentration | > 50% one client | Diversify: pursue new leads |
 | Outstanding invoices | > 30 days | Send payment reminder |
 | Effective rate below target | < 80% of hourly rate | Review scope creep, renegotiate |
 | Overwork | > 45 hrs/week sustained | Raise rates or reduce commitments |
@@ -153,7 +153,7 @@ freelance/
 ## Output Template
 
 ```
-Freelancer Report — [Period]:
+Freelancer Report: [Period]:
 - Billable hours: [N] ([utilization]% utilization)
 - Revenue: $[amount] ([N] invoices)
 - Outstanding: $[amount]
@@ -173,4 +173,4 @@ Files updated: [list]
 
 ## Level History
 
-- **Lv.1** — Base: Time tracking, invoice calculation, monthly analytics, profitability analysis, alerts. (Origin: MemStack v3.5, Apr 2026)
+- **Lv.1**: Base: Time tracking, invoice calculation, monthly analytics, profitability analysis, alerts. (Origin: MemStack v3.5, Apr 2026)

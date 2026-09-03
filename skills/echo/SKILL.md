@@ -5,14 +5,14 @@ version: 1.0.0
 ---
 
 
-# 🔊 Echo — Searching the Archives...
+# 🔊 Echo: Searching the Archives...
 *Recall information from past CC sessions using semantic vector search.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔊 Echo — Searching the archives...`
+`🔊 Echo: Searching the archives...`
 
 Then execute the protocol below.
 
@@ -20,23 +20,23 @@ Then execute the protocol below.
 
 | Context | Status | Priority |
 |---------|--------|----------|
-| **User says "recall", "remember", "last session", "what did we"** | ACTIVE — search memory | P1 |
-| **User asks about past work explicitly ("did we build X?")** | ACTIVE — search memory | P1 |
-| **User says "continue from" or "resume" a past topic** | ACTIVE — search memory | P2 |
-| **User is describing NEW work to do ("build X", "add Y")** | DORMANT — this is new work, not recall | — |
-| **User mentions "memory" in code context (RAM, variables)** | DORMANT — technical term, not MemStack recall | — |
-| **User mentions a project name in present tense ("work on X")** | DORMANT — forward-looking, not recall | — |
-| **User says "save" or "log" (Diary/Project territory)** | DORMANT — Diary or Project skill handles writing | — |
+| **User says "recall", "remember", "last session", "what did we"** | ACTIVE: search memory | P1 |
+| **User asks about past work explicitly ("did we build X?")** | ACTIVE: search memory | P1 |
+| **User says "continue from" or "resume" a past topic** | ACTIVE: search memory | P2 |
+| **User is describing NEW work to do ("build X", "add Y")** | DORMANT, this is new work, not recall | none |
+| **User mentions "memory" in code context (RAM, variables)** | DORMANT, technical term, not MemStack recall | none |
+| **User mentions a project name in present tense ("work on X")** | DORMANT, forward-looking, not recall | none |
+| **User says "save" or "log" (Diary/Project territory)** | DORMANT, Diary or Project skill handles writing | none |
 
 ## Anti-Rationalization
 
-If you're thinking any of these, STOP — you're about to skip the protocol:
+If you're thinking any of these, STOP, you're about to skip the protocol:
 
 | You're thinking... | Reality |
 |---|---|
 | "I remember this from earlier in the conversation" | You don't persist. Earlier context may be compacted. Run the search. |
 | "I can just summarize from what I know" | You know nothing from prior sessions. The database does. Search it. |
-| "The user probably doesn't need exact details" | Users ask Echo for specifics — dates, decisions, file paths. Run all steps. |
+| "The user probably doesn't need exact details" | Users ask Echo for specifics: dates, decisions, file paths. Run all steps. |
 | "Vector search seems slow, I'll skip to SQLite" | Vector search returns the best results. Always try it first. |
 | "I found one result, that's probably enough" | Run ALL steps (vector + SQLite + insights). One source misses context another catches. |
 | "The keywords are too vague to search" | Search anyway. Vague queries still return useful semantic matches. |
@@ -84,7 +84,7 @@ Combine and deduplicate results from all sources:
 
 ### Step 6: No Results
 
-If nothing found across all sources — say clearly: "No session logs found for [topic]. Use Diary to save future sessions."
+If nothing found across all sources, say clearly: "No session logs found for [topic]. Use Diary to save future sessions."
 
 ## Indexing
 
@@ -126,21 +126,21 @@ Switching providers requires a `--force` re-index, because the vector dimensions
 **User:** "Do you remember what we did on AdminStack last session?"
 
 ```
-🔊 Echo — Searching the archives...
+🔊 Echo: Searching the archives...
 
 Vector search (top 3):
-  [1] AdminStack — 2026-02-18 (session)
+  [1] AdminStack: 2026-02-18 (session)
       Section: Accomplished
       Score: 0.912
       Built CC Monitor page with session cards, auto-refresh, notifications.
       Created /api/cc-sessions CRUD + public report endpoint.
 
-  [2] AdminStack — 2026-02-17 (session)
+  [2] AdminStack, 2026-02-17 (session)
       Section: Decisions
       Score: 0.847
       Used SWR for auto-refresh instead of polling. API key via HMAC-SHA256.
 
-  [3] AdminStack — 2026-02-18 (session)
+  [3] AdminStack: 2026-02-18 (session)
       Section: Next Steps
       Score: 0.791
       Deploy dashboard, add notification preferences, test mobile view.
@@ -153,8 +153,8 @@ SQLite insights (3):
 
 ## Level History
 
-- **Lv.1** — Base: Session log search and recall. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-- **Lv.3** — Advanced: SQLite backend as primary source, markdown as fallback, insight search. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
-- **Lv.4** — Native: CC rules integration (`.claude/rules/echo.md`), `/memstack-search` slash command, auto-indexed CLAUDE.md context. (Origin: MemStack v3.0-beta, Feb 2026)
-- **Lv.5** — Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI opt-in). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.1**: Base: Session log search and recall. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, context guard, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3**: Advanced: SQLite backend as primary source, markdown as fallback, insight search. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
+- **Lv.4**: Native: CC rules integration (`.claude/rules/echo.md`), `/memstack-search` slash command, auto-indexed CLAUDE.md context. (Origin: MemStack v3.0-beta, Feb 2026)
+- **Lv.5**: Semantic: LanceDB vector-powered recall with sentence-transformers embeddings (OpenAI opt-in). Auto-indexes sessions/plans, semantic similarity across all logs, SQLite fallback. (Origin: MemStack v3.1, Feb 2026)

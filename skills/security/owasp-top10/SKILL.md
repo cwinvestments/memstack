@@ -2,18 +2,18 @@
 name: memstack-security-owasp-top10
 description: "Use this skill when the user says 'OWASP audit', 'OWASP top 10', 'security audit', 'vulnerability assessment', 'full security check', or needs a comprehensive web application security review against OWASP Top 10 categories. Do NOT use for dependency audits or secret scanning alone."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
 
-# 🛡️ OWASP Top 10 — Running Full Vulnerability Assessment...
+# 🛡️ OWASP Top 10: Running Full Vulnerability Assessment...
 *Audit a web application against the OWASP Top 10 (2021) vulnerability categories with actionable findings and remediation.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🛡️ OWASP Top 10 — Running Full Vulnerability Assessment...`
+`🛡️ OWASP Top 10: Running Full Vulnerability Assessment...`
 
 Then execute the protocol below.
 
@@ -21,11 +21,11 @@ Then execute the protocol below.
 
 | Context | Status |
 |---------|--------|
-| **User asks for OWASP/security audit** | ACTIVE — full assessment |
-| **User asks for vulnerability check** | ACTIVE — full assessment |
-| **Pre-launch security review** | ACTIVE — full assessment |
-| **User asks about a specific OWASP category** | ACTIVE — targeted check for that category |
-| **User is actively fixing a vulnerability** | DORMANT — let them work |
+| **User asks for OWASP/security audit** | ACTIVE: full assessment |
+| **User asks for vulnerability check** | ACTIVE: full assessment |
+| **Pre-launch security review** | ACTIVE: full assessment |
+| **User asks about a specific OWASP category** | ACTIVE, targeted check for that category |
+| **User is actively fixing a vulnerability** | DORMANT: let them work |
 
 ## Scan Modes
 
@@ -48,7 +48,7 @@ Run each of the 10 checks below (or A01 + A05 + A06 only in quick mode). For eac
 
 ### A01: Broken Access Control
 
-**Risk:** Users acting beyond their intended permissions — accessing other users' data, elevating privileges, or bypassing access restrictions.
+**Risk:** Users acting beyond their intended permissions: accessing other users' data, elevating privileges, or bypassing access restrictions.
 
 **Detection:**
 
@@ -70,7 +70,7 @@ Run each of the 10 checks below (or A01 + A05 + A06 only in quick mode). For eac
 - Add auth middleware to all non-public routes
 - Always derive user/org context from session, never from request parameters
 - Implement RBAC (Role-Based Access Control) for admin operations
-- Deny by default — explicitly allow, don't explicitly deny
+- Deny by default, explicitly allow, don't explicitly deny
 
 ---
 
@@ -96,7 +96,7 @@ Run each of the 10 checks below (or A01 + A05 + A06 only in quick mode). For eac
 **Remediation:**
 - Use bcrypt/argon2 for password hashing (cost factor >= 10)
 - Enforce HTTPS via HSTS header or middleware redirect
-- Never pass secrets in query strings — use headers or POST body
+- Never pass secrets in query strings, use headers or POST body
 - Encrypt sensitive data at rest (database-level or application-level)
 
 ---
@@ -123,9 +123,9 @@ Run each of the 10 checks below (or A01 + A05 + A06 only in quick mode). For eac
 
 **Remediation:**
 - Use parameterized queries or ORM methods exclusively
-- Use React's default JSX escaping — avoid `dangerouslySetInnerHTML`
+- Use React's default JSX escaping: avoid `dangerouslySetInnerHTML`
 - Sanitize HTML with DOMPurify if raw HTML rendering is required
-- Never pass user input to shell execution — use `execFile()` with argument arrays
+- Never pass user input to shell execution, use `execFile()` with argument arrays
 
 ---
 
@@ -209,7 +209,7 @@ npm outdated 2>/dev/null | head -30
    - The affected version range
    - The fixed version
    - Whether it affects production or dev only
-4. Check if the vulnerability is actually reachable — a CVE in an image optimizer only matters if the app uses image optimization
+4. Check if the vulnerability is actually reachable, a CVE in an image optimizer only matters if the app uses image optimization
 
 **Classify:**
 - Critical CVEs in production dependencies → CRITICAL
@@ -287,7 +287,7 @@ npm outdated 2>/dev/null | head -30
 **Detection:**
 
 1. **Audit logging implementation:**
-   Go beyond searching for service name strings — verify actual audit logging coverage:
+   Go beyond searching for service name strings, verify actual audit logging coverage:
 
    a. **Find the audit infrastructure:** Search for `audit_log`, `audit_logs`, `auditLog`, `logAction`, `logEvent`, `activity_log` in source files AND migration/schema SQL files. Identify the audit table schema (columns, what gets logged).
 
@@ -316,7 +316,7 @@ npm outdated 2>/dev/null | head -30
    - Datadog: `dd-trace`, `@datadog/browser-rum`
    - New Relic: `newrelic` in package.json
    - Custom: structured logging to external service via HTTP
-   Flag if no error monitoring service is initialized (not just imported). `console.error` alone is insufficient for production — errors disappear when the container restarts.
+   Flag if no error monitoring service is initialized (not just imported). `console.error` alone is insufficient for production, errors disappear when the container restarts.
 
 3. **Sensitive data in logs:**
    Search for `console.log` combined with `password`, `token`, `secret`, or `body`. Flag logging of passwords, tokens, or full request bodies.
@@ -351,7 +351,7 @@ npm outdated 2>/dev/null | head -30
 - Block requests to internal IP ranges (10.x, 172.16-31.x, 192.168.x, 127.x, 169.254.x)
 - Use URL parsing to verify hostname before fetching
 - Set timeouts on all outbound requests
-- Don't expose raw fetch responses — filter and transform
+- Don't expose raw fetch responses: filter and transform
 
 ---
 
@@ -366,32 +366,32 @@ Framework: <Next.js / Express / etc.>
 | # | Category | Status | Findings | Risk |
 |---|----------|--------|----------|------|
 | A01 | Broken Access Control | 🔴 FAIL | 3 | Critical |
-| A02 | Cryptographic Failures | ✅ PASS | 0 | — |
+| A02 | Cryptographic Failures | ✅ PASS | 0 | none |
 | A03 | Injection | ⚠️ PARTIAL | 1 | Warning |
 | A04 | Insecure Design | ⚠️ PARTIAL | 2 | Warning |
 | A05 | Security Misconfiguration | 🔴 FAIL | 4 | Critical |
 | A06 | Vulnerable Components | ⚠️ PARTIAL | 5 | Warning |
-| A07 | Auth Failures | ✅ PASS | 0 | — |
+| A07 | Auth Failures | ✅ PASS | 0 | none |
 | A08 | Data Integrity Failures | ⚠️ PARTIAL | 1 | Warning |
 | A09 | Logging Failures | 🔴 FAIL | 2 | Critical |
-| A10 | SSRF | ✅ PASS | 0 | — |
+| A10 | SSRF | ✅ PASS | 0 | none |
 
 Score: 4/10 categories passing
 Critical issues: <count>
 Warnings: <count>
 
 ## Priority Fixes
-1. [CRITICAL] A01 — Add authentication to unprotected API routes
-2. [CRITICAL] A05 — Add security headers (CSP, HSTS, X-Frame-Options)
-3. [CRITICAL] A09 — Set up error monitoring (Sentry recommended)
-4. [WARNING] A03 — Remove dangerouslySetInnerHTML in user content component
-5. [WARNING] A04 — Add rate limiting to login endpoint
-6. [WARNING] A06 — Run npm audit fix for vulnerable packages
+1. [CRITICAL] A01, Add authentication to unprotected API routes
+2. [CRITICAL] A05: Add security headers (CSP, HSTS, X-Frame-Options)
+3. [CRITICAL] A09, Set up error monitoring (Sentry recommended)
+4. [WARNING] A03, Remove dangerouslySetInnerHTML in user content component
+5. [WARNING] A04, Add rate limiting to login endpoint
+6. [WARNING] A06, Run npm audit fix for vulnerable packages
 
 ## Detailed Findings
 [For each finding, include ALL of these fields:]
 - **Category:** A0X name
-- **Location:** `file/path:line_number` (REQUIRED — never omit)
+- **Location:** `file/path:line_number` (REQUIRED: never omit)
 - **Description:** What the vulnerability is
 - **Risk:** CRITICAL/WARNING/INFO with exploitability × impact classification
 - **Fix:** Specific code change or configuration update
@@ -420,7 +420,7 @@ After generating findings, assign each a priority using exploitability × impact
 - devDependency CVE → Hard × Low = **Info** (not in production bundle)
 - XSS in admin-only page → Moderate × Medium = **Medium** (limited audience)
 
-Include the matrix classification in the Priority Fixes section of the scorecard: `[CRITICAL/HIGH/MEDIUM/LOW] A0X — description (exploitability × impact)`.
+Include the matrix classification in the Priority Fixes section of the scorecard: `[CRITICAL/HIGH/MEDIUM/LOW] A0X: description (exploitability × impact)`.
 
 ## Scoring Criteria
 
@@ -432,13 +432,13 @@ Include the matrix classification in the Priority Fixes section of the scorecard
 
 ## Related Skills
 
-- **api-audit** — Detailed per-route authentication and authorization analysis
-- **rls-checker** — Supabase Row Level Security policy audit
-- **secrets-scanner** — Credential and API key exposure scan
-- **dependency-audit** — npm package vulnerability assessment
-- **csp-headers** — Content Security Policy configuration guide
+- **api-audit**: Detailed per-route authentication and authorization analysis
+- **rls-checker**: Supabase Row Level Security policy audit
+- **secrets-scanner**: Credential and API key exposure scan
+- **dependency-audit**: npm package vulnerability assessment
+- **csp-headers**: Content Security Policy configuration guide
 
 ## Level History
 
-- **Lv.1** — Base: Full OWASP Top 10 (2021) assessment with per-category detection patterns, codebase search instructions, classification criteria, remediation guidance, scorecard output, and cross-references to api-audit, rls-checker, and secrets-scanner. Covers Next.js, React, and Node.js patterns. (Origin: MemStack Pro v1.0, Mar 2026)
-- **Lv.2** — Audit feedback: Added quick/deep scan modes (quick = A01+A05+A06), mandatory file:line on all findings, CVE cross-referencing for A06 (verify reachability, extract CVE IDs, note fixed versions), deep A09 logging check (verify actual audit_log table coverage for 8 critical event types instead of string-matching service names), remediation priority matrix (exploitability × impact). (Origin: AdminStack audit, Mar 2026)
+- **Lv.1**: Base: Full OWASP Top 10 (2021) assessment with per-category detection patterns, codebase search instructions, classification criteria, remediation guidance, scorecard output, and cross-references to api-audit, rls-checker, and secrets-scanner. Covers Next.js, React, and Node.js patterns. (Origin: MemStack Pro v1.0, Mar 2026)
+- **Lv.2**: Audit feedback: Added quick/deep scan modes (quick = A01+A05+A06), mandatory file:line on all findings, CVE cross-referencing for A06 (verify reachability, extract CVE IDs, note fixed versions), deep A09 logging check (verify actual audit_log table coverage for 8 critical event types instead of string-matching service names), remediation priority matrix (exploitability × impact). (Origin: AdminStack audit, Mar 2026)

@@ -2,17 +2,17 @@
 name: memstack-content-tiktok-script
 description: "Use this skill when the user says 'TikTok script', 'TikTok video', 'Reels script', 'Shorts script', 'short-form video', or needs timestamped scripts with hooks, visual cues, and captions for 15-60 second videos. Do NOT use for Twitter threads or webinar scripts."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# TikTok Script — Writing short-form video script...
+# TikTok Script: Writing short-form video script...
 *Creates timestamped scripts for TikTok, Reels, and Shorts (15-60 seconds) with hook-in-first-2-seconds, visual cues, caption text, trending audio strategy, and hashtag research.*
 
 ## Activation
 
 When this skill activates, output:
 
-`TikTok Script — Writing short-form video script...`
+`TikTok Script, Writing short-form video script...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "TikTok script", "TikTok video", "Reels script", "Shorts script" | ACTIVE |
 | User says "short-form video" and wants a scripted 15-60 second video | ACTIVE |
 | User wants to create content for TikTok, Instagram Reels, or YouTube Shorts | ACTIVE |
-| User wants a Twitter/X thread | DORMANT — use Twitter Thread |
-| User wants a long-form video (YouTube) | DORMANT — use YouTube Script |
+| User wants a Twitter/X thread | DORMANT: use Twitter Thread |
+| User wants a long-form video (YouTube) | DORMANT: use YouTube Script |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Topic** — what's the video about?
-> 2. **Format** — talking head, tutorial, storytime, POV, or visual showcase?
-> 3. **Platform** — TikTok, Instagram Reels, YouTube Shorts, or all three?
-> 4. **Length** — 15s, 30s, or 60s?
-> 5. **Goal** — views, followers, website traffic, or product sales?
-> 6. **Audience** — who's watching? (age, interests, awareness level)
+> 1. **Topic**: what's the video about?
+> 2. **Format**: talking head, tutorial, storytime, POV, or visual showcase?
+> 3. **Platform**: TikTok, Instagram Reels, YouTube Shorts, or all three?
+> 4. **Length**: 15s, 30s, or 60s?
+> 5. **Goal**: views, followers, website traffic, or product sales?
+> 6. **Audience**: who's watching? (age, interests, awareness level)
 
 ### Step 2: Choose Video Format
 
@@ -81,7 +81,7 @@ If the user hasn't provided details, ask:
 - Start talking IMMEDIATELY (no "hey guys" or "so today")
 - Movement in frame from second 0 (lean in, gesture, reveal)
 - On-screen text appears in first 0.5 seconds
-- Confident energy — uncertainty is a scroll trigger
+- Confident energy, uncertainty is a scroll trigger
 
 ### Step 4: Write the Script
 
@@ -90,12 +90,12 @@ If the user hasn't provided details, ask:
 ```
 [0:00-0:02] HOOK
 Visual: [What's on screen]
-Audio: "[Hook line — bold, concise]"
+Audio: "[Hook line, bold, concise]"
 Text overlay: "[Key phrase in large text]"
 
 [0:02-0:10] BODY
 Visual: [Action / demonstration / explanation]
-Audio: "[Core content — 2-3 key sentences]"
+Audio: "[Core content, 2-3 key sentences]"
 Text overlay: "[Supporting text or steps]"
 
 [0:10-0:15] CTA
@@ -110,11 +110,11 @@ Text overlay: "[CTA text]"
 [0:00-0:02] HOOK
 Visual: [Pattern interrupt or result]
 Audio: "[Hook line]"
-Text overlay: "[Hook text — large, bold]"
+Text overlay: "[Hook text: large, bold]"
 
 [0:02-0:08] CONTEXT
 Visual: [Set up the problem or situation]
-Audio: "[Why this matters — 2 sentences]"
+Audio: "[Why this matters, 2 sentences]"
 Text overlay: "[Key phrase]"
 
 [0:08-0:22] BODY (3 points)
@@ -146,7 +146,7 @@ Text overlay: "[CTA: Follow + Save]"
 | Timestamp | Shot Type | Description | Text Overlay |
 |-----------|----------|-------------|-------------|
 | 0:00 | Close-up | Face, direct eye contact | Hook text (bold) |
-| 0:02 | Medium | Upper body, gesturing | — |
+| 0:02 | Medium | Upper body, gesturing | none |
 | 0:05 | B-roll / screen | Demo or visual | Step 1 text |
 | 0:10 | Close-up | Back to face, different angle | Step 2 text |
 | 0:15 | B-roll / screen | Second demo | Step 3 text |
@@ -198,14 +198,14 @@ Example:
 
 **Caption rules:**
 - Keep under 150 characters (most users don't expand)
-- Front-load the hook — first line must create curiosity
+- Front-load the hook, first line must create curiosity
 - Ask a question to drive comments (comments boost distribution)
 - Use 3-5 hashtags (more than 5 looks spammy)
 
 ## Output Format
 
 ```markdown
-# Short-Form Video Script — [Topic]
+# Short-Form Video Script: [Topic]
 
 ## Overview
 - **Platform:** [TikTok / Reels / Shorts]
@@ -238,7 +238,7 @@ Example:
 ## Completion
 
 ```
-TikTok Script — Complete!
+TikTok Script: Complete!
 
 Topic: [Topic]
 Length: [X] seconds
@@ -257,4 +257,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 7 video formats with hook styles, 7 hook formulas with on-screen text, timestamped script templates (15s/30s/60s), shot list with visual retention techniques, audio strategy by format, trending sound discovery, hashtag strategy (3-type approach), caption formula. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 7 video formats with hook styles, 7 hook formulas with on-screen text, timestamped script templates (15s/30s/60s), shot list with visual retention techniques, audio strategy by format, trending sound discovery, hashtag strategy (3-type approach), caption formula. (Origin: MemStack Pro v3.2, Mar 2026)

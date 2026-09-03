@@ -2,17 +2,17 @@
 name: memstack-marketing-lead-magnet
 description: "Use this skill when the user says 'lead magnet', 'opt-in', 'freebie', 'list building', 'email list growth', or needs a lead capture asset with landing page copy, delivery emails, and nurture sequence. Do NOT use for full funnel design or paid ad copy."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Lead Magnet — Creating lead capture asset...
+# Lead Magnet: Creating lead capture asset...
 *Creates a lead magnet with format selection, content outline, landing page copy, email capture integration, delivery sequence, and nurture follow-up.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Lead Magnet — Creating lead capture asset...`
+`Lead Magnet: Creating lead capture asset...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "lead magnet", "opt-in", "freebie", "list building" | ACTIVE |
 | User says "email list growth" or "grow my list" | ACTIVE |
 | User wants to create a free asset to capture emails | ACTIVE |
-| User wants a full sales funnel | DORMANT — use Sales Funnel |
-| User wants paid ad copy | DORMANT — use Facebook Ad or Google Ad |
+| User wants a full sales funnel | DORMANT: use Sales Funnel |
+| User wants paid ad copy | DORMANT, use Facebook Ad or Google Ad |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Your paid product** — what are you ultimately selling? (name, price, category)
-> 2. **Target audience** — who are you trying to attract? (role, pain point, skill level)
-> 3. **Biggest problem** — what's the #1 pain your audience has right now?
-> 4. **Quick win** — what small result can you deliver in <15 minutes?
-> 5. **Distribution** — how will you drive traffic? (ads, SEO, social, partnerships)
+> 1. **Your paid product**: what are you ultimately selling? (name, price, category)
+> 2. **Target audience**: who are you trying to attract? (role, pain point, skill level)
+> 3. **Biggest problem**: what's the #1 pain your audience has right now?
+> 4. **Quick win**: what small result can you deliver in <15 minutes?
+> 5. **Distribution**: how will you drive traffic? (ads, SEO, social, partnerships)
 
 ### Step 2: Select Lead Magnet Type
 
@@ -72,7 +72,7 @@ Choose based on audience preference and production effort:
 **Checklist/cheat sheet template:**
 
 ```markdown
-# [Actionable Title] — [Specific Outcome]
+# [Actionable Title]: [Specific Outcome]
 
 ## What This Covers
 [1-2 sentences: what they'll achieve after using this]
@@ -98,19 +98,19 @@ Choose based on audience preference and production effort:
 [3 items they can do right now in <5 minutes]
 
 ## Next Steps
-[Bridge to your paid product — "Want the complete system? Check out [Product]"]
+[Bridge to your paid product: "Want the complete system? Check out [Product]"]
 ```
 
 **Template/swipe file structure:**
 
 ```markdown
-# [Template Name] — [What It Helps Them Do]
+# [Template Name], [What It Helps Them Do]
 
 ## How to Use This Template
 [3-step quick-start guide]
 
 ## Template
-[The actual template — copy-paste ready]
+[The actual template: copy-paste ready]
 
 ## Customization Guide
 [How to adapt it for their specific situation]
@@ -125,17 +125,17 @@ Choose based on audience preference and production effort:
 **Mini-course (email) structure:**
 
 ```
-Lesson 1 (Day 0): [Quick win — immediate value]
-Lesson 2 (Day 2): [Core concept — the "why"]
-Lesson 3 (Day 4): [Framework — the "how"]
-Lesson 4 (Day 6): [Advanced tactic — deeper skill]
+Lesson 1 (Day 0): [Quick win, immediate value]
+Lesson 2 (Day 2): [Core concept, the "why"]
+Lesson 3 (Day 4): [Framework, the "how"]
+Lesson 4 (Day 6): [Advanced tactic, deeper skill]
 Lesson 5 (Day 8): [Implementation plan + bridge to paid offer]
 ```
 
 **Content rules:**
 - Solve ONE specific problem (not everything about the topic)
 - Deliver a quick win within the first 5 minutes of consumption
-- Bridge to your paid offer naturally (not salesy — "if you want to go deeper")
+- Bridge to your paid offer naturally (not salesy, "if you want to go deeper")
 - Include your branding (logo, colors, website URL)
 - Format: PDF for checklists/guides, email for courses, web app for calculators
 
@@ -146,12 +146,12 @@ Lesson 5 (Day 8): [Implementation plan + bridge to paid offer]
 ```
 [Above the fold]
 Headline: [Specific outcome they'll get]
-Subheadline: [How — "The [type] that helps you [outcome] in [timeframe]"]
+Subheadline: [How: "The [type] that helps you [outcome] in [timeframe]"]
 Hero image: Mockup of the lead magnet (PDF cover, template preview, etc.)
 Form: [Name] + [Email] + [CTA Button]
 Social proof: "Downloaded by 2,000+ [audience type]"
 
-[Below the fold — optional for higher-value magnets]
+[Below the fold, optional for higher-value magnets]
 What's inside: 3-5 bullet points of what they'll learn/get
 Who it's for: "[Audience type] who wants to [outcome]"
 About you: 2-sentence credibility statement
@@ -178,11 +178,11 @@ Testimonial: Quote from someone who used the resource
 
 ### Step 5: Set Up Delivery Sequence
 
-**Email 1 — Delivery (immediate):**
+**Email 1: Delivery (immediate):**
 
 ```
 Subject: Here's your [lead magnet name]
-Preview: Download it now — plus a quick tip to get started
+Preview: Download it now, plus a quick tip to get started
 
 Hi [Name],
 
@@ -191,7 +191,7 @@ Here's the [lead magnet name] you requested:
 👉 [Download Link / Access Link]
 
 Quick tip to get the most out of it:
-[One actionable sentence — what to do first]
+[One actionable sentence: what to do first]
 
 I'll send you a few more tips over the next week to help you
 [achieve the outcome]. Keep an eye out.
@@ -199,11 +199,11 @@ I'll send you a few more tips over the next week to help you
 [Your name]
 [Company]
 
-P.S. Hit reply and tell me — what's your biggest challenge with
+P.S. Hit reply and tell me, what's your biggest challenge with
 [topic]? I read every response.
 ```
 
-**Email 2 — Value add (Day 2):**
+**Email 2: Value add (Day 2):**
 
 ```
 Subject: [Quick tip related to lead magnet topic]
@@ -214,20 +214,20 @@ Hi [Name],
 Did you get a chance to use the [lead magnet]?
 
 Here's a quick tip that most people miss:
-[2-3 paragraph teaching moment — delivers standalone value]
+[2-3 paragraph teaching moment: delivers standalone value]
 
-Try this today — it takes less than 5 minutes.
+Try this today, it takes less than 5 minutes.
 
 [Your name]
 
 P.S. Tomorrow I'll share [tease next email's topic].
 ```
 
-**Email 3 — Bridge to offer (Day 4-5):**
+**Email 3, Bridge to offer (Day 4-5):**
 
 ```
 Subject: The next step after [lead magnet topic]
-Preview: [Lead magnet] handles the basics — here's how to go further
+Preview: [Lead magnet] handles the basics, here's how to go further
 
 Hi [Name],
 
@@ -243,7 +243,7 @@ That's exactly why I built [Product Name]:
 
 [CTA: Check out [Product Name] →]
 
-No pressure — the [lead magnet] works great on its own.
+No pressure, the [lead magnet] works great on its own.
 But if you want the complete system, this is the next step.
 
 [Your name]
@@ -254,7 +254,7 @@ But if you want the complete system, this is the next step.
 **Landing page optimization:**
 - [ ] Page loads in <3 seconds
 - [ ] Mobile responsive (50%+ traffic is mobile)
-- [ ] Single CTA — no competing links
+- [ ] Single CTA: no competing links
 - [ ] Headline promises a specific, desirable outcome
 - [ ] Lead magnet mockup is visible above the fold
 - [ ] Social proof present (download count, testimonials)
@@ -284,7 +284,7 @@ But if you want the complete system, this is the next step.
 ## Output Format
 
 ```markdown
-# Lead Magnet Plan — [Lead Magnet Name]
+# Lead Magnet Plan: [Lead Magnet Name]
 
 ## Lead Magnet Details
 - **Type:** [Checklist / Template / etc.]
@@ -315,7 +315,7 @@ But if you want the complete system, this is the next step.
 ## Completion
 
 ```
-Lead Magnet — Complete!
+Lead Magnet: Complete!
 
 Type: [Type]
 Title: "[Title]"
@@ -327,10 +327,10 @@ Next steps:
 1. Create the lead magnet content (use the outline above)
 2. Build the landing page with the copy provided
 3. Set up email automation with the delivery + nurture sequence
-4. Drive traffic — start with [recommended channel]
+4. Drive traffic: start with [recommended channel]
 5. Track conversion rate and optimize after 200+ visitors
 ```
 
 ## Level History
 
-- **Lv.1** — Base: 10 lead magnet types with selection criteria, checklist/template/course content outlines, landing page copy with headline formulas, CTA button text, form design rules, 3-email delivery + nurture sequence with full templates, optimization checklist (landing page, content, email, tracking). (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 10 lead magnet types with selection criteria, checklist/template/course content outlines, landing page copy with headline formulas, CTA button text, form design rules, 3-email delivery + nurture sequence with full templates, optimization checklist (landing page, content, email, tracking). (Origin: MemStack Pro v3.2, Mar 2026)

@@ -2,26 +2,26 @@
 name: memstack-deployment-docker-setup
 description: "Use this skill when the user says 'Docker', 'Dockerfile', 'docker-compose', 'containerize', 'docker-setup', or needs to containerize an application with optimized Docker images and compose configurations. Do NOT use for serverless or static site deployments."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🐳 Docker Setup — Container Configuration Generator
+# 🐳 Docker Setup: Container Configuration Generator
 *Analyze a project and generate optimized Dockerfiles, docker-compose configs, and deployment-ready container setups with health checks and volume management.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🐳 Docker Setup — Containerizing your project...`
+`🐳 Docker Setup: Containerizing your project...`
 
 | Context | Status |
 |---------|--------|
 | **User says "Docker", "Dockerfile", "docker-compose"** | ACTIVE |
 | **User wants to containerize their application** | ACTIVE |
 | **User mentions multi-stage builds, Docker optimization, or .dockerignore** | ACTIVE |
-| **User wants CI/CD with Docker (pipeline focus)** | DORMANT — see ci-cd-pipeline |
-| **User wants server provisioning with Docker installed** | DORMANT — see hetzner-setup |
-| **User wants Kubernetes orchestration** | DORMANT — beyond current scope |
+| **User wants CI/CD with Docker (pipeline focus)** | DORMANT: see ci-cd-pipeline |
+| **User wants server provisioning with Docker installed** | DORMANT: see hetzner-setup |
+| **User wants Kubernetes orchestration** | DORMANT: beyond current scope |
 
 ## Protocol
 
@@ -114,7 +114,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o /app/server .
 
-# Stage 2: Production (scratch — smallest possible image)
+# Stage 2: Production (scratch, smallest possible image)
 FROM scratch AS runner
 COPY --from=builder /app/server /server
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
@@ -334,13 +334,13 @@ volumes:
 ```
 ── ENVIRONMENT STRATEGY ───────────────────
 
-Development (.env — local only, gitignored):
+Development (.env, local only, gitignored):
   DATABASE_URL=postgresql://postgres:postgres@db:5432/app_dev
   REDIS_URL=redis://redis:6379
   API_KEY=dev_key_not_real
   NODE_ENV=development
 
-Production (.env.production — on server, never in repo):
+Production (.env.production, on server, never in repo):
   DATABASE_URL=postgresql://user:STRONG_PASS@db:5432/app_prod
   REDIS_URL=redis://:STRONG_PASS@redis:6379
   API_KEY=prod_real_key
@@ -453,7 +453,7 @@ docker history app:latest
 
 **Development networking:**
 ```yaml
-# docker-compose.yml — services on same default network
+# docker-compose.yml, services on same default network
 # Access between services by service name:
 # app → db:5432, app → redis:6379
 ```
@@ -592,4 +592,4 @@ Clean:    docker system prune -f
 
 ## Level History
 
-- **Lv.1** — Base: Multi-stage Dockerfiles (Node.js, Python, Go, Next.js), docker-compose for dev and prod, .dockerignore, environment variable strategy, health checks, image optimization (Alpine, layer caching, non-root user), network isolation, volume management with backups. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1**: Base: Multi-stage Dockerfiles (Node.js, Python, Go, Next.js), docker-compose for dev and prod, .dockerignore, environment variable strategy, health checks, image optimization (Alpine, layer caching, non-root user), network isolation, volume management with backups. (Origin: MemStack v3.2, Mar 2026)

@@ -2,17 +2,17 @@
 name: memstack-seo-local-seo
 description: "Use this skill when the user says 'local SEO', 'Google Business Profile', 'local search', 'NAP consistency', 'local listings', 'Google Maps', 'local pack', or is optimizing a business for local search results and map visibility. Do NOT use for general SEO audits or national keyword research."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 📍 Local SEO — Optimizing for local search and map visibility...
-*Evaluates Google Business Profile, NAP consistency, local schema markup, location pages, citations, and review management — producing an actionable local SEO scorecard.*
+# 📍 Local SEO: Optimizing for local search and map visibility...
+*Evaluates Google Business Profile, NAP consistency, local schema markup, location pages, citations, and review management, producing an actionable local SEO scorecard.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📍 Local SEO — Checking local search presence and consistency...`
+`📍 Local SEO, Checking local search presence and consistency...`
 
 Then execute the protocol below.
 
@@ -21,7 +21,7 @@ Then execute the protocol below.
 | User says "local SEO" or "Google Business Profile" or "local search" | ACTIVE |
 | User says "NAP consistency" or "local listings" or "Google Maps" | ACTIVE |
 | Optimizing a business with a physical location or service area | ACTIVE |
-| Running a general site audit (broader scope) | DORMANT — use site-audit |
+| Running a general site audit (broader scope) | DORMANT: use site-audit |
 | Optimizing for global/national keywords (no local component) | DORMANT |
 
 ### Anti-patterns
@@ -32,7 +32,7 @@ Then execute the protocol below.
 | "Google Business Profile is set and forget" | GBP needs regular updates: posts, photos, Q&A responses, review replies. Stale profiles rank lower. |
 | "Our address is on the Contact page, that's enough" | NAP must be consistent across every directory, citation, and page. One inconsistency can split your local authority. |
 | "Reviews don't affect ranking" | Reviews are a top-3 local ranking factor. Quantity, quality, recency, and response rate all matter. |
-| "We don't need location pages" | If you serve multiple areas, each needs a unique page with local content — not boilerplate with swapped city names. |
+| "We don't need location pages" | If you serve multiple areas, each needs a unique page with local content, not boilerplate with swapped city names. |
 
 ## Protocol
 
@@ -223,7 +223,7 @@ grep -rn "title:\|<h1\|<H1\|<h2\|<H2" --include="*.tsx" --include="*.jsx" --incl
 
 Key citation sources to verify:
 
-**Tier 1 — Essential (verify first):**
+**Tier 1: Essential (verify first):**
 
 | Directory | Why It Matters |
 |-----------|---------------|
@@ -234,7 +234,7 @@ Key citation sources to verify:
 | Facebook Business | Social signals, reviews |
 | Better Business Bureau | Trust signals |
 
-**Tier 2 — Industry-specific:**
+**Tier 2: Industry-specific:**
 
 | Industry | Directories |
 |----------|------------|
@@ -275,10 +275,10 @@ Positive review response:
 > "Thank you [Name]! We're glad [specific detail they mentioned]. We appreciate your business and look forward to helping you again."
 
 Negative review response:
-> "Thank you for your feedback, [Name]. We're sorry about [specific issue]. We'd like to make this right — please contact us at [email/phone] so we can resolve this for you."
+> "Thank you for your feedback, [Name]. We're sorry about [specific issue]. We'd like to make this right, please contact us at [email/phone] so we can resolve this for you."
 
 **Review rules:**
-- Never buy or fake reviews — Google detects and penalizes
+- Never buy or fake reviews: Google detects and penalizes
 - Don't offer incentives for reviews (violates most platform ToS)
 - Respond within 24-48 hours
 - Always address specific concerns in negative reviews
@@ -287,20 +287,20 @@ Negative review response:
 ### Step 8: Output Local SEO Scorecard
 
 ```
-📍 Local SEO — Scorecard Complete
+📍 Local SEO: Scorecard Complete
 
 Business: [name]
 Location(s): [city/cities]
 Overall local score: [X/100]
 
 Category scores:
-  Google Business Profile:  [X/10] — [summary]
-  NAP consistency:          [X/10] — [count] inconsistencies found
-  Local schema:             [X/10] — [present/missing]
-  Location pages:           [X/10] — [count] pages, unique content check
-  Local keywords:           [X/10] — [coverage summary]
-  Citations/directories:    [X/10] — [count] verified, [count] missing
-  Reviews:                  [X/10] — [count] reviews, [rating] avg
+  Google Business Profile:  [X/10]: [summary]
+  NAP consistency:          [X/10]: [count] inconsistencies found
+  Local schema:             [X/10]: [present/missing]
+  Location pages:           [X/10]: [count] pages, unique content check
+  Local keywords:           [X/10]: [coverage summary]
+  Citations/directories:    [X/10]: [count] verified, [count] missing
+  Reviews:                  [X/10]: [count] reviews, [rating] avg
 
 Priority action items:
   🔴 Critical:
@@ -325,4 +325,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Google Business Profile audit, NAP consistency verification, LocalBusiness schema generation, location page requirements, local keyword targeting, citation/directory audit, review management with response templates, scored local SEO output. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Google Business Profile audit, NAP consistency verification, LocalBusiness schema generation, location page requirements, local keyword targeting, citation/directory audit, review management with response templates, scored local SEO output. (Origin: MemStack Pro v3.2, Mar 2026)

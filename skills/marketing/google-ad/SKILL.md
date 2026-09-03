@@ -2,17 +2,17 @@
 name: memstack-marketing-google-ad
 description: "Use this skill when the user says 'google ad', 'search ad', 'PPC', 'Google Ads', 'responsive search ad', 'ad extensions', or needs keyword groups, headlines, descriptions, and Quality Score optimization for Google Ads. Do NOT use for Facebook/Meta ads or SEO."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Google Ad — Creating Google Ads campaign...
+# Google Ad: Creating Google Ads campaign...
 *Designs search and display campaigns with keyword groups, bidding strategy, responsive search ads, ad extensions, and Quality Score optimization for Google Ads.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Google Ad — Creating Google Ads campaign...`
+`Google Ad: Creating Google Ads campaign...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "Google ad", "search ad", "PPC", "Google Ads" | ACTIVE |
 | User says "responsive search ad" or "ad extensions" | ACTIVE |
 | User wants to run paid search or display campaigns | ACTIVE |
-| User wants Facebook/Meta/Instagram ads | DORMANT — use Facebook Ad |
-| User wants organic SEO ranking | DORMANT — use SEO skills |
+| User wants Facebook/Meta/Instagram ads | DORMANT: use Facebook Ad |
+| User wants organic SEO ranking | DORMANT: use SEO skills |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product/service** — what are you advertising? (name, URL, price point)
-> 2. **Campaign type** — Search, Display, Shopping, or Performance Max?
-> 3. **Target location** — countries, states, cities, or radius?
-> 4. **Monthly budget** — total ad spend available?
-> 5. **Goal** — sales, leads, phone calls, or website traffic?
-> 6. **Competitors** — who else bids on these terms?
+> 1. **Product/service**: what are you advertising? (name, URL, price point)
+> 2. **Campaign type**: Search, Display, Shopping, or Performance Max?
+> 3. **Target location**: countries, states, cities, or radius?
+> 4. **Monthly budget**: total ad spend available?
+> 5. **Goal**: sales, leads, phone calls, or website traffic?
+> 6. **Competitors**: who else bids on these terms?
 
 ### Step 2: Keyword Research & Grouping
 
@@ -63,7 +63,7 @@ If the user hasn't provided details, ask:
 **Ad group structure (SKAG-inspired):**
 
 ```
-Campaign: [Product/Service] — Search
+Campaign: [Product/Service], Search
 ├── Ad Group 1: [Core keyword theme A]
 │   ├── Keywords (5-15): [exact] and "phrase" match variations
 │   ├── Responsive Search Ad 1
@@ -103,7 +103,7 @@ Each RSA requires up to 15 headlines (30 chars each) and 4 descriptions (90 char
 | Benefit-driven | Why they should care | "Close 3x More Deals" |
 | Feature-specific | What's included | "Built-In Email & Pipeline" |
 | Social proof | Trust signals | "Trusted by 10,000+ Companies" |
-| Urgency/offer | Drive immediate action | "Start Free — No Card Required" |
+| Urgency/offer | Drive immediate action | "Start Free: No Card Required" |
 
 **RSA template:**
 
@@ -111,17 +111,17 @@ Each RSA requires up to 15 headlines (30 chars each) and 4 descriptions (90 char
 Headlines (15):
 H1: [Primary keyword + core benefit]              ← pin to position 1
 H2: [Secondary benefit or feature]                  ← pin to position 2
-H3: [Social proof — customer count or rating]
-H4: [Offer — free trial, discount, or guarantee]    ← pin to position 3
+H3: [Social proof: customer count or rating]
+H4: [Offer: free trial, discount, or guarantee]    ← pin to position 3
 H5: [Feature 1]
 H6: [Feature 2]
 H7: [Feature 3]
-H8: [Urgency — limited time or scarcity]
-H9: [Question — "Need [solution]?"]
+H8: [Urgency, limited time or scarcity]
+H9: [Question, "Need [solution]?"]
 H10: [Brand name + value proposition]
 H11: [Competitor comparison angle]
-H12: [Outcome — "Get [result] in [timeframe]"]
-H13: [Trust — "Award-Winning" or "Top Rated"]
+H12: [Outcome, "Get [result] in [timeframe]"]
+H13: [Trust, "Award-Winning" or "Top Rated"]
 H14: [Location-specific if relevant]
 H15: [Alternative phrasing of H1]
 
@@ -136,7 +136,7 @@ D4: [Offer details + urgency + CTA. 90 chars max.]                  ← pin to p
 - Pin your best keyword-match headline to position 1 (guarantees relevance)
 - Pin your best CTA description to position 1
 - Leave all others unpinned so Google can optimize combinations
-- Never pin more than 3 elements — over-pinning kills Google's ability to test
+- Never pin more than 3 elements, over-pinning kills Google's ability to test
 
 ### Step 4: Configure Ad Extensions
 
@@ -168,7 +168,7 @@ Quality Score (1-10) directly affects CPC and ad position. Three factors:
 | Factor | Weight | How to Improve |
 |--------|--------|---------------|
 | **Expected CTR** | ~40% | Write compelling headlines, use ad extensions, test RSA variations |
-| **Ad relevance** | ~25% | Match ad copy to keyword intent — keyword in headline + description |
+| **Ad relevance** | ~25% | Match ad copy to keyword intent: keyword in headline + description |
 | **Landing page experience** | ~35% | Fast load (<3s), mobile-friendly, keyword on page, clear CTA, relevant content |
 
 **Quality Score action plan:**
@@ -176,7 +176,7 @@ Quality Score (1-10) directly affects CPC and ad position. Three factors:
 | Score | Action |
 |-------|--------|
 | 7-10 | Performing well. Monitor and maintain. |
-| 5-6 | Review ad relevance — tighten keyword-to-ad matching. Improve landing page. |
+| 5-6 | Review ad relevance, tighten keyword-to-ad matching. Improve landing page. |
 | 3-4 | Rewrite ads. Consider splitting ad group into tighter themes. Audit landing page. |
 | 1-2 | Pause keyword. The intent mismatch is too large to fix with copy alone. |
 
@@ -226,12 +226,12 @@ Quality Score (1-10) directly affects CPC and ad position. Three factors:
 | Weekly | Review search terms report, add negatives, check Quality Scores |
 | Bi-weekly | Analyze RSA asset performance, replace "Low" rated headlines/descriptions |
 | Monthly | Review campaign-level metrics, reallocate budget to top performers |
-| Quarterly | Full account audit — structure, keywords, landing pages, competitor landscape |
+| Quarterly | Full account audit: structure, keywords, landing pages, competitor landscape |
 
 ## Output Format
 
 ```markdown
-# Google Ads Campaign — [Product/Service]
+# Google Ads Campaign: [Product/Service]
 
 ## Campaign Structure
 [Campaign hierarchy diagram with ad groups]
@@ -266,7 +266,7 @@ Quality Score (1-10) directly affects CPC and ad position. Three factors:
 ## Completion
 
 ```
-Google Ad — Complete!
+Google Ad: Complete!
 
 Campaign type: [Search/Display/Shopping]
 Ad groups: [Count]
@@ -285,4 +285,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Keyword research with intent tiers, SKAG-inspired ad group structure, RSA templates (15 headlines + 4 descriptions) with pinning strategy, 7 ad extension types, Quality Score optimization (3-factor breakdown), bidding strategy selection matrix, budget allocation by campaign type, negative keyword management, weekly/monthly optimization schedule. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Keyword research with intent tiers, SKAG-inspired ad group structure, RSA templates (15 headlines + 4 descriptions) with pinning strategy, 7 ad extension types, Quality Score optimization (3-factor breakdown), bidding strategy selection matrix, budget allocation by campaign type, negative keyword management, weekly/monthly optimization schedule. (Origin: MemStack Pro v3.2, Mar 2026)

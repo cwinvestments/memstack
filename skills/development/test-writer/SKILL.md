@@ -2,17 +2,17 @@
 name: memstack-development-test-writer
 description: "Use this skill when the user says 'write tests', 'add tests', 'test coverage', 'unit tests', 'integration tests', 'component tests', 'mocking', 'edge cases', or needs to generate tests with proper mocking and edge case coverage. Do NOT use for refactoring plans or database migrations."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Test Writer — Generating test suite...
+# Test Writer: Generating test suite...
 *Generates comprehensive test suites with unit, integration, and e2e tests, proper mocking strategies, edge case coverage, naming conventions, and CI integration patterns.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Test Writer — Generating test suite...`
+`Test Writer: Generating test suite...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "write tests", "add tests", "test coverage" | ACTIVE |
 | User says "unit tests", "integration tests", "component tests", "e2e tests" | ACTIVE |
 | User says "mocking", "edge cases", "test this function" | ACTIVE |
-| User wants to refactor existing code | DORMANT — use Refactor Planner |
-| User wants to change database schema | DORMANT — use Migration Planner |
+| User wants to refactor existing code | DORMANT: use Refactor Planner |
+| User wants to change database schema | DORMANT: use Migration Planner |
 
 ## Common Mistakes
 
@@ -42,11 +42,11 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Target** — what code needs tests? (function, class, module, API endpoint)
-> 2. **Language/framework** — what tech stack? (JS/TS + Jest/Vitest, Python + pytest, Go, etc.)
-> 3. **Test level** — unit, integration, e2e, or all three?
-> 4. **Current coverage** — any existing tests? What percentage?
-> 5. **Priority** — critical paths first, or comprehensive coverage?
+> 1. **Target**: what code needs tests? (function, class, module, API endpoint)
+> 2. **Language/framework**: what tech stack? (JS/TS + Jest/Vitest, Python + pytest, Go, etc.)
+> 3. **Test level**: unit, integration, e2e, or all three?
+> 4. **Current coverage**: any existing tests? What percentage?
+> 5. **Priority**: critical paths first, or comprehensive coverage?
 
 ### Step 2: Analyze the Code Under Test
 
@@ -67,9 +67,9 @@ Before writing tests, understand the target:
 
 ```
 [Target Function]
-  ├── [Dependency 1] — mock? [Yes: external / No: pure]
-  ├── [Dependency 2] — mock? [Yes: external / No: pure]
-  └── [Dependency 3] — mock? [Yes: external / No: pure]
+  ├── [Dependency 1]: mock? [Yes: external / No: pure]
+  ├── [Dependency 2]: mock? [Yes: external / No: pure]
+  └── [Dependency 3]: mock? [Yes: external / No: pure]
 ```
 
 **Mock decision rule:**
@@ -79,7 +79,7 @@ Before writing tests, understand the target:
 
 ### Step 3: Design Test Cases
 
-**Coverage strategy — identify all test scenarios:**
+**Coverage strategy: identify all test scenarios:**
 
 **Happy path tests:**
 
@@ -128,7 +128,7 @@ Before writing tests, understand the target:
 |-------|---------|---------|
 | **Behavior-driven** | `should [expected] when [condition]` | `should return empty array when no items match filter` |
 | **Given-When-Then** | `given [state] when [action] then [result]` | `given expired token when authenticating then throws AuthError` |
-| **Method-focused** | `[method] — [scenario] — [expected]` | `calculateTotal — with discount — applies percentage reduction` |
+| **Method-focused** | `[method], [scenario], [expected]` | `calculateTotal, with discount: applies percentage reduction` |
 
 **Test structure template (JavaScript/TypeScript):**
 
@@ -283,16 +283,16 @@ describe('[Feature] Integration', () => {
   });
 
   it('should create user and send welcome email', async () => {
-    // Arrange — mock only the email service (external boundary)
+    // Arrange, mock only the email service (external boundary)
     const emailSpy = jest.spyOn(emailService, 'send').mockResolvedValue(true);
 
-    // Act — use real DB, real validation, real business logic
+    // Act: use real DB, real validation, real business logic
     const user = await userService.register({
       email: 'test@example.com',
       name: 'Test User',
     });
 
-    // Assert — verify real DB state + external call
+    // Assert, verify real DB state + external call
     const dbUser = await testDb.query('SELECT * FROM users WHERE id = $1', [user.id]);
     expect(dbUser).toBeDefined();
     expect(emailSpy).toHaveBeenCalledWith(
@@ -347,7 +347,7 @@ describe('POST /api/users', () => {
 | Level | Target | Rationale |
 |-------|--------|-----------|
 | **Critical paths** (auth, payments, data writes) | >90% | Bugs here = revenue loss or security issues |
-| **Business logic** (services, domain) | >80% | Core value — must work correctly |
+| **Business logic** (services, domain) | >80% | Core value: must work correctly |
 | **Utilities / helpers** | >70% | Important but lower risk |
 | **UI components** | >60% | Visual testing often complements |
 | **Overall project** | >75% | Healthy baseline |
@@ -416,7 +416,7 @@ npx vitest --changed
 ## Output Format
 
 ```markdown
-# Test Suite — [Target Module/Function]
+# Test Suite: [Target Module/Function]
 
 ## Analysis
 - **Target:** [What's being tested]
@@ -448,7 +448,7 @@ npx vitest --changed
 ## Completion
 
 ```
-Test Writer — Complete!
+Test Writer: Complete!
 
 Target: [Module/function name]
 Tests written: [X] total
@@ -469,4 +469,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Code analysis template (inputs, outputs, dependencies, branches), 3-category test case design (happy path, edge cases, error paths), test templates for JS/TS and Python, 7 mock patterns by dependency type with verification, integration and E2E test patterns, coverage targets by code criticality, CI integration with GitHub Actions. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Code analysis template (inputs, outputs, dependencies, branches), 3-category test case design (happy path, edge cases, error paths), test templates for JS/TS and Python, 7 mock patterns by dependency type with verification, integration and E2E test patterns, coverage targets by code criticality, CI integration with GitHub Actions. (Origin: MemStack Pro v3.2, Mar 2026)

@@ -2,18 +2,18 @@
 name: memstack-security-api-audit
 description: "Use this skill when the user says 'audit API', 'check API security', 'API routes security', 'endpoint audit', 'check my routes', or needs to verify API route protection. Reviews API endpoints for authentication, authorization, and input validation gaps. Do NOT use for frontend security headers or dependency scanning."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
 
-# 🛡️ API Audit — Checking API Route Security...
+# 🛡️ API Audit: Checking API Route Security...
 *Audit Next.js API routes for authentication, authorization, validation, and common vulnerabilities.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🛡️ API Audit — Checking API Route Security...`
+`🛡️ API Audit: Checking API Route Security...`
 
 Then execute the protocol below.
 
@@ -21,11 +21,11 @@ Then execute the protocol below.
 
 | Context | Status |
 |---------|--------|
-| **User asks to audit/check API routes** | ACTIVE — full audit |
-| **User mentions API security** | ACTIVE — full audit |
-| **User asks about endpoint protection** | ACTIVE — full audit |
-| **User is writing a new API route** | DORMANT — let them finish first |
-| **Non-Next.js project** | DORMANT — not applicable (adapt if Express/Fastify detected) |
+| **User asks to audit/check API routes** | ACTIVE: full audit |
+| **User mentions API security** | ACTIVE: full audit |
+| **User asks about endpoint protection** | ACTIVE: full audit |
+| **User is writing a new API route** | DORMANT: let them finish first |
+| **Non-Next.js project** | DORMANT, not applicable (adapt if Express/Fastify detected) |
 
 ## Protocol
 
@@ -55,7 +55,7 @@ Find all API route files in the project:
    ```bash
    grep -r "'use server'" --include="*.ts" --include="*.tsx" -l
    ```
-   Server actions are also attack surface — treat as API routes. For each server action function, verify it performs authentication before accessing data. Server actions are callable from any client component and receive no automatic auth — they are functionally identical to unauthenticated POST endpoints unless the function explicitly calls `getSession()`, `getAuthContext()`, or equivalent.
+   Server actions are also attack surface: treat as API routes. For each server action function, verify it performs authentication before accessing data. Server actions are callable from any client component and receive no automatic auth: they are functionally identical to unauthenticated POST endpoints unless the function explicitly calls `getSession()`, `getAuthContext()`, or equivalent.
 
 Compile a list of all routes with their HTTP methods and file paths.
 
@@ -64,11 +64,11 @@ Compile a list of all routes with their HTTP methods and file paths.
 For each route, determine if it verifies the caller is authenticated:
 
 **Search for auth patterns in each route file:**
-- `getAuthContext` / `getSession` / `getServerSession` / `auth()` — framework auth
-- `getToken` / `verifyToken` / `jwt.verify` — manual JWT
-- `cookies().get` with session validation — cookie-based auth
-- `headers().get('authorization')` with validation — bearer token
-- `createRouteHandlerClient` / `createServerComponentClient` — Supabase auth
+- `getAuthContext` / `getSession` / `getServerSession` / `auth()`: framework auth
+- `getToken` / `verifyToken` / `jwt.verify`: manual JWT
+- `cookies().get` with session validation: cookie-based auth
+- `headers().get('authorization')` with validation: bearer token
+- `createRouteHandlerClient` / `createServerComponentClient`: Supabase auth
 
 **Classify each route:**
 | Status | Meaning |
@@ -76,26 +76,26 @@ For each route, determine if it verifies the caller is authenticated:
 | ✅ Authenticated | Auth check found before data access |
 | 🔴 No Auth | No authentication pattern detected |
 | ℹ️ Public | Route is intentionally public (webhooks, health checks, public data) |
-| ⚠️ Middleware-only | Auth handled by middleware — verify matcher covers this route |
+| ⚠️ Middleware-only | Auth handled by middleware, verify matcher covers this route |
 
 **Flag as CRITICAL** if a route performs database writes or returns user-specific data with no auth.
 
 **Known public route patterns** (classify as ℹ️ INFO, not CRITICAL):
-- `/api/health`, `/api/status` — health checks
-- `/api/webhooks/*` — external webhooks (need signature verification instead)
-- `/api/auth/*` — auth flow endpoints (login, callback, register)
-- `/api/public/*` — explicitly named public routes
-- `/api/cron/*` — cron jobs (need secret verification instead)
+- `/api/health`, `/api/status`: health checks
+- `/api/webhooks/*`: external webhooks (need signature verification instead)
+- `/api/auth/*`: auth flow endpoints (login, callback, register)
+- `/api/public/*`: explicitly named public routes
+- `/api/cron/*`: cron jobs (need secret verification instead)
 
 ### Step 3: Check Authorization (Check 2)
 
 For authenticated routes, verify they check *what* the user can access:
 
 **Search for authorization patterns:**
-- `verifyOrgAccess` / `checkOrgMembership` / `requireRole` — org-level authz
-- Comparing `user.id` against resource `user_id` / `owner_id` — ownership check
+- `verifyOrgAccess` / `checkOrgMembership` / `requireRole`: org-level authz
+- Comparing `user.id` against resource `user_id` / `owner_id`: ownership check
 - Role checks: `user.role === 'admin'` or similar
-- Supabase RLS (may handle authz at database layer — note as INFO)
+- Supabase RLS (may handle authz at database layer: note as INFO)
 
 **Flag as WARNING if:**
 - Route fetches data by ID from params without ownership verification
@@ -105,11 +105,11 @@ For authenticated routes, verify they check *what* the user can access:
 
 **Pattern to enforce:**
 ```typescript
-// BAD — trusts client-provided org ID
+// BAD, trusts client-provided org ID
 const { orgId } = await req.json();
 const data = await db.from('documents').select().eq('org_id', orgId);
 
-// GOOD — derives org from authenticated session
+// GOOD, derives org from authenticated session
 const { orgId } = await getAuthContext(req);
 const data = await db.from('documents').select().eq('org_id', orgId);
 ```
@@ -119,10 +119,10 @@ const data = await db.from('documents').select().eq('org_id', orgId);
 For routes that accept request body or query params:
 
 **Search for validation patterns:**
-- `z.object` / `z.string()` / `.parse(` / `.safeParse(` — Zod
-- `Joi.object` / `.validate(` — Joi
-- `yup.object` / `.validate(` — Yup
-- `body.` or `req.json()` followed by manual type checks — weak validation
+- `z.object` / `z.string()` / `.parse(` / `.safeParse(`: Zod
+- `Joi.object` / `.validate(`: Joi
+- `yup.object` / `.validate(`: Yup
+- `body.` or `req.json()` followed by manual type checks: weak validation
 
 **Flag as WARNING if:**
 - Route reads `req.json()` or `request.body` without schema validation
@@ -139,7 +139,7 @@ For public-facing routes:
 
 **Search for rate limiting patterns:**
 - `rateLimit` / `rateLimiter` / `limiter` imports
-- `@upstash/ratelimit` — serverless rate limiting
+- `@upstash/ratelimit`: serverless rate limiting
 - `X-RateLimit` header setting
 - Middleware-level rate limiting (check `middleware.ts`)
 
@@ -155,14 +155,14 @@ For POST/PUT/PATCH routes that accept request bodies:
 **Search for size enforcement patterns:**
 - `Content-Length` header checks before parsing body
 - `bodyParser` config with `sizeLimit` option
-- `export const config = { api: { bodyParser: { sizeLimit: '...' } } }` — Next.js Pages Router
+- `export const config = { api: { bodyParser: { sizeLimit: '...' } } }`: Next.js Pages Router
 - Next.js App Router: check if `request.text()` / `request.json()` is called without upstream size limits
 - Middleware-level body size restrictions
 
 **Flag as WARNING if:**
 - Routes that accept file uploads, JSON bodies, or form data have no explicit size limit
 - No global body size limit configured in middleware or framework config
-- A route reads `await request.json()` on an unbounded body — a malicious client can send gigabytes of JSON, causing memory exhaustion (DoS)
+- A route reads `await request.json()` on an unbounded body. A malicious client can send gigabytes of JSON, causing memory exhaustion (DoS)
 
 **Note:** Next.js App Router does NOT enforce a default body size limit on route handlers. Unlike the Pages Router (which defaults to 1MB via `bodyParser`), App Router passes the raw request through. Projects must enforce limits explicitly.
 
@@ -182,8 +182,8 @@ For routes that create payments, charges, transfers, or financial transactions:
 
 **Search for idempotency patterns:**
 - `idempotencyKey` / `idempotency_key` / `Idempotency-Key` header
-- Stripe: `stripe.paymentIntents.create({}, { idempotencyKey: ... })` — built-in support
-- Square: `idempotency_key` field in request bodies — built-in support
+- Stripe: `stripe.paymentIntents.create({}, { idempotencyKey: ... })`: built-in support
+- Square: `idempotency_key` field in request bodies: built-in support
 - Custom: checking for duplicate request IDs before processing
 
 **Identify payment mutation routes:**
@@ -194,12 +194,12 @@ Search for routes that call:
 - Any route that inserts into `invoices`, `payments`, `orders`, or `transactions` tables
 
 **Flag as WARNING if:**
-- Payment-creating routes don't use idempotency keys — network retries can cause duplicate charges
+- Payment-creating routes don't use idempotency keys, network retries can cause duplicate charges
 - Routes that create financial records have no duplicate-request protection
 
 **Correct pattern:**
 ```typescript
-// Stripe — pass idempotency key from client or generate deterministically
+// Stripe, pass idempotency key from client or generate deterministically
 const session = await stripe.checkout.sessions.create(
   { ... },
   { idempotencyKey: `order-${orderId}-${timestamp}` }
@@ -209,23 +209,23 @@ const session = await stripe.checkout.sessions.create(
 ### Step 6: Check SQL Injection (Check 5)
 
 **Search for dangerous query patterns:**
-- Template literals in raw SQL strings with interpolated variables — CRITICAL
-- String concatenation in queries: `"SELECT * FROM " + table` — CRITICAL
-- `.rpc()` calls with unsanitized user input — WARNING
-- Raw SQL via `prisma.$queryRawUnsafe` or `sql.unsafe` — CRITICAL
+- Template literals in raw SQL strings with interpolated variables: CRITICAL
+- String concatenation in queries: `"SELECT * FROM " + table`: CRITICAL
+- `.rpc()` calls with unsanitized user input: WARNING
+- Raw SQL via `prisma.$queryRawUnsafe` or `sql.unsafe`: CRITICAL
 
 **Safe patterns** (do not flag):
 - Parameterized queries with tagged templates (Prisma)
-- Supabase client `.from().select().eq()` chain — safe by design
+- Supabase client `.from().select().eq()` chain: safe by design
 - Prepared statements with `$1, $2` placeholders
 
 ### Step 7: Check Data Exposure (Check 6)
 
 **Search for sensitive data in responses:**
-- Returning full user objects: `return NextResponse.json(user)` — may include password hash
-- Returning `select('*')` results without column filtering — WARNING
-- Logging request bodies that may contain passwords — WARNING
-- Returning internal IDs, database errors, or stack traces — WARNING
+- Returning full user objects: `return NextResponse.json(user)`: may include password hash
+- Returning `select('*')` results without column filtering: WARNING
+- Logging request bodies that may contain passwords: WARNING
+- Returning internal IDs, database errors, or stack traces: WARNING
 
 **Fields that should never appear in API responses:**
 `password`, `password_hash`, `hashed_password`, `secret`, `token`, `refresh_token`, `api_key`, `private_key`, `ssn`, `credit_card`
@@ -235,9 +235,9 @@ Search each route file for these field names, then check if they appear in retur
 ### Step 8: Check CORS Configuration (Check 7)
 
 **Search for CORS patterns:**
-- `Access-Control-Allow-Origin: *` — overly permissive (WARNING)
-- `Access-Control-Allow-Credentials: true` with wildcard origin — CRITICAL
-- Missing CORS headers on routes that need cross-origin access — INFO
+- `Access-Control-Allow-Origin: *`: overly permissive (WARNING)
+- `Access-Control-Allow-Credentials: true` with wildcard origin: CRITICAL
+- Missing CORS headers on routes that need cross-origin access: INFO
 - `next.config.js` headers configuration for CORS
 
 **Check `next.config.js` or `next.config.mjs`:**
@@ -248,10 +248,10 @@ grep -A5 "Access-Control\|headers\(\)" next.config.*
 ### Step 9: Check Error Handling (Check 8)
 
 **Search for error patterns in each route:**
-- Bare `catch (e) { return NextResponse.json(e) }` — leaks stack traces (WARNING)
-- `catch (e) { return NextResponse.json({ error: e.message }) }` — leaks internal errors (WARNING)
-- No try/catch around database operations — unhandled errors become 500s with stack traces (WARNING)
-- `console.error` with full error objects in production — log exposure (INFO)
+- Bare `catch (e) { return NextResponse.json(e) }`: leaks stack traces (WARNING)
+- `catch (e) { return NextResponse.json({ error: e.message }) }`: leaks internal errors (WARNING)
+- No try/catch around database operations, unhandled errors become 500s with stack traces (WARNING)
+- `console.error` with full error objects in production: log exposure (INFO)
 
 **Correct pattern:**
 ```typescript
@@ -267,19 +267,19 @@ catch (error) {
 ### Step 10: Check Webhook & Special Routes (Check 9)
 
 **For webhook routes** (`/api/webhooks/*`):
-- Stripe: must call `stripe.webhooks.constructEvent(body, sig, secret)` — CRITICAL if missing
+- Stripe: must call `stripe.webhooks.constructEvent(body, sig, secret)`: CRITICAL if missing
 - GitHub: must verify `X-Hub-Signature-256` header
 - Generic: must verify shared secret or HMAC signature
 - Must use raw body (`req.text()` not `req.json()`) for signature verification
 
 **For file upload routes:**
-- Must enforce file size limits — WARNING if missing
-- Must validate file type / MIME type — WARNING if missing
-- Must not store uploads in publicly accessible paths without auth — CRITICAL
+- Must enforce file size limits: WARNING if missing
+- Must validate file type / MIME type: WARNING if missing
+- Must not store uploads in publicly accessible paths without auth: CRITICAL
 
 **For DELETE routes:**
-- Must verify resource ownership before deletion — CRITICAL if missing
-- Should use soft delete pattern where appropriate — INFO
+- Must verify resource ownership before deletion: CRITICAL if missing
+- Should use soft delete pattern where appropriate: INFO
 
 ### Step 11: Generate Report
 
@@ -294,28 +294,28 @@ Global middleware auth: <yes/no>
 
 | Route | Method | Auth | Authz | Validation | Risk | Issues |
 |-------|--------|------|-------|------------|------|--------|
-| /api/users | GET | ✅ | ✅ | ✅ | ✅ OK | — |
+| /api/users | GET | ✅ | ✅ | ✅ | ✅ OK | none |
 | /api/users | POST | ✅ | ✅ | 🔴 | ⚠️ WARN | No input validation |
-| /api/items/[id] | DELETE | 🔴 | 🔴 | — | 🔴 CRIT | No auth, no ownership check |
-| /api/webhooks/stripe | POST | ℹ️ | — | — | ✅ OK | Signature verified |
+| /api/items/[id] | DELETE | 🔴 | 🔴 | none | 🔴 CRIT | No auth, no ownership check |
+| /api/webhooks/stripe | POST | ℹ️ | none | none | ✅ OK | Signature verified |
 | /api/admin/users | GET | ✅ | ⚠️ | ✅ | ⚠️ WARN | No role check for admin route |
 
 ## Critical Issues
-1. **DELETE /api/items/[id]** — No authentication. Any request can delete any item.
+1. **DELETE /api/items/[id]**: No authentication. Any request can delete any item.
    → Fix: Add `getAuthContext(req)` and verify `item.user_id === user.id` before deleting.
 
-2. **POST /api/upload** — No file size limit. Server vulnerable to resource exhaustion.
+2. **POST /api/upload**: No file size limit. Server vulnerable to resource exhaustion.
    → Fix: Add size limit config or check `Content-Length` header.
 
 ## Warnings
-1. **POST /api/users** — Request body parsed without schema validation.
+1. **POST /api/users**: Request body parsed without schema validation.
    → Fix: Add Zod schema and parse before processing.
 
-2. **GET /api/admin/users** — Authenticated but no admin role verification.
+2. **GET /api/admin/users**: Authenticated but no admin role verification.
    → Fix: Add role check before returning data.
 
 ## Info
-1. **Supabase RLS active** — Authorization may be handled at database layer for some routes.
+1. **Supabase RLS active**: Authorization may be handled at database layer for some routes.
    Verify RLS policies cover the same access patterns. Run `rls-checker` for full RLS audit.
 
 ## Summary
@@ -360,11 +360,11 @@ Offer to apply fixes directly if the user approves.
 
 ## Related Skills
 
-- **rls-checker** — Audit Supabase RLS policies (database-level security)
-- **secrets-scanner** — Find exposed API keys and credentials
-- **owasp-top10** — Full OWASP Top 10 vulnerability assessment
+- **rls-checker**: Audit Supabase RLS policies (database-level security)
+- **secrets-scanner**: Find exposed API keys and credentials
+- **owasp-top10**: Full OWASP Top 10 vulnerability assessment
 
 ## Level History
 
-- **Lv.1** — Base: Route discovery (App Router, Pages Router, Server Actions, middleware), 9-point analysis (auth, authz, validation, rate limiting, SQLi, data exposure, CORS, error handling, webhooks/uploads/deletes), structured report with risk levels, inline fix suggestions. Patterns derived from AdminStack (getAuthContext, verifyOrgAccess) and 10+ production Next.js apps. (Origin: MemStack Pro v1.0, Mar 2026)
-- **Lv.2** — Audit feedback: Added request body size limit check (App Router has no default limit), idempotency key check for payment mutations (Stripe/Square), Server Actions auth verification (callable from any client, no automatic auth). (Origin: AdminStack audit, Mar 2026)
+- **Lv.1**: Base: Route discovery (App Router, Pages Router, Server Actions, middleware), 9-point analysis (auth, authz, validation, rate limiting, SQLi, data exposure, CORS, error handling, webhooks/uploads/deletes), structured report with risk levels, inline fix suggestions. Patterns derived from AdminStack (getAuthContext, verifyOrgAccess) and 10+ production Next.js apps. (Origin: MemStack Pro v1.0, Mar 2026)
+- **Lv.2**: Audit feedback: Added request body size limit check (App Router has no default limit), idempotency key check for payment mutations (Stripe/Square), Server Actions auth verification (callable from any client, no automatic auth). (Origin: AdminStack audit, Mar 2026)

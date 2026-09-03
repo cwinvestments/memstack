@@ -1,4 +1,4 @@
-# Session Start — Diary-First Context Loading
+# Session Start: Diary-First Context Loading
 
 When the **first message** in a fresh session references prior work, ALWAYS read the most recent diary entry before taking any other action.
 
@@ -9,7 +9,7 @@ When the **first message** in a fresh session references prior work, ALWAYS read
 
 ## Protocol
 1. Search for the most recent diary: `ls -t memory/sessions/ | head -3` (or check `memory/diary/`)
-2. Read the latest entry to restore context — focus on the **Session Handoff** section
+2. Read the latest entry to restore context, focus on the **Session Handoff** section
 3. Summarize what was in progress and any pending items
 4. Only THEN proceed with the user's request
 

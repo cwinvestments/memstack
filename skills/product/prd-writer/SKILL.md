@@ -2,17 +2,17 @@
 name: memstack-product-prd-writer
 description: "Use this skill when the user says 'PRD', 'product requirements', 'requirements document', or needs a complete engineering-ready PRD with problem statement, personas, MoSCoW features, and success metrics. Do NOT use for single feature specs or user story backlogs."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# PRD Writer — Writing product requirements document...
+# PRD Writer: Writing product requirements document...
 *Generates a complete engineering-ready PRD with problem statement, user personas, functional and non-functional requirements, MoSCoW prioritization, success metrics, and implementation timeline.*
 
 ## Activation
 
 When this skill activates, output:
 
-`PRD Writer — Writing product requirements document...`
+`PRD Writer: Writing product requirements document...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "PRD", "product requirements", "requirements document" | ACTIVE |
 | User wants a full product spec for engineering handoff | ACTIVE |
 | User is planning a new product or major feature set | ACTIVE |
-| User wants a spec for ONE feature | DORMANT — use Feature Spec |
-| User wants user stories for sprint planning | DORMANT — use User Story Generator |
+| User wants a spec for ONE feature | DORMANT: use Feature Spec |
+| User wants user stories for sprint planning | DORMANT: use User Story Generator |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Product name** — what are you building?
-> 2. **Problem statement** — what problem does this solve? For whom?
-> 3. **Target users** — who are the primary and secondary users?
-> 4. **Business context** — why now? What's the opportunity?
-> 5. **Scope** — is this a new product, a major feature set, or a v2?
-> 6. **Constraints** — timeline, budget, team size, tech stack?
+> 1. **Product name**: what are you building?
+> 2. **Problem statement**: what problem does this solve? For whom?
+> 3. **Target users**: who are the primary and secondary users?
+> 4. **Business context**: why now? What's the opportunity?
+> 5. **Scope**: is this a new product, a major feature set, or a v2?
+> 6. **Constraints**: timeline, budget, team size, tech stack?
 
 ### Step 2: Write Problem Statement
 
@@ -77,9 +77,9 @@ and [positive outcome for the business: revenue, retention, growth].
 ```
 
 **Problem statement rules:**
-- Be specific — "Users struggle with X" not "The experience could be better"
-- Include evidence — data, quotes, or research that proves the problem exists
-- Quantify the impact — makes prioritization decisions easier
+- Be specific, "Users struggle with X" not "The experience could be better"
+- Include evidence: data, quotes, or research that proves the problem exists
+- Quantify the impact: makes prioritization decisions easier
 - Separate the problem from the solution (no feature names here)
 
 ### Step 3: Define User Personas
@@ -89,16 +89,16 @@ Create 2-3 personas (no more):
 **Persona template:**
 
 ```markdown
-### Persona: [Name] — [Role/Title]
+### Persona: [Name]: [Role/Title]
 
 **Demographics:** [Age range, job title, company size, tech savviness]
 
 **Goals:**
-1. [Primary goal — what they're trying to achieve]
+1. [Primary goal, what they're trying to achieve]
 2. [Secondary goal]
 
 **Pain points:**
-1. [Frustration 1 — related to the problem statement]
+1. [Frustration 1, related to the problem statement]
 2. [Frustration 2]
 3. [Frustration 3]
 
@@ -158,7 +158,7 @@ Create 2-3 personas (no more):
 - Each requirement should be testable (you can verify it's done)
 - Use "User can [action]" or "System [behavior] when [condition]"
 - Never combine two requirements in one row
-- Include "Won't" items explicitly — prevents scope creep conversations later
+- Include "Won't" items explicitly, prevents scope creep conversations later
 
 ### Step 5: Define User Flows
 
@@ -193,15 +193,15 @@ For each Must requirement, document the primary user flow:
 
 | Metric | Current | Target | Timeframe | How to Measure |
 |--------|---------|--------|-----------|---------------|
-| [Primary metric — e.g., conversion rate] | [X]% | [Y]% | [90 days] | [Analytics tool] |
-| [Secondary metric — e.g., time-on-task] | [X min] | [Y min] | [90 days] | [Analytics tool] |
-| [Business metric — e.g., revenue impact] | $[X] | $[Y] | [6 months] | [Revenue dashboard] |
-| [User satisfaction — e.g., NPS] | [X] | [Y] | [90 days] | [Survey tool] |
+| [Primary metric, e.g., conversion rate] | [X]% | [Y]% | [90 days] | [Analytics tool] |
+| [Secondary metric, e.g., time-on-task] | [X min] | [Y min] | [90 days] | [Analytics tool] |
+| [Business metric, e.g., revenue impact] | $[X] | $[Y] | [6 months] | [Revenue dashboard] |
+| [User satisfaction, e.g., NPS] | [X] | [Y] | [90 days] | [Survey tool] |
 
 **Metric rules:**
 - 1 primary metric (the North Star for this product/feature)
 - 2-3 secondary metrics (supporting indicators)
-- 1 guardrail metric (something that must NOT get worse — e.g., page load time)
+- 1 guardrail metric (something that must NOT get worse, e.g., page load time)
 - All metrics must have current baselines and targets with timeframes
 
 ### Step 7: Outline Timeline & Dependencies
@@ -215,9 +215,9 @@ For each Must requirement, document the primary user flow:
 | Phase 3: Polish | Could-have features + optimization | [X weeks] | Phase 2 complete |
 
 **Key dependencies:**
-- [ ] [Dependency 1: Design mockups for [flow] — needed by [date]]
-- [ ] [Dependency 2: API endpoint from [team] — needed by [date]]
-- [ ] [Dependency 3: Third-party integration approval — needed by [date]]
+- [ ] [Dependency 1: Design mockups for [flow]: needed by [date]]
+- [ ] [Dependency 2: API endpoint from [team]: needed by [date]]
+- [ ] [Dependency 3: Third-party integration approval: needed by [date]]
 
 **Risks:**
 
@@ -267,7 +267,7 @@ For each Must requirement, document the primary user flow:
 ## Completion
 
 ```
-PRD Writer — Complete!
+PRD Writer: Complete!
 
 Product: [Name]
 Problem: [One-line summary]
@@ -287,4 +287,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Problem statement template with evidence/impact/opportunity, persona template (goals, pains, behaviors, quote), MoSCoW functional requirements table, non-functional requirements (10 categories), user flow template with error states and edge cases, success metrics with baselines/targets/timeframes, phased timeline with dependencies and risk matrix. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Problem statement template with evidence/impact/opportunity, persona template (goals, pains, behaviors, quote), MoSCoW functional requirements table, non-functional requirements (10 categories), user flow template with error states and edge cases, success metrics with baselines/targets/timeframes, phased timeline with dependencies and risk matrix. (Origin: MemStack Pro v3.2, Mar 2026)

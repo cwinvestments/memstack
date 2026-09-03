@@ -2,26 +2,26 @@
 name: memstack-security-dependency-audit
 description: "Use this skill when the user says 'dependency audit', 'npm audit', 'pip audit', 'cargo audit', 'security vulnerabilities', 'outdated packages', 'supply chain', or needs to scan project dependencies for vulnerabilities, abandoned packages, and upgrade risks. Do NOT use for application-level security or secrets scanning."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🔒 Dependency Audit — Supply Chain Security Scanner
+# 🔒 Dependency Audit: Supply Chain Security Scanner
 *Scan project dependencies for vulnerabilities, outdated packages, abandoned libraries, and supply chain risks with a prioritized upgrade plan.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🔒 Dependency Audit — Scanning your dependency tree...`
+`🔒 Dependency Audit: Scanning your dependency tree...`
 
 | Context | Status |
 |---------|--------|
 | **User says "dependency audit", "npm audit", "scan dependencies"** | ACTIVE |
 | **User wants to check for vulnerable or outdated packages** | ACTIVE |
 | **User mentions CVEs, supply chain security, or abandoned packages** | ACTIVE |
-| **User wants OWASP web app security (not just dependencies)** | DORMANT — see owasp-top10 |
-| **User wants secrets scanning (not package vulnerabilities)** | DORMANT — see secrets-scanner |
-| **User wants general code review** | DORMANT — see code-reviewer |
+| **User wants OWASP web app security (not just dependencies)** | DORMANT: see owasp-top10 |
+| **User wants secrets scanning (not package vulnerabilities)** | DORMANT: see secrets-scanner |
+| **User wants general code review** | DORMANT: see code-reviewer |
 
 ## Protocol
 
@@ -72,14 +72,14 @@ CVE-2024-YYYYY  🟡 HIGH
 
 | Severity | CVSS Score | Icon | Action |
 |----------|-----------|------|--------|
-| Critical | 9.0 - 10.0 | 🔴 | Fix immediately — potential active exploitation |
-| High | 7.0 - 8.9 | 🟡 | Fix within 1 week — significant risk |
-| Medium | 4.0 - 6.9 | 🟠 | Fix within 1 month — moderate risk |
-| Low | 0.1 - 3.9 | 🔵 | Fix when convenient — minimal risk |
+| Critical | 9.0 - 10.0 | 🔴 | Fix immediately: potential active exploitation |
+| High | 7.0 - 8.9 | 🟡 | Fix within 1 week: significant risk |
+| Medium | 4.0 - 6.9 | 🟠 | Fix within 1 month: moderate risk |
+| Low | 0.1 - 3.9 | 🔵 | Fix when convenient: minimal risk |
 
 **Direct vs transitive priority:**
-- **Direct dependency**: You explicitly installed it — highest priority, easiest to fix
-- **Transitive dependency**: Pulled in by another package — fix by updating the direct parent
+- **Direct dependency**: You explicitly installed it, highest priority, easiest to fix
+- **Transitive dependency**: Pulled in by another package, fix by updating the direct parent
 - If the transitive parent hasn't released a fix, consider overriding with `overrides` (npm) or `resolutions` (Yarn)
 
 ### Step 3: Check for Outdated Packages
@@ -91,9 +91,9 @@ Run the outdated command and categorize results:
 
 Package          Current    Latest     Type      Risk
 ─────────────────────────────────────────────────────
-[package-a]      1.2.3      1.2.8      Patch     ✅ Safe — bug fixes only
-[package-b]      2.1.0      2.4.0      Minor     ✅ Safe — new features, backward compatible
-[package-c]      3.0.0      4.2.1      Major     ⚠️ Breaking — review changelog
+[package-a]      1.2.3      1.2.8      Patch     ✅ Safe, bug fixes only
+[package-b]      2.1.0      2.4.0      Minor     ✅ Safe, new features, backward compatible
+[package-c]      3.0.0      4.2.1      Major     ⚠️ Breaking, review changelog
 [package-d]      1.0.0      1.0.0      Current   ✅ Up to date
 ```
 
@@ -101,8 +101,8 @@ Package          Current    Latest     Type      Risk
 
 | Gap Type | Risk | Approach |
 |----------|------|----------|
-| **Patch** (1.2.3 → 1.2.8) | Very Low | Update immediately — bug/security fixes |
-| **Minor** (2.1.0 → 2.4.0) | Low | Update in batch — new features, backward compatible |
+| **Patch** (1.2.3 → 1.2.8) | Very Low | Update immediately: bug/security fixes |
+| **Minor** (2.1.0 → 2.4.0) | Low | Update in batch: new features, backward compatible |
 | **Major** (3.0.0 → 4.2.1) | Medium-High | Review migration guide, test thoroughly |
 | **Multiple majors** (1.x → 4.x) | High | Dedicate time, may require code changes |
 
@@ -115,8 +115,8 @@ Check each dependency for maintenance status:
 
 Package          Last Publish    Downloads/wk    Status
 ──────────────────────────────────────────────────────
-[package-x]      3 years ago     12,000          ⚠️ ABANDONED — find alternative
-[package-y]      2.5 years ago   800             🔴 DEAD — replace immediately
+[package-x]      3 years ago     12,000          ⚠️ ABANDONED, find alternative
+[package-y]      2.5 years ago   800             🔴 DEAD, replace immediately
 [package-z]      6 months ago    250,000         ✅ Active
 ```
 
@@ -170,12 +170,12 @@ Patch updates with no breaking changes.
 
 1. [package]@[current] → [target]
    Reason: 🔴 CVE-2024-XXXXX (CRITICAL)
-   Risk: None — patch update
+   Risk: None, patch update
    Command: npm install [package]@[target]
 
 2. [package]@[current] → [target]
    Reason: 🟡 CVE-2024-YYYYY (HIGH)
-   Risk: None — minor update
+   Risk: None, minor update
    Command: npm install [package]@[target]
 
 ━━━ TIER 2: PLANNED (Next 2 Weeks) ━━━━━━━
@@ -184,13 +184,13 @@ replacing abandoned packages.
 
 3. [package]@[current] → [target]
    Reason: 🟠 CVE-2024-ZZZZZ (MEDIUM) + 8 minor versions behind
-   Risk: Low — review changelog for deprecations
+   Risk: Low, review changelog for deprecations
    Command: npm install [package]@[target]
    Test: [specific areas to regression test]
 
 4. [package] → [replacement-package]
    Reason: ⚠️ Abandoned (last publish: 2 years ago)
-   Risk: Medium — API differences, migration needed
+   Risk: Medium, API differences, migration needed
    Migration: [brief migration steps]
 
 ━━━ TIER 3: SCHEDULED (Next Quarter) ━━━━━━
@@ -198,7 +198,7 @@ Major version upgrades requiring migration effort.
 
 5. [package]@[current] → [target]
    Reason: 3 major versions behind, accumulating tech debt
-   Risk: High — breaking changes in v3 and v4
+   Risk: High, breaking changes in v3 and v4
    Migration guide: [URL]
    Estimated effort: [hours/days]
    Test: [comprehensive regression testing required]
@@ -358,4 +358,4 @@ Score: [X/100]
 
 ## Level History
 
-- **Lv.1** — Base: Multi-ecosystem audit (npm, pip, cargo, go, bundler), unified vulnerability format with CVSS severity, direct vs transitive classification, outdated package analysis, abandoned package detection with alternatives, supply chain risk assessment, three-tier upgrade plan, override guidance, CI integration config, health score. (Origin: MemStack v3.2, Mar 2026)
+- **Lv.1**: Base: Multi-ecosystem audit (npm, pip, cargo, go, bundler), unified vulnerability format with CVSS severity, direct vs transitive classification, outdated package analysis, abandoned package detection with alternatives, supply chain risk assessment, three-tier upgrade plan, override guidance, CI integration config, health score. (Origin: MemStack v3.2, Mar 2026)

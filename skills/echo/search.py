@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Echo Skill — Semantic Search
+Echo Skill: Semantic Search
 Searches indexed session/plan content using LanceDB vector similarity.
 
 Usage:
@@ -12,7 +12,7 @@ Embeddings default to LOCAL. The search provider matches the index it queries
 (opt-in via MEMSTACK_EMBED_PROVIDER=openai at index time), and then needs OPENAI_API_KEY.
 
 Output format (default):
-    **[1] docstack** — 2026-02-19 (session)
+    **[1] docstack**: 2026-02-19 (session)
       Section: Accomplished
       Score: 0.847
       Built the document pipeline with...
@@ -180,7 +180,7 @@ def format_results(results: list[dict]) -> str:
 
     lines = []
     for i, r in enumerate(results, 1):
-        lines.append(f"**[{i}] {r['project']}** — {r['date']} ({r['type']})")
+        lines.append(f"**[{i}] {r['project']}**: {r['date']} ({r['type']})")
         if r["section_title"]:
             lines.append(f"  Section: {r['section_title']}")
         lines.append(f"  Score: {r['score']}")

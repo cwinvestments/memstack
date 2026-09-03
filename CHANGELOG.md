@@ -1,5 +1,11 @@
 # MemStack™ Changelog
 
+## v3.9.3 - 2026-09-03 - No em or en dashes anywhere in the repo
+
+### Changed
+- **Every em dash and en dash is gone from every tracked file.** The sweep removed 2,432 dash characters, 2,404 em and 28 en, from 128 of the 167 tracked files, with 2,161 of the em dashes under `skills/`. The replacements were made by rule, not by hand: a structural label form (a bullet or heading label followed by a dash) became a colon, a table cell holding only a dash became "none", a numeric range became "A to B", a paired dash forming a parenthetical became parentheses or commas depending on the length of the enclosed span, and a remaining single dash in prose became a comma by default, a colon where the right side is a list or a label of four words or fewer, and a period where both sides are independent sentences of eight words or more. 2,421 of the 2,432 were replaced that way; the remaining 11 were replaced by hand as explicit pairs: two unspaced (one used as a legend symbol among stars and crosses, one the generator emitted as an empty table cell), one starting a line and continuing the line above, two ending a line where both sides were independent sentences, four forming two parentheticals that spanned two lines, and two the period rule claimed but review rejected. A further 15 lines whose rule output read badly in source files were corrected by hand the same way. Fenced code blocks and frontmatter descriptions were in scope; the house rule has no code exception. Every file's line endings were preserved exactly.
+- **`scripts/generate-catalogs.mjs` now emits the same punctuation the swept documents carry.** The generator writes the README catalog regions and the whole of `SKILL-REFERENCE.md`, and it held dashes of its own, including one emitted as an empty table cell. Sweeping the documents and the generator separately would have left the two disagreeing, so the generator's output strings were aligned to the documents. That also clears a README catalog drift that predated this release.
+
 ## v3.9.2 - 2026-09-03 - A commit of verified content keeps its receipt
 
 ### Fixed

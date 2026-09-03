@@ -2,17 +2,17 @@
 name: memstack-deployment-netlify-deploy
 description: "Use this skill when the user says 'deploy to Netlify', 'Netlify setup', 'netlify-deploy', or needs to deploy a static site or serverless functions to Netlify with build configuration and custom domains. Do NOT use for Railway, Vercel, or VPS deployments."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🌐 Netlify Deploy — Pre-flight check and deploy to Netlify...
+# 🌐 Netlify Deploy: Pre-flight check and deploy to Netlify...
 *Validates build config, redirects, environment variables, and deployment readiness for Netlify static/SPA hosting.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🌐 Netlify Deploy — Running pre-flight checks...`
+`🌐 Netlify Deploy: Running pre-flight checks...`
 
 Then execute the protocol below.
 
@@ -21,7 +21,7 @@ Then execute the protocol below.
 | User says "deploy to netlify" or "netlify deploy" | ACTIVE |
 | User says "deploy frontend" or "deploy static site" | ACTIVE |
 | Preparing a React/Vue/Svelte/Next.js static export for hosting | ACTIVE |
-| Deploying a backend service or API server | DORMANT — use railway-deploy |
+| Deploying a backend service or API server | DORMANT: use railway-deploy |
 | Discussing Netlify pricing or features generally | DORMANT |
 
 ### Anti-patterns
@@ -68,7 +68,7 @@ If `netlify.toml` exists, verify it:
 | Vue | `npm run build` | `dist` |
 | Svelte/SvelteKit | `npm run build` | `build` |
 | Astro | `npm run build` | `dist` |
-| Plain HTML | — | `.` or `public` |
+| Plain HTML | none | `.` or `public` |
 
 **Flag if:** `netlify.toml` missing or publish directory doesn't match framework default.
 
@@ -83,7 +83,7 @@ cat _redirects 2>/dev/null
 Check for the API proxy pattern (frontend → backend):
 
 ```toml
-# netlify.toml — API proxy to Railway/external backend
+# netlify.toml, API proxy to Railway/external backend
 [[redirects]]
   from = "/api/*"
   to = "https://your-backend.up.railway.app/api/:splat"
@@ -98,9 +98,9 @@ Or in `_redirects`:
 
 **Verify:**
 - ✅ Backend URL is the production URL (not localhost)
-- ✅ `status = 200` (proxy, not redirect — preserves the URL for the client)
+- ✅ `status = 200` (proxy, not redirect, preserves the URL for the client)
 - ✅ `force = true` if the proxy should override static files at the same path
-- ❌ Backend URL still points to `localhost:3000` — update to production
+- ❌ Backend URL still points to `localhost:3000`: update to production
 
 **Flag if:** Code references `/api/` paths but no proxy redirect is configured.
 
@@ -116,7 +116,7 @@ grep -r "\/\*.*\/index\.html\|\/\*.*200" netlify.toml _redirects 2>/dev/null
 Required for SPAs (React Router, Vue Router, etc.):
 
 ```
-# In _redirects (must be LAST rule — order matters)
+# In _redirects (must be LAST rule, order matters)
 /*  /index.html  200
 ```
 
@@ -130,7 +130,7 @@ Or in `netlify.toml`:
 
 **Flag if:** Project uses client-side routing but no catch-all redirect exists. Symptoms: pages work when navigated to via links, but return 404 on direct URL access or refresh.
 
-**Note:** Next.js static export handles this differently — each page is pre-rendered as its own HTML file. SPA redirect is NOT needed for static Next.js.
+**Note:** Next.js static export handles this differently. Each page is pre-rendered as its own HTML file. SPA redirect is NOT needed for static Next.js.
 
 ### Step 4: Verify Environment Variables
 
@@ -143,10 +143,10 @@ grep -rn "process\.env\.\|import\.meta\.env\.\|VITE_\|NEXT_PUBLIC_\|REACT_APP_" 
 
 | Prefix | Framework | When Available | Exposed to Client? |
 |--------|-----------|---------------|-------------------|
-| `REACT_APP_` | CRA | Build time | ⚠️ YES — baked into JS bundle |
-| `NEXT_PUBLIC_` | Next.js | Build time | ⚠️ YES — baked into JS bundle |
-| `VITE_` | Vite | Build time | ⚠️ YES — baked into JS bundle |
-| No prefix | Any | Build time only | ❌ No — server-side/build scripts only |
+| `REACT_APP_` | CRA | Build time | ⚠️ YES: baked into JS bundle |
+| `NEXT_PUBLIC_` | Next.js | Build time | ⚠️ YES: baked into JS bundle |
+| `VITE_` | Vite | Build time | ⚠️ YES: baked into JS bundle |
+| No prefix | Any | Build time only | ❌ No, server-side/build scripts only |
 
 **Critical security check:**
 ```bash
@@ -170,9 +170,9 @@ cat netlify.toml 2>/dev/null | grep -A5 '\[context\]'
 Verify in Netlify dashboard:
 - ✅ Custom domain added (Domain Management → Add domain)
 - ✅ DNS points to Netlify (CNAME to `*.netlify.app` or A record to Netlify load balancer)
-- ✅ SSL certificate provisioned (automatic via Let's Encrypt — check HTTPS section)
+- ✅ SSL certificate provisioned (automatic via Let's Encrypt: check HTTPS section)
 - ✅ Force HTTPS enabled (redirects http → https)
-- ✅ www redirect configured (www → apex or apex → www — pick one, be consistent)
+- ✅ www redirect configured (www → apex or apex → www: pick one, be consistent)
 
 **Flag if:** Domain is added but DNS hasn't propagated or SSL shows "Waiting for DNS verification."
 
@@ -239,7 +239,7 @@ grep -rn "http://localhost\|http://127\.0\.0\.1" dist/ 2>/dev/null
 **Output pre-deploy summary:**
 
 ```
-🌐 Netlify Deploy — Pre-flight Complete
+🌐 Netlify Deploy: Pre-flight Complete
 
 Project: [name] ([framework])
 Build: ✅ passes → [publish directory]
@@ -258,12 +258,12 @@ Ready to deploy.
 
 After deployment completes:
 
-1. **Preview deploy:** Netlify generates a unique URL for every deploy — test there first
+1. **Preview deploy:** Netlify generates a unique URL for every deploy: test there first
 2. **Check build log:** Netlify dashboard → Deploys → click deploy → Build Log
-3. **Test SPA routing:** Navigate directly to a deep route (e.g., `/dashboard/settings`) — should load, not 404
+3. **Test SPA routing:** Navigate directly to a deep route (e.g., `/dashboard/settings`): should load, not 404
 4. **Test API proxy:** Open DevTools Network tab, trigger an API call, verify it reaches backend
-5. **Check SSL:** Visit `https://[domain]` — padlock should appear, no mixed content warnings
-6. **Test redirects:** Visit `http://[domain]` — should redirect to `https://`
+5. **Check SSL:** Visit `https://[domain]`, padlock should appear, no mixed content warnings
+6. **Test redirects:** Visit `http://[domain]`: should redirect to `https://`
 
 **Rollback plan:**
 - Netlify keeps every deploy as an immutable snapshot
@@ -272,4 +272,4 @@ After deployment completes:
 
 ## Level History
 
-- **Lv.1** — Base: Build config validation, redirect/proxy verification, SPA routing, env var security audit, domain/SSL checks, Netlify Functions, security headers, pre/post-deploy checklists. Based on AdminStack marketing site, GreenAcres frontend, and other Netlify deployments. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Build config validation, redirect/proxy verification, SPA routing, env var security audit, domain/SSL checks, Netlify Functions, security headers, pre/post-deploy checklists. Based on AdminStack marketing site, GreenAcres frontend, and other Netlify deployments. (Origin: MemStack Pro v3.2, Mar 2026)

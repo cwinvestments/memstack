@@ -2,17 +2,17 @@
 name: memstack-content-landing-page-copy
 description: "Use this skill when the user says 'write landing page', 'landing page copy', 'sales page', 'hero section', 'conversion copy', or is creating persuasive short-form copy for a product or service landing page. Do NOT use for blog posts or email sequences."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 🎯 Landing Page Copy — Writing conversion-optimized page copy...
-*Produces structured landing page copy blocks — hero, problem, solution, features, social proof, FAQ, CTA — ready to drop into any template or design.*
+# 🎯 Landing Page Copy: Writing conversion-optimized page copy...
+*Produces structured landing page copy blocks (hero, problem, solution, features, social proof, FAQ, CTA) ready to drop into any template or design.*
 
 ## Activation
 
 When this skill activates, output:
 
-`🎯 Landing Page Copy — Gathering product and audience details...`
+`🎯 Landing Page Copy, Gathering product and audience details...`
 
 Then execute the protocol below.
 
@@ -21,8 +21,8 @@ Then execute the protocol below.
 | User says "write landing page" or "landing page copy" | ACTIVE |
 | User says "sales page" or "hero section" or "conversion copy" | ACTIVE |
 | Creating copy for a product, service, or signup page | ACTIVE |
-| Writing blog content (long-form, educational) | DORMANT — use blog-post |
-| Writing email copy | DORMANT — use email-sequence |
+| Writing blog content (long-form, educational) | DORMANT: use blog-post |
+| Writing email copy | DORMANT: use email-sequence |
 | Designing the page layout (not writing copy) | DORMANT |
 
 ### Anti-patterns
@@ -42,12 +42,12 @@ Then execute the protocol below.
 If the user hasn't provided details, ask:
 
 > I need a few details for the landing page:
-> 1. **Product/service name** — what are we selling?
-> 2. **Target audience** — who is the ideal customer? (role, pain point, situation)
-> 3. **Key benefit** — what's the #1 thing they get? (in their words, not yours)
-> 4. **Price point** — free, freemium, one-time, subscription? (affects urgency strategy)
-> 5. **CTA goal** — what's the primary action? (sign up, buy, book a call, download)
-> 6. **Existing copy or brand voice** — any tone/style to match?
+> 1. **Product/service name**: what are we selling?
+> 2. **Target audience**: who is the ideal customer? (role, pain point, situation)
+> 3. **Key benefit**: what's the #1 thing they get? (in their words, not yours)
+> 4. **Price point**: free, freemium, one-time, subscription? (affects urgency strategy)
+> 5. **CTA goal**: what's the primary action? (sign up, buy, book a call, download)
+> 6. **Existing copy or brand voice**: any tone/style to match?
 
 ### Step 2: Write Hero Section
 
@@ -57,7 +57,7 @@ The hero section determines whether visitors stay or leave. Every word earns its
 ## Hero Section
 
 ### Headline (10 words max)
-[Clear statement of the primary benefit — what they get]
+[Clear statement of the primary benefit: what they get]
 
 ### Subheadline (20 words max)
 [Specificity: who it's for, how it works, what makes it different]
@@ -82,14 +82,14 @@ The hero section determines whether visitors stay or leave. Every word earns its
 **Headline rules:**
 - No jargon the visitor wouldn't say out loud
 - Specific beats vague ("Save 10 hours/week" beats "Save time")
-- One benefit only — trying to say everything says nothing
+- One benefit only, trying to say everything says nothing
 - If you can add "so what?" and it still makes sense, the headline is too vague
 
 **CTA button rules:**
-- Action verb first ("Start," "Get," "Try," "Download" — never "Submit" or "Click Here")
+- Action verb first ("Start," "Get," "Try," "Download", never "Submit" or "Click Here")
 - 2-5 words max
 - State the outcome, not the action ("Get My Free Report" not "Download PDF")
-- One primary CTA per section — don't split attention
+- One primary CTA per section: don't split attention
 
 ### Step 3: Problem / Agitation Section
 
@@ -114,8 +114,8 @@ Paint the future they don't want.]
 
 **Problem section rules:**
 - Use the reader's own language (words from reviews, support tickets, forums)
-- Be specific — "You spend 3 hours every Monday compiling reports" not "Reports take too long"
-- Don't insult the reader or their current tools — empathize with their situation
+- Be specific, "You spend 3 hours every Monday compiling reports" not "Reports take too long"
+- Don't insult the reader or their current tools: empathize with their situation
 - The problem section ends with the reader thinking "Yes, that's exactly my problem"
 
 ### Step 4: Solution Section
@@ -133,18 +133,18 @@ Transition from pain to relief. This is where your product enters:
 [One sentence about the approach or key differentiator.]
 
 ### How it works (3 steps)
-1. **[Action verb]** — [Simple first step the user takes]
-2. **[Action verb]** — [What happens next / the product's magic moment]
-3. **[Action verb]** — [The outcome they get]
+1. **[Action verb]**: [Simple first step the user takes]
+2. **[Action verb]**: [What happens next / the product's magic moment]
+3. **[Action verb]**: [The outcome they get]
 
 ### Visual suggestion
 [Screenshot, demo GIF, or product illustration showing the solution in action]
 ```
 
 **Solution section rules:**
-- The "how it works" should be 3 steps max — complexity kills conversion
+- The "how it works" should be 3 steps max: complexity kills conversion
 - Each step starts with an action verb
-- Show, don't tell — include a visual of the product
+- Show, don't tell, include a visual of the product
 - Connect back to the problem: the solution should directly address the pain points listed above
 
 ### Step 5: Features with Benefit-Oriented Copy
@@ -172,7 +172,7 @@ List features, but lead with the benefit each feature provides:
 ```markdown
 ### [Benefit headline]
 [1-2 sentences explaining the feature in terms of what the user gains.
-Not what it does — what it means for them.]
+Not what it does, what it means for them.]
 
 ### [Benefit headline]
 [1-2 sentences...]
@@ -182,7 +182,7 @@ Not what it does — what it means for them.]
 - Lead column is the benefit (what they get), second column is the feature (how)
 - Write benefits as outcomes: "Never miss a deadline" not "Has reminders"
 - Include specific numbers when possible: "Save 10 hours/week" not "Save time"
-- 4-6 features is the sweet spot — more than 8 overwhelms, fewer than 3 feels thin
+- 4-6 features is the sweet spot, more than 8 overwhelms, fewer than 3 feels thin
 - The most important feature goes first (or at the top-left if using a grid)
 
 ### Step 6: Social Proof Section
@@ -197,7 +197,7 @@ Build trust with evidence that others have succeeded:
 > [What they were doing before and what changed.]
 > I'd recommend it to any [target audience descriptor]."
 >
-> — **[Name]**, [Title] at [Company]
+>: **[Name]**, [Title] at [Company]
 
 ### Stat-based proof (if available)
 - **[Number]** [users/companies/projects] trust [Product]
@@ -218,7 +218,7 @@ Build trust with evidence that others have succeeded:
 - Specific results beat generic praise ("Saved us 15 hours/week" beats "Great product!")
 - Include name, title, and company for credibility (anonymous quotes are weak)
 - If you don't have testimonials yet, use stats, founding story, or "built by" credibility
-- 3 testimonials is the sweet spot — 1 feels cherry-picked, 5+ feels desperate
+- 3 testimonials is the sweet spot, 1 feels cherry-picked, 5+ feels desperate
 - Place social proof after features (they've seen what it does, now they need validation)
 
 ### Step 7: FAQ Section
@@ -231,19 +231,19 @@ Address the top objections that prevent conversion:
 ### Section headline
 "Questions? We've got answers." / "Common questions"
 
-**Q: [Price objection — "How much does it cost?" / "Is there a free trial?"]**
+**Q: [Price objection, "How much does it cost?" / "Is there a free trial?"]**
 A: [Direct answer. If there's a free tier, lead with it. Include pricing page link.]
 
-**Q: [Trust objection — "Is my data secure?" / "Who else uses this?"]**
+**Q: [Trust objection, "Is my data secure?" / "Who else uses this?"]**
 A: [Specific security measures. Customer logos or numbers. Certifications.]
 
-**Q: [Effort objection — "How long does setup take?" / "Do I need technical skills?"]**
+**Q: [Effort objection, "How long does setup take?" / "Do I need technical skills?"]**
 A: [Minimize perceived effort. "Setup takes 5 minutes" / "No coding required."]
 
-**Q: [Switching objection — "Can I import my existing data?" / "What about my current tool?"]**
+**Q: [Switching objection, "Can I import my existing data?" / "What about my current tool?"]**
 A: [Migration path. Import tools. Compatibility assurances.]
 
-**Q: [Commitment objection — "What if it doesn't work for me?" / "Can I cancel anytime?"]**
+**Q: [Commitment objection, "What if it doesn't work for me?" / "Can I cancel anytime?"]**
 A: [Money-back guarantee. No lock-in. Cancel anytime policy.]
 ```
 
@@ -251,7 +251,7 @@ A: [Money-back guarantee. No lock-in. Cancel anytime policy.]
 - 4-6 questions max on the landing page
 - Phrase questions the way a customer would (not formal, not marketing-speak)
 - Every answer ends with confidence, not hedging
-- The FAQ is really an objection-handling section — structure it that way
+- The FAQ is really an objection-handling section: structure it that way
 - If the same question keeps coming up in sales calls, it belongs here
 
 ### Step 8: Final CTA Section
@@ -266,7 +266,7 @@ The bottom CTA converts readers who've scrolled the entire page:
 
 ### Supporting copy (1-2 sentences)
 [Summarize value + reduce risk: "Join [X] teams already [achieving outcome].
-Start free — no credit card required."]
+Start free: no credit card required."]
 
 ### CTA Button
 [Same as hero CTA, or stronger: "Start Free Trial" → "Start Your Free Trial Now"]
@@ -281,8 +281,8 @@ Start free — no credit card required."]
 ```
 
 **Final CTA rules:**
-- Don't introduce new information here — reinforce the hero message
-- Urgency must be real — fake countdown timers destroy trust
+- Don't introduce new information here: reinforce the hero message
+- Urgency must be real, fake countdown timers destroy trust
 - Always include a secondary/softer CTA for people who aren't ready to commit
 - This CTA should be the most visually prominent element below the fold
 
@@ -313,7 +313,7 @@ Output all sections as clean, structured copy:
 **Output summary:**
 
 ```
-🎯 Landing Page Copy — Complete
+🎯 Landing Page Copy: Complete
 
 Product: [name]
 Audience: [target persona]
@@ -342,4 +342,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Product detail gathering, hero section (10-word headline, subheadline, CTA), problem/agitation, solution with 3-step process, benefit-oriented features, social proof templates, FAQ objection handling, final CTA with urgency, structured copy blocks. Based on adminstack.pro, ImageStack, and memstack.pro landing pages. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Product detail gathering, hero section (10-word headline, subheadline, CTA), problem/agitation, solution with 3-step process, benefit-oriented features, social proof templates, FAQ objection handling, final CTA with urgency, structured copy blocks. Based on adminstack.pro, ImageStack, and memstack.pro landing pages. (Origin: MemStack Pro v3.2, Mar 2026)

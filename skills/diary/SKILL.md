@@ -5,14 +5,14 @@ version: 1.1.0
 ---
 
 
-# 📓 Diary — Logging Session...
+# 📓 Diary: Logging Session...
 *Document what was accomplished in each CC session for future recall.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📓 Diary — Logging session...`
+`📓 Diary: Logging session...`
 
 Then execute the protocol below.
 
@@ -20,14 +20,14 @@ Then execute the protocol below.
 
 | Context | Status | Priority |
 |---------|--------|----------|
-| **User says "save diary", "log session", "write diary"** | ACTIVE — write diary | P1 |
-| **User explicitly says they're done ("that's it", "wrapping up")** | ACTIVE — suggest diary if work was done | P2 |
-| **Multi-agent session (Builder/Reviewer role)** | DORMANT — Manager handles diary | — |
-| **Mid-session, user is actively coding** | DORMANT — don't interrupt flow | — |
-| **Casual conversation, no code changes made** | DORMANT — nothing to log | — |
-| **User asks to recall past sessions ("what did we do")** | DORMANT — Echo handles recall, not Diary | — |
-| **User says "save project" or "handoff"** | DORMANT — Project skill handles this | — |
-| **Session just started, no work yet** | DORMANT — nothing to log | — |
+| **User says "save diary", "log session", "write diary"** | ACTIVE: write diary | P1 |
+| **User explicitly says they're done ("that's it", "wrapping up")** | ACTIVE, suggest diary if work was done | P2 |
+| **Multi-agent session (Builder/Reviewer role)** | DORMANT: Manager handles diary | none |
+| **Mid-session, user is actively coding** | DORMANT, don't interrupt flow | none |
+| **Casual conversation, no code changes made** | DORMANT: nothing to log | none |
+| **User asks to recall past sessions ("what did we do")** | DORMANT, Echo handles recall, not Diary | none |
+| **User says "save project" or "handoff"** | DORMANT, Project skill handles this | none |
+| **Session just started, no work yet** | DORMANT: nothing to log | none |
 
 ## When NOT to Fire
 
@@ -117,18 +117,18 @@ When the user asks to save a diary, keep these in mind:
    {"project":"<name>","type":"<type>","content":"<insight>","context":"Session <date>","tags":"<project>"}
    ```
 
-   Choose `<type>` deliberately from this vocabulary — do not default to one:
-   - `gotcha` — something that bit us and the fix. Non-obvious behavior a future session would trip on again.
-   - `lesson` — a general rule learned the hard way. Broader than one bug.
-   - `pattern` — a reusable approach or convention that worked.
-   - `warning` — a known hazard to avoid. Not yet a bug, but will be.
-   - `failed_approach` — something tried that did not work, and why. Prevents retrying it.
-   - `architecture` — a structural fact about how a system is built.
-   - `decision` — a choice made and the reasoning. Historical record.
+   Choose `<type>` deliberately from this vocabulary, do not default to one:
+   - `gotcha`: something that bit us and the fix. Non-obvious behavior a future session would trip on again.
+   - `lesson`: a general rule learned the hard way. Broader than one bug.
+   - `pattern`: a reusable approach or convention that worked.
+   - `warning`: a known hazard to avoid. Not yet a bug, but will be.
+   - `failed_approach`: something tried that did not work, and why. Prevents retrying it.
+   - `architecture`: a structural fact about how a system is built.
+   - `decision`: a choice made and the reasoning. Historical record.
 
-   The first five are **procedural** — an agent can act on them at retrieval time. `architecture` and `decision` are **record**. When a row could be either, prefer the procedural type.
+   The first five are **procedural**: an agent can act on them at retrieval time. `architecture` and `decision` are **record**. When a row could be either, prefer the procedural type.
 
-   Unknown types pass through unchanged but come back as `type_unknown` in the JSON response — that is the signal to pick a type from the list above.
+   Unknown types pass through unchanged but come back as `type_unknown` in the JSON response, that is the signal to pick a type from the list above.
 
    **CRITICAL: The field name is "content", NOT "insight". Using "insight" will fail with a missing required field error.**
 
@@ -165,7 +165,7 @@ When the user asks to save a diary, keep these in mind:
 
  A non-zero exit never means the diary failed to save. The markdown and the SQLite row are already written by this point, and ingestion cannot undo them.
 
-## FACTS Block — Cross-Session Memory
+## FACTS Block: Cross-Session Memory
 
 The `## FACTS` block is how a session hands durable, atomic knowledge to future sessions. It is machine-parsed, so the format is fixed. **One fact per line:**
 
@@ -173,10 +173,10 @@ The `## FACTS` block is how a session hands durable, atomic knowledge to future 
 subject | claim | method [| entities]
 ```
 
-- **subject** — a dotted-path namespace, lowercase (e.g. `memstack.dashboard.start`, `adminstack.portal.auth`). Group related facts under a shared prefix.
-- **claim** — exactly one assertion. Keep it self-contained. Must not contain a `|`.
-- **method** — how you *know* it, one of: `verified` (you saw it work / read the code / ran it), `reported` (stated but unconfirmed), `inferred` (deduced), `assumed` (a guess — scored lowest).
-- **entities** — *optional* 4th field: comma-separated tags this fact touches.
+- **subject**: a dotted-path namespace, lowercase (e.g. `memstack.dashboard.start`, `adminstack.portal.auth`). Group related facts under a shared prefix.
+- **claim**: exactly one assertion. Keep it self-contained. Must not contain a `|`.
+- **method**: how you *know* it, one of: `verified` (you saw it work / read the code / ran it), `reported` (stated but unconfirmed), `inferred` (deduced), `assumed` (a guess: scored lowest).
+- **entities**: *optional* 4th field: comma-separated tags this fact touches.
 
 ### Examples (note the granularity)
 
@@ -190,9 +190,9 @@ memstack.memory.corrections | a superseded fact cannot be corrected; corrections
 
 ### What to include
 
-- **Only facts worth remembering across sessions.** Not "ran the tests" — that's in the diary body. A fact is something a future session would waste time rediscovering: a port, an entry point, an auth model, a non-obvious constraint.
-- **Prefer `verified` over `reported`.** If you actually confirmed it, say so — verified facts are trusted and decay slowest. Don't inflate: an unconfirmed claim is `reported`.
-- **Corrections of prior beliefs are the most valuable entries.** If this session overturned something an earlier session believed ("the port is 3333, not 8080"; "auth is magic-link, not passwords"), record the corrected claim as a fact — that is exactly the knowledge that stops the team repeating a mistake.
+- **Only facts worth remembering across sessions.** Not "ran the tests", that's in the diary body. A fact is something a future session would waste time rediscovering: a port, an entry point, an auth model, a non-obvious constraint.
+- **Prefer `verified` over `reported`.** If you actually confirmed it, say so, verified facts are trusted and decay slowest. Don't inflate: an unconfirmed claim is `reported`.
+- **Corrections of prior beliefs are the most valuable entries.** If this session overturned something an earlier session believed ("the port is 3333, not 8080"; "auth is magic-link, not passwords"), record the corrected claim as a fact, that is exactly the knowledge that stops the team repeating a mistake.
 
 ## Session File Size Management
 
@@ -216,7 +216,7 @@ Old markdown files are preserved but not the primary storage.
 **User:** "save diary"
 
 ```
-📓 Diary — Logging session...
+📓 Diary: Logging session...
 
 Saved: memory/sessions/2026-02-18-adminstack.md
 
@@ -228,15 +228,15 @@ Files changed: 8
 This session is now searchable via Echo.
 ```
 
-## PreCompact Hook — Automatic Compaction Diary
+## PreCompact Hook: Automatic Compaction Diary
 
 The diary system includes an automatic `PreCompact` hook that fires before Claude Code compresses the context window. This closes the gap where session context could be lost during long conversations.
 
 ### Behavior
-- **Trigger:** Fires automatically before every CC context compaction — no user action required
-- **Output:** `.claude/diary/{date}-compaction.md` — one file per day, appends on multiple compactions
+- **Trigger:** Fires automatically before every CC context compaction: no user action required
+- **Output:** `.claude/diary/{date}-compaction.md`, one file per day, appends on multiple compactions
 - **Flag:** Every entry includes `COMPACTION_INTERRUPTED` so the next session knows context was cut
-- **Timeout:** 15 seconds — fast enough to never block compaction
+- **Timeout:** 15 seconds, fast enough to never block compaction
 
 ### What It Captures
 | Data | Source |
@@ -259,22 +259,22 @@ The diary system includes an automatic `PreCompact` hook that fires before Claud
 When resuming after compaction, check `.claude/diary/` for entries with today's date. The `COMPACTION_INTERRUPTED` flag signals that the previous context was truncated and these files contain the lost state.
 
 ### Configuration
-Hook is registered in `.claude/settings.json` under `PreCompact`. Script lives at `.claude/hooks/pre-compact.sh`. Always exits 0 — must never block compaction.
+Hook is registered in `.claude/settings.json` under `PreCompact`. Script lives at `.claude/hooks/pre-compact.sh`. Always exits 0: must never block compaction.
 
 ## Full Hook System (v3.3.2)
 
 The Diary skill is part of a broader hook system that automates session lifecycle, security, and observability. All hooks follow the same defensive pattern: `set -uo pipefail`, `SCRIPT_DIR` resolution, all external commands wrapped with fallbacks, guaranteed `exit 0`.
 
-### Hook Registry — 7 hooks across 5 events
+### Hook Registry: 7 hooks across 5 events
 
 | Event | Script | Matcher | Timeout | Purpose |
 |-------|--------|---------|---------|---------|
 | **PreToolUse** | `pre-tool-notify.sh` | `Write\|Edit\|MultiEdit\|Bash` | 10s | TTS voice alert before approval prompts |
 | **PreToolUse** | `pre-push.sh` | `Bash` (git push) | 60s | Build verification + secrets scan before push |
 | **PostToolUse** | `post-commit.sh` | `Bash` (git commit) | 10s | Debug artifact + secrets scan after commit |
-| **PostToolUse** | `post-tool-monitor.sh` | `Write\|Edit\|MultiEdit\|Bash` | 10s | Observation capture — logs tool calls to `.claude/observations/` |
+| **PostToolUse** | `post-tool-monitor.sh` | `Write\|Edit\|MultiEdit\|Bash` | 10s | Observation capture, logs tool calls to `.claude/observations/` |
 | **SessionStart** | `session-start.sh` | *(all)* | 10s | CLAUDE.md indexing, monitoring ping |
-| **SessionStart** | `session-context-load.sh` | *(all)* | 15s | Context injection — last 3 diary + observation summaries → `.claude/session-context.md` |
+| **SessionStart** | `session-context-load.sh` | *(all)* | 15s | Context injection, last 3 diary + observation summaries → `.claude/session-context.md` |
 | **Stop** | `session-end.sh` | *(all)* | 10s | Monitoring API session-complete ping |
 | **PreCompact** | `pre-compact.sh` | *(all)* | 15s | Auto-save diary snapshot before context compaction |
 
@@ -282,18 +282,18 @@ The Diary skill is part of a broader hook system that automates session lifecycl
 
 - Each hook is registered as an **independent entry** (Option B) in `settings.json`, giving it its own timeout budget
 - PreToolUse hooks can **block** tool execution (exit 2 = block). All other hooks are non-blocking
-- PostToolUse observation monitor writes to `.claude/observations/YYYY-MM-DD.md` — daily files, append-only
-- SessionStart context loader is **idempotent** — overwrites `.claude/session-context.md` on each new session
+- PostToolUse observation monitor writes to `.claude/observations/YYYY-MM-DD.md`: daily files, append-only
+- SessionStart context loader is **idempotent**: overwrites `.claude/session-context.md` on each new session
 - Both `.claude/observations/` and `.claude/session-context.md` are in `.gitignore` (ephemeral runtime output)
 - All scripts live in `.claude/hooks/` and use `${CLAUDE_PROJECT_DIR}` for portable path resolution
 
 ## Level History
 
-- **Lv.1** — Base: Session logging with git integration. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, context guard, 500-line limit with archive, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
-- **Lv.3** — Advanced: SQLite as primary storage, auto-extract insights from decisions, markdown as backup export. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
-- **Lv.4** — Native: CC rules integration (`.claude/rules/diary.md`), always-on session logging awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
-- **Lv.5** — Handoff: Added structured Session Handoff section — in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)
-- **Lv.6** — PreCompact: Added automatic PreCompact hook — saves working state snapshot before CC context compaction, captures uncommitted changes, recent commands, and modified files with COMPACTION_INTERRUPTED flag. (Origin: MemStack v3.3.1, Mar 2026)
-- **Lv.7** — Hook System: Documented full 7-hook system across 5 CC lifecycle events — PreToolUse (TTS + pre-push), PostToolUse (post-commit + observation monitor), SessionStart (Headroom + context injection), Stop, PreCompact. (Origin: MemStack v3.3.2, Mar 2026)
-- **Lv.8** — FACTS Ingestion: Added the `## FACTS` block — atomic, machine-parsed cross-session knowledge (subject | claim | method | entities) ingested into the Memory Engine via `diary_ingest` after each save. Fail-open, dedupe-safe, corrections-first. (Origin: MemStack Memory Engine step 4, Jul 2026)
+- **Lv.1**: Base: Session logging with git integration. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, context guard, 500-line limit with archive, activation message. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.3**: Advanced: SQLite as primary storage, auto-extract insights from decisions, markdown as backup export. (Origin: MemStack v2.1 Accomplish-inspired upgrade, Feb 2026)
+- **Lv.4**: Native: CC rules integration (`.claude/rules/diary.md`), always-on session logging awareness without skill file read. (Origin: MemStack v3.0-beta, Feb 2026)
+- **Lv.5**: Handoff: Added structured Session Handoff section: in-progress work, uncommitted changes, exact pickup instructions, session context preservation. (Origin: MemStack v3.1, Feb 2026)
+- **Lv.6**: PreCompact: Added automatic PreCompact hook: saves working state snapshot before CC context compaction, captures uncommitted changes, recent commands, and modified files with COMPACTION_INTERRUPTED flag. (Origin: MemStack v3.3.1, Mar 2026)
+- **Lv.7**: Hook System: Documented full 7-hook system across 5 CC lifecycle events: PreToolUse (TTS + pre-push), PostToolUse (post-commit + observation monitor), SessionStart (Headroom + context injection), Stop, PreCompact. (Origin: MemStack v3.3.2, Mar 2026)
+- **Lv.8**: FACTS Ingestion: Added the `## FACTS` block, atomic, machine-parsed cross-session knowledge (subject | claim | method | entities) ingested into the Memory Engine via `diary_ingest` after each save. Fail-open, dedupe-safe, corrections-first. (Origin: MemStack Memory Engine step 4, Jul 2026)

@@ -2,17 +2,17 @@
 name: memstack-marketing-webinar-script
 description: "Use this skill when the user says 'webinar script', 'webinar', 'live presentation', 'teach-to-sell', or needs a timestamped presentation script with slide notes, presenter cues, and replay email sequence. Do NOT use for launch plans or static sales page copy."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Webinar Script — Writing presentation script...
+# Webinar Script: Writing presentation script...
 *Produces a full timestamped webinar script with hook, teaching segments, offer transition, Q&A handling, CTA placement, slide suggestions, and replay follow-up email sequence.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Webinar Script — Writing presentation script...`
+`Webinar Script: Writing presentation script...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "webinar script", "webinar", "live presentation" | ACTIVE |
 | User says "teach-to-sell" or "presentation script" | ACTIVE |
 | User wants a scripted webinar with CTA and offer | ACTIVE |
-| User wants a static sales page | DORMANT — use Landing Page Copy |
-| User wants a launch timeline | DORMANT — use Launch Plan |
+| User wants a static sales page | DORMANT: use Landing Page Copy |
+| User wants a launch timeline | DORMANT: use Launch Plan |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Topic** — what will you teach? (one specific transformation)
-> 2. **Offer** — what are you selling? (name, price, format)
-> 3. **Audience** — who is attending? (experience level, pain points)
-> 4. **Duration** — how long? (60 min standard, 90 min for high-ticket)
-> 5. **Format** — live or evergreen (pre-recorded)?
-> 6. **Platform** — Zoom, WebinarJam, Demio, YouTube Live?
+> 1. **Topic**: what will you teach? (one specific transformation)
+> 2. **Offer**: what are you selling? (name, price, format)
+> 3. **Audience**: who is attending? (experience level, pain points)
+> 4. **Duration**: how long? (60 min standard, 90 min for high-ticket)
+> 5. **Format**: live or evergreen (pre-recorded)?
+> 6. **Platform**: Zoom, WebinarJam, Demio, YouTube Live?
 
 ### Step 2: Structure the Webinar
 
@@ -74,7 +74,7 @@ If the user hasn't provided details, ask:
 "Welcome everyone! I'm so glad you're here.
 
 In the next [60/90] minutes, I'm going to show you
-[specific outcome — be concrete].
+[specific outcome: be concrete].
 
 By the end of this webinar, you'll know exactly
 [what they'll be able to do].
@@ -82,10 +82,10 @@ By the end of this webinar, you'll know exactly
 And I'm going to share [tease a specific tool/framework/secret]
 that [impressive result].
 
-Before we dive in — drop a [emoji/word] in the chat if you're
+Before we dive in, drop a [emoji/word] in the chat if you're
 [relatable situation that describes their pain point]."
 
-[WAIT for chat responses — acknowledge 2-3 by name]
+[WAIT for chat responses, acknowledge 2-3 by name]
 
 "Perfect. You're in the right place."
 ```
@@ -93,14 +93,14 @@ Before we dive in — drop a [emoji/word] in the chat if you're
 **Opening rules:**
 - State the promise in the first 30 seconds
 - Ask a chat question within the first 2 minutes (builds engagement)
-- Don't waste time on "can you see my screen" or housekeeping — energy must be high
+- Don't waste time on "can you see my screen" or housekeeping: energy must be high
 
 ### Step 4: Write Introduction & Credibility (3:00-8:00)
 
 ```
 [SLIDE 2: Your photo + key credibility points]
 
-"Quick intro — I'm [Name], and I [one-line credibility].
+"Quick intro, I'm [Name], and I [one-line credibility].
 
 But I didn't start here. [2-3 sentences: your origin story.
 Include the struggle that mirrors their current situation.]
@@ -109,7 +109,7 @@ Include the struggle that mirrors their current situation.]
 
 That's when I discovered [the framework/method you'll teach today].
 
-Since then, [impressive results — numbers, clients helped, etc.]
+Since then, [impressive results: numbers, clients helped, etc.]
 
 And today I'm going to hand you the exact same [framework/method],
 step by step. Sound good?"
@@ -118,7 +118,7 @@ step by step. Sound good?"
 ```
 
 **Credibility rules:**
-- Keep it under 5 minutes — they came for content, not your life story
+- Keep it under 5 minutes, they came for content, not your life story
 - Include ONE vulnerability (makes you relatable)
 - End with a result that proves the method works
 - Always include a chat prompt before transitioning to content
@@ -128,7 +128,7 @@ step by step. Sound good?"
 **Content pillar template (repeat for each pillar):**
 
 ```
-[SLIDE: Pillar title — "[Step X]: [Action]"]
+[SLIDE: Pillar title: "[Step X]: [Action]"]
 
 "The [first/second/third] step is [step name].
 
@@ -139,13 +139,13 @@ Instead, here's what to do:
 
 [SLIDE: Framework visual or step-by-step]
 
-[Teach the concept — 3-5 minutes of core instruction]
+[Teach the concept, 3-5 minutes of core instruction]
 
 Let me show you an example:
 
 [SLIDE: Real example, case study, or demo]
 
-[Walk through the example — 3-5 minutes]
+[Walk through the example: 3-5 minutes]
 
 [Key takeaway: one sentence summary of this step]
 
@@ -167,7 +167,7 @@ Let me show you an example:
 
 ### Step 6: Write the Offer Transition (42:00-45:00)
 
-This is the most critical moment — the bridge from teaching to selling.
+This is the most critical moment, the bridge from teaching to selling.
 
 ```
 [SLIDE: Recap of what they learned]
@@ -183,18 +183,18 @@ Path 1: Take what you learned today, implement it yourself,
 and figure out the details through trial and error.
 That works. And I genuinely hope you do.
 
-Path 2: Let me hand you the complete system — every template,
-every shortcut, every lesson I learned the hard way —
+Path 2: Let me hand you the complete system (every template,
+every shortcut, every lesson I learned the hard way)
 so you can [achieve the result] in [fraction of the time].
 
 If you're interested in Path 2, let me show you what I've put together."
 
-[SLIDE: Transition to offer — product name + hero image]
+[SLIDE: Transition to offer: product name + hero image]
 ```
 
 **Transition rules:**
 - Validate that the free content alone is valuable (no guilt-tripping)
-- Present two paths — DIY vs. done-with-you
+- Present two paths: DIY vs. done-with-you
 - Never apologize for selling. The offer is a service, not an imposition.
 - The transition should feel natural, not abrupt
 
@@ -211,19 +211,19 @@ Here's exactly what's included:
 
 [SLIDE: Module/feature breakdown]
 
-Component 1: [Name] — [what it helps them do]
+Component 1: [Name], [what it helps them do]
   (Value: $[X])
-Component 2: [Name] — [what it helps them do]
+Component 2: [Name], [what it helps them do]
   (Value: $[X])
-Component 3: [Name] — [what it helps them do]
+Component 3: [Name], [what it helps them do]
   (Value: $[X])
 
 [SLIDE: Bonuses]
 
 Plus, when you join today, you also get:
-Bonus 1: [Name] — [benefit] (Value: $[X])
-Bonus 2: [Name] — [benefit] (Value: $[X])
-Bonus 3: [Name] — [benefit] (Value: $[X])
+Bonus 1: [Name], [benefit] (Value: $[X])
+Bonus 2: [Name], [benefit] (Value: $[X])
+Bonus 3: [Name]: [benefit] (Value: $[X])
 
 [SLIDE: Value stack total]
 
@@ -261,7 +261,7 @@ Here's how to get started:
 "Let me answer some questions. And while you're asking,
 the link is still live: [URL]
 
-[Answer questions — but always reframe toward the offer]
+[Answer questions, but always reframe toward the offer]
 
 Q: "Is this right for beginners?"
 A: "Absolutely. Module [X] starts from zero. You don't need
@@ -279,11 +279,11 @@ A: "Lifetime access. Plus all future updates at no extra cost."
 - Pre-prepare 5-7 common questions (seed them if needed)
 - Every answer should naturally loop back to a benefit or feature
 - Keep the purchase link visible throughout Q&A
-- End Q&A with a final urgency reminder: "Last chance — the webinar price and bonuses expire at [time]"
+- End Q&A with a final urgency reminder: "Last chance. The webinar price and bonuses expire at [time]"
 
 ### Step 9: Write Replay & Follow-Up Emails
 
-**Email 1 — Replay link (sent 1-2 hours after):**
+**Email 1, Replay link (sent 1-2 hours after):**
 
 ```
 Subject: Replay: [Webinar title] (link expires [date])
@@ -298,9 +298,9 @@ Here's the replay: [Link]
 (Available until [date] at [time])
 
 Quick recap of what we covered:
-1. [Pillar 1 — key insight]
-2. [Pillar 2 — key insight]
-3. [Pillar 3 — key insight]
+1. [Pillar 1: key insight]
+2. [Pillar 2: key insight]
+3. [Pillar 3: key insight]
 
 If you're ready to [achieve outcome], here's the link
 to grab [Product] at the webinar price: [Offer link]
@@ -310,7 +310,7 @@ The webinar-only bonuses expire [date].
 [Your name]
 ```
 
-**Email 2 — Social proof (Day 2):**
+**Email 2: Social proof (Day 2):**
 
 ```
 Subject: "[Customer quote about result]"
@@ -320,7 +320,7 @@ Subject: "[Customer quote about result]"
 [CTA: Join them → offer link]
 ```
 
-**Email 3 — Last chance (Day 3):**
+**Email 3: Last chance (Day 3):**
 
 ```
 Subject: [Product] webinar price ends tonight
@@ -333,7 +333,7 @@ Subject: [Product] webinar price ends tonight
 ## Output Format
 
 ```markdown
-# Webinar Script — [Webinar Title]
+# Webinar Script: [Webinar Title]
 
 ## Overview
 - **Topic:** [Topic]
@@ -376,7 +376,7 @@ Subject: [Product] webinar price ends tonight
 ## Completion
 
 ```
-Webinar Script — Complete!
+Webinar Script: Complete!
 
 Duration: [X] minutes
 Teaching pillars: [Count]
@@ -394,4 +394,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: 60/90-minute webinar structure with timestamps, scripted segments (hook, intro, 3 teaching pillars, transition, offer, Q&A), engagement prompts every 8-10 min, slide-by-slide outline, value stack presentation, offer transition technique (two paths), Q&A objection handling framework, 3-email replay/follow-up sequence. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: 60/90-minute webinar structure with timestamps, scripted segments (hook, intro, 3 teaching pillars, transition, offer, Q&A), engagement prompts every 8-10 min, slide-by-slide outline, value stack presentation, offer transition technique (two paths), Q&A objection handling framework, 3-email replay/follow-up sequence. (Origin: MemStack Pro v3.2, Mar 2026)

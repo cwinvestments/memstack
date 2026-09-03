@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-MemStack Migration — Import existing markdown memory into SQLite.
+MemStack Migration: Import existing markdown memory into SQLite.
 
 Reads memory/sessions/*.md and imports structured data into the database.
 Safe to run multiple times (uses INSERT OR IGNORE pattern via date+project uniqueness).

@@ -1,6 +1,6 @@
 # Getting Started with MemStack™
 
-MemStack™ gives Claude Code **130 professional skills** — deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
+MemStack™ gives Claude Code **130 professional skills**: deployment, security, database design, content writing, marketing, and more. Skills activate automatically when you need them.
 
 **86 skills are free.** A Pro license key unlocks all 130 skills including 44 Pro-exclusive skills. Get a key at [memstack.pro](https://memstack.pro).
 
@@ -11,9 +11,9 @@ MemStack™ gives Claude Code **130 professional skills** — deployment, securi
 
 ## Install
 
-MemStack comes in two parts — the **skills** (Claude Code plugin marketplace) and the **engine** (PyPI loader). Install both — the loader reads skill files from the installed marketplace plugin. Every command below is labeled **(in Claude Code)** or **(in terminal)**; running one in the wrong place is the most common setup mistake.
+MemStack comes in two parts, the **skills** (Claude Code plugin marketplace) and the **engine** (PyPI loader). Install both, the loader reads skill files from the installed marketplace plugin. Every command below is labeled **(in Claude Code)** or **(in terminal)**; running one in the wrong place is the most common setup mistake.
 
-**Step 1 — Install the free skills · (in Claude Code):**
+**Step 1, Install the free skills · (in Claude Code):**
 ```
 /plugin marketplace add cwinvestments/memstack
 /plugin install memstack@cwinvestments-memstack
@@ -21,29 +21,29 @@ MemStack comes in two parts — the **skills** (Claude Code plugin marketplace) 
 Run both commands. This unlocks the 86 free skills right away.
 
 > **SSH error?** ("Host key verification failed" on a fresh server that's never used GitHub over SSH.)
-> **Default fix · (in terminal)** — rewrite GitHub to HTTPS, then retry Step 1:
+> **Default fix · (in terminal)**: rewrite GitHub to HTTPS, then retry Step 1:
 > ```bash
 > git config --global url."https://github.com/".insteadOf "git@github.com:"
 > ```
-> **Backup fix · (in terminal)** — add GitHub's host key, then retry Step 1:
+> **Backup fix · (in terminal)**: add GitHub's host key, then retry Step 1:
 > ```bash
 > mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 > ```
 
-**Step 2 — Install the engine · (in terminal):**
+**Step 2, Install the engine · (in terminal):**
 
 Windows:
 ```bash
 pip install memstack-skill-loader
 ```
 
-Linux / Mac — use the explicit interpreter (the same one you register in Step 3):
+Linux / Mac, use the explicit interpreter (the same one you register in Step 3):
 ```bash
 /usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
 ```
 Find yours with `which python3` and substitute it if it isn't `/usr/bin/python3`. The `--break-system-packages` flag is required on newer externally-managed Python. No pip for that interpreter? Run `sudo apt install python3-pip` first (Debian/Ubuntu).
 
-**Step 3 — Register the MCP server · (in terminal):** register against the **same interpreter you installed onto in Step 2.**
+**Step 3, Register the MCP server · (in terminal):** register against the **same interpreter you installed onto in Step 2.**
 
 Windows:
 ```bash
@@ -56,19 +56,19 @@ claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skil
 ```
 If this doesn't match Step 2's interpreter, the server won't launch (you'll see a "failed to reconnect" error and `activate_license` will be missing).
 
-**Step 4 — Activate your license · (in Claude Code, after a full restart):** fully quit and reopen Claude Code first so it picks up the new MCP server, then run:
+**Step 4: Activate your license · (in Claude Code, after a full restart):** fully quit and reopen Claude Code first so it picks up the new MCP server, then run:
 ```
 activate_license(key="your-key", email="you@example.com")
 ```
-This unlocks the 44 Pro-exclusive skills (86 free + 44 Pro = 130 total). Free-tier users can skip this step — type `list skills` to verify the 86 free skills loaded.
+This unlocks the 44 Pro-exclusive skills (86 free + 44 Pro = 130 total). Free-tier users can skip this step, type `list skills` to verify the 86 free skills loaded.
 
 ## Verify It Works
 
 Open your project in Claude Code and try one of these:
 
-- `"Run an RLS audit on this project"` — activates the rls-checker skill
-- `"Deploy this to Railway"` — activates railway-deploy
-- `"Write a PRD for user authentication"` — activates prd-writer
+- `"Run an RLS audit on this project"`: activates the rls-checker skill
+- `"Deploy this to Railway"`: activates railway-deploy
+- `"Write a PRD for user authentication"`: activates prd-writer
 
 If Claude responds with a structured protocol (activation message, context guard, checklist), MemStack™ is working.
 
@@ -117,17 +117,17 @@ MemStack has three parts that update independently. Restart Claude Code after an
 
 ### Key Features
 
-- **On-demand loading** — only the skill matching your current task is loaded, saving context tokens
-- **Diary system** — logs your accomplishments, decisions, and handoff state between sessions
-- **Echo recall** — search across past diary entries to recall decisions and context
-- **TTS notifications (opt-in)** — voice alerts for task completion, errors, and attention-needed events. Enable with: `setx MEMSTACK_ENABLE_TTS true` (Windows) or `export MEMSTACK_ENABLE_TTS=true` (Mac/Linux)
+- **On-demand loading**: only the skill matching your current task is loaded, saving context tokens
+- **Diary system**: logs your accomplishments, decisions, and handoff state between sessions
+- **Echo recall**: search across past diary entries to recall decisions and context
+- **TTS notifications (opt-in)**: voice alerts for task completion, errors, and attention-needed events. Enable with: `setx MEMSTACK_ENABLE_TTS true` (Windows) or `export MEMSTACK_ENABLE_TTS=true` (Mac/Linux)
 
 ## Tips for Best Results
 
-- **Be specific when asking Claude** — say "deploy this to Railway" not "help me deploy". Specific phrases trigger the right skill.
-- **Save a diary at the end of each session** — say "save diary" or "wrapping up" before closing Claude Code. This logs your accomplishments, decisions, and handoff state so your next session can pick up exactly where you left off.
-- **Save a diary after major implementations** — even mid-session, if you completed a big feature or made important decisions, log it.
-- **Use Echo to recall past work** — say "what did we do last time?" or "recall [topic]" to search across all your diary entries.
+- **Be specific when asking Claude**: say "deploy this to Railway" not "help me deploy". Specific phrases trigger the right skill.
+- **Save a diary at the end of each session**: say "save diary" or "wrapping up" before closing Claude Code. This logs your accomplishments, decisions, and handoff state so your next session can pick up exactly where you left off.
+- **Save a diary after major implementations**: even mid-session, if you completed a big feature or made important decisions, log it.
+- **Use Echo to recall past work**: say "what did we do last time?" or "recall [topic]" to search across all your diary entries.
 
 ## Filtering Skills Per Project
 
@@ -155,14 +155,14 @@ The disable file only affects the project it's in.
 
 ### Install issues
 
-**`error: externally-managed-environment` (during Step 2)** — pip refuses to install on a system-managed Python. Add `--break-system-packages` · (in terminal):
+**`error: externally-managed-environment` (during Step 2)**: pip refuses to install on a system-managed Python. Add `--break-system-packages` · (in terminal):
 ```bash
 /usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
 ```
 
-**Plugin clone fails: "Host key verification failed" (during Step 1)** — a fresh server that's never connected to GitHub over SSH. **Default fix · (in terminal):** `git config --global url."https://github.com/".insteadOf "git@github.com:"` then retry Step 1. **Backup fix · (in terminal):** `mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts` then retry Step 1.
+**Plugin clone fails: "Host key verification failed" (during Step 1)**: a fresh server that's never connected to GitHub over SSH. **Default fix · (in terminal):** `git config --global url."https://github.com/".insteadOf "git@github.com:"` then retry Step 1. **Backup fix · (in terminal):** `mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts` then retry Step 1.
 
-**`activate_license` not found, or MCP "failed to reconnect (-32000)"** — the loader was installed onto a **different Python interpreter** than the one Claude Code launches (the classic bare-`python` mismatch on Linux/Mac). Check · (in terminal):
+**`activate_license` not found, or MCP "failed to reconnect (-32000)"**: the loader was installed onto a **different Python interpreter** than the one Claude Code launches (the classic bare-`python` mismatch on Linux/Mac). Check · (in terminal):
 ```bash
 /usr/bin/python3 -c "import memstack_skill_loader; print('ok')"
 ```
@@ -173,7 +173,7 @@ claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skil
 ```
 Then fully restart Claude Code. Rule of thumb: whatever interpreter you `import`-check as `ok` is the path that must appear in your `claude mcp add` command.
 
-**`No module named pip` (during Step 2)** — that interpreter ships without pip (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
+**`No module named pip` (during Step 2)**: that interpreter ships without pip (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
 ```bash
 sudo apt install python3-pip
 ```
@@ -185,7 +185,7 @@ sudo apt install python3-pip
 | Skills don't activate | Refresh the right channel, then restart Claude Code (see [Updating MemStack](#updating-memstack)): **free skills** → `/plugin marketplace update cwinvestments-memstack` + `/reload-plugins` (if a new skill is still missing, re-run `/plugin install memstack@cwinvestments-memstack`); **Pro skills** → run `refresh_pro_skills`; **engine** → `pip install --upgrade memstack-skill-loader` |
 | Skills not loading | Restart Claude Code |
 | Pro skills locked | In Claude Code, run `activate_license(key="your-key", email="you@example.com")` |
-| Diary not saving | Say "save diary" — it requires an explicit trigger |
+| Diary not saving | Say "save diary", it requires an explicit trigger |
 
 ## Getting Help
 

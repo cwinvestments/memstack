@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# MemStack — SessionStart hook for native CC plugin injection
+# MemStack: SessionStart hook for native CC plugin injection
 # Outputs JSON with hookSpecificOutput.additionalContext
 # so CC injects skill-loading instructions into the system prompt.
-# Always exit 0 — never block work.
+# Always exit 0: never block work.
 
 set -euo pipefail
 
@@ -62,7 +62,7 @@ escape_for_json() {
 
 # Convert only literal \n sequences to real newlines before escaping, so
 # escape_for_json single-escapes them. Deliberately narrower than printf '%b'
-# (which would also process \t, \\, octal, etc.) — we only authored \n above.
+# (which would also process \t, \\, octal, etc.), we only authored \n above.
 CONTEXT=${CONTEXT//\\n/$'\n'}
 
 # --- Living-memory block (Memory Engine, step 5) ---

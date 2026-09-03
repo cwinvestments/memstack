@@ -2,17 +2,17 @@
 name: memstack-automation-n8n-workflow-builder
 description: "Use this skill when the user says 'n8n workflow', 'build a workflow', 'automation workflow', 'connect services', or needs visual workflow design with node mapping, data transformations, and error handling for n8n. Do NOT use for standalone webhook endpoints or cron jobs."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# n8n Workflow Builder — Designing automation workflow...
+# n8n Workflow Builder: Designing automation workflow...
 *Designs visual n8n workflows with trigger selection, node mapping, data transformations, error handling, and webhook integration.*
 
 ## Activation
 
 When this skill activates, output:
 
-`n8n Workflow Builder — Designing automation workflow...`
+`n8n Workflow Builder: Designing automation workflow...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "n8n workflow", "build a workflow", "automation workflow" | ACTIVE |
 | User says "connect services" or wants visual automation | ACTIVE |
 | User wants to automate a multi-step process with n8n | ACTIVE |
-| User needs a standalone webhook endpoint | DORMANT — use Webhook Designer |
-| User needs a cron/scheduled job without n8n | DORMANT — use Cron Scheduler |
+| User needs a standalone webhook endpoint | DORMANT: use Webhook Designer |
+| User needs a cron/scheduled job without n8n | DORMANT: use Cron Scheduler |
 
 ## Common Mistakes
 
@@ -32,7 +32,7 @@ Then execute the protocol below.
 |---------|---------------|
 | "One giant workflow" | Workflows over 20 nodes become unmaintainable. Split into sub-workflows with triggers. |
 | "No error handling" | Silent failures mean lost data. Every workflow needs an Error Trigger node. |
-| "Hardcoded credentials" | Use n8n's credential store — never paste API keys into HTTP Request nodes. |
+| "Hardcoded credentials" | Use n8n's credential store, never paste API keys into HTTP Request nodes. |
 | "Skip testing with real data" | Test with production-like payloads. Dummy data hides type mismatches and missing fields. |
 | "Poll when you can webhook" | Polling wastes resources. If the service supports webhooks, use the Webhook trigger instead. |
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Trigger** — what starts the workflow? (webhook, schedule, app event, manual)
-> 2. **Input** — what data comes in? (payload shape, source service)
-> 3. **Actions** — what should happen step-by-step?
-> 4. **Output** — where does the result go? (database, API, email, Slack, file)
-> 5. **Error handling** — what happens if a step fails?
-> 6. **Frequency** — how often does this run? (per event, hourly, daily)
+> 1. **Trigger**: what starts the workflow? (webhook, schedule, app event, manual)
+> 2. **Input**: what data comes in? (payload shape, source service)
+> 3. **Actions**: what should happen step-by-step?
+> 4. **Output**: where does the result go? (database, API, email, Slack, file)
+> 5. **Error handling**: what happens if a step fails?
+> 6. **Frequency**: how often does this run? (per event, hourly, daily)
 
 ### Step 2: Select Trigger Node
 
@@ -72,8 +72,8 @@ Configuration:
   - [Setting 3: e.g., Authentication: Header Auth]
 Output schema:
   {
-    "field1": "type — description",
-    "field2": "type — description"
+    "field1": "type: description",
+    "field2": "type: description"
   }
 ```
 
@@ -218,7 +218,7 @@ Node 4: Log to database (optional)
 ## Output Format
 
 ```markdown
-# n8n Workflow — [Workflow Name]
+# n8n Workflow: [Workflow Name]
 
 ## Overview
 - **Trigger:** [Trigger type and config]
@@ -251,7 +251,7 @@ Node 4: Log to database (optional)
 ## Completion
 
 ```
-n8n Workflow Builder — Complete!
+n8n Workflow Builder: Complete!
 
 Workflow: [Name]
 Trigger: [Type]
@@ -269,4 +269,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Trigger selection (7 types), node mapping with specification templates, data transformation patterns (expressions + Code node), 3-layer error handling (retry, Error Trigger, dead letter), common workflow patterns (filter, batch, merge, deduplicate), testing checklist, production deployment checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Trigger selection (7 types), node mapping with specification templates, data transformation patterns (expressions + Code node), 3-layer error handling (retry, Error Trigger, dead letter), common workflow patterns (filter, batch, merge, deduplicate), testing checklist, production deployment checklist. (Origin: MemStack Pro v3.2, Mar 2026)

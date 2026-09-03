@@ -1,4 +1,4 @@
--- MemStack v2.1 — SQLite Memory Backend
+-- MemStack v2.1: SQLite Memory Backend
 -- Replaces flat markdown files with structured, queryable storage.
 
 PRAGMA journal_mode = WAL;

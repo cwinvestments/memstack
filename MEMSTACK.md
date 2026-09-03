@@ -1,10 +1,10 @@
-# MemStack™ v3.5.4 — Skill Framework for Claude Code
+# MemStack™ v3.5.4: Skill Framework for Claude Code
 
-You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format** — each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
+You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format**: each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
 **Current skill count: 130 total (86 free + 44 Pro-exclusive).** Verify it live with `memstack-skill-loader/scripts/check_skill_drift.py` rather than trusting this line.
 
-**v3.5.4 changes:** Documentation alignment pass — corrected skill counts to 128 total (85 free + 43 Pro-exclusive) *as of that release*, added the free **git-guard** skill, rewrote ADDING-SKILLS.md as the canonical skill-change checklist (16 count locations, 3-channel update path), and added automated skill-count drift enforcement. TokenStack™ is now the sole context-compression proxy. New skills still default to Pro-exclusive, graduating to free after 90 days.
+**v3.5.4 changes:** Documentation alignment pass: corrected skill counts to 128 total (85 free + 43 Pro-exclusive) *as of that release*, added the free **git-guard** skill, rewrote ADDING-SKILLS.md as the canonical skill-change checklist (16 count locations, 3-channel update path), and added automated skill-count drift enforcement. TokenStack™ is now the sole context-compression proxy. New skills still default to Pro-exclusive, graduating to free after 90 days.
 
 ## Branch Strategy
 
@@ -30,9 +30,9 @@ MemStack™ v3.2.1 uses **three layers**:
 |-------|------|-----|---------|
 | **Hooks** | Deterministic safety gates | Shell scripts fired by CC lifecycle events | Seal (pre-push), Deploy (post-commit), Monitor + TokenStack™ + CLAUDE.md indexer (session start/end) |
 | **Rules** | Always-on behavioral guidance | Markdown files loaded every session | Echo recall, Diary logging, Work planning, global conventions |
-| **Skills** | Context-aware workflows | `skills/{name}/SKILL.md` — official Anthropic format | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
+| **Skills** | Context-aware workflows | `skills/{name}/SKILL.md`: official Anthropic format | Echo, Diary, Work, Project, Scan, Quill, Forge, Sight, Shard |
 
-Hooks **always fire** — deterministic. Rules **always load** — persistent behavioral layer. Skills fire when CC detects matching triggers.
+Hooks **always fire**: deterministic. Rules **always load**: persistent behavioral layer. Skills fire when CC detects matching triggers.
 
 ### Hook Configuration
 
@@ -40,8 +40,8 @@ Hooks are wired in `.claude/settings.json`:
 
 | Hook Script | CC Event | Behavior |
 |-------------|----------|----------|
-| `pre-push.sh` | `PreToolUse` (git push) | Build check, secrets scan, commit format — **blocks push on failure** |
-| `post-commit.sh` | `PostToolUse` (git commit) | Debug artifact scan, secrets check — **warns after commit** |
+| `pre-push.sh` | `PreToolUse` (git push) | Build check, secrets scan, commit format: **blocks push on failure** |
+| `post-commit.sh` | `PostToolUse` (git commit) | Debug artifact scan, secrets check: **warns after commit** |
 | `session-start.sh` | `SessionStart` | **TokenStack™ auto-start** + **CLAUDE.md auto-index** + reports "working" to API |
 | `session-end.sh` | `Stop` | Reports "completed" status to monitoring API |
 
@@ -52,30 +52,30 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | Rule File | Skill Enhanced | Behavior |
 |-----------|---------------|----------|
 | `memstack.md` | Global | Commit format (standard + conventional), build safety, no secrets, deprecated skill guard |
-| `echo.md` | Echo (Lv.5) | Always-on memory recall protocol — vector search first, SQLite fallback |
-| `diary.md` | Diary (Lv.5) | Always-on session logging awareness — log with structured handoff |
-| `work.md` | Work (Lv.5) | Always-on task planning protocol — activate on plan/todo/task |
-| `tokenstack.md` | TokenStack™ | Compression proxy awareness — troubleshooting, stats check |
+| `echo.md` | Echo (Lv.5) | Always-on memory recall protocol, vector search first, SQLite fallback |
+| `diary.md` | Diary (Lv.5) | Always-on session logging awareness: log with structured handoff |
+| `work.md` | Work (Lv.5) | Always-on task planning protocol, activate on plan/todo/task |
+| `tokenstack.md` | TokenStack™ | Compression proxy awareness: troubleshooting, stats check |
 
 ### Slash Commands
 
 | Command | File | Behavior |
 |---------|------|----------|
-| `/memstack-search <query>` | `.claude/commands/memstack-search.md` | Quick memory search — runs `memstack-db.py search` |
+| `/memstack-search <query>` | `.claude/commands/memstack-search.md` | Quick memory search, runs `memstack-db.py search` |
 | `/memstack-headroom` | `.claude/commands/memstack-headroom.md` | TokenStack™ proxy status and token savings |
 
 ### Hook Exit Codes
 
 | Code | Meaning |
 |------|---------|
-| `0` | Success — continue |
+| `0` | Success: continue |
 | `1` | Error (logged, continues) |
 | `2` | **Block the operation** |
 
 ## Trigger Types
-- **Keyword** — fires when specific phrases appear in prompt
-- **Passive** — always-on background behavior (now hooks in v3.0)
-- **Contextual** — fires when conditions are detected (file size, session state)
+- **Keyword**: fires when specific phrases appear in prompt
+- **Passive**: always-on background behavior (now hooks in v3.0)
+- **Contextual**: fires when conditions are detected (file size, session state)
 
 ## Skill Index
 
@@ -96,7 +96,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 | 13 | ~~Monitor~~ | 📡 | ~~Passive~~| **Hook** | ~~CC Monitor self-reporting~~ →`.claude/hooks/session-*.sh` | Deterministic on session start/end |
 | 14 | ~~Deploy~~ | 🚀  | ~~Passive~~| **Hook** | ~~Build & deployment guardian~~ →`.claude/hooks/post-commit.sh` | Deterministic on git commit |
 | 16 | Humanize | ✍️    | Keyword    | Lv.1     | Remove AI writing patterns from text | "humanize", "make it sound natural", "clean up writing" |
-| 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md — current task/blockers/next steps | "update state", "project state", "where was I" |
+| 17 | State    | 📍    | Contextual | Lv.1     | Living STATE.md: current task/blockers/next steps | "update state", "project state", "where was I" |
 | 18 | Verify   | ✅    | Keyword    | Lv.1     | Pre-commit work verification report | "verify", "check this work", "does it pass" |
 | 19 | Governor | 🏛️    | Contextual | Lv.1     | Portfolio governance (tier/phase constraints) | "new project", "what tier", "scope", "project init" |
 | 20 | Compress | ⚙️    | Keyword    | Lv.2     | TokenStack™ proxy management & stats | "tokenstack", "compression", "token savings", "proxy status" |
@@ -105,7 +105,7 @@ Rules in `.claude/rules/` are loaded automatically every session:
 When multiple skills could activate on the same prompt, use these ownership rules:
 - **"commit"** →post-commit hook fires automatically
 - **"push" / "ship it" / "deploy"** →pre-push hook blocks if checks fail
-- **"build"** →Neither — just run the build command directly
+- **"build"** →Neither, just run the build command directly
 - **"recall" / "remember"** →Echo only (not Diary or Project)
 - **"save diary" / "log session"** →Diary only (not Project)
 - **"save project" / "handoff"** →Project only (not Diary)
@@ -117,8 +117,8 @@ When multiple skills could activate on the same prompt, use these ownership rule
 - **"tier" / "scope" / "what's allowed"** →Governor only
 
 ## Storage
-- **Database (primary):** `db/memstack.db` — SQLite with WAL mode
-- **DB Helper:** `python db/memstack-db.py <command>` — repository pattern CLI
+- **Database (primary):** `db/memstack.db`: SQLite with WAL mode
+- **DB Helper:** `python db/memstack-db.py <command>`: repository pattern CLI
 - **Commands:** `init`, `add-session`, `add-insight`, `search`, `get-sessions`, `get-insights`, `get-context`, `set-context`, `add-plan-task`, `get-plan`, `update-task`, `export-md`, `stats`
 
 ## Paths

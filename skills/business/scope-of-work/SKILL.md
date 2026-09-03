@@ -2,17 +2,17 @@
 name: memstack-business-scope-of-work
 description: "Use this skill when the user says 'scope of work', 'SOW', 'define scope', 'project scope', 'write SOW', 'scope document', or is defining project boundaries, deliverables, and acceptance criteria for a formal engagement. Do NOT use for proposals, contracts, or invoicing."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# 📐 Scope of Work — Defining project boundaries and deliverables...
+# 📐 Scope of Work: Defining project boundaries and deliverables...
 *Generates a formal Scope of Work document with objectives, deliverables, acceptance criteria, in/out scope definitions, work breakdown structure, milestones, and change request process.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📐 Scope of Work — Defining project scope and deliverables...`
+`📐 Scope of Work, Defining project scope and deliverables...`
 
 Then execute the protocol below.
 
@@ -21,8 +21,8 @@ Then execute the protocol below.
 | User says "scope of work" or "SOW" or "define scope" | ACTIVE |
 | User says "write SOW" or "project scope" or "scope document" | ACTIVE |
 | Defining formal project boundaries for a client engagement | ACTIVE |
-| Writing internal task lists (no formal scope needed) | DORMANT — use Work skill |
-| Writing a proposal (includes pricing/sales) | DORMANT — use proposal-writer |
+| Writing internal task lists (no formal scope needed) | DORMANT: use Work skill |
+| Writing a proposal (includes pricing/sales) | DORMANT: use proposal-writer |
 
 ### Anti-patterns
 
@@ -47,7 +47,7 @@ Establish what success looks like at the highest level:
 [One sentence: what this project delivers and why it matters]
 
 Example: Build a multi-tenant SaaS dashboard that enables [Client]'s customers
-to manage their accounts, view analytics, and configure integrations — replacing
+to manage their accounts, view analytics, and configure integrations, replacing
 the current manual process that requires 3 support staff.
 
 ### Success Criteria
@@ -113,7 +113,7 @@ Every deliverable needs a clear definition of "done":
 ```
 
 **Acceptance criteria rules:**
-- Each criterion is a binary yes/no check — not subjective ("looks good")
+- Each criterion is a binary yes/no check: not subjective ("looks good")
 - Include functional requirements (what it does)
 - Include non-functional requirements (performance, responsiveness, accessibility)
 - Include negative cases (error handling, invalid input)
@@ -177,8 +177,8 @@ Map tasks with dependencies:
 ### Phase 1: Foundation (Week 1-2)
 | Task | Deliverable | Depends On | Hours |
 |------|------------|-----------|-------|
-| 1.1 Project setup (repo, CI/CD, environments) | D1 | — | 6 |
-| 1.2 Database schema design and migration | D1 | — | 8 |
+| 1.1 Project setup (repo, CI/CD, environments) | D1 | none | 6 |
+| 1.2 Database schema design and migration | D1 | none | 8 |
 | 1.3 Authentication: email/password flow | D1 | 1.1, 1.2 | 10 |
 | 1.4 Authentication: Google OAuth | D1 | 1.3 | 6 |
 | 1.5 Authentication: password reset | D1 | 1.3 | 4 |
@@ -211,7 +211,7 @@ Map tasks with dependencies:
 
 **WBS rules:**
 - Every task maps to a deliverable (D1, D2, etc.)
-- Dependencies are explicit — no hidden assumptions about ordering
+- Dependencies are explicit, no hidden assumptions about ordering
 - Tasks are small enough to estimate (max 12 hours per task)
 - Include testing and documentation as explicit tasks, not afterthoughts
 
@@ -222,7 +222,7 @@ Map tasks with dependencies:
 
 | # | Milestone | Target Date | Go/No-Go Criteria | Deliverables |
 |---|-----------|------------|-------------------|-------------|
-| M1 | Kickoff | [Date] | Signed SOW, deposit received, access granted | — |
+| M1 | Kickoff | [Date] | Signed SOW, deposit received, access granted | none |
 | M2 | Phase 1 Review | [Date + 2 wk] | All D1 acceptance criteria pass on staging | D1: Auth system |
 | M3 | Phase 2 Review | [Date + 5 wk] | All D2 acceptance criteria pass on staging | D2: Dashboard |
 | M4 | UAT Begin | [Date + 6.5 wk] | Client begins user acceptance testing | All deliverables on staging |
@@ -363,7 +363,7 @@ Date: ___________________________
 
 | # | Date | Description | Approved By |
 |---|------|-------------|------------|
-| — | — | Original SOW | — |
+| none | none | Original SOW | none |
 
 ---
 *This document, together with any approved amendments, constitutes the complete
@@ -373,7 +373,7 @@ agreement regarding the scope of work for this project.*
 **Output summary:**
 
 ```
-📐 Scope of Work — Complete
+📐 Scope of Work: Complete
 
 Project: [name]
 Client: [client name]
@@ -395,4 +395,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Project objectives with measurable success criteria, deliverables with acceptance criteria, explicit in/out scope, work breakdown structure with dependencies, milestones with go/no-go gates, constraints and external dependencies, formal change request process, signatures and amendments. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Project objectives with measurable success criteria, deliverables with acceptance criteria, explicit in/out scope, work breakdown structure with dependencies, milestones with go/no-go gates, constraints and external dependencies, formal change request process, signatures and amendments. (Origin: MemStack Pro v3.2, Mar 2026)

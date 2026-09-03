@@ -4,7 +4,7 @@ description: "Use when the user says 'generate changelog', 'update changelog', '
 version: 1.0.0
 ---
 
-# Changelog Generator — Generating changelog...
+# Changelog Generator: Generating changelog...
 *Produces a formatted CHANGELOG.md from git commit history, grouped by type and ready for release.*
 
 ## Activation
@@ -14,8 +14,8 @@ version: 1.0.0
 | User says "generate changelog" or "update changelog" | ACTIVE |
 | User says "what changed" or "release notes" | ACTIVE |
 | User says "write changelog" or "changelog since" | ACTIVE |
-| User wants to view git log only | NOT this skill — use git commands directly |
-| User wants a diary entry | NOT this skill — use Diary |
+| User wants to view git log only | NOT this skill: use git commands directly |
+| User wants a diary entry | NOT this skill: use Diary |
 
 ## Context Guard
 
@@ -131,4 +131,4 @@ Ready to write to CHANGELOG.md? (prepend / overwrite / clipboard only)
 
 ## Level History
 
-- **Lv.1** — Base: Git-to-changelog with Keep a Changelog format, commit categorization by conventional commits prefix, user-facing rewriting, existing file handling. (Origin: MemStack v3.5, Apr 2026)
+- **Lv.1**: Base: Git-to-changelog with Keep a Changelog format, commit categorization by conventional commits prefix, user-facing rewriting, existing file handling. (Origin: MemStack v3.5, Apr 2026)

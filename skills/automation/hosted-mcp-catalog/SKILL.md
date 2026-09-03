@@ -4,8 +4,8 @@ description: "Use when the user says 'what MCP servers', 'find an MCP for', 'hos
 version: 1.0.0
 ---
 
-# Hosted MCP Catalog — Finding hosted MCP servers...
-*Reference guide for zero-setup hosted MCP servers that require no API keys, no local install — just point any MCP client at the URL.*
+# Hosted MCP Catalog: Finding hosted MCP servers...
+*Reference guide for zero-setup hosted MCP servers that require no API keys, no local install, just point any MCP client at the URL.*
 
 ## Activation
 
@@ -14,8 +14,8 @@ version: 1.0.0
 | User says "what MCP servers" or "find an MCP for" | ACTIVE |
 | User says "hosted MCP" or "MCP catalog" | ACTIVE |
 | User says "available MCP tools" or "list MCP servers" | ACTIVE |
-| User wants to BUILD an MCP server | NOT this skill — use mcp-builder |
-| User wants to configure local MCP | NOT this skill — check .mcp.json docs |
+| User wants to BUILD an MCP server | NOT this skill: use mcp-builder |
+| User wants to configure local MCP | NOT this skill: check .mcp.json docs |
 
 ## Context Guard
 
@@ -26,9 +26,9 @@ version: 1.0.0
 
 ## How Hosted MCP Works
 
-Hosted MCP servers run remotely — no local install needed. Add the URL to your MCP client config and the tools are available immediately.
+Hosted MCP servers run remotely: no local install needed. Add the URL to your MCP client config and the tools are available immediately.
 
-**In Claude Code** — add to `.mcp.json`:
+**In Claude Code**: add to `.mcp.json`:
 ```json
 {
   "mcpServers": {
@@ -40,7 +40,7 @@ Hosted MCP servers run remotely — no local install needed. Add the URL to your
 }
 ```
 
-**In Claude Desktop** — add to `claude_desktop_config.json`:
+**In Claude Desktop**: add to `claude_desktop_config.json`:
 ```json
 {
   "mcpServers": {
@@ -65,7 +65,7 @@ These are maintained by major platforms and generally stable:
 | Slack | `https://mcp.slack.com/mcp` | Messages, channels, search | Team communication |
 | Greptile | `https://api.greptile.com/mcp` | Codebase search, understanding | Code intelligence |
 
-**Note:** Most official servers require OAuth authentication on first use. Claude Code handles this automatically — you'll get a browser prompt to authorize.
+**Note:** Most official servers require OAuth authentication on first use. Claude Code handles this automatically, you'll get a browser prompt to authorize.
 
 ## How to Choose
 
@@ -146,4 +146,4 @@ Restart Claude Code after adding.
 
 ## Level History
 
-- **Lv.1** — Base: Hosted MCP server catalog with official platform endpoints, connection setup, discovery resources. (Origin: MemStack v3.5, Apr 2026)
+- **Lv.1**: Base: Hosted MCP server catalog with official platform endpoints, connection setup, discovery resources. (Origin: MemStack v3.5, Apr 2026)

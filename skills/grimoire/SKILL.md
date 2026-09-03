@@ -5,20 +5,20 @@ version: 1.0.0
 ---
 
 
-# 📖 Grimoire — Updating the Knowledge Library
+# 📖 Grimoire: Updating the Knowledge Library
 *Manage and update CLAUDE.md files across all projects.*
 
 ## Activation
 
 When this skill activates, output:
 
-`📖 Grimoire — Updating the knowledge library.`
+`📖 Grimoire: Updating the knowledge library.`
 
 Then execute the protocol below.
 
 ## Protocol
 
-1. **Identify the target project** — use config.json to find the CLAUDE.md path
+1. **Identify the target project**: use config.json to find the CLAUDE.md path
 2. **Read the current CLAUDE.md** if it exists
 3. **Determine what to update** based on the session's work:
    - New API endpoints built
@@ -32,7 +32,7 @@ Then execute the protocol below.
    - Add new entries under the right headings
    - Don't duplicate existing entries
    - Use consistent formatting
-5. **If no CLAUDE.md exists** — create one with standard sections:
+5. **If no CLAUDE.md exists**: create one with standard sections:
    - Project Overview, Tech Stack, Directory Structure, Key Files
    - API Endpoints, Database Schema, Environment Variables, Dev Commands
 
@@ -49,7 +49,7 @@ Then execute the protocol below.
 **User:** "update claude.md with the CC Monitor stuff"
 
 ```
-📖 Grimoire — Updating the knowledge library.
+📖 Grimoire: Updating the knowledge library.
 
 Reading: C:\Projects\AdminStack\CLAUDE.md
 
@@ -68,5 +68,5 @@ CLAUDE.md updated ✓
 
 ## Level History
 
-- **Lv.1** — Base: CLAUDE.md read/write with section management. (Origin: MemStack v1.0, Feb 2026)
-- **Lv.2** — Enhanced: Added YAML frontmatter, activation message, auto-detect what changed. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)
+- **Lv.1**: Base: CLAUDE.md read/write with section management. (Origin: MemStack v1.0, Feb 2026)
+- **Lv.2**: Enhanced: Added YAML frontmatter, activation message, auto-detect what changed. (Origin: MemStack v2.0 MemoryCore merge, Feb 2026)

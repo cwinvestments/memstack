@@ -2,17 +2,17 @@
 name: memstack-automation-cron-scheduler
 description: "Use this skill when the user says 'cron job', 'scheduled task', 'run every', 'cron expression', 'recurring job', or needs production-grade scheduled jobs with overlap prevention, monitoring, and structured logging. Do NOT use for n8n workflows or event-driven webhooks."
 version: 1.0.0
-license: "Proprietary — MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
+license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---
 
-# Cron Scheduler — Building scheduled job...
+# Cron Scheduler: Building scheduled job...
 *Builds production-grade scheduled jobs with cron syntax, timezone handling, overlap prevention, health checks, monitoring, alerting, and structured logging.*
 
 ## Activation
 
 When this skill activates, output:
 
-`Cron Scheduler — Building scheduled job...`
+`Cron Scheduler: Building scheduled job...`
 
 Then execute the protocol below.
 
@@ -23,8 +23,8 @@ Then execute the protocol below.
 | User says "cron job", "scheduled task", "run every" | ACTIVE |
 | User says "cron expression" or "recurring job" | ACTIVE |
 | User needs a time-based scheduled task with monitoring | ACTIVE |
-| User wants a visual n8n workflow | DORMANT — use n8n Workflow Builder |
-| User wants an event-driven webhook | DORMANT — use Webhook Designer |
+| User wants a visual n8n workflow | DORMANT: use n8n Workflow Builder |
+| User wants an event-driven webhook | DORMANT: use Webhook Designer |
 
 ## Common Mistakes
 
@@ -42,12 +42,12 @@ Then execute the protocol below.
 
 If the user hasn't provided details, ask:
 
-> 1. **Task** — what does the job do? (sync data, send emails, clean up, generate reports)
-> 2. **Schedule** — how often? (every 5 min, hourly, daily at 2 AM, weekly)
-> 3. **Duration** — how long does a typical run take?
-> 4. **Timezone** — which timezone matters? (UTC, user's local, business hours)
-> 5. **Platform** — where does this run? (server crontab, cloud function, Docker, Kubernetes)
-> 6. **Failure mode** — what happens if it fails? (retry, alert, skip until next run)
+> 1. **Task**: what does the job do? (sync data, send emails, clean up, generate reports)
+> 2. **Schedule**: how often? (every 5 min, hourly, daily at 2 AM, weekly)
+> 3. **Duration**: how long does a typical run take?
+> 4. **Timezone**: which timezone matters? (UTC, user's local, business hours)
+> 5. **Platform**: where does this run? (server crontab, cloud function, Docker, Kubernetes)
+> 6. **Failure mode**: what happens if it fails? (retry, alert, skip until next run)
 
 ### Step 2: Write the Cron Expression
 
@@ -67,7 +67,7 @@ If the user hasn't provided details, ask:
 
 | Schedule | Expression | Notes |
 |----------|-----------|-------|
-| Every minute | `* * * * *` | Testing only — too aggressive for production |
+| Every minute | `* * * * *` | Testing only: too aggressive for production |
 | Every 5 minutes | `*/5 * * * *` | Good for near-real-time sync |
 | Every 15 minutes | `*/15 * * * *` | Light polling |
 | Every hour | `0 * * * *` | At minute 0 of every hour |
@@ -82,7 +82,7 @@ If the user hasn't provided details, ask:
 **Timezone handling:**
 
 ```bash
-# System crontab — set TZ per job
+# System crontab, set TZ per job
 CRON_TZ=America/New_York
 0 9 * * * /path/to/job.sh    # Runs at 9 AM Eastern (handles DST)
 
@@ -91,7 +91,7 @@ TZ=UTC
 ```
 
 ```typescript
-// Node.js (node-cron) — explicit timezone
+// Node.js (node-cron), explicit timezone
 import cron from 'node-cron';
 
 cron.schedule('0 9 * * *', () => {
@@ -110,11 +110,11 @@ import { acquireLock, releaseLock } from './lockService';
 
 async function runJob() {
   const lockKey = 'job:daily-report';
-  const lockTTL = 3600; // seconds — must exceed max job duration
+  const lockTTL = 3600; // seconds, must exceed max job duration
 
   const acquired = await acquireLock(lockKey, lockTTL);
   if (!acquired) {
-    console.log('Job already running — skipping this execution');
+    console.log('Job already running: skipping this execution');
     return;
   }
 
@@ -198,7 +198,7 @@ try {
 
 ### Step 5: Monitoring & Alerting
 
-**Health check pattern — heartbeat:**
+**Health check pattern: heartbeat:**
 
 ```typescript
 // After successful job completion, ping a health check URL
@@ -260,7 +260,7 @@ CREATE INDEX idx_job_runs_name_started ON job_runs(job_name, started_at DESC);
 ## Output Format
 
 ```markdown
-# Cron Job — [Job Name]
+# Cron Job: [Job Name]
 
 ## Schedule
 - **Expression:** [cron expression]
@@ -286,7 +286,7 @@ CREATE INDEX idx_job_runs_name_started ON job_runs(job_name, started_at DESC);
 ## Completion
 
 ```
-Cron Scheduler — Complete!
+Cron Scheduler: Complete!
 
 Job: [Name]
 Schedule: [Expression] ([timezone])
@@ -304,4 +304,4 @@ Next steps:
 
 ## Level History
 
-- **Lv.1** — Base: Cron syntax guide with 12 common schedules, timezone handling (crontab + Node.js), overlap prevention (Redis lock, PID file, K8s ConcurrencyPolicy), structured logging with run IDs, heartbeat monitoring pattern, alert conditions (5 severities), job history table, production deployment checklist. (Origin: MemStack Pro v3.2, Mar 2026)
+- **Lv.1**: Base: Cron syntax guide with 12 common schedules, timezone handling (crontab + Node.js), overlap prevention (Redis lock, PID file, K8s ConcurrencyPolicy), structured logging with run IDs, heartbeat monitoring pattern, alert conditions (5 severities), job history table, production deployment checklist. (Origin: MemStack Pro v3.2, Mar 2026)
