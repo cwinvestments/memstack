@@ -1,5 +1,17 @@
 # MemStack™ Changelog
 
+## v3.9.1 - 2026-09-03 - The hook wrapper's line endings are pinned, and bash can read them
+
+### Fixed
+- **`hooks/run-hook.cmd` no longer leaves its own line endings to whatever git configuration a client happens to have.** The file is a cmd.exe and bash polyglot, and its batch half needs CRLF: cmd.exe label parsing for the `goto verify_gate` jump is unreliable in a file with bare LF endings, and that jump is how the Stop gate is reached on Windows. Nothing pinned those bytes. The repository carried no `.gitattributes`, so every checkout decided the question locally from `core.autocrlf`, and a Windows install where that setting is not `true` received LF bytes for a file whose batch half depends on CRLF. `.gitattributes` now declares `hooks/run-hook.cmd text eol=crlf`, so a checkout on any platform produces the bytes the batch half needs instead of the bytes that machine's configuration happens to prefer.
+- **The Unix half now re-executes a CR-stripped copy of itself, which is what makes that pin safe for bash.** bash does not strip carriage returns the way MSYS bash on Windows does, so a CRLF polyglot fails hard on Linux and macOS: the heredoc terminator still matches and the batch half is still skipped correctly, but the shell then reads `shift` with a trailing CR as a command name, cannot find it, and runs off the end of the file with a syntax error. That exits 2, and 2 is the single code a Stop hook uses to mean blocked, so the failure would have presented itself as a verification block rather than as the broken wrapper it is. A single guarded line now hands bash a copy of the file with the CR bytes removed. `MEMSTACK_CR_STRIPPED` in the environment stops it recursing, so the re-execution happens exactly once, and `$0` and the arguments survive it.
+
+### Notes
+- **PATCH, not MINOR. Nothing is added, and a working install behaves identically.** Both halves of the wrapper keep the contract 3.9.0 gave them: the Stop gate still exits 0 for every condition the wrapper itself cannot resolve, and exit 2 still belongs to `scripts/verify.py` alone.
+- **3.9.0 did not block Stop on Linux or macOS.** git normalized the wrapper to LF in the index, and with no `.gitattributes` a non-Windows checkout received those LF bytes, which bash reads correctly. This was confirmed by running the 3.9.0 bytes on Ubuntu under bash 5.2.21 before the fix was written: exit 0, empty stderr, valid session-start JSON. The defect this release closes is that the bytes were never pinned at all, and the re-execution is what makes pinning them safe to do.
+- **Proved on a real Linux bash rather than on Windows alone.** Under bash 5.2.21 with the CRLF wrapper in place: `run-hook.cmd session-start` exits 0 with empty stderr, both when invoked through bash and when executed directly; the Stop gate exits 0 and silent with no arming marker present, and also with `CLAUDE_PLUGIN_ROOT` unset; and in a repository with the marker present it exits 2 and reports the block, quoting the session id from the payload piped into it, which is what proves stdin reaches `verify.py` through the wrapper untouched. The same CRLF file without the fix exits 2 with a syntax error on the same machine.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+
 ## v3.9.0 - 2026-09-03 - Verification writes a receipt, and a gate reads it
 
 ### Added

@@ -1,0 +1,6 @@
+# run-hook.cmd is a cmd.exe / bash polyglot. The batch half needs CRLF,
+# because cmd.exe goto label parsing is unreliable in a bare-LF file, so
+# pin the checked-out bytes on every platform rather than leaving them to
+# each client's core.autocrlf. The Unix half re-executes a CR-stripped
+# copy of itself, so CRLF is safe for bash as well.
+hooks/run-hook.cmd text eol=crlf

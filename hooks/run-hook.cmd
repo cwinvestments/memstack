@@ -60,6 +60,18 @@ if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" exit /b 0
 call python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" gate
 exit /b %ERRORLEVEL%
 CMDBLOCK
+# Everything from here to the re-exec below must be a comment.
+# This file is stored with CRLF endings because the batch half above
+# needs them: cmd.exe's goto label parsing is unreliable in a file
+# with bare LF endings. bash cannot read CRLF, so the next line makes
+# bash re-execute a CR-stripped copy of this file, exactly once. The
+# MEMSTACK_CR_STRIPPED environment guard is what stops that from
+# recursing: on the stripped re-run the variable is already set and
+# the line becomes a no-op. $0 survives because it is passed as the
+# first argument after the bash -c command string. The trailing #
+# keeps this line's own CR out of the parser. On the stripped re-run
+# the heredoc above is a no-op and the Unix half runs with LF.
+[ -n "$MEMSTACK_CR_STRIPPED" ] || MEMSTACK_CR_STRIPPED=1 exec bash -c "$(tr -d '\r' < "$0")" "$0" "$@" #
 
 # Unix: run the named script directly
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
