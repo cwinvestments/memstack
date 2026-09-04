@@ -1,0 +1,6 @@
+2026-09-04T20:41:09.020Z [DEBUG] Error log sink initialized
+2026-09-04T20:41:09.021Z [DEBUG] clearPluginCache: invalidating loadAllPlugins cache (preAction: --plugin-dir inline plugins)
+2026-09-04T20:41:09.400Z [DEBUG] Checking plugin memstack: skillsPath=exists, skillsPaths=0 paths
+2026-09-04T20:41:09.455Z [DEBUG] Loaded 18 skills from plugin memstack default directory
+2026-09-04T20:41:09.460Z [DEBUG] Total plugin skills loaded: 18 (0 duplicate/user-owned entries skipped)
+2026-09-04T20:41:09.470Z [DEBUG] All plugins already exist, skipping migration

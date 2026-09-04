@@ -1,0 +1,15 @@
+2026-09-04T20:36:52.867Z [DEBUG] Error log sink initialized
+2026-09-04T20:36:52.868Z [DEBUG] clearPluginCache: invalidating loadAllPlugins cache (preAction: --plugin-dir inline plugins)
+2026-09-04T20:36:53.072Z [DEBUG] Checking plugin memstack: skillsPath=exists, skillsPaths=9 paths
+2026-09-04T20:36:53.079Z [DEBUG] Loaded 18 skills from plugin memstack default directory
+2026-09-04T20:36:53.086Z [DEBUG] Loaded 6 skills from plugin memstack custom path: C:\Projects\memstack\skills\automation
+2026-09-04T20:36:53.087Z [DEBUG] Loaded 6 skills from plugin memstack custom path: C:\Projects\memstack\skills\deployment
+2026-09-04T20:36:53.087Z [DEBUG] Loaded 6 skills from plugin memstack custom path: C:\Projects\memstack\skills\seo-geo
+2026-09-04T20:36:53.088Z [DEBUG] Loaded 10 skills from plugin memstack custom path: C:\Projects\memstack\skills\business
+2026-09-04T20:36:53.089Z [DEBUG] Loaded 9 skills from plugin memstack custom path: C:\Projects\memstack\skills\development
+2026-09-04T20:36:53.090Z [DEBUG] Loaded 8 skills from plugin memstack custom path: C:\Projects\memstack\skills\content
+2026-09-04T20:36:53.091Z [DEBUG] Loaded 8 skills from plugin memstack custom path: C:\Projects\memstack\skills\security
+2026-09-04T20:36:53.093Z [DEBUG] Loaded 9 skills from plugin memstack custom path: C:\Projects\memstack\skills\marketing
+2026-09-04T20:36:53.093Z [DEBUG] Loaded 6 skills from plugin memstack custom path: C:\Projects\memstack\skills\product
+2026-09-04T20:36:53.098Z [DEBUG] Total plugin skills loaded: 86 (0 duplicate/user-owned entries skipped)
+2026-09-04T20:36:53.120Z [DEBUG] All plugins already exist, skipping migration
