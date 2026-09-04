@@ -9,6 +9,7 @@ Usage:
     python scripts/verify.py run [--task-id ID]
     python scripts/verify.py selftest
     python scripts/verify.py gate      # reads a Stop hook payload on stdin
+    python scripts/verify.py report-marker   # reads a UserPromptSubmit payload
 
 Exit codes:
     0  PASS / ALLOW       every detected check passed, or the gate allows
@@ -100,6 +101,15 @@ GATE_STATE_NAME = "gate-state.json"
 # yields: at that point the block has stopped being information and started
 # being an obstacle, and a human should look instead.
 GATE_MAX_BLOCKS = 3
+
+# The report requirement. A prompt carrying this exact phrase asks the session
+# to write its final report to a file. The marker is what carries that request
+# across the turn boundary: the Stop gate cannot see the prompt, and a session
+# that forgot the request is precisely the session that will not remember it
+# unprompted either.
+REPORT_PHRASE = "Report per memstack:report"
+REPORT_MARKER_NAME = "report-required.json"
+REPORT_DIR_ENV = "MEMSTACK_REPORT_DIR"
 
 _SAFE_ID = re.compile(r"[^A-Za-z0-9._-]+")
 
@@ -764,13 +774,13 @@ def gate_record_block(root: Path, session_id: str, fingerprint: str) -> int:
     return count
 
 
-def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, str]:
-    """(exit_code, message). 0 allows, 2 blocks. Message may be empty."""
-    if payload.get("stop_hook_active"):
-        # The recursion guard. Whatever else is true, a hook that keeps firing
-        # into its own re-entry is worse than an unverified tree.
-        return EXIT_PASS, ""
+def _payload_root(payload: dict,
+                  fallback_cwd: Path | None) -> tuple[Path, Path]:
+    """(cwd, repo root) from a hook payload. Never raises, always answers.
 
+    Shared by the Stop gate and the report marker so the two can never disagree
+    about which repository one payload is talking about.
+    """
     raw_cwd = payload.get("cwd")
     start = None
     if isinstance(raw_cwd, str) and raw_cwd.strip():
@@ -779,8 +789,173 @@ def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, s
             start = candidate
     if start is None:
         start = fallback_cwd or Path.cwd()
-    root = repo_root(start.resolve())
+    start = start.resolve()
+    return start, repo_root(start)
 
+
+def _payload_session(payload: dict) -> str:
+    """The session id, or a stable stand-in. Never empty, because it is a key."""
+    session_id = payload.get("session_id")
+    if not isinstance(session_id, str) or not session_id.strip():
+        return "unknown-session"
+    return session_id
+
+
+# --------------------------------------------------------------------------
+# the report requirement
+#
+# A UserPromptSubmit hook records a request; the Stop gate enforces it. The two
+# halves live here together because they share one file format and one set of
+# rules about where a report is allowed to be, and splitting them across a hook
+# script and this file is how the two drift apart.
+# --------------------------------------------------------------------------
+
+def report_dir() -> Path:
+    """Where reports land: MEMSTACK_REPORT_DIR, else ~/.memstack/reports.
+
+    Outside the repository on purpose. A report written into a working tree is
+    one more untracked file to explain, and eventually one more file caught by
+    somebody's blanket git add.
+    """
+    raw = os.environ.get(REPORT_DIR_ENV) or ""
+    if raw.strip():
+        return Path(raw.strip()).expanduser()
+    return Path.home() / ".memstack" / "reports"
+
+
+def report_marker_path(root: Path) -> Path:
+    return root / MEMSTACK_SUBDIR / REPORT_MARKER_NAME
+
+
+def report_prefix(project: str, day: str) -> str:
+    """The part of a report's name that is knowable before it is written. The
+    sequence number is not: it depends on what is in the directory at the
+    moment of writing, which is why nothing here predicts it."""
+    return project + "-" + day + "-"
+
+
+def newest_report(directory: Path, prefix: str, after: float) -> Path | None:
+    """A file named for this prefix, written after `after`. None when there is
+    none, and None on any error: the gate must never block a session because it
+    could not read a directory."""
+    try:
+        entries = sorted(directory.iterdir())
+    except OSError:
+        return None
+    for entry in entries:
+        if not entry.name.startswith(prefix):
+            continue
+        try:
+            if entry.is_file() and entry.stat().st_mtime > after:
+                return entry
+        except OSError:
+            continue
+    return None
+
+
+def report_marker_decide(payload: dict,
+                         fallback_cwd: Path | None = None) -> Path | None:
+    """Record a report request from a UserPromptSubmit payload.
+
+    Returns the marker path when the prompt carried the phrase, and None,
+    having written nothing, for every other prompt. Writing nothing is the
+    overwhelmingly common case: this runs on every prompt of every session, so
+    anything it does unasked it does thousands of times.
+
+    The expected prefix is computed HERE and not at Stop time. The local date
+    can roll over mid-session, and the file the session was asked for is the
+    one named for the day the request was made.
+    """
+    prompt = payload.get("prompt")
+    if not isinstance(prompt, str) or REPORT_PHRASE not in prompt:
+        return None
+
+    start, root = _payload_root(payload, fallback_cwd)
+    project = start.name or root.name or "session"
+    now = datetime.now(timezone.utc)
+    marker = {
+        "session_id": _payload_session(payload),
+        "requested_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        # The epoch copy exists so the gate compares an mtime against a number
+        # rather than parsing its own timestamp format back out of text.
+        "requested_at_epoch": now.timestamp(),
+        "expected_prefix": report_prefix(project,
+                                         datetime.now().strftime("%Y-%m-%d")),
+        "report_dir": str(report_dir()),
+        "phrase": REPORT_PHRASE,
+    }
+    path = report_marker_path(root)
+    ensure_memstack_ignored(root)
+    _write_json(path, marker)
+    return path
+
+
+def report_marker_from_text(raw: str,
+                            fallback_cwd: Path | None = None) -> Path | None:
+    """Parse a payload and record. Never raises: see cmd_report_marker."""
+    try:
+        payload = json.loads(raw) if raw.strip() else None
+        if not isinstance(payload, dict):
+            return None
+        return report_marker_decide(payload, fallback_cwd)
+    except Exception:  # noqa: BLE001 - deliberate, same reasoning as the gate.
+        return None
+
+
+def report_decision(root: Path, session_id: str) -> tuple[int, str]:
+    """Block while a report this session was asked for is still not on disk.
+
+    Keyed on the session id because the request belongs to one session's
+    prompt: a marker another session left behind must not hold this one's turn,
+    and a marker this session left behind must outlive its own turns until it
+    is satisfied.
+    """
+    path = report_marker_path(root)
+    marker = _load_json(path)
+    if marker is None:
+        return EXIT_PASS, ""
+    if marker.get("session_id") != session_id:
+        return EXIT_PASS, ""
+
+    prefix = marker.get("expected_prefix")
+    if not isinstance(prefix, str) or not prefix:
+        # A marker that cannot say what it is waiting for can never be
+        # satisfied, and an unsatisfiable block is an obstacle, not a gate.
+        return EXIT_PASS, ""
+
+    raw_dir = marker.get("report_dir")
+    directory = (Path(raw_dir) if isinstance(raw_dir, str) and raw_dir.strip()
+                 else report_dir())
+    raw_epoch = marker.get("requested_at_epoch")
+    after = float(raw_epoch) if isinstance(raw_epoch, (int, float)) else 0.0
+
+    if newest_report(directory, prefix, after) is not None:
+        # Satisfied. Retire the marker: a requirement that keeps firing after
+        # it has been met is indistinguishable from a gate that is simply
+        # broken, and the second one gets deleted by its owner.
+        try:
+            path.unlink()
+        except OSError:
+            pass
+        return EXIT_PASS, ""
+
+    count = gate_record_block(root, session_id + "::report",
+                              str(marker.get("requested_at") or ""))
+    if count >= GATE_MAX_BLOCKS:
+        return EXIT_PASS, (
+            "verify gate: YIELDING on the report requirement after "
+            + str(GATE_MAX_BLOCKS - 1) + " blocked rounds. Write the report"
+            + " yourself, or delete " + str(path) + ".")
+
+    return EXIT_GATE_RESERVED, (
+        "verify gate: BLOCKED. A report was requested; write it per"
+        " memstack:report to " + str(directory) + " and finish.")
+
+
+def receipt_decision(root: Path, session_id: str) -> tuple[int, str]:
+    """Does a PASS receipt match this exact tree. The original gate, moved out
+    of gate_decide unchanged so the report requirement can be a second decision
+    rather than another branch inside this one."""
     if not (root / ARM_MARKER_NAME).is_file():
         # Unarmed. This is the shipped-but-inert state, and it is silent on
         # purpose: a note here would be noise on every turn of every session
@@ -807,10 +982,6 @@ def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, s
         if head is not None and receipt.get("head") == head:
             return EXIT_PASS, ""
 
-    session_id = payload.get("session_id")
-    if not isinstance(session_id, str) or not session_id.strip():
-        session_id = "unknown-session"
-
     count = gate_record_block(root, session_id, fingerprint)
     if count >= GATE_MAX_BLOCKS:
         return EXIT_PASS, (
@@ -824,6 +995,35 @@ def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, s
     return EXIT_GATE_RESERVED, (
         "verify gate: BLOCKED. No PASS receipt matches this tree state; run  "
         + command + "  and finish only when it passes.")
+
+
+def gate_decide(payload: dict, fallback_cwd: Path | None = None) -> tuple[int, str]:
+    """(exit_code, message). 0 allows, 2 blocks. Message may be empty."""
+    if payload.get("stop_hook_active"):
+        # The recursion guard. Whatever else is true, a hook that keeps firing
+        # into its own re-entry is worse than an unverified tree.
+        return EXIT_PASS, ""
+
+    _, root = _payload_root(payload, fallback_cwd)
+    session_id = _payload_session(payload)
+
+    code, message = receipt_decision(root, session_id)
+    if code != EXIT_PASS:
+        return code, message
+
+    # The report requirement is a second, independent gate, consulted only
+    # where the receipt logic would already have allowed, so one turn is never
+    # blocked for two reasons at once. It arms itself from its own marker
+    # rather than from .verify-required: the prompt that asked for a report is
+    # the opt-in, and a repository that never armed the receipt gate still owes
+    # the report somebody asked it for.
+    report_code, report_message = report_decision(root, session_id)
+    if report_code != EXIT_PASS:
+        return report_code, report_message
+    # Either half may allow with something to say. The report half speaks only
+    # when it yields, which is precisely the moment somebody needs to read it,
+    # so its note wins where both have one.
+    return EXIT_PASS, report_message or message
 
 
 def gate_from_text(raw: str, fallback_cwd: Path | None = None) -> tuple[int, str]:
@@ -856,6 +1056,23 @@ def cmd_gate() -> int:
     if message:
         sys.stderr.write(message + "\n")
     return code
+
+
+def cmd_report_marker() -> int:
+    """Always 0, always silent, whatever happens.
+
+    Two properties of UserPromptSubmit make that the only defensible contract.
+    Exit 2 on this event blocks the prompt and ERASES it, which is not a price
+    a bookkeeping hook may charge its user. And stdout on this event is
+    injected into the model's context, so anything printed here is printed into
+    every prompt of every session forever.
+    """
+    try:
+        raw = sys.stdin.read()
+    except (OSError, UnicodeDecodeError):
+        return EXIT_PASS
+    report_marker_from_text(raw)
+    return EXIT_PASS
 
 
 # --------------------------------------------------------------------------
@@ -994,6 +1211,29 @@ def _write_gate_receipt(repo: Path, task_id: str, kind: str,
     _write_json(repo / RECEIPTS_SUBDIR / (task_id + ".json"), receipt)
 
 
+def _write_report_marker(repo: Path, session_id: str, prefix: str,
+                         directory: Path, age_s: float = 2.0) -> Path:
+    """A report marker written by hand, dated `age_s` seconds in the past.
+
+    The backdating is deliberate. A report file written moments later has to be
+    unambiguously newer than the request, and mtime resolution is a whole
+    second on some filesystems, so a marker stamped "now" would make an
+    immediate report look simultaneous rather than subsequent.
+    """
+    requested = time.time() - age_s
+    path = report_marker_path(repo)
+    _write_json(path, {
+        "session_id": session_id,
+        "requested_at": datetime.fromtimestamp(
+            requested, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "requested_at_epoch": requested,
+        "expected_prefix": prefix,
+        "report_dir": str(directory),
+        "phrase": REPORT_PHRASE,
+    })
+    return path
+
+
 def _payload(repo: Path, session_id: str, stop_hook_active: bool = False) -> dict:
     return {
         "session_id": session_id,
@@ -1004,7 +1244,7 @@ def _payload(repo: Path, session_id: str, stop_hook_active: bool = False) -> dic
 
 
 def _gate_cases(base: Path) -> list[dict]:
-    """Eight controls over the gate. Each asserts an exit code AND its message.
+    """Thirteen controls over the gate. Each asserts an exit code AND its message.
 
     Asserting only the code would pass a gate that blocks for the wrong reason
     or blocks silently, and a block with no message is indistinguishable from a
@@ -1166,6 +1406,179 @@ def _gate_cases(base: Path) -> list[dict]:
         cases.append(_case(
             "old-format-receipt-is-ineligible",
             "armed dirty repo whose only PASS run receipt predates fingerprint_kind",
+            ok,
+            "control_exit=" + repr(control_code)
+            + " exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 9. A report was requested and has not been written: BLOCK, on a tree the
+    #    receipt logic is entirely happy with. The control is asserted first
+    #    and is load-bearing: the SAME repo, the SAME receipt, with no marker,
+    #    allows silently. Without it this case would also pass against a gate
+    #    that had simply started blocking everything it was shown.
+    repo, reason = dirty_armed_repo("report-block")
+    if reason:
+        cases.append(_case("report-request-blocks-until-the-report-exists",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        control_code, control_message = gate_decide(_payload(repo, "s-report"))
+        reports = base / "reports-block"
+        reports.mkdir(parents=True, exist_ok=True)
+        _write_report_marker(repo, "s-report", "proj-2026-01-01-", reports)
+        code, message = gate_decide(_payload(repo, "s-report"))
+        ok = (
+            control_code == EXIT_PASS
+            and control_message == ""
+            and code == EXIT_GATE_RESERVED
+            and "A report was requested" in message
+            and str(reports) in message
+        )
+        cases.append(_case(
+            "report-request-blocks-until-the-report-exists",
+            "armed repo, matching PASS receipt, one unmet report request",
+            ok,
+            "control_exit=" + repr(control_code)
+            + " control_message=" + repr(control_message)
+            + " exit=" + repr(code) + " message=" + repr(message),
+        ))
+
+    # 10. Writing the report clears the block and retires the marker. The
+    #     control is the block asserted BEFORE the file is written, in this
+    #     same repo: a gate that had stopped reading the marker at all would
+    #     otherwise sail through the allowing half.
+    repo, reason = dirty_armed_repo("report-clear")
+    if reason:
+        cases.append(_case("writing-the-report-clears-the-block",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-clear"
+        reports.mkdir(parents=True, exist_ok=True)
+        prefix = "proj-2026-01-01-"
+        marker = _write_report_marker(repo, "s-clear", prefix, reports)
+        before_code, before_message = gate_decide(_payload(repo, "s-clear"))
+        with open(reports / (prefix + "01.txt"), "w",
+                  encoding="utf-8", newline="\n") as handle:
+            handle.write("the session says what it did\n")
+        after_code, after_message = gate_decide(_payload(repo, "s-clear"))
+        ok = (
+            before_code == EXIT_GATE_RESERVED
+            and "A report was requested" in before_message
+            and after_code == EXIT_PASS
+            and after_message == ""
+            and not marker.exists()
+        )
+        cases.append(_case(
+            "writing-the-report-clears-the-block",
+            "the same request, before and after the file exists",
+            ok,
+            "control_before_exit=" + repr(before_code)
+            + " after_exit=" + repr(after_code)
+            + " after_message=" + repr(after_message)
+            + " marker_retired=" + repr(not marker.exists()),
+        ))
+
+    # 11. The hook writes a marker for a prompt carrying the phrase, and
+    #     nothing at all for one that does not. The quiet half is asserted
+    #     first and is the control: this hook runs on every prompt ever
+    #     submitted, so writing nothing is the behaviour that has to hold
+    #     thousands of times a day, and a hook that wrote a marker
+    #     unconditionally would satisfy the other half on its own.
+    hook_repo = base / "report-hook"
+    reason = _init_repo(hook_repo, {"src/app.py": "VALUE = 1\n"})
+    if reason:
+        cases.append(_case("report-hook-writes-only-for-the-phrase",
+                           "fabricated git repo", False, reason))
+    else:
+        marker = report_marker_path(hook_repo)
+        quiet = report_marker_from_text(json.dumps({
+            "session_id": "s-hook",
+            "cwd": str(hook_repo),
+            "hook_event_name": "UserPromptSubmit",
+            "prompt": "Summarise what changed and report back in the terminal.",
+        }), hook_repo)
+        control_wrote_nothing = quiet is None and not marker.exists()
+        written = report_marker_from_text(json.dumps({
+            "session_id": "s-hook",
+            "cwd": str(hook_repo),
+            "hook_event_name": "UserPromptSubmit",
+            "prompt": "Do the work.\n\nReport per memstack:report\n",
+        }), hook_repo)
+        data = _load_json(marker) or {}
+        prefix = str(data.get("expected_prefix") or "")
+        ok = (
+            control_wrote_nothing
+            and written is not None
+            and marker.is_file()
+            and data.get("session_id") == "s-hook"
+            and prefix.startswith(hook_repo.name + "-")
+            and prefix.endswith("-")
+            and len(prefix) == len(hook_repo.name) + len("-YYYY-MM-DD-")
+            and bool(data.get("requested_at"))
+            and isinstance(data.get("requested_at_epoch"), float)
+        )
+        cases.append(_case(
+            "report-hook-writes-only-for-the-phrase",
+            "one prompt without the phrase, then one with it",
+            ok,
+            "control_wrote_nothing=" + repr(control_wrote_nothing)
+            + " marker=" + repr(marker.is_file())
+            + " prefix=" + repr(prefix)
+            + " session_id=" + repr(data.get("session_id")),
+        ))
+
+    # 12. The report requirement honours the same repair cap as the receipt
+    #     half, and it SAYS SO when it yields. The message is asserted, not
+    #     just the code: the first draft of this returned the yield with the
+    #     other half's empty message, so the gate went quiet on the third round
+    #     with nothing to distinguish it from a satisfied requirement. A silent
+    #     allow and a yielding allow are the same exit code and opposite facts.
+    repo, reason = dirty_armed_repo("report-cap")
+    if reason:
+        cases.append(_case("report-cap-yields-with-a-note",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-cap"
+        reports.mkdir(parents=True, exist_ok=True)
+        _write_report_marker(repo, "s-cap-report", "proj-2026-01-01-", reports)
+        rounds = [gate_decide(_payload(repo, "s-cap-report")) for _ in range(3)]
+        codes = [c for c, _ in rounds]
+        ok = (
+            codes == [EXIT_GATE_RESERVED, EXIT_GATE_RESERVED, EXIT_PASS]
+            and "YIELDING" in rounds[2][1]
+            and "report" in rounds[2][1]
+        )
+        cases.append(_case(
+            "report-cap-yields-with-a-note",
+            "three Stop events, same session, one unmet report request",
+            ok,
+            "exits=" + repr(codes) + " third=" + repr(rounds[2][1]),
+        ))
+
+    # 13. stop_hook_active short-circuits the report requirement too. The
+    #     control is the same repo and the same marker WITHOUT the flag, which
+    #     must block: otherwise this case would pass against a gate that had
+    #     stopped enforcing reports altogether.
+    repo, reason = dirty_armed_repo("report-recursion")
+    if reason:
+        cases.append(_case("report-allows-when-stop-hook-active",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-recursion"
+        reports.mkdir(parents=True, exist_ok=True)
+        _write_report_marker(repo, "s-loop-report", "proj-2026-01-01-", reports)
+        control_code, _ = gate_decide(_payload(repo, "s-loop-report"))
+        code, message = gate_decide(
+            _payload(repo, "s-loop-report", stop_hook_active=True))
+        ok = (control_code == EXIT_GATE_RESERVED
+              and code == EXIT_PASS
+              and message == "")
+        cases.append(_case(
+            "report-allows-when-stop-hook-active",
+            "the same unmet report request, with stop_hook_active true",
             ok,
             "control_exit=" + repr(control_code)
             + " exit=" + repr(code) + " message=" + repr(message),
@@ -1530,7 +1943,7 @@ def cmd_selftest(root: Path) -> int:
                 + " HEAD_tree_fp=" + repr(stale_fp[:12] if stale_fp else stale_fp),
             ))
 
-        # 10-17. The gate's own controls, against real fabricated git repos.
+        # 10-22. The gate's own controls, against real fabricated git repos.
         cases.extend(_gate_cases(base))
 
     passed = all(c["status"] == "PASS" for c in cases)
@@ -1591,6 +2004,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("selftest", help="prove this verify can report FAIL and SKIP")
 
     sub.add_parser("gate", help="read a Stop hook payload on stdin and allow or block")
+    sub.add_parser("report-marker",
+                   help="read a UserPromptSubmit payload on stdin and record"
+                        " a report request")
 
     args = parser.parse_args(argv)
     root = Path.cwd().resolve()
@@ -1601,6 +2017,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_run(root, args.task_id)
     if args.command == "selftest":
         return cmd_selftest(root)
+    if args.command == "report-marker":
+        return cmd_report_marker()
     if args.command == "gate":
         return cmd_gate()
     return EXIT_USAGE

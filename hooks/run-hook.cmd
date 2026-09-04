@@ -16,6 +16,7 @@ if "%~1"=="" (
 )
 
 if /i "%~1"=="verify-gate" goto verify_gate
+if /i "%~1"=="report-marker" goto report_marker
 
 set "HOOK_DIR=%~dp0"
 
@@ -59,6 +60,19 @@ if errorlevel 1 exit /b 0
 if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" exit /b 0
 call python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" gate
 exit /b %ERRORLEVEL%
+
+REM The report marker. Same probe as the gate above, and the same rule
+REM that anything this branch cannot do exits 0. The difference is the
+REM last line: this one discards verify.py's exit code instead of
+REM forwarding it. UserPromptSubmit treats exit 2 as a block that ERASES
+REM the user's prompt, so a bookkeeping hook must not be able to return
+REM one, whatever goes wrong inside it.
+:report_marker
+call python -c "import sys" >nul 2>nul
+if errorlevel 1 exit /b 0
+if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" exit /b 0
+call python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" report-marker
+exit /b 0
 CMDBLOCK
 # Everything from here to the re-exec below must be a comment.
 # This file is stored with CRLF endings because the batch half above
@@ -90,6 +104,21 @@ if [ "$SCRIPT_NAME" = "verify-gate" ]; then
     [ -n "$PY" ] || exit 0
     [ -f "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" ] || exit 0
     exec "$PY" "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" gate
+fi
+
+# The report marker, same contract, with one difference: it is not exec'd
+# and its exit code is discarded, because exit 2 on UserPromptSubmit
+# erases the user's prompt.
+if [ "$SCRIPT_NAME" = "report-marker" ]; then
+    PY=""
+    command -v python >/dev/null 2>&1 && PY="python"
+    if [ -z "$PY" ]; then
+        command -v python3 >/dev/null 2>&1 && PY="python3"
+    fi
+    [ -n "$PY" ] || exit 0
+    [ -f "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" ] || exit 0
+    "$PY" "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" report-marker
+    exit 0
 fi
 
 exec bash "${SCRIPT_DIR}/${SCRIPT_NAME}" "$@"

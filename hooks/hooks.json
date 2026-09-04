@@ -12,6 +12,17 @@
         ]
       }
     ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" report-marker",
+            "async": false
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
