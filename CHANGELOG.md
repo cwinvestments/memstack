@@ -1,5 +1,21 @@
 # MemStack™ Changelog
 
+## v3.9.7 - 2026-09-04 - All 86 free skills register, not 18
+
+### Fixed
+- **68 of the 86 free skills were delivered to every install and never registered.** `plugin.json` declared its skills as a single directory, `skills/`, and Claude Code scans a declared skills directory exactly one level deep: it looks for `SKILL.md` in that directory and in each immediate subdirectory, then stops. The 18 core skills sit at `skills/<name>/SKILL.md` and were found. The other 68 sit one level further down at `skills/<category>/<name>/SKILL.md` and were not. A free-tier install therefore reached 18 skills out of the 86 it had on disk, against a manifest advertising 130. Every categorized skill was affected: all of security, deployment, development, business, content, marketing, product, automation and SEO.
+- **This was never a delivery failure, which is why nothing caught it.** All 86 `SKILL.md` files were cloned, unpacked, and present in the plugin cache the whole time, at full size, in the right places. They were simply never indexed, so they could not be invoked by name, did not appear in autocomplete, and were never offered to the model. Any check that asked whether the files shipped would have passed. Nothing asked whether they were reachable, and those are different questions.
+- **The manifest now declares all ten directories that hold skills**: the `skills/` root plus the nine category directories (`automation`, `business`, `content`, `deployment`, `development`, `marketing`, `product`, `security`, `seo-geo`). Every path now carries the `./` prefix the plugin reference requires, which the old single entry did not. All 86 skills register.
+
+### Added
+- **`scripts/check-manifest-skills.mjs`, a manifest coverage check, wired into `npm run check:catalogs`** and available on its own as `npm run check:manifest`. It derives the required directory set from the filesystem rather than from any written-down list, and fails if a `SKILL.md` under `skills/` sits in a directory the manifest does not declare, if a declared directory registers nothing, if a declared path is missing the `./` prefix, or if a `SKILL.md` is nested too deep for any directory declaration to reach. Run against the 3.9.6 manifest it reports 18 of 86 registered and exits 1, which is the defect above, stated by the tooling instead of by a person.
+- **The same check asserts that all 86 frontmatter names are distinct.** Registered skills flatten into a single `memstack:<name>` namespace whatever directory they came from, so two skills sharing a name would collide. They do not: 86 files, 86 names, zero collisions. That property could not have been observed before, because 68 of those names were never registered and so could never have collided in the first place.
+
+### Notes
+- **The 68 newly registered skills carry their category prefix in their invocation name.** This follows the existing frontmatter convention recorded in `ADDING-SKILLS.md` Step 2: `skills/security/rls-checker/SKILL.md` declares `name: memstack-security-rls-checker`, and Claude Code takes the invocation name from that field, so it registers as `memstack:memstack-security-rls-checker`. The doubled prefix is redundant but harmless, and it is what makes these skills reachable at all. Renaming 68 skills touches the loader's category source, the free/Pro gate keying, and every generated catalog, so it is left to a deliberate change rather than folded into a fix.
+- **PATCH, not MINOR.** No skill is added, removed, renamed, or recategorized, and no new capability ships. What changes is that skills already written, already shipped, and already on the customer's disk become reachable.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+
 ## v3.9.6 - 2026-09-03 - A personal webhook leaves the product, and SessionStart gets one owner
 
 ### Removed

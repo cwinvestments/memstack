@@ -22,7 +22,8 @@
     "build": "echo 'MemStack is not a buildable project'",
     "vendor:skills": "node scripts/vendor-skill-data.mjs",
     "gen:catalogs": "node scripts/generate-catalogs.mjs --write",
-    "check:catalogs": "node scripts/generate-catalogs.mjs --check"
+    "check:manifest": "node scripts/check-manifest-skills.mjs",
+    "check:catalogs": "node scripts/generate-catalogs.mjs --check && node scripts/check-manifest-skills.mjs"
   },
   "files": [
     ".claude/hooks/",
