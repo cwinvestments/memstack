@@ -1,6 +1,6 @@
 ---
 name: memstack-development-code-reviewer
-description: "Use this skill when the user says 'review code', 'code review', 'check my code', 'audit this', 'review PR', 'review changes', 'what\'s wrong with this', or is requesting a structured review of code quality, security, performance, or maintainability. Do NOT use for refactoring plans or test generation."
+description: "Use this skill when the user says 'review code', 'code review', 'check my code', 'audit this', 'review PR', 'review changes', 'what's wrong with this', or is requesting a structured review of code quality, security, performance, or maintainability. Do NOT use for refactoring plans or test generation."
 version: 1.0.0
 license: "Proprietary, MemStack™ Pro by CW Affiliate Investments LLC. See LICENSE.txt"
 ---

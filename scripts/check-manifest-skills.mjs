@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Verify that plugin.json's components.skills registers every SKILL.md on disk.
+// Verify that plugin.json's TOP-LEVEL skills array registers every SKILL.md on
+// disk, and that every SKILL.md frontmatter parses under a strict YAML parser.
 //
 // WHY THIS EXISTS
 //
@@ -37,13 +38,34 @@
 //                   name collide once both are registered. Before this release
 //                   only 18 were registered, which meant a latent collision
 //                   among the other 68 could not have surfaced.
+//   5. MANIFEST     skills is a TOP-LEVEL array and there is no components key.
+//      SHAPE        components is not in the plugin manifest schema. Claude Code
+//                   ignores it silently, so a manifest that nests the skills
+//                   array under it declares nothing and only the default skills
+//                   root is scanned. 3.9.7 shipped exactly that: ten correct
+//                   entries, all unreachable, 18 skills registered instead of
+//                   86. No check failed, which is why it shipped.
+//   6. FRONTMATTER  Every SKILL.md frontmatter block parses under a strict YAML
+//      PARSES       parser. Claude Code parses frontmatter strictly and drops a
+//                   skill whose block throws, without failing the plugin load,
+//                   so the failure is silent and per-skill. One invalid escape
+//                   sequence in code-reviewer was enough: the loader counted 86
+//                   and the Skill tool offered 85.
 //
 // It also checks the "./" prefix the plugins reference requires on every
 // declared path, and that each SKILL.md actually carries a frontmatter name.
 //
 // Usage: node scripts/check-manifest-skills.mjs
-// Exit 0 on pass, 1 on any failure. Stdlib only, no deps, deterministic.
+// Exit 0 on pass, 1 on any failure. Deterministic.
+//
+// Node's standard library has no YAML parser, so assertion 6 delegates to Python
+// and PyYAML through scripts/_check-frontmatter-yaml.py, invoked with an argument
+// array and never through a shell. Python is already a hard dependency of this
+// repo's check chain (scripts/verify.py, scripts/lint_skill_docs.py). If no
+// strict parser can be reached, assertion 6 FAILS rather than skipping. A parser
+// check that passes when it could not run is worse than no check at all.
 
+import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -85,15 +107,35 @@ try {
   process.exit(1);
 }
 
-const declaredRaw = manifest?.components?.skills;
-if (!Array.isArray(declaredRaw)) {
-  console.error("[check-manifest-skills] FAIL: components.skills is missing or not an array");
-  process.exit(1);
+// ---------------------------------------------------------------------------
+// 5. MANIFEST SHAPE: skills is top-level, components does not exist
+// ---------------------------------------------------------------------------
+// Recorded as problems rather than exited on, so a single run can also report
+// the frontmatter results below. A wrong-shaped manifest and an unparseable
+// frontmatter are independent defects, and 3.9.7 carried both at once.
+let shapeUsable = true;
+
+if (Object.prototype.hasOwnProperty.call(manifest, "components")) {
+  shapeUsable = false;
+  fail(
+    'plugin.json has a "components" key. components is not in the plugin manifest schema, ' +
+      "Claude Code ignores it silently, and a skills array nested under it declares nothing. " +
+      "Move the skills array to the top level and delete the components object.",
+  );
 }
+
+const declaredRaw = manifest.skills;
+if (!Array.isArray(declaredRaw)) {
+  shapeUsable = false;
+  const found = declaredRaw === undefined ? "absent" : `present but of type ${typeof declaredRaw}`;
+  fail(`plugin.json must have a top-level "skills" array, and it is ${found}`);
+}
+
+const declaredList = Array.isArray(declaredRaw) ? declaredRaw : [];
 
 // The "./" prefix is required by the plugins reference for every path except
 // the bare plugin root, which the skills field also accepts as ".".
-for (const raw of declaredRaw) {
+for (const raw of declaredList) {
   if (typeof raw !== "string") {
     fail(`declared entry is not a string: ${JSON.stringify(raw)}`);
     continue;
@@ -103,7 +145,7 @@ for (const raw of declaredRaw) {
   }
 }
 
-const declared = declaredRaw.filter((p) => typeof p === "string").map(normalise);
+const declared = declaredList.filter((p) => typeof p === "string").map(normalise);
 const declaredSet = new Set(declared);
 if (declaredSet.size !== declared.length) {
   const seen = new Set();
@@ -161,10 +203,20 @@ for (const rel of unreachable) {
 const missingFromManifest = [...required].filter((d) => !declaredSet.has(d)).sort();
 const extraInManifest = [...declaredSet].filter((d) => !required.has(d)).sort();
 
-for (const d of missingFromManifest) {
-  fail(`directory holds SKILL.md files but is not declared in components.skills: ./${d}/`);
+// With an unusable shape the declared set is empty, so coverage would name every
+// skill on disk. True, and useless: one root cause reported 86 times. Report the
+// shape failure alone and say plainly that the coverage pass did not run.
+if (!shapeUsable) {
+  fail(
+    "the exact-set, coverage and dead-entry assertions did not run because the declared " +
+      "directory set could not be read. Fix the manifest shape reported above and run again.",
+  );
 }
-for (const d of extraInManifest) {
+
+for (const d of shapeUsable ? missingFromManifest : []) {
+  fail(`directory holds SKILL.md files but is not declared in the top-level skills array: ./${d}/`);
+}
+for (const d of shapeUsable ? extraInManifest : []) {
   const abs = d === "" ? REPO_ROOT : join(REPO_ROOT, d);
   const why = !existsSync(abs)
     ? "the directory does not exist"
@@ -201,7 +253,7 @@ for (const d of declaredSet) {
 }
 
 const unregistered = onDisk.filter((f) => !registered.has(f));
-for (const f of unregistered) {
+for (const f of shapeUsable ? unregistered : []) {
   fail(`SKILL.md is on disk but no declared directory registers it: ${f}`);
 }
 
@@ -250,14 +302,84 @@ for (const [name, files] of [...byName.entries()].sort()) {
 }
 
 // ---------------------------------------------------------------------------
+// 6. FRONTMATTER PARSES: strict YAML over every SKILL.md frontmatter block
+// ---------------------------------------------------------------------------
+// execFileSync takes an argument array, so no shell is involved and no character
+// in a path or a parser message can be read as a shell operator. The file list
+// travels on stdin as JSON rather than argv, so its length can never reach a
+// command-line limit.
+const yamlErrors = [];
+let yamlChecked = 0;
+
+{
+  const helper = join(REPO_ROOT, "scripts", "_check-frontmatter-yaml.py");
+  const payload = JSON.stringify({ root: REPO_ROOT, files: onDisk });
+  let out = null;
+  let lastErr = null;
+
+  if (!existsSync(helper)) {
+    fail("frontmatter YAML check cannot run: scripts/_check-frontmatter-yaml.py is missing");
+  } else {
+    for (const exe of ["python", "python3", "py"]) {
+      try {
+        out = execFileSync(exe, [helper], {
+          input: payload,
+          encoding: "utf8",
+          stdio: ["pipe", "pipe", "pipe"],
+        });
+        break;
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+
+    if (out === null) {
+      fail(
+        "frontmatter YAML check cannot run: no working python with PyYAML was found " +
+          "(tried python, python3, py). A parser check that cannot run is a failure, " +
+          `not a skip. Last error: ${lastErr?.message ?? "unknown"}`,
+      );
+    } else {
+      let parsed = null;
+      try {
+        parsed = JSON.parse(out);
+      } catch (err) {
+        fail(`frontmatter YAML check returned output that is not JSON: ${err.message}`);
+      }
+      if (parsed) {
+        yamlChecked = parsed.checked ?? 0;
+        for (const e of parsed.errors ?? []) {
+          yamlErrors.push(e);
+          const where = e.line ? `line ${e.line}` : "line unknown";
+          const col = e.col ? `, column ${e.col}` : "";
+          const ctx = e.context ? ` (${e.context})` : "";
+          fail(
+            "frontmatter is not valid YAML, so Claude Code loads the plugin and drops this " +
+              `skill: ${e.file} : ${where}${col} : ${e.problem}${ctx}`,
+          );
+        }
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Report
 // ---------------------------------------------------------------------------
 console.log("[check-manifest-skills] manifest coverage:");
+console.log(
+  `  skills key                     : ${Object.prototype.hasOwnProperty.call(manifest, "skills") ? "top level" : "ABSENT"}`,
+);
+console.log(
+  `  components key                 : ${Object.prototype.hasOwnProperty.call(manifest, "components") ? "PRESENT (not in schema)" : "absent"}`,
+);
 console.log(`  SKILL.md on disk under skills/ : ${onDisk.length}`);
 console.log(`  registered by the manifest      : ${registered.size}`);
 console.log(`  declared directories            : ${declaredSet.size}`);
 console.log(`  distinct frontmatter names      : ${byName.size}`);
 console.log(`  namespace collisions            : ${collisions}`);
+console.log(`  frontmatter blocks parsed       : ${yamlChecked}`);
+console.log(`  frontmatter parse failures      : ${yamlErrors.length}`);
 console.log("  per declared directory:");
 for (const d of [...declaredSet].sort()) {
   console.log(`    ${("./" + d + "/").padEnd(28)} ${String(perEntry.get(d) ?? 0).padStart(3)} skill(s)`);
@@ -267,10 +389,17 @@ if (problems.length) {
   console.error("\n[check-manifest-skills] FAIL:");
   for (const p of problems) console.error(`  - ${p}`);
   console.error(
-    "\n  Claude Code scans each declared skills directory one level deep only.\n" +
-      "  Declare every directory that directly contains <name>/SKILL.md.\n",
+    "\n  skills must be a TOP-LEVEL array in plugin.json. components is not in the\n" +
+      "  manifest schema and is ignored silently, so anything nested under it is inert.\n" +
+      "  Claude Code scans each declared skills directory one level deep only.\n" +
+      "  Declare every directory that directly contains <name>/SKILL.md.\n" +
+      "  Frontmatter must parse under a strict YAML parser or the skill is dropped.\n",
   );
   process.exit(1);
 }
 
-console.log("\n[check-manifest-skills] every SKILL.md on disk is registered, every declared directory is used, all names unique.");
+console.log(
+  "\n[check-manifest-skills] skills is a top-level array with no components key, every " +
+    "SKILL.md on disk is registered, every declared directory is used, all names unique, " +
+    "every frontmatter block parses.",
+);

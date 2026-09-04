@@ -1,5 +1,21 @@
 # MemStack™ Changelog
 
+## v3.9.8 - 2026-09-04 - The manifest fix that actually registers the skills
+
+### Fixed
+- **3.9.7 claimed all 86 free skills register, and they did not.** The manifest nested the skills array inside a `components` object. `components` is not a field in the plugin manifest schema, Claude Code never reads it, and it is discarded without a warning, so the ten directory entries 3.9.7 added were correct and unreachable at the same time. The loader fell back to the default `skills/` root and registered the same 18 core skills that every release before it registered. The 3.9.7 entry below describes a fix that was written correctly and wired to nothing. `docs/DELIVERY.md` had already recorded `components` as dead config, in the same repo, before the release that depended on it.
+- **The skills array is now a top-level key of `plugin.json`.** Same ten entries, same order, same `./` prefixes: the `skills/` root plus the nine category directories. Nothing else about the declaration changed, because nothing else about it was wrong.
+- **One skill was registered by the loader and still never offered.** `skills/development/code-reviewer/SKILL.md` carried a backslash-escaped apostrophe inside its double-quoted YAML description. That is not a valid escape sequence in a YAML double-quoted scalar, and an apostrophe needs no escaping there at all, so a strict parser rejects the block at line 3, column 147, with "found unknown escape character". Claude Code parses frontmatter strictly and drops the individual skill without failing the plugin load, so the failure was silent and cost exactly one skill. The backslash is removed and the description text is unchanged. This was not introduced by the 3.9.3 dash sweep: that commit touched only the `license` line of this file, and the description line passed through it as unmodified context.
+- **The counts in this entry were measured in a fresh session before it was written, not inferred.** With the ten entries at the top level the debug log records `skillsPaths=9 paths`, the tenth entry being consumed as the default `skillsPath`, and one `Loaded N skills` line per path summing to 86. The Skill tool offered 85 of those 86; the missing one was `code-reviewer`, whose frontmatter had not yet been repaired. With both fixes in place the number is 86 loaded and 86 offered.
+
+### Added
+- **`check-manifest-skills.mjs` now asserts the manifest shape.** It fails if `plugin.json` carries a `components` key, and fails if `skills` is not a top-level array. Either assertion alone would have caught 3.9.7 before it shipped. Run against the pre-fix tree the check reports both, exits 1, and says plainly that the exact-set, coverage and dead-entry assertions did not run because the declared directory set could not be read, rather than naming all 86 skills as unregistered and burying the one root cause.
+- **The same check parses every `SKILL.md` frontmatter block with a strict YAML parser and fails on any error, naming the file, the line and the column.** Node's standard library has no YAML parser, and an approximate reader written in Node would reproduce this class of bug rather than catch it, so the assertion delegates to Python and PyYAML through `scripts/_check-frontmatter-yaml.py`. It is invoked with an argument array and never through a shell, and the file list travels on stdin rather than argv. If no strict parser can be reached the assertion fails rather than skipping: a parser check that passes when it could not run is worse than no check at all.
+
+### Notes
+- **PATCH, not MINOR.** No skill is added, removed, renamed, or recategorized, and no new capability ships. What changes is that the 3.9.7 fix takes effect and one silently dropped skill is restored.
+- **No skill added, removed, or renamed, and the skill count is unchanged at 130 (86 free + 44 Pro).**
+
 ## v3.9.7 - 2026-09-04 - All 86 free skills register, not 18
 
 ### Fixed
