@@ -1,8 +1,8 @@
 # MemStack™
 
-[![Version: 3.9.8](https://img.shields.io/badge/Version-3.9.8-green.svg)](CHANGELOG.md)
+[![Version: 3.9.9](https://img.shields.io/badge/Version-3.9.9-green.svg)](CHANGELOG.md)
 
-The structured skill framework for Claude Code: **130 professional skills** for deployment, security, databases, content, marketing, and more.
+The structured skill framework for Claude Code: **131 professional skills** for deployment, security, databases, content, marketing, and more.
 
 Skills activate automatically when you need them. Say "deploy this to Railway" and the right skill loads on demand.
 
@@ -19,7 +19,7 @@ running one in the wrong place is the most common setup mistake.
 /plugin marketplace add cwinvestments/memstack
 /plugin install memstack@cwinvestments-memstack
 ```
-Run both commands. This unlocks the 86 free skills right away.
+Run both commands. This unlocks the 87 free skills right away.
 
 > **SSH error?** ("Host key verification failed" on a fresh server that's never used GitHub over SSH.)
 > **Default fix · (in terminal)**: rewrite GitHub to HTTPS, then retry Step 1:
@@ -61,7 +61,7 @@ If this doesn't match Step 2's interpreter, the server won't launch (you'll see 
 ```
 activate_license(key="your-key", email="you@example.com")
 ```
-This unlocks the 44 Pro-exclusive skills (86 free + 44 Pro = 130 total). Free-tier users can skip this step: type `list skills` to verify the 86 free skills loaded.
+This unlocks the 44 Pro-exclusive skills (87 free + 44 Pro = 131 total). Free-tier users can skip this step: type `list skills` to verify the 87 free skills loaded.
 
 See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup, and the [Troubleshooting](#troubleshooting) section below.
 
@@ -94,8 +94,8 @@ sudo apt install python3-pip
 
 | Tier | Skills | Access |
 |------|--------|--------|
-| **Free** | 86 skills | Included with MemStack™ base |
-| **Pro** | 130 total (86 free + 44 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
+| **Free** | 87 skills | Included with MemStack™ base |
+| **Pro** | 131 total (87 free + 44 Pro-exclusive) | Requires Pro Skill Loader ([memstack.pro](https://memstack.pro)) |
 
 **Architecture note:** Pro skills are license-gated. When you activate a valid Pro key, the loader downloads them from our server to `~/.memstack/pro-skills`. Free users see free skills only; Pro license holders unlock the full catalog. This design keeps a single source codebase with no separate repos or branches for Pro content.
 
@@ -146,12 +146,12 @@ Everything from [MemStack free](https://github.com/cwinvestments/memstack):
 - TokenStack™ context compression
 - Always-on rules and slash commands
 
-## All Skills (130 total: 86 free + 44 Pro-exclusive)
+## All Skills (131 total: 87 free + 44 Pro-exclusive)
 
-All 130 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system: only the skill matching your current task is loaded, preventing context bloat. 44 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
+All 131 skills are **fully implemented** with complete protocols, context guards, activation messages, and level history. Skills load on-demand via the MCP catalog system: only the skill matching your current task is loaded, preventing context bloat. 44 Pro-exclusive skills require an active license key. Get a key at [memstack.pro](https://memstack.pro).
 
 <!-- BEGIN GENERATED SKILLS CATALOG -->
-### Core (16: 7 free + 9 Pro)
+### Core (17: 8 free + 9 Pro)
 
 | Skill | Description |
 |-------|-------------|
@@ -160,6 +160,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 | `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. |
 | `goal` | Structure a task into TASK, WHY, OUTCOME, CONSTRAINTS, and a required VERIFICATION criterion before execution begins, so 'done' is defined and provable up front. |
 | `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. |
+| `report` | Writes the session final report to a file when a prompt asks for it, then prints only the path and a one-line summary. |
 | `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. |
 | `token-optimization` | Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard. |
 | `burn` **[PRO]** | Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts. |
@@ -357,7 +358,7 @@ All 130 skills are **fully implemented** with complete protocols, context guards
 
 ## Key Features
 
-- **On-demand loading**: Skills load from the catalog only when matched, no context bloat from 130 skills
+- **On-demand loading**: Skills load from the catalog only when matched, no context bloat from 131 skills
 - **TTS notifications**: Voice alerts when tasks complete, questions need attention, or errors occur
 - **Pre-prompt alerts**: "Claude needs your attention" plays BEFORE approval prompts so you know to return to the terminal
 - **PostToolUse observation capture**: Auto-logs every file write and bash command to `.claude/observations/` with timestamps and parsed summaries

@@ -33,7 +33,7 @@ another.
 
 | Artifact | Count | Source of truth | Delivered by | Version lever | Reaches a passive customer? |
 |---|---|---|---|---|---|
-| Free skills | 86 | `memstack/skills/` | Marketplace | `plugin.json` `version` | **No** |
+| Free skills | 87 | `memstack/skills/` | Marketplace | `plugin.json` `version` | **No** |
 | Hooks | 1 (`SessionStart`) | `memstack/hooks/` | Marketplace | `plugin.json` `version` | **No** |
 | Plugin manifest | n/a | `memstack/.claude-plugin/` | Marketplace | itself | **No** |
 | Pro skills | 44 | `adminstack/src/data/pro-skills/` | Pro bundle probe | sha256 of Pro `SKILL.md` bytes | **Yes**, within 24h |

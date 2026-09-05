@@ -1,16 +1,11 @@
 # MemStack™ Changelog
 
-## v3.9.9 - DRAFT - The session says what it did, in a file
-
-DRAFT. No version surface has moved. The skill counts below are the counts this
-release will carry once the propagation lands in `memstack-skill-loader` and
-`memstack-pro-site`; until then the pre-push drift checker will refuse, which is
-correct. The release pass replaces this heading.
+## v3.9.9 - 2026-09-05 - The session says what it did, in a file
 
 ### Added
 - **A `report` skill, and a gate that makes it stick.** The skill writes the session final report to a file when a prompt asks for it, then prints only the path and a one line summary. It is dormant unless the prompt carries the exact phrase, because the word "report" appears in ordinary prose constantly and a skill that fires on the word would fire on almost every session. The file lands outside the working tree, is written with the Write tool and never through a shell redirection, carries no secret values, and ends with the session approximate context usage so a reader can tell whether to continue here or start fresh.
 - **The report is enforced rather than requested.** A `UserPromptSubmit` hook records the request in `.memstack/report-required.json` at the repository root, holding the session id, the request time, and the expected file name prefix. The Stop gate in `scripts/verify.py` reads that marker and blocks until a file carrying the prefix exists with an mtime after the request, then deletes the marker. Without a marker it does nothing at all, so a session nobody asked for a report from is never gated for one. The expected prefix is computed when the request is recorded and not at Stop time, because the local date can roll over mid session and the file owed is the one named for the day the request was made.
-- **Skill count becomes 87 free and 131 total.** Pending propagation across `memstack`, `memstack-skill-loader` and `memstack-pro-site`. Not done in this commit, and the release is not shippable until it is.
+- **The skill count is now 87 free and 131 total.** The `report` skill is the eighty-seventh free skill and is filed under Core, which grows from 16 to 17. The Pro count is unchanged at 44. The propagation is complete across all three repositories: `memstack-skill-loader` re-exported `skills.public.json` at 131 entries, and this repository's generated catalogs, the README skills regions and `SKILL-REFERENCE.md`, now carry 131 with a `report` row. The manifest gate and the plugin load gate both report 87 `SKILL.md` files on disk and 87 registered by the real loader, with zero frontmatter warnings.
 - **A plugin load release gate, `npm run check:plugin-load`.** It runs the real loader and asserts on what the loader reports rather than on what the tree contains: the count of `SKILL.md` files on disk, the count the loader registers, and zero frontmatter warnings. `RELEASING.md` makes it step 1, before any version surface moves. It observes what the loader registers rather than what the Skill tool offers, and those numbers differed by one in 3.9.8, so the gate closes the silent frontmatter drop and not the whole gap.
 
 ### Fixed

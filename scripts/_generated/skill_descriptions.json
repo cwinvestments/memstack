@@ -395,6 +395,10 @@
     "what": "Identify code smells, assess refactoring risk, select appropriate patterns, and build incremental execution plans with rollback strategies and verification checkpoints.",
     "not_for": "Writing new features or database migrations."
   },
+  "report": {
+    "what": "Writes the session final report to a file when a prompt asks for it, then prints only the path and a one-line summary.",
+    "not_for": "Diaries, handoffs, or an unrequested end-of-session summary."
+  },
   "rls-checker": {
     "what": "Audit Supabase Row Level Security policies across all tables in a project to verify table-level access control.",
     "not_for": "Non-Supabase projects or writing RLS policies from scratch."

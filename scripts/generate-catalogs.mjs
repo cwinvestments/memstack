@@ -57,8 +57,8 @@ if (!Array.isArray(skills)) die("skills.public.json is not an array");
 
 const free = skills.filter((s) => !s.isPro);
 const pro = skills.filter((s) => s.isPro);
-if (skills.length !== 130) die(`expected 130 skills, got ${skills.length}`);
-if (free.length !== 86) die(`expected 86 free skills, got ${free.length}`);
+if (skills.length !== 131) die(`expected 131 skills, got ${skills.length}`);
+if (free.length !== 87) die(`expected 87 free skills, got ${free.length}`);
 if (pro.length !== 44) die(`expected 44 Pro skills, got ${pro.length}`);
 
 for (const s of skills) {
@@ -77,7 +77,7 @@ for (const arr of byCat.values())
 
 let sum = 0;
 for (const arr of byCat.values()) sum += arr.length;
-if (sum !== 130) die(`per-category counts sum to ${sum}, expected 130`);
+if (sum !== 131) die(`per-category counts sum to ${sum}, expected 131`);
 
 // ============================================================================
 // Render helpers
@@ -164,7 +164,7 @@ function extractRegion(text, begin, end, label) {
 // ============================================================================
 function report() {
   console.log("[generate-catalogs] validation:");
-  console.log(`  total=130 ✓   free=86 ✓   pro=44 ✓   per-category sum=${sum} ✓`);
+  console.log(`  total=131 ✓   free=87 ✓   pro=44 ✓   per-category sum=${sum} ✓`);
   console.log("  every skill resolves a `what` ✓");
   for (const cat of CATEGORY_ORDER) {
     const arr = byCat.get(cat);

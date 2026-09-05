@@ -207,7 +207,7 @@
     "slug": "diary",
     "category": "Core",
     "isPro": false,
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   {
     "slug": "doc-index",
@@ -594,6 +594,12 @@
     "version": "1.0.0"
   },
   {
+    "slug": "report",
+    "category": "Core",
+    "isPro": false,
+    "version": "1.0.0"
+  },
+  {
     "slug": "rls-checker",
     "category": "Security",
     "isPro": false,
@@ -729,7 +735,7 @@
     "slug": "verify",
     "category": "Development",
     "isPro": false,
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   {
     "slug": "video-pipeline",

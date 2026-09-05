@@ -31,7 +31,7 @@ A skill reaches users through one of three independent channels. Know which one 
 
 | Channel | Carries | Source of truth | How the user gets it |
 |---------|---------|-----------------|----------------------|
-| **1. Marketplace plugin** | The **86 FREE skills** | `cwinvestments/memstack` repo, `skills/` dir | `/plugin marketplace add cwinvestments/memstack` → `/plugin install memstack@cwinvestments-memstack`. The loader reads free skills out of the **marketplace clone** (`~/.claude/plugins/marketplaces/cwinvestments-memstack/skills`), which it prefers ahead of the versioned plugin cache. |
+| **1. Marketplace plugin** | The **87 FREE skills** | `cwinvestments/memstack` repo, `skills/` dir | `/plugin marketplace add cwinvestments/memstack` → `/plugin install memstack@cwinvestments-memstack`. The loader reads free skills out of the **marketplace clone** (`~/.claude/plugins/marketplaces/cwinvestments-memstack/skills`), which it prefers ahead of the versioned plugin cache. |
 | **2. AdminStack download-on-activation** | The **44 PRO skills** | `adminstack/src/data/pro-skills/`, the copy customers actually receive. `memstack-skill-loader/pro-skills/` is a **fallback only**, bypassed permanently once a download completes; a skill added there alone reaches nobody. Keep both identical. | On `activate_license(...)`, the engine downloads the Pro bundle from `admin.cwaffiliateinvestments.com/api/skills/pro-bundle` into `~/.memstack/pro-skills`. |
 | **3. PyPI** | The **engine** (no skills) | `memstack-skill-loader` package | `pip install memstack-skill-loader` → `claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader`. The package ships **zero** skills and is inert until registered. |
 
@@ -189,7 +189,7 @@ When the public total changes, update **all** of these. Grouped by repo. (Old do
 | `ARCHITECTURE_DISTRIBUTION.md` | Total |
 | `src/memstack_skill_loader/server.py` | Runtime messages, verify (may be dynamic `len(...)`; correct if hardcoded) |
 
-> Reminder from the top of this doc: there is exactly one count, so every number above is simply the current count (130 total / 86 free / 44 Pro). Verify it live with the drift check rather than trusting this line.
+> Reminder from the top of this doc: there is exactly one count, so every number above is simply the current count (131 total / 87 free / 44 Pro). Verify it live with the drift check rather than trusting this line.
 
 > [!NOTE] Keep `MemStack-Documentation-Map.md` in sync.
 > It is the canonical tracker of every documentation location and must reflect the current count. As of 2026-08-20 it lags in four separate places: its two header dates (July 23 / July 31) both predate its real last edit, its stated plugin version reads 3.7.0, its **§3 (website-audit) body carries a 128 / 85 free + 43 Pro state**, and its footer carries an older 127 / 84 + 43: a separate cleanup. Refresh the §3 "What It Shows" rows to the live count; leave the dated audit-log footer as-is (it is a historical record: append a new dated line rather than rewriting it).

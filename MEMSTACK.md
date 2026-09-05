@@ -2,7 +2,7 @@
 
 You are running with MemStack™ enabled. Skills use the official **Anthropic SKILL.md format**: each skill lives in `skills/{name}/SKILL.md` with YAML frontmatter (name + description). Hooks in `.claude/hooks/` fire deterministically on CC lifecycle events. Rules in `.claude/rules/` are always loaded at session start.
 
-**Current skill count: 130 total (86 free + 44 Pro-exclusive).** Verify it live with `memstack-skill-loader/scripts/check_skill_drift.py` rather than trusting this line.
+**Current skill count: 131 total (87 free + 44 Pro-exclusive).** Verify it live with `memstack-skill-loader/scripts/check_skill_drift.py` rather than trusting this line.
 
 **v3.5.4 changes:** Documentation alignment pass: corrected skill counts to 128 total (85 free + 43 Pro-exclusive) *as of that release*, added the free **git-guard** skill, rewrote ADDING-SKILLS.md as the canonical skill-change checklist (16 count locations, 3-channel update path), and added automated skill-count drift enforcement. TokenStack™ is now the sole context-compression proxy. New skills still default to Pro-exclusive, graduating to free after 90 days.
 
