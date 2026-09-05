@@ -36,18 +36,22 @@ report is not something anyone meant to commit.
 
 ### 2. What it is called
 
-`<project>-<YYYY-MM-DD>-<NN>.txt`
+`<project>-<YYYY-MM-DD>-<HHMMSS>.txt`
 
 - `<project>` is the leaf folder name of the working directory. Not the repo
   name, not the remote name: the folder, so two checkouts of one repo do not
   overwrite each other.
-- `<YYYY-MM-DD>` is today.
-- `<NN>` is two digits, starting at `01`, and it is the next unused number for
-  that project and that date, computed by listing the directory immediately
-  before writing.
+- `<YYYY-MM-DD>` is today, local time.
+- `<HHMMSS>` is the local wall clock time at the moment of writing: six
+  digits, 24 hour, zero padded. Read the clock when the file is about to be
+  written, not when the work started.
 
-Never guess `NN`. A guessed number is a number that already exists, and the
-Write tool will happily replace the earlier report with this one.
+The suffix is a clock reading rather than a sequence number because a sequence
+has to be derived from what is already filed, and that derivation is what kept
+failing. Reports move into a subfolder once they are reviewed, the directory
+the count was taken from empties out, and the next report restarts at `01` on
+top of a name that is still in use one folder down. A clock has no state to
+lose.
 
 ### 3. How it is written
 
@@ -105,7 +109,7 @@ report is never gated for one.
 
 | Gotcha | Why it matters |
 |--------|----------------|
-| `NN` collides when two sessions run in one project on one day | Both sessions compute `01` at task start, and the second Write silently overwrites the first report. Compute `NN` from the directory listing immediately before writing, not at the start of the work. |
+| The suffix is a time, not a sequence number | Two sessions in one project on one day cannot collide on a second, and nothing has to be counted. The sequence was the actual failure: reviewed reports are filed into a subfolder, the live directory empties, and the count restarts at `01` over a name that already exists one level down. |
 | A report is the session own claim about itself | It is testimony, not evidence. It never substitutes for a verify receipt: the receipt records what the check chain reported, the report records what the session says it did, and only one of those was produced by something other than the author. |
 | The marker is keyed on the session id | A marker left by another session does not block this one, and a resumed session that receives a replayed hook still matches its own id. |
 | A report that only lists what passed is half a report | State what was skipped, what is pending, and what could not be verified. The reader is deciding what to do next, and a report that reads clean when it is not costs them the next session. |
@@ -114,7 +118,7 @@ report is never gated for one.
 
 - **In:** the prompt carrying the phrase, the working directory (for the
   project name), and `MEMSTACK_REPORT_DIR` when it is set.
-- **Out:** one file at `<report dir>/<project>-<YYYY-MM-DD>-<NN>.txt`, plus one
+- **Out:** one file at `<report dir>/<project>-<YYYY-MM-DD>-<HHMMSS>.txt`, plus one
   path and one summary line in the terminal.
 
 ## Level History

@@ -829,8 +829,8 @@ def report_marker_path(root: Path) -> Path:
 
 def report_prefix(project: str, day: str) -> str:
     """The part of a report's name that is knowable before it is written. The
-    sequence number is not: it depends on what is in the directory at the
-    moment of writing, which is why nothing here predicts it."""
+    time suffix is not: it is the local clock at the moment of writing, which
+    is why nothing here predicts it."""
     return project + "-" + day + "-"
 
 
@@ -1458,7 +1458,7 @@ def _gate_cases(base: Path) -> list[dict]:
         prefix = "proj-2026-01-01-"
         marker = _write_report_marker(repo, "s-clear", prefix, reports)
         before_code, before_message = gate_decide(_payload(repo, "s-clear"))
-        with open(reports / (prefix + "01.txt"), "w",
+        with open(reports / (prefix + "142530.txt"), "w",
                   encoding="utf-8", newline="\n") as handle:
             handle.write("the session says what it did\n")
         after_code, after_message = gate_decide(_payload(repo, "s-clear"))

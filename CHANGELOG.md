@@ -1,5 +1,22 @@
 # MemStack™ Changelog
 
+## v3.9.9 - DRAFT - The session says what it did, in a file
+
+DRAFT. No version surface has moved. The skill counts below are the counts this
+release will carry once the propagation lands in `memstack-skill-loader` and
+`memstack-pro-site`; until then the pre-push drift checker will refuse, which is
+correct. The release pass replaces this heading.
+
+### Added
+- **A `report` skill, and a gate that makes it stick.** The skill writes the session final report to a file when a prompt asks for it, then prints only the path and a one line summary. It is dormant unless the prompt carries the exact phrase, because the word "report" appears in ordinary prose constantly and a skill that fires on the word would fire on almost every session. The file lands outside the working tree, is written with the Write tool and never through a shell redirection, carries no secret values, and ends with the session approximate context usage so a reader can tell whether to continue here or start fresh.
+- **The report is enforced rather than requested.** A `UserPromptSubmit` hook records the request in `.memstack/report-required.json` at the repository root, holding the session id, the request time, and the expected file name prefix. The Stop gate in `scripts/verify.py` reads that marker and blocks until a file carrying the prefix exists with an mtime after the request, then deletes the marker. Without a marker it does nothing at all, so a session nobody asked for a report from is never gated for one. The expected prefix is computed when the request is recorded and not at Stop time, because the local date can roll over mid session and the file owed is the one named for the day the request was made.
+- **Skill count becomes 87 free and 131 total.** Pending propagation across `memstack`, `memstack-skill-loader` and `memstack-pro-site`. Not done in this commit, and the release is not shippable until it is.
+- **A plugin load release gate, `npm run check:plugin-load`.** It runs the real loader and asserts on what the loader reports rather than on what the tree contains: the count of `SKILL.md` files on disk, the count the loader registers, and zero frontmatter warnings. `RELEASING.md` makes it step 1, before any version surface moves. It observes what the loader registers rather than what the Skill tool offers, and those numbers differed by one in 3.9.8, so the gate closes the silent frontmatter drop and not the whole gap.
+
+### Fixed
+- **The Stop hook timeout was set in the wrong unit and meant roughly four hours.** `hooks/hooks.json` carried `"timeout": 15000` on the `verify-gate` entry, written as if the field were milliseconds. The hooks reference states the unit plainly: "Seconds before canceling." At 15000 seconds the gate had a budget of about four hours and sixteen minutes, so a hung gate would have hung the Stop event rather than being cancelled. The value is now `15`, which is the ceiling that was intended all along. Nothing else about the entry changed, and the gate itself was never slow: the bug was in what would happen if it ever were.
+- **Report file names carry a time instead of a sequence number.** The name becomes `<project>-<YYYY-MM-DD>-<HHMMSS>.txt`, the six digit local wall clock read at the moment of writing. The sequence number it replaces had to be derived from the directory listing, and that derivation is what failed in practice: reviewed reports are filed into a subfolder, the live directory empties out, and the count restarts at `01` on top of a name that is still in use one level down. That produced a duplicate `01` and a hand made `01c` against twelve delivered reports in a single day. A clock reading has no state to lose, and two sessions in one project cannot collide on a second. The gate needs no change for this: its expected prefix is `<project>-<date>-` and stops there, so it never saw the suffix in the first place.
+
 ## v3.9.8 - 2026-09-04 - The manifest fix that actually registers the skills
 
 ### Fixed

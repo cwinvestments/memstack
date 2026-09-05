@@ -30,7 +30,7 @@
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" verify-gate",
             "async": false,
-            "timeout": 15000
+            "timeout": 15
           }
         ]
       }
