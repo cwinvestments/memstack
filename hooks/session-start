@@ -65,6 +65,16 @@ escape_for_json() {
 # (which would also process \t, \\, octal, etc.), we only authored \n above.
 CONTEXT=${CONTEXT//\\n/$'\n'}
 
+# --- Report trigger standing instruction (skills/report) ---
+# One sentence, and only on a machine that has actually configured a standing
+# trigger. A default install arms on the phrase alone, and a prompt carrying
+# the phrase announces the requirement itself, so there is nothing for a line
+# here to add. This line is paid for in every prompt of every session it
+# appears in, which is why it is one sentence and why it is conditional.
+if [ "${MEMSTACK_REPORT_ON_TASK_PROMPTS:-}" = "1" ] || [ -n "${MEMSTACK_REPORT_TRIGGERS:-}" ]; then
+    CONTEXT="${CONTEXT}"$'\n'"A MemStack report trigger is configured in this environment, so any prompt beginning with a configured trigger requires a session report written per memstack:report before the turn ends, and the Stop gate enforces it."
+fi
+
 # --- Living-memory block (Memory Engine, step 5) ---
 # Fold in the current project's top recall-scored facts. The loader module is
 # strictly fail-open (always exits 0; prints a block ONLY when facts exist), and

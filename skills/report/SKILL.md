@@ -16,12 +16,53 @@ Output `Report: writing the session report...`, then follow the rules below.
 | Context | Status | Priority |
 |---------|--------|----------|
 | **The prompt contains "Report per memstack:report"** | ACTIVE, write the file before finishing | P1 |
+| **The prompt's first non-blank line starts with a configured trigger** | ACTIVE, same requirement | P1 |
+| **The prompt matched, but is under 40 characters** | DORMANT, see the floor below | n/a |
 | **The prompt asks for a summary, a recap or a status line** | DORMANT, answer in the terminal, no file | n/a |
 | **A long session ends and nobody asked for a report** | DORMANT, an unrequested file is litter | n/a |
 | **The prompt asks for a diary or a handoff** | DORMANT, that is Diary and Project, not this | n/a |
 
-The phrase is the whole trigger, and it is a phrase rather than a keyword
-because "report" appears in ordinary prose constantly.
+## Triggers
+
+The phrase always arms, on every install, with nothing configured. It is a
+phrase rather than a keyword because "report" appears in ordinary prose
+constantly.
+
+Two environment variables add standing triggers on top of it. Both are unset by
+default, so a shipped install arms on the phrase and on nothing else.
+
+| Variable | Effect |
+|----------|--------|
+| `MEMSTACK_REPORT_ON_TASK_PROMPTS` | Set to `1`, arms any prompt whose first non-blank line starts with `Working directory:`. Any other value, including `0`, changes nothing. |
+| `MEMSTACK_REPORT_TRIGGERS` | Extra prefixes, semicolon separated, each matched against the first non-blank line. Surrounding spaces are trimmed, so `Task briefing:; Ticket:` configures two. |
+
+`Working directory:` is separated out rather than left to the general list
+because it is the opening line of a dispatched task prompt, which is the shape
+this was built for, and because arming on it by default would file a report for
+a large share of every prompt anyone writes.
+
+When either variable is configured, the SessionStart hook injects one sentence
+saying so. That sentence is the only announcement: a prompt carrying the phrase
+announces the requirement itself, so a default install is told nothing and pays
+nothing.
+
+### The 40 character floor
+
+**A prompt under 40 characters never arms, whatever it matched.** A standing
+prefix fires on "continue" and "yes, do that" as readily as on a task, and a
+report about "continue" is noise filed under a real project name.
+
+The floor applies to the phrase too. A bare `Report per memstack:report` with no
+task attached is 26 characters and does not arm, which is the same noise
+approaching from the other side: a report of nothing. Attach the phrase to the
+work it is reporting on and the prompt clears the floor without effort.
+
+### Re-arming
+
+A later prompt that matches overwrites the marker, so each task prompt in a
+session owes its own report. The new marker carries a later request time than
+the file the previous prompt produced, so an earlier report cannot satisfy a
+later request.
 
 ## Rules
 
@@ -40,7 +81,10 @@ report is not something anyone meant to commit.
 
 - `<project>` is the leaf folder name of the working directory. Not the repo
   name, not the remote name: the folder, so two checkouts of one repo do not
-  overwrite each other.
+  overwrite each other. When the prompt's first non-blank line names a working
+  directory, that path's leaf is the project, not the directory the session was
+  launched from. The gate reads the same line and keys the marker the same way,
+  so a session opened in one repo and pointed at another agrees with itself.
 - `<YYYY-MM-DD>` is today, local time.
 - `<HHMMSS>` is the local wall clock time at the moment of writing: six
   digits, 24 hour, zero padded. Read the clock when the file is about to be
@@ -98,8 +142,11 @@ cost of the session final turn and buries the path the reader actually needs.
 ## Enforcement
 
 A UserPromptSubmit hook records the request in `.memstack/report-required.json`
-at the repository root, holding the session id, the request time, and the
-expected file name prefix. The Stop gate in `scripts/verify.py` reads that
+at the repository root, holding the session id, the request time, the expected
+file name prefix, which trigger matched, and the prompt's first 80 characters
+with whitespace collapsed. The last of those is what lets the block message name
+the prompt that is waiting, which matters once a session can hold more than one
+request. The Stop gate in `scripts/verify.py` reads that
 marker and blocks with exit 2 until a file carrying the prefix exists with an
 mtime after the request. The gate deletes the marker once it finds the report,
 and does nothing at all without one, so a session that was never asked for a
@@ -112,15 +159,21 @@ report is never gated for one.
 | The suffix is a time, not a sequence number | Two sessions in one project on one day cannot collide on a second, and nothing has to be counted. The sequence was the actual failure: reviewed reports are filed into a subfolder, the live directory empties, and the count restarts at `01` over a name that already exists one level down. |
 | A report is the session own claim about itself | It is testimony, not evidence. It never substitutes for a verify receipt: the receipt records what the check chain reported, the report records what the session says it did, and only one of those was produced by something other than the author. |
 | The marker is keyed on the session id | A marker left by another session does not block this one, and a resumed session that receives a replayed hook still matches its own id. |
+| The prefix follows the prompt, not the launch directory | This is a fixed defect, not a design note. The marker used to key on the directory the session was launched from while the file was named for the directory the prompt pointed at, so a correctly named report was rejected and a second file appeared under the other name. One request, two files. |
+| A standing trigger is a per-machine decision | Nothing ships armed beyond the phrase. A prefix arms every prompt that will ever start that way, including the ones written months after whoever set the variable stopped thinking about it, which is why it is opt in and why the floor exists. |
 | A report that only lists what passed is half a report | State what was skipped, what is pending, and what could not be verified. The reader is deciding what to do next, and a report that reads clean when it is not costs them the next session. |
 
 ## Inputs and Outputs
 
-- **In:** the prompt carrying the phrase, the working directory (for the
-  project name), and `MEMSTACK_REPORT_DIR` when it is set.
+- **In:** the prompt carrying the phrase or a configured trigger, the working
+  directory the prompt names or the session was launched from (for the project
+  name), `MEMSTACK_REPORT_DIR` when it is set, and
+  `MEMSTACK_REPORT_ON_TASK_PROMPTS` and `MEMSTACK_REPORT_TRIGGERS` when the
+  standing triggers are wanted.
 - **Out:** one file at `<report dir>/<project>-<YYYY-MM-DD>-<HHMMSS>.txt`, plus one
   path and one summary line in the terminal.
 
 ## Level History
 
 - **Lv.1** Base: File-backed session reports with a UserPromptSubmit marker and a Stop gate that blocks until the file exists. (Origin: MemStack, Sep 2026)
+- **Lv.2** Standing triggers: opt-in prefix triggers behind two environment variables, a 40 character floor, re-arming per prompt, a named prompt in the block message, and the project name keyed on the working directory the prompt names. (MemStack, Sep 2026)

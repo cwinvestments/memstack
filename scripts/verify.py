@@ -111,7 +111,33 @@ REPORT_PHRASE = "Report per memstack:report"
 REPORT_MARKER_NAME = "report-required.json"
 REPORT_DIR_ENV = "MEMSTACK_REPORT_DIR"
 
+# The standing half of the requirement, off unless the environment turns it on.
+# A shipped install arms on the phrase and on nothing else, because the phrase
+# is a decision the prompt author made and a prefix is a decision somebody made
+# once, months ago, for every prompt that will ever start that way.
+#
+# MEMSTACK_REPORT_ON_TASK_PROMPTS=1 arms every prompt whose first non-blank line
+# starts with "Working directory:", which is the shape a dispatched task prompt
+# has. MEMSTACK_REPORT_TRIGGERS adds any other prefixes, semicolon separated.
+REPORT_ON_TASK_PROMPTS_ENV = "MEMSTACK_REPORT_ON_TASK_PROMPTS"
+REPORT_TRIGGERS_ENV = "MEMSTACK_REPORT_TRIGGERS"
+REPORT_TASK_PROMPT_PREFIX = "Working directory:"
+
+# Below this, nothing arms, whatever it matched. A standing trigger fires on
+# "continue" and "yes, do that" as readily as on a task, and a report for
+# "continue" is noise filed under a real project name.
+REPORT_MIN_PROMPT_CHARS = 40
+
+# How much of the prompt the marker carries, so the block message can name
+# which prompt is still waiting rather than announcing an anonymous debt.
+REPORT_PROMPT_HEAD_CHARS = 80
+
 _SAFE_ID = re.compile(r"[^A-Za-z0-9._-]+")
+
+# A folder name may hold spaces; it may not hold anything a path or a file name
+# would refuse. A first line naming something outside this is prose, not a
+# directory, and the cwd answers instead.
+_UNSAFE_LEAF = re.compile(r"[<>:\"|?*\x00-\x1f]")
 
 
 # --------------------------------------------------------------------------
@@ -853,25 +879,116 @@ def newest_report(directory: Path, prefix: str, after: float) -> Path | None:
     return None
 
 
+def report_trigger_prefixes() -> list[str]:
+    """The configured prefixes, in the order they are consulted. Empty on a
+    default install, which is the whole point: the phrase ships, the prefixes
+    are opted into per machine."""
+    prefixes: list[str] = []
+    if (os.environ.get(REPORT_ON_TASK_PROMPTS_ENV) or "").strip() == "1":
+        prefixes.append(REPORT_TASK_PROMPT_PREFIX)
+    for part in (os.environ.get(REPORT_TRIGGERS_ENV) or "").split(";"):
+        candidate = part.strip()
+        if candidate and candidate not in prefixes:
+            prefixes.append(candidate)
+    return prefixes
+
+
+def _first_line(prompt: str) -> str:
+    """The first line with anything on it. A dispatched prompt often opens with
+    a blank line or a stray newline, and a trigger that only reads line one
+    would miss every one of those."""
+    for line in prompt.splitlines():
+        if line.strip():
+            return line.strip()
+    return ""
+
+
+def report_trigger_match(prompt: str) -> str | None:
+    """What armed this prompt, or None for the overwhelming majority.
+
+    The length floor is checked before anything else and applies to the phrase
+    as well, so a bare "Report per memstack:report" with no task attached does
+    not arm either. That is deliberate: the floor exists to keep a standing
+    trigger from filing a report about "continue", and a 26 character prompt
+    asking for a report of nothing is the same noise from the other direction.
+    """
+    if not isinstance(prompt, str):
+        return None
+    if len(prompt.strip()) < REPORT_MIN_PROMPT_CHARS:
+        return None
+    if REPORT_PHRASE in prompt:
+        return REPORT_PHRASE
+    head = _first_line(prompt)
+    for prefix in report_trigger_prefixes():
+        if head.startswith(prefix):
+            return prefix
+    return None
+
+
+def report_prompt_project(prompt: str) -> str | None:
+    """The leaf folder named by a "Working directory:" first line, or None.
+
+    This exists because the two halves disagreed. The skill names the report
+    for the leaf of the working directory it was told to work in; the marker
+    named it for the leaf of the directory the session happened to be launched
+    from. A session opened in one repo and pointed at another therefore wrote a
+    correctly named report that the gate could not recognise, and blocked until
+    a second file appeared under the other name.
+
+    Read independently of which trigger armed, because the mismatch is caused
+    by the prompt naming a directory, not by how the prompt was recognised.
+    """
+    head = _first_line(prompt)
+    if not head.startswith(REPORT_TASK_PROMPT_PREFIX):
+        return None
+    raw = head[len(REPORT_TASK_PROMPT_PREFIX):].strip()
+    raw = raw.strip('"').strip("'").strip()
+    if not raw:
+        return None
+    leaf = raw.replace("\\", "/").rstrip("/").rsplit("/", 1)[-1].strip()
+    if not leaf or _UNSAFE_LEAF.search(leaf):
+        return None
+    return leaf
+
+
+def report_prompt_head(prompt: str) -> str:
+    """The opening of the prompt, whitespace collapsed, capped.
+
+    Collapsed rather than copied verbatim because this is read back inside a
+    single line of a block message, and a prompt's own newlines would break
+    that line into fragments that look like separate gate output.
+    """
+    return " ".join(prompt.split())[:REPORT_PROMPT_HEAD_CHARS]
+
+
 def report_marker_decide(payload: dict,
                          fallback_cwd: Path | None = None) -> Path | None:
     """Record a report request from a UserPromptSubmit payload.
 
-    Returns the marker path when the prompt carried the phrase, and None,
-    having written nothing, for every other prompt. Writing nothing is the
+    Returns the marker path when the prompt matched a trigger, and None, having
+    written nothing, for every other prompt. Writing nothing is the
     overwhelmingly common case: this runs on every prompt of every session, so
     anything it does unasked it does thousands of times.
+
+    A match overwrites whatever marker was already there, which is what re-arms
+    the requirement. A session given three task prompts owes three reports, and
+    the marker the third prompt writes carries a later requested_at than the
+    file the second one produced, so the second report cannot satisfy it.
 
     The expected prefix is computed HERE and not at Stop time. The local date
     can roll over mid-session, and the file the session was asked for is the
     one named for the day the request was made.
     """
     prompt = payload.get("prompt")
-    if not isinstance(prompt, str) or REPORT_PHRASE not in prompt:
+    if not isinstance(prompt, str):
+        return None
+    trigger = report_trigger_match(prompt)
+    if trigger is None:
         return None
 
     start, root = _payload_root(payload, fallback_cwd)
-    project = start.name or root.name or "session"
+    project = (report_prompt_project(prompt)
+               or start.name or root.name or "session")
     now = datetime.now(timezone.utc)
     marker = {
         "session_id": _payload_session(payload),
@@ -883,6 +1000,8 @@ def report_marker_decide(payload: dict,
                                          datetime.now().strftime("%Y-%m-%d")),
         "report_dir": str(report_dir()),
         "phrase": REPORT_PHRASE,
+        "trigger": trigger,
+        "prompt_head": report_prompt_head(prompt),
     }
     path = report_marker_path(root)
     ensure_memstack_ignored(root)
@@ -947,9 +1066,17 @@ def report_decision(root: Path, session_id: str) -> tuple[int, str]:
             + str(GATE_MAX_BLOCKS - 1) + " blocked rounds. Write the report"
             + " yourself, or delete " + str(path) + ".")
 
+    # Name the prompt. A session holding several task prompts is told which one
+    # is still owed a report, rather than being told a report is owed and left
+    # to guess which of the three it was.
+    head = marker.get("prompt_head")
+    named = ""
+    if isinstance(head, str) and head.strip():
+        named = " The prompt was: " + head.strip()
+
     return EXIT_GATE_RESERVED, (
         "verify gate: BLOCKED. A report was requested; write it per"
-        " memstack:report to " + str(directory) + " and finish.")
+        " memstack:report to " + str(directory) + " and finish." + named)
 
 
 def receipt_decision(root: Path, session_id: str) -> tuple[int, str]:
@@ -1232,6 +1359,37 @@ def _write_report_marker(repo: Path, session_id: str, prefix: str,
         "phrase": REPORT_PHRASE,
     })
     return path
+
+
+# The variables the trigger cases move. Named once so a case cannot restore a
+# shorter list than it changed and leak a trigger into everything after it.
+_REPORT_ENV_NAMES = (REPORT_ON_TASK_PROMPTS_ENV, REPORT_TRIGGERS_ENV)
+
+
+def _env_snapshot(names: tuple[str, ...]) -> dict:
+    """Exactly what is there now, including the absences. A variable that was
+    unset has to be restored to unset, not to empty: an empty
+    MEMSTACK_REPORT_TRIGGERS and an absent one are the same to the trigger
+    reader, but the difference would still be visible to anything else that
+    inherits this process's environment."""
+    return {name: os.environ.get(name) for name in names}
+
+
+def _env_apply(values: dict) -> None:
+    for name, value in values.items():
+        if value is None:
+            os.environ.pop(name, None)
+        else:
+            os.environ[name] = value
+
+
+def _prompt_payload(repo: Path, session_id: str, prompt: str) -> dict:
+    return {
+        "session_id": session_id,
+        "cwd": str(repo),
+        "hook_event_name": "UserPromptSubmit",
+        "prompt": prompt,
+    }
 
 
 def _payload(repo: Path, session_id: str, stop_hook_active: bool = False) -> dict:
@@ -1584,7 +1742,284 @@ def _gate_cases(base: Path) -> list[dict]:
             + " exit=" + repr(code) + " message=" + repr(message),
         ))
 
+    # 14. The task-prompt trigger is opt in. The control is asserted first and
+    #     is the load-bearing half: this prefix matches the opening line of an
+    #     enormous share of real prompts, so a build that armed on it by
+    #     default would file a report for work nobody asked to have reported.
+    trig_repo = base / "trigger-task"
+    reason = _init_repo(trig_repo, {"src/app.py": "VALUE = 1\n"})
+    if reason:
+        cases.append(_case("task-prompt-trigger-needs-its-env-var",
+                           "fabricated git repo", False, reason))
+    else:
+        marker = report_marker_path(trig_repo)
+        prompt = ("Working directory: " + str(trig_repo)
+                  + "\n\nTighten the loader and run the checks.\n")
+        saved = _env_snapshot(_REPORT_ENV_NAMES)
+        try:
+            _env_apply({REPORT_ON_TASK_PROMPTS_ENV: None,
+                        REPORT_TRIGGERS_ENV: None})
+            quiet = report_marker_from_text(
+                json.dumps(_prompt_payload(trig_repo, "s-trig", prompt)),
+                trig_repo)
+            control_wrote_nothing = quiet is None and not marker.exists()
+            _env_apply({REPORT_ON_TASK_PROMPTS_ENV: "1"})
+            written = report_marker_from_text(
+                json.dumps(_prompt_payload(trig_repo, "s-trig", prompt)),
+                trig_repo)
+        finally:
+            _env_apply(saved)
+        data = _load_json(marker) or {}
+        ok = (
+            control_wrote_nothing
+            and written is not None
+            and marker.is_file()
+            and data.get("trigger") == REPORT_TASK_PROMPT_PREFIX
+            and str(data.get("prompt_head") or "").startswith(
+                "Working directory:")
+        )
+        cases.append(_case(
+            "task-prompt-trigger-needs-its-env-var",
+            "one Working directory: prompt, with the variable unset then 1",
+            ok,
+            "control_wrote_nothing=" + repr(control_wrote_nothing)
+            + " marker=" + repr(marker.is_file())
+            + " trigger=" + repr(data.get("trigger"))
+            + " prompt_head=" + repr(data.get("prompt_head")),
+        ))
+
+    # 15. Under the floor, nothing arms. The control is the SAME trigger and
+    #     the SAME variable with a longer prompt, which must arm: without it
+    #     this case would pass against a build whose trigger had simply stopped
+    #     working, which is the failure it is meant to rule out.
+    short_repo = base / "trigger-short"
+    reason = _init_repo(short_repo, {"src/app.py": "VALUE = 1\n"})
+    if reason:
+        cases.append(_case("short-prompts-never-arm",
+                           "fabricated git repo", False, reason))
+    else:
+        marker = report_marker_path(short_repo)
+        short_prompt = "Working directory: C:/aaa/proj"
+        long_prompt = ("Working directory: C:/aaa/proj"
+                       "\n\nRun the checks and fix what fails.\n")
+        saved = _env_snapshot(_REPORT_ENV_NAMES)
+        try:
+            _env_apply({REPORT_ON_TASK_PROMPTS_ENV: "1",
+                        REPORT_TRIGGERS_ENV: None})
+            quiet = report_marker_from_text(
+                json.dumps(_prompt_payload(short_repo, "s-short",
+                                           short_prompt)),
+                short_repo)
+            stayed_quiet = quiet is None and not marker.exists()
+            armed = report_marker_from_text(
+                json.dumps(_prompt_payload(short_repo, "s-short",
+                                           long_prompt)),
+                short_repo)
+        finally:
+            _env_apply(saved)
+        ok = (
+            len(short_prompt) == 30
+            and len(short_prompt) < REPORT_MIN_PROMPT_CHARS
+            and stayed_quiet
+            and armed is not None
+            and marker.is_file()
+        )
+        cases.append(_case(
+            "short-prompts-never-arm",
+            "a 30 character trigger prompt, then the same trigger at length",
+            ok,
+            "short_len=" + repr(len(short_prompt))
+            + " floor=" + repr(REPORT_MIN_PROMPT_CHARS)
+            + " short_wrote_nothing=" + repr(stayed_quiet)
+            + " long_armed=" + repr(armed is not None),
+        ))
+
+    # 16. A prefix listed in MEMSTACK_REPORT_TRIGGERS arms. The control is the
+    #     identical prompt with the variable unset, which must write nothing:
+    #     the prompt is ordinary text, and only the configuration makes it a
+    #     request.
+    extra_repo = base / "trigger-extra"
+    reason = _init_repo(extra_repo, {"src/app.py": "VALUE = 1\n"})
+    if reason:
+        cases.append(_case("configured-extra-prefix-arms",
+                           "fabricated git repo", False, reason))
+    else:
+        marker = report_marker_path(extra_repo)
+        prompt = ("Ticket: PROJ-1234\n\nRewrite the loader and prove it with"
+                  " the checks.\n")
+        saved = _env_snapshot(_REPORT_ENV_NAMES)
+        try:
+            _env_apply({REPORT_ON_TASK_PROMPTS_ENV: None,
+                        REPORT_TRIGGERS_ENV: None})
+            quiet = report_marker_from_text(
+                json.dumps(_prompt_payload(extra_repo, "s-extra", prompt)),
+                extra_repo)
+            control_wrote_nothing = quiet is None and not marker.exists()
+            _env_apply({REPORT_TRIGGERS_ENV: "Task briefing:; Ticket: ;"})
+            prefixes = report_trigger_prefixes()
+            written = report_marker_from_text(
+                json.dumps(_prompt_payload(extra_repo, "s-extra", prompt)),
+                extra_repo)
+        finally:
+            _env_apply(saved)
+        data = _load_json(marker) or {}
+        ok = (
+            control_wrote_nothing
+            and prefixes == ["Task briefing:", "Ticket:"]
+            and written is not None
+            and marker.is_file()
+            and data.get("trigger") == "Ticket:"
+        )
+        cases.append(_case(
+            "configured-extra-prefix-arms",
+            "one Ticket: prompt, with MEMSTACK_REPORT_TRIGGERS unset then set",
+            ok,
+            "control_wrote_nothing=" + repr(control_wrote_nothing)
+            + " prefixes=" + repr(prefixes)
+            + " trigger=" + repr(data.get("trigger")),
+        ))
+
+    # 17. The standing instruction reaches the model only on a machine that
+    #     configured a trigger. The control is the same hook, same cwd, with
+    #     both variables cleared, and it is the half that matters: this line is
+    #     charged to every prompt of every session it appears in, so a build
+    #     that emitted it unconditionally would bill every customer for a
+    #     feature none of them turned on.
+    cases.append(_session_start_line_case(base))
+
+    # 18. The prefix follows the working directory the prompt names, not the
+    #     directory the session was launched from. The control is the same
+    #     prompt with the first line removed, which must fall back to the cwd:
+    #     without it this case would pass against a build that had simply
+    #     stopped reading the cwd at all.
+    keyed_repo = base / "report-keying"
+    reason = _init_repo(keyed_repo, {"src/app.py": "VALUE = 1\n"})
+    if reason:
+        cases.append(_case("prefix-follows-the-named-working-directory",
+                           "fabricated git repo", False, reason))
+    else:
+        marker = report_marker_path(keyed_repo)
+        body = ("Rewrite the loader and prove it with the checks.\n\n"
+                "Report per memstack:report\n")
+        named = report_marker_from_text(
+            json.dumps(_prompt_payload(
+                keyed_repo, "s-keyed",
+                "Working directory: C:\\Projects\\other-project\n\n" + body)),
+            keyed_repo)
+        named_prefix = str((_load_json(marker) or {}).get("expected_prefix")
+                           or "")
+        fallback = report_marker_from_text(
+            json.dumps(_prompt_payload(keyed_repo, "s-keyed", body)),
+            keyed_repo)
+        fallback_prefix = str((_load_json(marker) or {}).get("expected_prefix")
+                              or "")
+        ok = (
+            named is not None
+            and named_prefix.startswith("other-project-")
+            and not named_prefix.startswith(keyed_repo.name + "-")
+            and fallback is not None
+            and fallback_prefix.startswith(keyed_repo.name + "-")
+        )
+        cases.append(_case(
+            "prefix-follows-the-named-working-directory",
+            "one prompt naming another repo, then the same prompt naming none",
+            ok,
+            "named_prefix=" + repr(named_prefix)
+            + " fallback_prefix=" + repr(fallback_prefix)
+            + " cwd_name=" + repr(keyed_repo.name),
+        ))
+
     return cases
+
+
+# The sentence hooks/session-start injects, matched here on its opening clause
+# so a reworded tail does not fail the case while a deleted line still does.
+SESSION_START_REPORT_LINE = (
+    "A MemStack report trigger is configured in this environment")
+
+
+def _find_bash() -> str | None:
+    """bash, the same way run-hook.cmd looks for it. None when there is none,
+    which on Windows means the hook cannot run at all."""
+    found = shutil.which("bash")
+    if found:
+        return found
+    for candidate in (r"C:\Program Files\Git\bin\bash.exe",
+                      r"C:\Program Files (x86)\Git\bin\bash.exe"):
+        if Path(candidate).is_file():
+            return candidate
+    return None
+
+
+def _session_start_context(bash: str, hook: Path, cwd: Path,
+                           overrides: dict) -> tuple[str, str]:
+    """Run the SessionStart hook and return (additionalContext, diagnostic)."""
+    env = dict(os.environ)
+    env["MEMSTACK_NO_UPDATE_CHECK"] = "1"
+    for name, value in overrides.items():
+        if value is None:
+            env.pop(name, None)
+        else:
+            env[name] = value
+    try:
+        completed = subprocess.run(
+            [bash, str(hook)], cwd=str(cwd), env=env,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            timeout=120)
+    except (OSError, subprocess.SubprocessError) as exc:
+        return "", "hook did not run: " + repr(exc)
+    if completed.returncode != 0:
+        return "", "hook exit=" + repr(completed.returncode)
+    raw = completed.stdout.decode("utf-8", "replace")
+    try:
+        parsed = json.loads(raw)
+        context = parsed["hookSpecificOutput"]["additionalContext"]
+    except (ValueError, KeyError, TypeError) as exc:
+        return "", "unparseable hook output: " + repr(exc)
+    return (context if isinstance(context, str) else ""), ""
+
+
+def _session_start_line_case(base: Path) -> dict:
+    """Case 17, lifted out because it runs a real subprocess and the inline
+    version buried the assertion under the plumbing."""
+    name = "session-start-line-appears-only-when-configured"
+    hook = Path(__file__).resolve().parent.parent / "hooks" / "session-start"
+    if not hook.is_file():
+        return _case(name, "hooks/session-start", False,
+                     "missing hook at " + str(hook))
+    bash = _find_bash()
+    if bash is None:
+        return _case(name, "hooks/session-start", False,
+                     "no bash found; the hook cannot be executed here")
+    cwd = base / "session-start-cwd"
+    cwd.mkdir(parents=True, exist_ok=True)
+
+    off, off_why = _session_start_context(
+        bash, hook, cwd,
+        {REPORT_ON_TASK_PROMPTS_ENV: None, REPORT_TRIGGERS_ENV: None})
+    on, on_why = _session_start_context(
+        bash, hook, cwd,
+        {REPORT_ON_TASK_PROMPTS_ENV: "1", REPORT_TRIGGERS_ENV: None})
+    extra, extra_why = _session_start_context(
+        bash, hook, cwd,
+        {REPORT_ON_TASK_PROMPTS_ENV: None, REPORT_TRIGGERS_ENV: "Ticket:"})
+
+    ok = (
+        not off_why and not on_why and not extra_why
+        and bool(off)
+        and SESSION_START_REPORT_LINE not in off
+        and SESSION_START_REPORT_LINE in on
+        and SESSION_START_REPORT_LINE in extra
+    )
+    return _case(
+        name,
+        "the hook run three times: both variables clear, then each one set",
+        ok,
+        "unset_absent=" + repr(SESSION_START_REPORT_LINE not in off)
+        + " on_task_prompts_present=" + repr(SESSION_START_REPORT_LINE in on)
+        + " triggers_present=" + repr(SESSION_START_REPORT_LINE in extra)
+        + " why=" + repr([off_why, on_why, extra_why]),
+    )
 
 
 def cmd_selftest(root: Path) -> int:
