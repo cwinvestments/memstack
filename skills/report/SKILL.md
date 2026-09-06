@@ -1,7 +1,7 @@
 ---
 name: report
-description: 'Writes the session final report to a file when a prompt asks for it, then prints only the path and a one-line summary. Fires when the prompt contains "Report per memstack:report". Dormant otherwise.'
-version: 1.0.0
+description: 'Writes the session final report to a file, then prints only the path and a one-line summary. Fires when the prompt contains "Report per memstack:report", and also when the prompt begins with a standing trigger configured through MEMSTACK_REPORT_ON_TASK_PROMPTS or MEMSTACK_REPORT_TRIGGERS. Dormant otherwise.'
+version: 1.1.0
 ---
 
 # Report: Writing the Session Report
