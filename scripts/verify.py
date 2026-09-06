@@ -913,23 +913,57 @@ def report_prefix(project: str, day: str) -> str:
     return project + "-" + day + "-"
 
 
-def newest_report(directory: Path, prefix: str, after: float) -> Path | None:
-    """A file named for this prefix, written after `after`. None when there is
-    none, and None on any error: the gate must never block a session because it
-    could not read a directory."""
+def _report_candidates(directory: Path):
+    """Every path that could be the report: this directory's entries, then the
+    entries of each immediate subdirectory.
+
+    One level, and no further. The filing convention is one folder deep, and an
+    unbounded walk is a Stop hook that hangs the first time somebody points
+    MEMSTACK_REPORT_DIR at a tree with a hundred thousand files under it.
+    """
     try:
         entries = sorted(directory.iterdir())
     except OSError:
-        return None
+        return
     for entry in entries:
-        if not entry.name.startswith(prefix):
-            continue
+        yield entry
+    for entry in entries:
         try:
-            if entry.is_file() and entry.stat().st_mtime > after:
-                return entry
+            if not entry.is_dir():
+                continue
+            children = sorted(entry.iterdir())
         except OSError:
             continue
-    return None
+        for child in children:
+            yield child
+
+
+def newest_report(directory: Path, prefix: str, after: float) -> Path | None:
+    """The newest file named for this prefix, written after `after`, in this
+    directory or one level below it. None when there is none, and None on any
+    error: the gate must never block a session because it could not read a
+    directory.
+
+    The subdirectory pass is the whole point. A reviewed report is filed into a
+    subfolder while the session that wrote it is still open, so a scan of the
+    top level alone reports the file missing at exactly the moment somebody has
+    dealt with it, and the session obediently writes a second copy.
+    """
+    best: Path | None = None
+    best_mtime = after
+    for candidate in _report_candidates(directory):
+        if not candidate.name.startswith(prefix):
+            continue
+        try:
+            if not candidate.is_file():
+                continue
+            mtime = candidate.stat().st_mtime
+        except OSError:
+            continue
+        if mtime > best_mtime:
+            best = candidate
+            best_mtime = mtime
+    return best
 
 
 def report_trigger_prefixes() -> list[str]:
@@ -1075,6 +1109,32 @@ def report_marker_from_text(raw: str,
         return None
 
 
+def _report_still_there(recorded: str) -> bool:
+    """Is the path the marker remembers still a file. False on any error, which
+    sends the caller back to the scan rather than straight to a block."""
+    try:
+        return Path(recorded).is_file()
+    except OSError:
+        return False
+
+
+def _remember_report(path: Path, marker: dict, found: Path) -> None:
+    """Record the report the gate just accepted, in the marker itself.
+
+    This replaces deleting the marker. Deletion left the acceptance unrecorded:
+    the next Stop had nothing to read and began again from a fresh scan, so a
+    report that had been seen, accepted, and then filed away looked exactly like
+    a report that was never written. Keeping the marker keeps the answer.
+    """
+    updated = dict(marker)
+    updated["satisfied_path"] = str(found)
+    updated["satisfied_at"] = _now_iso()
+    try:
+        _write_json(path, updated)
+    except Exception:  # noqa: BLE001 - a gate never fails on its bookkeeping.
+        pass
+
+
 def report_decision(root: Path, session_id: str) -> tuple[int, str]:
     """Block while a report this session was asked for is still not on disk.
 
@@ -1082,6 +1142,11 @@ def report_decision(root: Path, session_id: str) -> tuple[int, str]:
     prompt: a marker another session left behind must not hold this one's turn,
     and a marker this session left behind must outlive its own turns until it
     is satisfied.
+
+    Satisfaction is durable. The first time a matching file is seen, its path
+    goes into the marker, and every later turn is answered from that record
+    instead of from another scan, so a file moved afterwards cannot un-satisfy a
+    requirement that was already met.
     """
     path = report_marker_path(root)
     marker = _load_json(path)
@@ -1102,14 +1167,16 @@ def report_decision(root: Path, session_id: str) -> tuple[int, str]:
     raw_epoch = marker.get("requested_at_epoch")
     after = float(raw_epoch) if isinstance(raw_epoch, (int, float)) else 0.0
 
-    if newest_report(directory, prefix, after) is not None:
-        # Satisfied. Retire the marker: a requirement that keeps firing after
-        # it has been met is indistinguishable from a gate that is simply
-        # broken, and the second one gets deleted by its owner.
-        try:
-            path.unlink()
-        except OSError:
-            pass
+    raw_recorded = marker.get("satisfied_path")
+    recorded = (raw_recorded.strip()
+                if isinstance(raw_recorded, str) and raw_recorded.strip()
+                else None)
+    if recorded is not None and _report_still_there(recorded):
+        return EXIT_PASS, ""
+
+    found = newest_report(directory, prefix, after)
+    if found is not None:
+        _remember_report(path, marker, found)
         return EXIT_PASS, ""
 
     count = gate_record_block(root, session_id + "::report",
@@ -1128,9 +1195,21 @@ def report_decision(root: Path, session_id: str) -> tuple[int, str]:
     if isinstance(head, str) and head.strip():
         named = " The prompt was: " + head.strip()
 
+    # Two different situations, and whoever reads the block acts differently on
+    # them. Nothing written means write one; written and then gone means the
+    # work was done and a duplicate is the wrong repair.
+    if recorded is not None:
+        return EXIT_GATE_RESERVED, (
+            "verify gate: BLOCKED. A report was requested and written, and the"
+            " file has since gone: " + recorded + " is no longer there, and"
+            " nothing named " + prefix + " is in " + str(directory)
+            + " or one level below it. Restore that file rather than writing a"
+            " duplicate, or write a fresh report per memstack:report." + named)
+
     return EXIT_GATE_RESERVED, (
-        "verify gate: BLOCKED. A report was requested; write it per"
-        " memstack:report to " + str(directory) + " and finish." + named)
+        "verify gate: BLOCKED. A report was requested and none has been"
+        " written; write it per memstack:report to " + str(directory)
+        + " and finish." + named)
 
 
 def receipt_decision(root: Path, session_id: str) -> tuple[int, str]:
@@ -1655,10 +1734,11 @@ def _gate_cases(base: Path) -> list[dict]:
             + " exit=" + repr(code) + " message=" + repr(message),
         ))
 
-    # 10. Writing the report clears the block and retires the marker. The
-    #     control is the block asserted BEFORE the file is written, in this
-    #     same repo: a gate that had stopped reading the marker at all would
-    #     otherwise sail through the allowing half.
+    # 10. Writing the report clears the block, and the marker records the file
+    #     it accepted rather than being deleted. The control is the block
+    #     asserted BEFORE the file is written, in this same repo: a gate that
+    #     had stopped reading the marker at all would otherwise sail through
+    #     the allowing half.
     repo, reason = dirty_armed_repo("report-clear")
     if reason:
         cases.append(_case("writing-the-report-clears-the-block",
@@ -1670,16 +1750,18 @@ def _gate_cases(base: Path) -> list[dict]:
         prefix = "proj-2026-01-01-"
         marker = _write_report_marker(repo, "s-clear", prefix, reports)
         before_code, before_message = gate_decide(_payload(repo, "s-clear"))
-        with open(reports / (prefix + "142530.txt"), "w",
-                  encoding="utf-8", newline="\n") as handle:
+        written = reports / (prefix + "142530.txt")
+        with open(written, "w", encoding="utf-8", newline="\n") as handle:
             handle.write("the session says what it did\n")
         after_code, after_message = gate_decide(_payload(repo, "s-clear"))
+        recorded = (_load_json(marker) or {}).get("satisfied_path")
         ok = (
             before_code == EXIT_GATE_RESERVED
             and "A report was requested" in before_message
             and after_code == EXIT_PASS
             and after_message == ""
-            and not marker.exists()
+            and marker.is_file()
+            and recorded == str(written)
         )
         cases.append(_case(
             "writing-the-report-clears-the-block",
@@ -1688,7 +1770,7 @@ def _gate_cases(base: Path) -> list[dict]:
             "control_before_exit=" + repr(before_code)
             + " after_exit=" + repr(after_code)
             + " after_message=" + repr(after_message)
-            + " marker_retired=" + repr(not marker.exists()),
+            + " recorded=" + repr(recorded),
         ))
 
     # 11. The hook writes a marker for a prompt carrying the phrase, and
@@ -2032,6 +2114,142 @@ def _gate_cases(base: Path) -> list[dict]:
             + " control_wrote_nothing=" + repr(control_wrote_nothing)
             + " phrase_armed=" + repr(written is not None)
             + " trigger=" + repr(data.get("trigger")),
+        ))
+
+    # 20. A report filed one level down while the session is still open still
+    #     satisfies the gate. Two controls, both asserted first: the block with
+    #     no file at all, and the pass with the file at the top level. Without
+    #     the second, a gate that had quietly stopped enforcing anything would
+    #     sail through the move as well.
+    repo, reason = dirty_armed_repo("report-moved")
+    if reason:
+        cases.append(_case("a-report-moved-into-a-subfolder-still-satisfies",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-moved"
+        reports.mkdir(parents=True, exist_ok=True)
+        prefix = "proj-2026-01-01-"
+        marker = _write_report_marker(repo, "s-moved", prefix, reports)
+        empty_code, empty_message = gate_decide(_payload(repo, "s-moved"))
+        top = reports / (prefix + "142530.txt")
+        with open(top, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write("the session says what it did\n")
+        top_code, top_message = gate_decide(_payload(repo, "s-moved"))
+        delivered = reports / "Delivered"
+        delivered.mkdir(parents=True, exist_ok=True)
+        moved = delivered / top.name
+        top.replace(moved)
+        moved_code, moved_message = gate_decide(_payload(repo, "s-moved"))
+        recorded = (_load_json(marker) or {}).get("satisfied_path")
+        ok = (
+            empty_code == EXIT_GATE_RESERVED
+            and "none has been written" in empty_message
+            and top_code == EXIT_PASS
+            and top_message == ""
+            and not top.exists()
+            and moved.is_file()
+            and moved_code == EXIT_PASS
+            and moved_message == ""
+            and recorded == str(moved)
+        )
+        cases.append(_case(
+            "a-report-moved-into-a-subfolder-still-satisfies",
+            "one report, seen at the top level and then filed one level down",
+            ok,
+            "control_empty_exit=" + repr(empty_code)
+            + " control_top_exit=" + repr(top_code)
+            + " moved_exit=" + repr(moved_code)
+            + " moved_message=" + repr(moved_message)
+            + " recorded=" + repr(recorded),
+        ))
+
+    # 21. The two block messages say different things. Nothing written and
+    #     written-then-gone are different situations for whoever reads the
+    #     block, and the never-written half is the control, asserted first: if
+    #     both wordings were one string, the second assertion could not tell
+    #     them apart and would pass on a gate that had lost the distinction.
+    repo, reason = dirty_armed_repo("report-vanished")
+    if reason:
+        cases.append(_case("the-block-message-separates-missing-from-moved",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-vanished"
+        reports.mkdir(parents=True, exist_ok=True)
+        prefix = "proj-2026-01-01-"
+        _write_report_marker(repo, "s-never", prefix, reports)
+        never_code, never_message = gate_decide(_payload(repo, "s-never"))
+        _write_report_marker(repo, "s-gone", prefix, reports)
+        written = reports / (prefix + "142530.txt")
+        with open(written, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write("the session says what it did\n")
+        seen_code, seen_message = gate_decide(_payload(repo, "s-gone"))
+        written.unlink()
+        gone_code, gone_message = gate_decide(_payload(repo, "s-gone"))
+        ok = (
+            never_code == EXIT_GATE_RESERVED
+            and "none has been written" in never_message
+            and "has since gone" not in never_message
+            and seen_code == EXIT_PASS
+            and seen_message == ""
+            and gone_code == EXIT_GATE_RESERVED
+            and "has since gone" in gone_message
+            and str(written) in gone_message
+            and "none has been written" not in gone_message
+        )
+        cases.append(_case(
+            "the-block-message-separates-missing-from-moved",
+            "one request never answered, one answered and then emptied",
+            ok,
+            "control_never_exit=" + repr(never_code)
+            + " control_never_message=" + repr(never_message)
+            + " seen_exit=" + repr(seen_code)
+            + " gone_exit=" + repr(gone_code)
+            + " gone_message=" + repr(gone_message),
+        ))
+
+    # 22. A file older than the request does not satisfy it. The control is the
+    #     same directory and the same name pattern with a current mtime: it must
+    #     pass, or the case asserts nothing more than that the gate dislikes
+    #     this directory. The stale file stays on disk throughout, so the block
+    #     cannot be explained by an empty directory either.
+    repo, reason = dirty_armed_repo("report-stale")
+    if reason:
+        cases.append(_case("a-report-older-than-the-request-does-not-satisfy",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-stale"
+        reports.mkdir(parents=True, exist_ok=True)
+        prefix = "proj-2026-01-01-"
+        _write_report_marker(repo, "s-stale", prefix, reports, age_s=120.0)
+        stale = reports / (prefix + "090000.txt")
+        with open(stale, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write("an earlier session's report\n")
+        older = time.time() - 600.0
+        os.utime(stale, (older, older))
+        stale_code, stale_message = gate_decide(_payload(repo, "s-stale"))
+        fresh = reports / (prefix + "142530.txt")
+        with open(fresh, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write("this session's report\n")
+        fresh_code, fresh_message = gate_decide(_payload(repo, "s-stale"))
+        ok = (
+            stale_code == EXIT_GATE_RESERVED
+            and "none has been written" in stale_message
+            and stale.is_file()
+            and fresh_code == EXIT_PASS
+            and fresh_message == ""
+        )
+        cases.append(_case(
+            "a-report-older-than-the-request-does-not-satisfy",
+            "one file predating the request, one written after it",
+            ok,
+            "stale_exit=" + repr(stale_code)
+            + " stale_message=" + repr(stale_message)
+            + " stale_present=" + repr(stale.is_file())
+            + " control_fresh_exit=" + repr(fresh_code)
+            + " control_fresh_message=" + repr(fresh_message),
         ))
 
     return cases

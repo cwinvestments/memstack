@@ -149,15 +149,17 @@ with whitespace collapsed. The last of those is what lets the block message name
 the prompt that is waiting, which matters once a session can hold more than one
 request. The Stop gate in `scripts/verify.py` reads that
 marker and blocks with exit 2 until a file carrying the prefix exists with an
-mtime after the request. The gate deletes the marker once it finds the report,
-and does nothing at all without one, so a session that was never asked for a
-report is never gated for one.
+mtime after the request, in that directory or one level below it. The gate
+records that file's path in the marker once it finds one, so a later Stop is
+answered from the record rather than from another scan, and it does nothing at
+all without a marker, so a session that was never asked for a report is never
+gated for one.
 
 ## Known Gotchas
 
 | Gotcha | Why it matters |
 |--------|----------------|
-| The suffix is a time, not a sequence number | Two sessions in one project on one day cannot collide on a second, and nothing has to be counted. The sequence was the actual failure: reviewed reports are filed into a subfolder, the live directory empties, and the count restarts at `01` over a name that already exists one level down. |
+| The suffix is a time, not a sequence number | Two sessions in one project on one day cannot collide on a second, and nothing has to be counted. What the filing convention breaks is no longer the name but the gate: a report is moved into a reviewed subfolder while the session is still open, the gate found an empty top level, blocked, and the session wrote a second copy of a report that had never gone missing. The gate now records the accepted file's path in the marker and scans one level of subfolders when that recorded path is gone, and its block message says which of the two happened. |
 | A report is the session own claim about itself | It is testimony, not evidence. It never substitutes for a verify receipt: the receipt records what the check chain reported, the report records what the session says it did, and only one of those was produced by something other than the author. |
 | The marker is keyed on the session id | A marker left by another session does not block this one, and a resumed session that receives a replayed hook still matches its own id. |
 | The prefix follows the prompt, not the launch directory | This is a fixed defect, not a design note. The marker used to key on the directory the session was launched from while the file was named for the directory the prompt pointed at, so a correctly named report was rejected and a second file appeared under the other name. One request, two files. |
