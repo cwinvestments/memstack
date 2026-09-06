@@ -160,7 +160,7 @@ All 131 skills are **fully implemented** with complete protocols, context guards
 | `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. |
 | `goal` | Structure a task into TASK, WHY, OUTCOME, CONSTRAINTS, and a required VERIFICATION criterion before execution begins, so 'done' is defined and provable up front. |
 | `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. |
-| `report` | Writes the session final report to a file when a prompt asks for it, then prints only the path and a one-line summary. |
+| `report` | Writes the session final report to a file, then prints only the path and a one-line summary. Fires on the phrase in a prompt or on a configured standing trigger. |
 | `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. |
 | `token-optimization` | Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard. |
 | `burn` **[PRO]** | Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts. |

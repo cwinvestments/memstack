@@ -15,7 +15,7 @@
 | `echo` | Recall information from past Claude Code sessions using semantic vector search when referencing previous work. | none |
 | `goal` | Structure a task into TASK, WHY, OUTCOME, CONSTRAINTS, and a required VERIFICATION criterion before execution begins, so 'done' is defined and provable up front. | Tracking or updating an existing task list (use work) or step-by-step guidance mid-execution. |
 | `grimoire` | Manage and update CLAUDE.md files across all projects after significant changes. | none |
-| `report` | Writes the session final report to a file when a prompt asks for it, then prints only the path and a one-line summary. | Diaries, handoffs, or an unrequested end-of-session summary. |
+| `report` | Writes the session final report to a file, then prints only the path and a one-line summary. Fires on the phrase in a prompt or on a configured standing trigger. | Diaries, handoffs, or an unrequested end-of-session summary. |
 | `sight` | Generate Mermaid diagrams showing project architecture, schema, and data flow for a visual overview of code structure. | none |
 | `token-optimization` | Enable and understand TokenStack™, the built-in compression proxy that shrinks Claude Code tool output before it reaches the Anthropic API, covering how to turn it on, the free and Pro transforms, and how to read token savings on the dashboard. | Live proxy status or troubleshooting (use Compress). |
 | `burn` **[PRO]** | Track Claude Code token consumption, API spend, and context-window usage with per-session logs, per-project rollups, and monthly budget alerts. | Choosing a model, proxy-level compression, or billing/subscription changes. |

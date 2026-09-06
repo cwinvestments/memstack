@@ -396,7 +396,7 @@
     "not_for": "Writing new features or database migrations."
   },
   "report": {
-    "what": "Writes the session final report to a file when a prompt asks for it, then prints only the path and a one-line summary.",
+    "what": "Writes the session final report to a file, then prints only the path and a one-line summary. Fires on the phrase in a prompt or on a configured standing trigger.",
     "not_for": "Diaries, handoffs, or an unrequested end-of-session summary."
   },
   "rls-checker": {

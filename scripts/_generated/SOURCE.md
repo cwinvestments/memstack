@@ -5,8 +5,8 @@ Do not edit by hand. Regenerate with: `npm run vendor:skills`
 | Field | Value |
 |---|---|
 | Loader repo | `C:\Projects\memstack-skill-loader` |
-| Loader commit | `f0f7683` |
-| Vendored at | 2026-09-05T17:06:15.113Z |
+| Loader commit | `eb054fc` |
+| Vendored at | 2026-09-06T03:04:26.477Z |
 | Files | `skills.public.json`, `skill_descriptions.json` |
 
 The source of truth lives in the loader; these are byte-for-byte copies consumed
