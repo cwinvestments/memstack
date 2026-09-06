@@ -123,9 +123,10 @@ REPORT_ON_TASK_PROMPTS_ENV = "MEMSTACK_REPORT_ON_TASK_PROMPTS"
 REPORT_TRIGGERS_ENV = "MEMSTACK_REPORT_TRIGGERS"
 REPORT_TASK_PROMPT_PREFIX = "Working directory:"
 
-# Below this, nothing arms, whatever it matched. A standing trigger fires on
-# "continue" and "yes, do that" as readily as on a task, and a report for
-# "continue" is noise filed under a real project name.
+# Below this, a PREFIX trigger does not arm. A standing prefix fires on "yes"
+# and "commit" as readily as on a task, and a report about "commit" is noise
+# filed under a real project name. The phrase is exempt: it is typed on
+# purpose, and no one-word answer can contain it.
 REPORT_MIN_PROMPT_CHARS = 40
 
 # How much of the prompt the marker carries, so the block message can name
@@ -906,18 +907,19 @@ def _first_line(prompt: str) -> str:
 def report_trigger_match(prompt: str) -> str | None:
     """What armed this prompt, or None for the overwhelming majority.
 
-    The length floor is checked before anything else and applies to the phrase
-    as well, so a bare "Report per memstack:report" with no task attached does
-    not arm either. That is deliberate: the floor exists to keep a standing
-    trigger from filing a report about "continue", and a 26 character prompt
-    asking for a report of nothing is the same noise from the other direction.
+    The phrase is tested before the length floor and is not subject to it. The
+    phrase is explicit intent: somebody typed it, on purpose, and a short
+    prompt carrying it is a short request, not an accident. The floor exists to
+    keep "yes" and "commit" from arming a prefix trigger, and neither of those
+    can carry the phrase, so applying the floor to it would only decline
+    requests that were meant.
     """
     if not isinstance(prompt, str):
         return None
-    if len(prompt.strip()) < REPORT_MIN_PROMPT_CHARS:
-        return None
     if REPORT_PHRASE in prompt:
         return REPORT_PHRASE
+    if len(prompt.strip()) < REPORT_MIN_PROMPT_CHARS:
+        return None
     head = _first_line(prompt)
     for prefix in report_trigger_prefixes():
         if head.startswith(prefix):
@@ -1927,6 +1929,57 @@ def _gate_cases(base: Path) -> list[dict]:
             "named_prefix=" + repr(named_prefix)
             + " fallback_prefix=" + repr(fallback_prefix)
             + " cwd_name=" + repr(keyed_repo.name),
+        ))
+
+    # 19. The floor is the prefix triggers' floor, not the phrase's. Both
+    #     prompts here are 26 characters, so length cannot be what separates
+    #     them; only the trigger kind can. The control is the prefix half,
+    #     asserted first: it must stay quiet, or the floor has stopped working
+    #     and the arming half below would pass for the wrong reason.
+    floor_repo = base / "floor-phrase"
+    reason = _init_repo(floor_repo, {"src/app.py": "VALUE = 1\n"})
+    if reason:
+        cases.append(_case("floor-applies-to-prefixes-not-to-the-phrase",
+                           "fabricated git repo", False, reason))
+    else:
+        marker = report_marker_path(floor_repo)
+        short_prefix_prompt = "Working directory: C:/proj"
+        phrase_only_prompt = REPORT_PHRASE
+        saved = _env_snapshot(_REPORT_ENV_NAMES)
+        try:
+            _env_apply({REPORT_ON_TASK_PROMPTS_ENV: "1",
+                        REPORT_TRIGGERS_ENV: None})
+            quiet = report_marker_from_text(
+                json.dumps(_prompt_payload(floor_repo, "s-floor",
+                                           short_prefix_prompt)),
+                floor_repo)
+            control_wrote_nothing = quiet is None and not marker.exists()
+            written = report_marker_from_text(
+                json.dumps(_prompt_payload(floor_repo, "s-floor",
+                                           phrase_only_prompt)),
+                floor_repo)
+        finally:
+            _env_apply(saved)
+        data = _load_json(marker) or {}
+        ok = (
+            len(short_prefix_prompt) == 26
+            and len(phrase_only_prompt) == 26
+            and len(phrase_only_prompt) < REPORT_MIN_PROMPT_CHARS
+            and control_wrote_nothing
+            and written is not None
+            and marker.is_file()
+            and data.get("trigger") == REPORT_PHRASE
+        )
+        cases.append(_case(
+            "floor-applies-to-prefixes-not-to-the-phrase",
+            "two 26 character prompts: one matching a prefix, one the phrase",
+            ok,
+            "prefix_len=" + repr(len(short_prefix_prompt))
+            + " phrase_len=" + repr(len(phrase_only_prompt))
+            + " floor=" + repr(REPORT_MIN_PROMPT_CHARS)
+            + " control_wrote_nothing=" + repr(control_wrote_nothing)
+            + " phrase_armed=" + repr(written is not None)
+            + " trigger=" + repr(data.get("trigger")),
         ))
 
     return cases

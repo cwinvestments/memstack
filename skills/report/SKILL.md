@@ -17,7 +17,7 @@ Output `Report: writing the session report...`, then follow the rules below.
 |---------|--------|----------|
 | **The prompt contains "Report per memstack:report"** | ACTIVE, write the file before finishing | P1 |
 | **The prompt's first non-blank line starts with a configured trigger** | ACTIVE, same requirement | P1 |
-| **The prompt matched, but is under 40 characters** | DORMANT, see the floor below | n/a |
+| **The prompt matched a prefix trigger, but is under 40 characters** | DORMANT, see the floor below | n/a |
 | **The prompt asks for a summary, a recap or a status line** | DORMANT, answer in the terminal, no file | n/a |
 | **A long session ends and nobody asked for a report** | DORMANT, an unrequested file is litter | n/a |
 | **The prompt asks for a diary or a handoff** | DORMANT, that is Diary and Project, not this | n/a |
@@ -48,14 +48,15 @@ nothing.
 
 ### The 40 character floor
 
-**A prompt under 40 characters never arms, whatever it matched.** A standing
-prefix fires on "continue" and "yes, do that" as readily as on a task, and a
-report about "continue" is noise filed under a real project name.
+**A prompt under 40 characters does not arm a prefix trigger.** A standing
+prefix fires on "yes" and "commit" as readily as on a task, and a report about
+"commit" is noise filed under a real project name.
 
-The floor applies to the phrase too. A bare `Report per memstack:report` with no
-task attached is 26 characters and does not arm, which is the same noise
-approaching from the other side: a report of nothing. Attach the phrase to the
-work it is reporting on and the prompt clears the floor without effort.
+**The floor applies to prefix triggers only. The phrase is exempt and arms at
+any length.** A prompt consisting of nothing but `Report per memstack:report` is
+26 characters and arms, because somebody typed the phrase on purpose and a short
+request is still a request. No one-word answer can contain the phrase, so the
+case the floor exists to stop is not a case the phrase can reach.
 
 ### Re-arming
 
@@ -176,4 +177,4 @@ report is never gated for one.
 ## Level History
 
 - **Lv.1** Base: File-backed session reports with a UserPromptSubmit marker and a Stop gate that blocks until the file exists. (Origin: MemStack, Sep 2026)
-- **Lv.2** Standing triggers: opt-in prefix triggers behind two environment variables, a 40 character floor, re-arming per prompt, a named prompt in the block message, and the project name keyed on the working directory the prompt names. (MemStack, Sep 2026)
+- **Lv.2** Standing triggers: opt-in prefix triggers behind two environment variables, a 40 character floor on those prefixes only, re-arming per prompt, a named prompt in the block message, and the project name keyed on the working directory the prompt names. (MemStack, Sep 2026)
