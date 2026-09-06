@@ -101,6 +101,13 @@ When the user asks to save a diary, keep these in mind:
 
    The store is `~/.memstack/memstack.db`, one file per user, never a file beside the script. Every command prints the path it used on stderr as `memstack-db: store <path>`, so a session can confirm where it wrote instead of assuming.
 
+   **The SQLite row is the primary store. The markdown in `memory/sessions/` is
+   a backup export.** The row holds the full `raw_markdown`, so a markdown file
+   that is lost, truncated or overwritten can be restored from it: find the row
+   in the `sessions` table by project and date, and write `raw_markdown` back to
+   the file. This matters because `memory/` is gitignored, so version control is
+   not a fallback and the database is the only one there is.
+
    `session.json` contains:
    ```json
    {"project":"<name>","date":"<YYYY-MM-DD>","accomplished":"<bullets>","files_changed":"<bullets>","commits":"<bullets>","decisions":"<bullets>","problems":"<bullets>","next_steps":"<bullets>","duration":"<estimate>","raw_markdown":"<full text>"}
@@ -147,11 +154,42 @@ When the user asks to save a diary, keep these in mind:
    {"project":"<name>","last_session_date":"<YYYY-MM-DD>"}
    ```
 
-7. **Also save markdown copy** to `memory/sessions/{date}-{project}.md` (export format, human-readable backup). Append a `## FACTS` block (see below) as the **last** section of this markdown.
+7. **Also save a markdown copy** to `memory/sessions/`, under a name nothing
+   already occupies. Append a `## FACTS` block (see below) as the **last**
+   section of this markdown.
+
+   **Compute the filename immediately before writing it, not at the start of
+   the task.** List `memory/sessions/` and take the first free name:
+
+   | Attempt | Name |
+   |---------|------|
+   | 1st diary of the day for this project | `{date}-{project}.md` |
+   | 2nd | `{date}-{project}-2.md` |
+   | 3rd | `{date}-{project}-3.md` |
+
+   There is no `-1`: the plain name is the first, so the numbers you see in the
+   directory match how many diaries exist for that day.
+
+   The check has to happen at the moment of the write because a session can run
+   for hours, and another session, or an agent run, can file a diary for the
+   same project in between. A name that was free when the task started is not
+   evidence that it is free now.
+
+   **Never write over an existing file.** If the name you computed exists when
+   you go to write it, stop and report it rather than writing. Do not overwrite,
+   do not append, do not pick a name by guessing. A diary is another session's
+   only human-readable record, and the Write tool reporting "updated" instead of
+   "created" is the only warning you will get, which is far too quiet to rely on.
+
+   **A suffixed filename changes step 8.** `diary_ingest` derives the project
+   namespace from the filename, so `2026-09-06-myproject-2.md` derives
+   `myproject-2`, which ingests cleanly, exits 0, and is invisible to every
+   recall for the real project. Whenever the name carries a `-N` suffix, pass
+   `--project` explicitly.
 
 8. **Ingest the FACTS block** into the Memory Engine, right after the markdown is written:
  ```bash
- python -m memstack_skill_loader.diary_ingest "memory/sessions/{date}-{project}.md"
+ python -m memstack_skill_loader.diary_ingest "memory/sessions/{the name you just wrote}" --project {project}
  ```
  This parses the `## FACTS` block and stores each fact with `source_type='diary'`.
 
@@ -195,6 +233,15 @@ memstack.memory.corrections | a superseded fact cannot be corrected; corrections
 - **Only facts worth remembering across sessions.** Not "ran the tests", that's in the diary body. A fact is something a future session would waste time rediscovering: a port, an entry point, an auth model, a non-obvious constraint.
 - **Prefer `verified` over `reported`.** If you actually confirmed it, say so, verified facts are trusted and decay slowest. Don't inflate: an unconfirmed claim is `reported`.
 - **Corrections of prior beliefs are the most valuable entries.** If this session overturned something an earlier session believed ("the port is 3333, not 8080"; "auth is magic-link, not passwords"), record the corrected claim as a fact, that is exactly the knowledge that stops the team repeating a mistake.
+
+## Known Gotchas
+
+| Gotcha | Why it matters |
+|--------|----------------|
+| The markdown filename is computed, never assumed | On 2026-09-06 a session wrote `memory/sessions/2026-09-06-memstack-skill-loader.md` when a file of that name already existed, destroying 10238 characters of an earlier session's diary including its FACTS block. Nothing warned: the Write tool said "updated" rather than "created" and the session did not notice for several steps. Recovery was possible only because the SQLite `sessions` table still held that row's `raw_markdown`. `memory/` is gitignored, so there was no version-control fallback and no second chance if the row had been missing. |
+| A free name goes stale | The scan belongs immediately before the write. Sessions run long, and agent runs file diaries for the same project while one is open. |
+| A `-N` suffix silently re-namespaces the FACTS | `diary_ingest` derives the project from the filename, so a suffixed diary ingests into `{project}-N` and exits 0 while being invisible to recall for the real project. Pass `--project` whenever the name is suffixed. |
+| The database is the only backup | The markdown is an export. If it is gone, restore it from `raw_markdown` in the `sessions` table rather than rewriting it from memory. |
 
 ## Session File Size Management
 

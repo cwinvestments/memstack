@@ -829,6 +829,58 @@ def _payload_session(payload: dict) -> str:
 
 
 # --------------------------------------------------------------------------
+# the diary's markdown filename
+#
+# The diary skill writes one markdown backup per session to
+# memory/sessions/. Its name used to be {date}-{project}.md with nothing
+# checking whether that file already existed, so a second session for one
+# project on one day silently destroyed the first session's diary. These two
+# functions compute a name nothing occupies, and the skill body requires the
+# scan to happen immediately before the write.
+#
+# This mirrors newest_report below in the part that matters: scan the real
+# directory at the moment of the decision and tolerate an unreadable one. It
+# deliberately does NOT mirror the report's clock-time suffix. A report's
+# sequence broke because reviewed reports move into a subfolder and the live
+# directory empties out underneath the count. Diaries are never filed away, so
+# a sequence is stable here, and free_diary_path returning None on exhaustion
+# means an unexpected collision stops the write rather than overwriting.
+# --------------------------------------------------------------------------
+
+def diary_markdown_name(project: str, day: str, index: int = 1) -> str:
+    """The diary markdown's filename for a given attempt.
+
+    Index 1 is the plain {day}-{project}.md, which is what a first diary of the
+    day gets. There is no -1 suffix: the plain name is the first, so numbering
+    visible in the directory starts at -2 and matches how many diaries exist.
+    """
+    if index <= 1:
+        return day + "-" + project + ".md"
+    return day + "-" + project + "-" + str(index) + ".md"
+
+
+def free_diary_path(directory: Path, project: str, day: str,
+                    limit: int = 100) -> Path | None:
+    """The first path under *directory* that no file occupies, or None.
+
+    None means every candidate up to *limit* is taken, and the caller must stop
+    and report rather than pick one: a diary skill that cannot find a free name
+    has no business guessing, because the only names left are other sessions'
+    work. An unreadable directory yields the plain name, which the caller must
+    still refuse to overwrite; this function never reports a path as free
+    because it failed to look.
+    """
+    for index in range(1, limit + 1):
+        candidate = directory / diary_markdown_name(project, day, index)
+        try:
+            if not candidate.exists():
+                return candidate
+        except OSError:
+            return None
+    return None
+
+
+# --------------------------------------------------------------------------
 # the report requirement
 #
 # A UserPromptSubmit hook records a request; the Stop gate enforces it. The two
@@ -2433,6 +2485,71 @@ def cmd_selftest(root: Path) -> int:
 
         # 10-22. The gate's own controls, against real fabricated git repos.
         cases.extend(_gate_cases(base))
+
+        # 23. The diary's markdown name must never land on an existing file.
+        #     Three diaries for one project on one day: the first takes the
+        #     plain name, the second -2, the third -3. The load-bearing control
+        #     is the first file's bytes: it is read back after every later
+        #     write and must be unchanged, because the defect this case exists
+        #     for destroyed an earlier diary rather than failing loudly.
+        diary_dir = base / "diary-names" / "memory" / "sessions"
+        diary_dir.mkdir(parents=True, exist_ok=True)
+        day, project = "2026-09-06", "memstack-skill-loader"
+        first_body = "# Session Diary: first\n\nten thousand characters of prose\n"
+
+        p1 = free_diary_path(diary_dir, project, day)
+        wrote_p1 = p1 is not None and p1.name == day + "-" + project + ".md"
+        if p1 is not None:
+            with open(p1, "w", encoding="utf-8", newline="\n") as handle:
+                handle.write(first_body)
+        first_bytes = p1.read_bytes() if p1 is not None else None
+
+        p2 = free_diary_path(diary_dir, project, day)
+        wrote_p2 = (p2 is not None
+                    and p2.name == day + "-" + project + "-2.md"
+                    and p2 != p1
+                    and not p2.exists())
+        if p2 is not None:
+            with open(p2, "w", encoding="utf-8", newline="\n") as handle:
+                handle.write("# Session Diary: second\n")
+
+        # Control: writing the second diary must not have touched the first.
+        first_intact_after_second = (p1 is not None
+                                     and p1.read_bytes() == first_bytes)
+
+        p3 = free_diary_path(diary_dir, project, day)
+        wrote_p3 = (p3 is not None
+                    and p3.name == day + "-" + project + "-3.md"
+                    and p3 not in (p1, p2)
+                    and not p3.exists())
+        if p3 is not None:
+            with open(p3, "w", encoding="utf-8", newline="\n") as handle:
+                handle.write("# Session Diary: third\n")
+
+        first_intact_after_third = (p1 is not None
+                                    and p1.read_bytes() == first_bytes)
+
+        # Control: exhaustion returns None rather than reusing a taken name.
+        exhausted = free_diary_path(diary_dir, project, day, limit=3)
+
+        ok = (
+            wrote_p1 and wrote_p2 and wrote_p3
+            and first_intact_after_second
+            and first_intact_after_third
+            and first_bytes == first_body.encode("utf-8")
+            and exhausted is None
+        )
+        cases.append(_case(
+            "diary-name-never-collides-and-never-overwrites",
+            "three diaries for one project on one day in a real directory",
+            ok,
+            "first=" + repr(p1.name if p1 else None)
+            + " second=" + repr(p2.name if p2 else None)
+            + " third=" + repr(p3.name if p3 else None)
+            + " first_intact_after_second=" + repr(first_intact_after_second)
+            + " first_intact_after_third=" + repr(first_intact_after_third)
+            + " exhaustion_returns_None=" + repr(exhausted is None),
+        ))
 
     passed = all(c["status"] == "PASS" for c in cases)
     if passed:
