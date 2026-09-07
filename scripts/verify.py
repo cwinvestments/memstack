@@ -966,6 +966,119 @@ def newest_report(directory: Path, prefix: str, after: float) -> Path | None:
     return best
 
 
+# --------------------------------------------------------------------------
+# amending a report that is already written
+#
+# A report is written once, but a session does not always know everything
+# before it writes one: a background command finishes late, a number it stated
+# turns out wrong, a finding lands after the file is closed. The skill's rule is
+# that such a session amends the file it already wrote rather than writing a
+# second one, and these three functions are that rule's mechanics.
+#
+# Two failures they exist to prevent. A second file is the duplicate the gate
+# was fixed to stop producing, and it leaves whoever reads the directory to work
+# out which of two reports is current. An amendment left in a review subfolder
+# is a change the reader never sees, because filing is the signal that they are
+# done with the file.
+# --------------------------------------------------------------------------
+
+REPORT_AMENDMENT_HEADING = "AMENDMENT"
+
+
+def report_amendment_block(when: str, text: str) -> str:
+    """The section an amendment appends: a blank line, a heading carrying the
+    time, and the text.
+
+    Headed and appended rather than merged into the body, because the reader has
+    already read the body. A rewritten report makes them read all of it again to
+    find the one sentence that moved; an appended section shows them what is new
+    at a glance.
+    """
+    return ("\n" + REPORT_AMENDMENT_HEADING + " " + when + "\n"
+            + text.strip("\n") + "\n")
+
+
+def report_live_path(recorded: Path, directory: Path) -> Path | None:
+    """Where the report the session recorded actually is now: the recorded path
+    while it is still a file, otherwise the same NAME in *directory* or one
+    level below it. None when no such file exists.
+
+    Matched on the full name, never on the prefix. The name is one report's
+    identity; the prefix is every report this project filed today, and a match
+    on the prefix would let a session amend and move a report another session
+    wrote.
+    """
+    try:
+        if recorded.is_file():
+            return recorded
+    except OSError:
+        return None
+    for candidate in _report_candidates(directory):
+        if candidate.name != recorded.name:
+            continue
+        try:
+            if candidate.is_file():
+                return candidate
+        except OSError:
+            continue
+    return None
+
+
+def amend_report(recorded: Path, section: str,
+                 directory: Path) -> tuple[Path | None, str]:
+    """Append *section* to the report at *recorded*, then bring it back to the
+    top level of *directory*. Returns (final path, note): the note is empty on a
+    clean amendment and says what stopped otherwise, and the path is None only
+    when there was no file to amend.
+
+    The append is a binary append. What sits above the amendment is never read,
+    rewritten or re-encoded by the write that adds to it, so a reader who has
+    the earlier bytes has them still.
+
+    Promotion out of a subfolder is refused, not forced, when the top level is
+    already holding that name. Overwriting there would destroy a file this
+    session did not write, and the amendment is already safe in the file it was
+    appended to.
+    """
+    live = report_live_path(recorded, directory)
+    if live is None:
+        return None, ("nothing named " + recorded.name + " is in "
+                      + str(directory) + " or one level below it, so there is"
+                      " nothing to amend")
+
+    try:
+        with open(live, "ab") as handle:
+            handle.write(section.encode("utf-8"))
+    except OSError as exc:
+        return live, ("the amendment could not be appended to " + str(live)
+                      + ": " + str(exc))
+
+    try:
+        at_top = live.parent.resolve() == directory.resolve()
+    except OSError:
+        at_top = True
+    if at_top:
+        return live, ""
+
+    target = directory / live.name
+    try:
+        occupied = target.exists()
+    except OSError:
+        occupied = True
+    if occupied:
+        return live, ("STOPPED: " + str(target) + " already exists. The"
+                      " amendment is in " + str(live) + ", which was left where"
+                      " it is rather than overwritten on top of a file this"
+                      " session did not write. Resolve the two by hand.")
+
+    try:
+        live.replace(target)
+    except OSError as exc:
+        return live, ("the amended report could not be moved to " + str(target)
+                      + ": " + str(exc))
+    return target, ""
+
+
 def report_trigger_prefixes() -> list[str]:
     """The configured prefixes, in the order they are consulted. Empty on a
     default install, which is the whole point: the phrase ships, the prefixes
@@ -2251,6 +2364,206 @@ def _gate_cases(base: Path) -> list[dict]:
             + " control_fresh_exit=" + repr(fresh_code)
             + " control_fresh_message=" + repr(fresh_message),
         ))
+
+    # 23. An amendment appends. The body it was appended to is byte-identical
+    #     afterwards, and so is an earlier amendment: two amendments are made,
+    #     and the bytes of everything above each one are compared, so a helper
+    #     that rewrote the file while happening to reproduce the body would
+    #     still be caught by the second. The control is asserted first and is a
+    #     path that does not exist: it must report nothing to amend and must
+    #     leave nothing behind, or the case proves only that this helper writes
+    #     whatever it is handed.
+    amend_dir = base / "reports-amend"
+    amend_dir.mkdir(parents=True, exist_ok=True)
+    absent = amend_dir / "proj-2026-01-01-090000.txt"
+    absent_path, absent_note = amend_report(
+        absent, report_amendment_block("09:05:00 local", "nothing"), amend_dir)
+    control_absent = (absent_path is None
+                      and "nothing to amend" in absent_note
+                      and not absent.exists())
+
+    report = amend_dir / "proj-2026-01-01-142530.txt"
+    body = b"the session says what it did\nContext: about 40 percent.\n"
+    with open(report, "wb") as handle:
+        handle.write(body)
+    first_path, first_note = amend_report(
+        report,
+        report_amendment_block("15:02:11 local",
+                               "the background build finished: 41 seconds."),
+        amend_dir)
+    with open(report, "rb") as handle:
+        after_first = handle.read()
+    second_path, second_note = amend_report(
+        report,
+        report_amendment_block("15:20:04 local",
+                               "correction: the count above is 68, not 60."),
+        amend_dir)
+    with open(report, "rb") as handle:
+        after_second = handle.read()
+
+    ok = (
+        control_absent
+        and first_path == report
+        and first_note == ""
+        and after_first.startswith(body)
+        and len(after_first) > len(body)
+        and REPORT_AMENDMENT_HEADING.encode() in after_first[len(body):]
+        and second_path == report
+        and second_note == ""
+        and after_second.startswith(after_first)
+        and len(after_second) > len(after_first)
+        and after_second.count(REPORT_AMENDMENT_HEADING.encode()) == 2
+    )
+    cases.append(_case(
+        "an-amendment-appends-and-leaves-the-body-byte-identical",
+        "one report amended twice, bytes compared after each",
+        ok,
+        "control_absent=" + repr(control_absent)
+        + " control_absent_note=" + repr(absent_note)
+        + " body_len=" + repr(len(body))
+        + " after_first_len=" + repr(len(after_first))
+        + " body_intact=" + repr(after_first.startswith(body))
+        + " first_amendment_intact=" + repr(after_second.startswith(after_first))
+        + " headings=" + repr(after_second.count(REPORT_AMENDMENT_HEADING.encode())),
+    ))
+
+    # 24. A report amended while it sits in a review subfolder comes back to the
+    #     top level, and the gate is still satisfied afterwards. Two controls,
+    #     both asserted first: a report amended at the top level must stay
+    #     exactly where it is, or "returns to the top level" would be indistin-
+    #     guishable from "always names the top level"; and the gate must pass on
+    #     the filed copy before the amendment, or the pass at the end would not
+    #     be evidence that the move kept it passing.
+    repo, reason = dirty_armed_repo("report-amended")
+    if reason:
+        cases.append(_case("an-amended-report-returns-to-the-top-level",
+                           "fabricated git repo", False, reason))
+    else:
+        _write_gate_receipt(repo, "match", "run", tree_fingerprint(repo))
+        reports = base / "reports-amended"
+        reports.mkdir(parents=True, exist_ok=True)
+        prefix = "proj-2026-01-01-"
+        marker = _write_report_marker(repo, "s-amended", prefix, reports)
+
+        # The stay control gets its own directory. Left in `reports`, it would
+        # be a second file matching the prefix, and the gate's scan takes the
+        # newest match: two files a fraction of a second apart would decide the
+        # ending by mtime resolution rather than by the behaviour under test.
+        stay_dir = base / "reports-amended-stay"
+        stay_dir.mkdir(parents=True, exist_ok=True)
+        stay = stay_dir / (prefix + "090000.txt")
+        with open(stay, "wb") as handle:
+            handle.write(b"an earlier report of this session\n")
+        stay_path, stay_note = amend_report(
+            stay, report_amendment_block("09:30:00 local", "still here."),
+            stay_dir)
+        control_stayed = (stay_path == stay and stay_note == ""
+                          and stay.is_file())
+
+        top = reports / (prefix + "142530.txt")
+        with open(top, "wb") as handle:
+            handle.write(b"the session says what it did\n")
+        filed_dir = reports / "Delivered"
+        filed_dir.mkdir(parents=True, exist_ok=True)
+        filed = filed_dir / top.name
+        top.replace(filed)
+        filed_code, _ = gate_decide(_payload(repo, "s-amended"))
+        control_gate_on_filed = filed_code == EXIT_PASS
+
+        final_path, final_note = amend_report(
+            filed,
+            report_amendment_block("15:02:11 local",
+                                   "the background build finished: 41 seconds."),
+            reports)
+        with open(top, "rb") as handle:
+            promoted = handle.read()
+        after_code, after_message = gate_decide(_payload(repo, "s-amended"))
+        recorded = (_load_json(marker) or {}).get("satisfied_path")
+
+        ok = (
+            control_stayed
+            and control_gate_on_filed
+            and final_path == top
+            and final_note == ""
+            and top.is_file()
+            and not filed.exists()
+            and promoted.startswith(b"the session says what it did\n")
+            and REPORT_AMENDMENT_HEADING.encode() in promoted
+            and after_code == EXIT_PASS
+            and after_message == ""
+            and recorded == str(top)
+        )
+        cases.append(_case(
+            "an-amended-report-returns-to-the-top-level",
+            "one report filed one level down, amended, and promoted back",
+            ok,
+            "control_stayed=" + repr(control_stayed)
+            + " control_stay_note=" + repr(stay_note)
+            + " control_gate_on_filed_exit=" + repr(filed_code)
+            + " final_path_is_top=" + repr(final_path == top)
+            + " final_note=" + repr(final_note)
+            + " subfolder_copy_gone=" + repr(not filed.exists())
+            + " gate_after_exit=" + repr(after_code)
+            + " recorded=" + repr(recorded),
+        ))
+
+    # 25. A name already taken at the top level stops the move instead of
+    #     overwriting it. The control is the same call with that name free, run
+    #     second on the same fabricated pair: without it, a helper that never
+    #     promotes anything would pass this case by doing nothing at all. The
+    #     bytes of the occupying file are read before and after, because "was
+    #     not overwritten" is a claim about that file and not about the note.
+    collide_dir = base / "reports-collision"
+    collide_dir.mkdir(parents=True, exist_ok=True)
+    filed_dir = collide_dir / "Delivered"
+    filed_dir.mkdir(parents=True, exist_ok=True)
+    name = "proj-2026-01-01-142530.txt"
+    mine = filed_dir / name
+    with open(mine, "wb") as handle:
+        handle.write(b"the report this session wrote\n")
+    stranger = collide_dir / name
+    stranger_body = b"a different file that already holds this name\n"
+    with open(stranger, "wb") as handle:
+        handle.write(stranger_body)
+
+    blocked_path, blocked_note = amend_report(
+        mine,
+        report_amendment_block("15:02:11 local", "the measurement arrived."),
+        collide_dir)
+    with open(stranger, "rb") as handle:
+        stranger_after = handle.read()
+    with open(mine, "rb") as handle:
+        mine_after = handle.read()
+
+    stranger.unlink()
+    freed_path, freed_note = amend_report(
+        mine,
+        report_amendment_block("15:40:00 local", "and the name is free now."),
+        collide_dir)
+
+    ok = (
+        blocked_path == mine
+        and blocked_note.startswith("STOPPED:")
+        and str(stranger) in blocked_note
+        and stranger_after == stranger_body
+        and mine_after.startswith(b"the report this session wrote\n")
+        and REPORT_AMENDMENT_HEADING.encode() in mine_after
+        and freed_path == collide_dir / name
+        and freed_note == ""
+        and not mine.exists()
+    )
+    cases.append(_case(
+        "a-name-collision-at-the-top-level-stops-instead-of-overwriting",
+        "one filed report amended twice: once into a taken name, once a free one",
+        ok,
+        "blocked_path_is_filed=" + repr(blocked_path == mine)
+        + " blocked_note=" + repr(blocked_note)
+        + " occupier_unchanged=" + repr(stranger_after == stranger_body)
+        + " amendment_kept=" + repr(
+            REPORT_AMENDMENT_HEADING.encode() in mine_after)
+        + " control_freed_path=" + repr(str(freed_path))
+        + " control_freed_note=" + repr(freed_note),
+    ))
 
     return cases
 

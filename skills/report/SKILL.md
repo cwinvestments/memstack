@@ -140,6 +140,62 @@ The file path, and one line saying what the report covers. Nothing else.
 The body has already been written down. Printing it a second time doubles the
 cost of the session final turn and buries the path the reader actually needs.
 
+### 7. Amending a report that is already written
+
+**A session may amend its own report after writing it, when it has something
+material to add.** A measurement that finished later, a correction to something
+the report stated, or a finding that arrived after the write. It amends the file
+at the path it recorded, wherever that path now is. **It never writes a second
+file.**
+
+The rule that a report is written once ends at the moment the session learns
+something the report should have said. Before this, a session in that position
+had nowhere to put it: writing again was forbidden and correctly refused, and
+amending was not permitted, so the information reached the terminal and stopped
+there.
+
+**The amendment is appended under its own heading. The body above it is left
+exactly as it was:**
+
+```
+AMENDMENT 15:02:11 local
+The background build finished after the report was written: 41 seconds,
+which is the number the body says was still pending.
+```
+
+Appended rather than rewritten, because the reader may already have read the
+file. A rewritten body makes them read all of it again to find the sentence that
+changed; an appended section shows them what is new at a glance.
+
+Never a second file. A second file is exactly the duplicate the gate was fixed
+to stop producing: the gate records the accepted report's path and answers later
+turns from that record, so an afterthought written to a fresh name leaves two
+reports for one request and leaves the reader to work out which one is current.
+
+### 8. An amended report goes back to the top level
+
+**When the recorded path is inside a review subfolder of the report directory,
+move the amended file back to the top level once the amendment is written.**
+
+A file the reader has reviewed and filed away is unreviewed again the moment it
+changes. Filing is their signal that they are done with it, and they are not
+going to open it a second time, so an amendment left in the review folder is a
+change the reader never sees.
+
+**Move only the file this session wrote.** Another session's report in the same
+folder is not this session's to move, however similarly it is named. The name is
+one report's identity; the shared prefix is every report this project filed
+today.
+
+**If a file of that name already sits at the top level, stop and report.** Do
+not overwrite it, do not rename around it. The amendment is already safe in the
+file it was appended to, and two files carrying one name is a state somebody has
+to resolve by looking at both.
+
+**The terminal gets one line: the final path, and what the amendment added.**
+Same reason as rule 6, and one more: the path may have changed, and a reader
+holding the old one needs to be told once rather than left to search.
+
 ## Enforcement
 
 A UserPromptSubmit hook records the request in `.memstack/report-required.json`
@@ -165,6 +221,8 @@ gated for one.
 | The prefix follows the prompt, not the launch directory | This is a fixed defect, not a design note. The marker used to key on the directory the session was launched from while the file was named for the directory the prompt pointed at, so a correctly named report was rejected and a second file appeared under the other name. One request, two files. |
 | A standing trigger is a per-machine decision | Nothing ships armed beyond the phrase. A prefix arms every prompt that will ever start that way, including the ones written months after whoever set the variable stopped thinking about it, which is why it is opt in and why the floor exists. |
 | A report that only lists what passed is half a report | State what was skipped, what is pending, and what could not be verified. The reader is deciding what to do next, and a report that reads clean when it is not costs them the next session. |
+| A background command can finish after the report is written | A command left running in the background wakes the session with its result long after the session looks finished, and the report it belongs in is already on disk, possibly already filed into a review folder. That result belongs in an amendment. Reported in the terminal alone it reaches nobody: the terminal is not what the reader reads, and the file they will read still says the measurement is pending. |
+| Moving an amended report back to the top level does not un-satisfy the gate | The gate remembers the path it accepted, sees it is gone, and rescans; the amended file is at the top level with an mtime later than the request, so it is found and re-recorded. The move is safe to make, and the block that names a vanished report is for a report that is actually gone, not for one that came back up a level. |
 
 ## Inputs and Outputs
 
@@ -174,7 +232,10 @@ gated for one.
   `MEMSTACK_REPORT_ON_TASK_PROMPTS` and `MEMSTACK_REPORT_TRIGGERS` when the
   standing triggers are wanted.
 - **Out:** one file at `<report dir>/<project>-<YYYY-MM-DD>-<HHMMSS>.txt`, plus one
-  path and one summary line in the terminal.
+  path and one summary line in the terminal. An amendment adds a headed section
+  to that same file, moves it back to the top level when it was filed one level
+  down, and prints one more line naming the final path and what was added. Never
+  a second file.
 
 ## Level History
 
