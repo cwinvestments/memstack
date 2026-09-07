@@ -24,7 +24,8 @@
     "gen:catalogs": "node scripts/generate-catalogs.mjs --write",
     "check:manifest": "node scripts/check-manifest-skills.mjs",
     "check:plugin-load": "node scripts/check-plugin-load.mjs",
-    "check:catalogs": "node scripts/generate-catalogs.mjs --check && node scripts/check-manifest-skills.mjs && node scripts/check-plugin-load.mjs"
+    "check:catalogs": "node scripts/generate-catalogs.mjs --check && node scripts/check-manifest-skills.mjs && node scripts/check-plugin-load.mjs",
+    "doctor": "python scripts/doctor.py"
   },
   "files": [
     ".claude/hooks/",
