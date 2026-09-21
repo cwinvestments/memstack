@@ -32,11 +32,11 @@
         ]
       },
       {
-        "matcher": "Read",
+        "matcher": "Read|Bash|Grep",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/secret-read-guard.sh\"",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/hooks/secret-read-guard\"",
             "timeout": 15000
           }
         ]
@@ -46,27 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/secret-read-guard.sh\"",
-            "timeout": 15000
-          }
-        ]
-      },
-      {
-        "matcher": "Grep",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/secret-read-guard.sh\"",
-            "timeout": 15000
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/junk-write-guard.sh\"",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/hooks/junk-write-guard\"",
             "timeout": 15000
           }
         ]

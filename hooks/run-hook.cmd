@@ -18,23 +18,34 @@ if "%~1"=="" (
 if /i "%~1"=="verify-gate" goto verify_gate
 if /i "%~1"=="report-marker" goto report_marker
 
+REM Delayed expansion, and it is load-bearing rather than stylistic.
+REM Each bash call below sits inside a parenthesised if block, and cmd.exe
+REM expands %ERRORLEVEL% when it PARSES a block, so the value forwarded is
+REM the one from before the block: a hook that exits 2 is reported as 0 and
+REM its block is ignored. Bare exit /b does not preserve it either; this was
+REM measured, not assumed. !ERRORLEVEL! is read when the line runs.
+REM Placed after the goto dispatch above on purpose: verify-gate and
+REM report-marker forward from top level, never from inside a block, and
+REM they are deliberately left untouched.
+setlocal enabledelayedexpansion
+
 set "HOOK_DIR=%~dp0"
 
 REM Try Git for Windows bash in standard locations
 if exist "C:\Program Files\Git\bin\bash.exe" (
     "C:\Program Files\Git\bin\bash.exe" "%HOOK_DIR%%~1" %2 %3 %4 %5 %6 %7 %8 %9
-    exit /b %ERRORLEVEL%
+    exit /b !ERRORLEVEL!
 )
 if exist "C:\Program Files (x86)\Git\bin\bash.exe" (
     "C:\Program Files (x86)\Git\bin\bash.exe" "%HOOK_DIR%%~1" %2 %3 %4 %5 %6 %7 %8 %9
-    exit /b %ERRORLEVEL%
+    exit /b !ERRORLEVEL!
 )
 
 REM Try bash on PATH (e.g. user-installed Git Bash, MSYS2, Cygwin)
 where bash >nul 2>nul
 if %ERRORLEVEL% equ 0 (
     bash "%HOOK_DIR%%~1" %2 %3 %4 %5 %6 %7 %8 %9
-    exit /b %ERRORLEVEL%
+    exit /b !ERRORLEVEL!
 )
 
 REM No bash found - exit silently rather than error
