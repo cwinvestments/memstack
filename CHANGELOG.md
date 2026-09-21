@@ -1,6 +1,6 @@
 # MemStack™ Changelog
 
-## Unreleased
+## v3.10.1 - 2026-09-21 - The encoder verbs join the secret-read guard's blocked list
 
 ### Changed
 - **The encoder and dumper verbs join the secret-read guard's blocked list: od, xxd, base64, hexdump, nl and tac.** They were listed as a known gap in 3.10.0 on the reasoning that they transform the bytes rather than print them. That reasoning does not survive contact with a terminal. od, xxd and hexdump print every byte of the file in another base, and base64 prints the whole file in an alphabet any decoder reverses in one step, so a value that reaches the scrollback encoded has still reached the scrollback, and the session, the transcript and anything reading either now hold it. Direct invocation against a matched path is refused exactly as cat is, with the same three recipes on stderr. base64 -d and base64 --decode are the same block and not a separate case: the direction of the transform does not change what lands on stdout. Nothing changes for these verbs against an ordinary file, and nothing changes for pipelines. cat of a matched path piped into base64 was already refused, on the cat stage, because each stage is judged on the paths it names; a matched path piped into sha256sum is still allowed, because what leaves that pipeline is a digest. All four of those properties are pinned by controls rather than left to be re-derived.
