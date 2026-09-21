@@ -136,6 +136,91 @@ def test_cat_of_an_ordinary_file_allows(plain_repo):
     assert_verdict(rc, 0, err, must_not_have=["BLOCKED"])
 
 
+# ------------------------------------------------ the encoder and dumper verbs
+#
+# These were a documented gap until the verb list was widened. Each one prints
+# the whole file, in another base or another alphabet, and a value that reaches
+# the terminal encoded has still reached the terminal. One case per verb, so a
+# verb dropped from the list cannot hide behind a sibling that stayed.
+
+@pytest.mark.parametrize("verb,command", [
+    ("od", "od -c .env"),
+    ("xxd", "xxd .env"),
+    ("base64", "base64 .env"),
+    ("hexdump", "hexdump -C .env"),
+    ("nl", "nl .env"),
+    ("tac", "tac .env"),
+])
+def test_every_encoder_verb_blocks(plain_repo, verb, command):
+    rc, err = bash(command, plain_repo)
+    assert_verdict(rc, 2, err, must_have=[
+        "BLOCKED: this Bash command reads .env whole.",
+        "A. Analysis, on a redacted copy",
+        "B. Presence check",
+        "C. Value comparison",
+    ])
+
+
+@pytest.mark.parametrize("command", [
+    "base64 -d .env",
+    "base64 --decode .env",
+])
+def test_base64_decode_blocks_exactly_like_encode(plain_repo, command):
+    """The direction does not change what lands on stdout.
+
+    Reading the rule as an encode-only one would leave the decode spelling
+    open for the sake of a distinction the terminal cannot see.
+    """
+    rc, err = bash(command, plain_repo)
+    assert_verdict(rc, 2, err, must_have=[
+        "BLOCKED: this Bash command reads .env whole."])
+
+
+@pytest.mark.parametrize("command", [
+    "od -c ordinary.txt",
+    "xxd ordinary.txt",
+    "base64 ordinary.txt",
+    "hexdump -C ordinary.txt",
+    "nl ordinary.txt",
+    "tac ordinary.txt",
+])
+def test_the_encoder_verbs_are_untouched_against_an_ordinary_file(
+        plain_repo, command):
+    """The positive half of the pair.
+
+    Without it, a widening that blocked these verbs outright would look
+    exactly like a widening that blocked them only on a matched path.
+    """
+    rc, err = bash(command, plain_repo)
+    assert_verdict(rc, 0, err, must_not_have=["BLOCKED"])
+
+
+def test_cat_piped_into_base64_blocks_on_the_cat_stage(plain_repo):
+    """Pinned rather than newly caused.
+
+    This shape was already refused before base64 joined the list, because the
+    cat stage is the one holding the matched path and each stage is judged on
+    its own hits. The control exists so that a later change to how pipelines
+    are judged cannot quietly turn it into an allow.
+    """
+    rc, err = bash("cat .env | base64", plain_repo)
+    assert_verdict(rc, 2, err, must_have=[
+        "BLOCKED: this Bash command reads .env whole."])
+
+
+def test_the_hash_pipeline_survives_the_encoder_widening(plain_repo):
+    """The allowance the widening could have collided with.
+
+    A pipeline whose bytes pass through a hash emits a digest and not a value,
+    and that stays true with six more verbs on the blocked list. The same shape
+    is asserted by test_hashing_pipeline_allows further down, which covers the
+    allowance in general; this one sits beside the encoder cases because this
+    is the change that could have broken it.
+    """
+    rc, err = bash("cat .env | sha256sum", plain_repo)
+    assert_verdict(rc, 0, err, must_not_have=["BLOCKED"])
+
+
 def test_grep_whole_line_blocks(plain_repo):
     rc, err = bash("grep SENDGRID .env", plain_repo)
     assert_verdict(rc, 2, err, must_have=["BLOCKED"])
