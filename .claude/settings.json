@@ -50,6 +50,26 @@
             "timeout": 15000
           }
         ]
+      },
+      {
+        "matcher": "Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/secret-read-guard.sh\"",
+            "timeout": 15000
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/junk-write-guard.sh\"",
+            "timeout": 15000
+          }
+        ]
       }
     ],
     "PostToolUse": [

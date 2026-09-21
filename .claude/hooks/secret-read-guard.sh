@@ -19,8 +19,24 @@
 #    "tool_input":{"file_path":"C:/x/.env"},
 #    "cwd":"...","session_id":"..."}
 #
-# tool_name selects the rule. Read is judged on tool_input.file_path; Bash is
-# judged on tool_input.command. Any other tool is allowed untouched.
+# tool_name selects the rule. Read is judged on tool_input.file_path, Bash on
+# tool_input.command, and Grep on tool_input.path and tool_input.glob together
+# with tool_input.output_mode. Any other tool is allowed untouched.
+#
+# The Grep field names were captured from a real payload with a temporary probe
+# hook rather than assumed, because the tool's parameter names are what the
+# payload carries and a wrong guess here is a gate that never fires. What the
+# probe showed:
+#
+#   tool_input keys, content mode:  -n, head_limit, output_mode, path, pattern
+#   tool_input keys, default mode:  glob, pattern
+#
+# path and glob are strings and both are present only when the caller passed
+# them. The load-bearing finding is the second line: output_mode is ABSENT from
+# the payload when the caller does not pass it, rather than arriving as its
+# default value. So absence has to be read as files_with_matches, and a rule
+# written as output_mode == "content" is correct only because absence is
+# handled first. The payload also carries a top-level scratchpad_dir.
 #
 # WHAT IT NEVER DOES
 #
@@ -196,6 +212,32 @@ def matched_name(raw, patterns):
         target = low_full if "/" in p else low_base
         if fnmatch.fnmatchcase(target, p.lower()):
             return base
+    return None
+
+
+def glob_targets_secret(spec, patterns):
+    """Does a Grep glob aim at a secret-bearing shape?
+
+    A glob is itself a pattern, so the two are compared in both directions: a
+    glob of **/.env has to match the .env rule, and a glob of *.pem has to
+    match the *.pem rule. Only the last path segment is compared, which is the
+    part naming the file.
+    """
+    s = normalise(spec)
+    if not s:
+        return None
+    seg = s.split("/")[-1].lower()
+    if not seg or seg in ("*", "**"):
+        return None  # a glob that names no shape cannot be matched by name
+    for pat in NEVER:
+        if fnmatch.fnmatchcase(seg, pat.lower()):
+            return None
+    for pat in patterns:
+        p = pat.strip().replace("\\", "/").split("/")[-1].lower()
+        if not p:
+            continue
+        if fnmatch.fnmatchcase(seg, p) or fnmatch.fnmatchcase(p, seg):
+            return seg
     return None
 
 
@@ -394,6 +436,29 @@ if mode == "bash":
     state, name = judge_bash(command, patterns)
     verdict(state, name)
 
+if mode == "grep":
+    # Absence first. The probe showed output_mode is simply not in the payload
+    # when the caller omits it, and the tool's documented default is
+    # files_with_matches, which prints paths and no line content.
+    output_mode = tool_input.get("output_mode")
+    if not isinstance(output_mode, str):
+        output_mode = "files_with_matches"
+    if output_mode != "content":
+        # files_with_matches prints names, count prints numbers. Neither can
+        # carry a value, so both stay allowed however they are aimed.
+        verdict("ALLOW")
+    target = tool_input.get("path")
+    if isinstance(target, str):
+        name = matched_name(target, patterns)
+        if name:
+            verdict("BLOCK", name)
+    spec = tool_input.get("glob")
+    if isinstance(spec, str):
+        name = glob_targets_secret(spec, patterns)
+        if name:
+            verdict("BLOCK", name)
+    verdict("ALLOW")
+
 verdict("ALLOW")
 PYEOF
 )"
@@ -416,6 +481,7 @@ fi
 case "$TOOL_NAME" in
     Read) MODE="read" ;;
     Bash) MODE="bash" ;;
+    Grep) MODE="grep" ;;
     *)    exit 0 ;;
 esac
 
@@ -470,7 +536,23 @@ READ_MSG
     exit 2
 fi
 
-printf 'BLOCKED: this Bash command reads %s whole.\n\n' "$MATCHED" >&2
+if [ "$MODE" = "grep" ]; then
+    printf 'BLOCKED: this Grep would print matching lines out of %s.\n\n' "$MATCHED" >&2
+    cat >&2 <<'GREP_MSG'
+Content output mode prints the matching line, and in that file the line IS the
+value. The other two output modes are always allowed against it, because names
+and counts cannot carry a secret:
+
+     output_mode: "files_with_matches"   prints paths
+     output_mode: "count"                prints numbers
+
+If you need to see matched text rather than whole lines, the three recipes
+below apply to Grep exactly as they do to a shell command.
+
+GREP_MSG
+else
+    printf 'BLOCKED: this Bash command reads %s whole.\n\n' "$MATCHED" >&2
+fi
 cat >&2 <<'BASH_MSG'
 That file can hold secret values, so its lines are never printed to the
 terminal. Use one of these three instead.
