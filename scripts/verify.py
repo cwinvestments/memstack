@@ -434,12 +434,25 @@ def _detect_npm(root: Path) -> list[dict]:
     npm = shutil.which("npm")
     has_modules = (root / "node_modules").is_dir()
 
+    # A package with no dependencies of either kind has nothing to install, so
+    # advising an install is false advice. Worse, following it would create an
+    # empty node_modules, arm every listed script, and let a no-op one report
+    # PASS. The skip CONDITION is unchanged; only the reason becomes truthful.
+    declares_deps = any(
+        isinstance(pkg.get(key), dict) and pkg.get(key)
+        for key in ("dependencies", "devDependencies")
+    )
+
     plans = []
     for script in present:
         if npm is None:
             reason = "npm is not on PATH"
         elif not has_modules:
-            reason = "node_modules is absent; run npm install before this check can run"
+            if declares_deps:
+                reason = "node_modules is absent; run npm install before this check can run"
+            else:
+                reason = ("package.json declares no dependencies, so there is nothing "
+                          "to install and this script would verify nothing")
         else:
             reason = None
         argv = None if reason else [npm, "run", script]
@@ -2690,29 +2703,79 @@ def cmd_selftest(root: Path) -> int:
         ))
 
         # 2. A missing tool must be SKIP with a reason, never omitted, never a pass.
+        #    The fixture declares a dependency on purpose: install advice is
+        #    correct ONLY for a package that has something to install, and
+        #    without a declared dependency this case would silently drift into
+        #    testing the dependency-free branch of 2b instead.
         skip_repo = _fabricate(base, "skipping", {
             "package.json": json.dumps(
-                {"name": "fab", "version": "0.0.0", "scripts": {"test": "exit 0"}},
+                {"name": "fab", "version": "0.0.0",
+                 "dependencies": {"left-pad": "^1.3.0"},
+                 "scripts": {"test": "exit 0"}},
                 indent=2,
             ) + "\n",
         })
         r = _run_case(skip_repo)
         skip_checks = [c for c in r["checks"] if c["name"] == "npm run test"]
+        skip_reason = skip_checks[0]["skip_reason"] if skip_checks else ""
         ok = (
             len(skip_checks) == 1
             and skip_checks[0]["status"] == "SKIP"
-            and bool(skip_checks[0]["skip_reason"])
+            and bool(skip_reason)
+            and "npm install" in skip_reason
             and skip_checks[0]["status"] != "PASS"
             and r["verdict"] == "NOTHING_DETECTED"
         )
         cases.append(_case(
             "missing-tool-is-SKIP-with-reason-and-not-a-pass",
-            "fabricated repo with an npm test script and no node_modules",
+            "fabricated repo declaring a dependency, an npm test script, no node_modules",
             ok,
             "verdict=" + r["verdict"]
             + " status=" + repr(skip_checks[0]["status"] if skip_checks else None)
-            + " reason=" + repr(skip_checks[0]["skip_reason"] if skip_checks else None),
+            + " reason=" + repr(skip_reason),
         ))
+
+        # 2b. A package that declares NO dependencies must say so, and must not
+        #     be told to install. The install advice of case 2 is false here:
+        #     there is nothing to install, and following it would create an
+        #     empty node_modules that arms a no-op script to report PASS. The
+        #     assertion is on the reason TEXT, because both branches produce
+        #     the identical SKIP status and cannot be told apart by status.
+        if shutil.which("npm") is None:
+            cases.append(_case(
+                "dependency-free-package-states-the-true-reason",
+                "fabricated repo with a build script and no dependencies",
+                False,
+                "npm is not on PATH, so this case cannot reach the branch it tests",
+            ))
+        else:
+            nodeps_repo = _fabricate(base, "no-dependencies", {
+                "package.json": json.dumps(
+                    {"name": "fab-nodeps", "version": "0.0.0",
+                     "scripts": {"build": "echo 'not a buildable project'"}},
+                    indent=2,
+                ) + "\n",
+            })
+            r = _run_case(nodeps_repo)
+            nodeps_checks = [c for c in r["checks"] if c["name"] == "npm run build"]
+            nodeps_reason = nodeps_checks[0]["skip_reason"] if nodeps_checks else ""
+            ok = (
+                len(nodeps_checks) == 1
+                and nodeps_checks[0]["status"] == "SKIP"
+                and nodeps_checks[0]["status"] != "PASS"
+                and "declares no dependencies" in nodeps_reason
+                and "verify nothing" in nodeps_reason
+                and "npm install" not in nodeps_reason
+                and r["verdict"] == "NOTHING_DETECTED"
+            )
+            cases.append(_case(
+                "dependency-free-package-states-the-true-reason",
+                "fabricated repo with a build script and no dependencies",
+                ok,
+                "verdict=" + r["verdict"]
+                + " status=" + repr(nodeps_checks[0]["status"] if nodeps_checks else None)
+                + " reason=" + repr(nodeps_reason),
+            ))
 
         # 3. A passing check must be recorded as PASS.
         pass_repo = _fabricate(base, "passing", {
