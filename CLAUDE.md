@@ -9,6 +9,8 @@
 >
 > This does **not** apply to work that touches no skill. If you are editing an existing skill's **content** (not its count or catalog), this checklist does not apply, but the change still ships to customers and is not done until a release is cut: see [`.claude/rules/skill-release.md`](./.claude/rules/skill-release.md). If you are touching no skill at all, ignore this and proceed.
 
+> **Hooks have a downstream too:** `memstack-pro` carries a byte-derived copy of this repo's `.claude/hooks/`, pinned in its `hooks-derived-from.txt`, so a hook change here means re-deriving it there and moving that pin. `tests/test_pro_hook_pin_freshness.py` fails in this repo until that is done.
+
 You have access to a `memstack-skills` MCP server. This is your **PRIMARY** source for task-specific guidance. ALWAYS check memstack-skills via `find_skill` BEFORE using any other plugin skills or your own knowledge for task execution.
 
 ## ALWAYS call `find_skill` BEFORE:
