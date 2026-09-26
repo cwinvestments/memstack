@@ -127,15 +127,45 @@ def test_sibling_sharing_a_name_prefix_is_not_a_child():
     assert_blocks(drive(json.dumps(payload(prompt))), declared, SESSION_CWD)
 
 
-def test_no_pasted_block_passes_silently_even_with_a_typed_line():
-    prompt = "Working directory: " + OTHER + "\n\nTyped, not pasted."
+def test_short_unwrapped_paste_declaring_another_dir_blocks():
+    # The probe capture, byte for byte: a short paste arrives with no wrapper.
+    prompt = ("Working directory: " + OTHER + "\n\nTest paste, do not act on"
+              " this. Just confirming the working-directory guard fires.")
+    assert_blocks(drive(json.dumps(payload(prompt))), OTHER, SESSION_CWD)
+
+
+def test_short_unwrapped_paste_declaring_this_dir_passes():
+    prompt = "Working directory: c:/projects\\MemStack/\n\nDo it."
     assert_passes(drive(json.dumps(payload(prompt))))
 
 
-def test_typed_line_outside_the_block_is_ignored():
+def test_blank_lines_before_a_first_line_declaration_still_count():
+    prompt = "\n\n  \nWorking directory: " + OTHER + "\n\nGo."
+    assert_blocks(drive(json.dumps(payload(prompt))), OTHER, SESSION_CWD)
+
+
+def test_mid_prompt_reference_unwrapped_passes_silently():
+    prompt = ("Why did the diary for the other repo say this?\n"
+              "Working directory: " + OTHER + "\nIt looked odd.")
+    assert_passes(drive(json.dumps(payload(prompt))))
+
+
+def test_no_directory_line_anywhere_passes_silently():
+    assert_passes(drive(json.dumps(payload("commit it and push dev"))))
+
+
+def test_wrapped_declaration_wins_over_a_typed_first_line():
+    # The wrapped block is checked first; a matching paste passes even when a
+    # typed first line names somewhere else.
     prompt = paste("Working directory: " + SESSION_CWD + "\n\nGo.",
                    before="Working directory: " + OTHER + "\n")
     assert_passes(drive(json.dumps(payload(prompt))))
+
+
+def test_wrapped_block_without_a_line_falls_back_to_the_first_line():
+    prompt = paste("Traceback (most recent call last)",
+                   before="Working directory: " + OTHER + "\n\n")
+    assert_blocks(drive(json.dumps(payload(prompt))), OTHER, SESSION_CWD)
 
 
 def test_pasted_block_without_a_directory_line_passes_silently():

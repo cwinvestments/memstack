@@ -8,11 +8,18 @@ UserPromptSubmit payload on stdin and blocks that one case.
 
 Contract, and every clause of it is deliberate:
 
-- The directory line is read ONLY from inside the first pasted block, the
-  <pasted_content id="..."> ... </pasted_content id="..."> wrapper Claude Code
-  puts around pasted text. Text the user typed is ignored: the mistake being
-  caught is a paste, and a typed line is a decision made in this window.
-- The FIRST "Working directory:" line in that block is the declaration. A
+- The directory line is read from one of two places, in this order. First,
+  the first pasted block, the <pasted_content id="..."> ... </pasted_content
+  id="..."> wrapper Claude Code puts around LONGER pasted text. Second, when
+  no wrapped declaration exists, the prompt's first non-blank line, if that
+  line is itself a "Working directory:" line: a probe on 2026-09-26 showed a
+  short paste arrives as raw text with no wrapper, so this is where its
+  routing line sits. A typed first line is indistinguishable from a short
+  paste and is read the same way; a declaration contradicting cwd is wrong
+  either way. A "Working directory:" line that is neither wrapped nor first
+  is a reference in prose (a quoted diary, a path in a question) and is
+  ignored.
+- Inside a block, the FIRST "Working directory:" line is the declaration. A
   diary opens with one, and a pasted excerpt of it is exactly the real-world
   case, so a later line never overrides the first.
 - It blocks only when the declared path and the payload cwd are both absolute,
@@ -88,6 +95,19 @@ def declared_line(block):
     if found is None:
         return None
     return found.group(1).strip()
+
+
+def first_line_declaration(prompt):
+    """The rest of the prompt's first non-blank line when that line is itself a
+    "Working directory:" line, or None. A short paste arrives with no wrapper,
+    and this is the only place its routing line can be; a line further down is
+    a reference in prose, not a routing line, and is never read."""
+    for line in prompt.splitlines():
+        if not line.strip():
+            continue
+        found = _LINE_RE.fullmatch(line)
+        return found.group(1).strip() if found else None
+    return None
 
 
 def _unwrap(text):
@@ -180,9 +200,9 @@ def decide(payload):
     if not isinstance(prompt, str) or not isinstance(cwd, str):
         return None
     block = first_pasted_block(prompt)
-    if block is None:
-        return None
-    rest = declared_line(block)
+    rest = declared_line(block) if block is not None else None
+    if rest is None:
+        rest = first_line_declaration(prompt)
     if rest is None:
         return None
     primary, candidates = declared_candidates(rest)
