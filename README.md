@@ -1,6 +1,6 @@
 # MemStack™
 
-[![Version: 3.10.1](https://img.shields.io/badge/Version-3.10.1-green.svg)](CHANGELOG.md)
+[![Version: 3.10.2](https://img.shields.io/badge/Version-3.10.2-green.svg)](CHANGELOG.md)
 
 The structured skill framework for Claude Code: **131 professional skills** for deployment, security, databases, content, marketing, and more.
 
@@ -395,7 +395,7 @@ The guards also fail open rather than closed. If no python interpreter is availa
 
 ### What the guards do not cover
 
-Stated plainly, because a gate whose limits are unknown gets trusted past them. The secret-read guard does not inspect a content-mode Grep aimed at a directory rather than a file, does not model byte-dumping verbs such as `od` and `xxd`, and does not gate the Write or Edit tools. The junk-write guard allows a correctly quoted inline fragment containing an arrow, because blocking that shape refuses more than forty commands this project genuinely runs. The working-directory guard reads the declaration only from a pasted block or from the prompt's first non-blank line; a `Working directory:` line anywhere else is treated as prose and not checked.
+Stated plainly, because a gate whose limits are unknown gets trusted past them. The secret-read guard refuses the byte-dumping and encoding verbs `od`, `xxd`, `hexdump`, `base64`, `nl` and `tac` against a guarded path exactly as it refuses `cat`, but it does not inspect a content-mode Grep aimed at a directory rather than a file, does not model a python or node one-liner that opens the file itself, and does not gate the Write or Edit tools. The junk-write guard allows a correctly quoted inline fragment containing an arrow, because blocking that shape refuses more than forty commands this project genuinely runs. The working-directory guard reads the declaration only from a pasted block or from the prompt's first non-blank line; a `Working directory:` line anywhere else is treated as prose and not checked.
 
 ## Installation
 

@@ -1,6 +1,6 @@
 # MemStack™ Changelog
 
-## Unreleased - A prompt pasted into the wrong session is refused before it runs
+## v3.10.2 - 2026-09-26 - A prompt pasted into the wrong session is refused before it runs
 
 ### Added
 - **A working-directory guard, registered on UserPromptSubmit beside the report marker.** A task prompt names its directory on a `Working directory:` line. Pasted into a Claude Code window open on a different repository, it used to run anyway, in the wrong tree. The guard reads that declaration and refuses the prompt when it contradicts the session's cwd, naming both paths so the user can see which window they meant. It reads the line from two places: inside the wrapper Claude Code puts around a longer paste, and from the prompt's first non-blank line, which is where a short paste's routing line sits because a short paste arrives with no wrapper at all. Both paths are normalized (case, slash direction, trailing slash, the Git Bash `/c/...` form) before comparison, and a declared parent or child of the cwd passes, so a worktree, a monorepo subdirectory, or a prompt naming the repo root from a subdirectory is never refused. The block is exit 0 with a decision object on stdout, never exit 2: exit 2 on this event erases the prompt, while the decision object shows the user their prompt back, so a refusal loses nothing.
