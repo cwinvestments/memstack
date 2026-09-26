@@ -390,3 +390,152 @@ def test_end_to_end_block_neutralizes_the_real_report_marker(tmp_path):
 
     assert json.loads(out.decode("utf-8"))["decision"] == "block"
     assert marker.read_bytes() == b'{"prior": true}\n'
+
+
+# --------------------------------------------------------------------------
+# the shipped path: kill switch, report-marker deferral, run-hook.cmd dispatch
+# --------------------------------------------------------------------------
+
+import shutil  # noqa: E402
+
+import verify  # noqa: E402
+
+RUN_HOOK = os.path.join(REPO_ROOT, "hooks", "run-hook.cmd")
+MISMATCH = paste("Working directory: " + OTHER + "\n\nGo.")
+MATCH = "Working directory: c:/projects/MemStack/\n\nGo."
+
+
+def test_kill_switch_skips_before_reading_and_says_so():
+    code, out, err = drive(json.dumps(payload(MISMATCH)),
+                           {"MEMSTACK_NO_WORKDIR_GUARD": "1"})
+    assert code == 0
+    assert out == ""
+    assert err.strip() == ("workdir-guard: SKIPPED, MEMSTACK_NO_WORKDIR_GUARD=1"
+                           " is set, so this prompt was NOT examined")
+
+
+@pytest.mark.parametrize("value", ["0", "true", ""])
+def test_kill_switch_takes_only_the_value_one(value):
+    assert_blocks(drive(json.dumps(payload(MISMATCH)),
+                        {"MEMSTACK_NO_WORKDIR_GUARD": value}),
+                  OTHER, SESSION_CWD)
+
+
+def test_would_block_honours_the_kill_switch(monkeypatch):
+    monkeypatch.delenv("MEMSTACK_NO_WORKDIR_GUARD", raising=False)
+    assert workdir_guard.would_block(payload(MISMATCH)) is True
+    assert workdir_guard.would_block(payload(MATCH)) is False
+    monkeypatch.setenv("MEMSTACK_NO_WORKDIR_GUARD", "1")
+    assert workdir_guard.would_block(payload(MISMATCH)) is False
+
+
+def _arm(repo, declared, monkeypatch, tmp_path):
+    monkeypatch.setenv("MEMSTACK_REPORT_DIR", str(tmp_path / "reports"))
+    prompt = paste("Working directory: " + declared + "\n\n" + REPORT_PHRASE)
+    return verify.report_marker_decide(payload(prompt, cwd=str(repo)))
+
+
+def test_report_marker_arms_nothing_for_a_prompt_the_guard_blocks(
+        tmp_path, monkeypatch):
+    monkeypatch.delenv("MEMSTACK_NO_WORKDIR_GUARD", raising=False)
+    repo, marker = _scratch_repo(tmp_path)
+    assert _arm(repo, OTHER, monkeypatch, tmp_path) is None
+    assert not marker.exists()
+
+
+def test_report_marker_still_arms_for_a_prompt_the_guard_passes(
+        tmp_path, monkeypatch):
+    monkeypatch.delenv("MEMSTACK_NO_WORKDIR_GUARD", raising=False)
+    repo, marker = _scratch_repo(tmp_path)
+    assert _arm(repo, str(repo), monkeypatch, tmp_path) is not None
+    assert marker.exists()
+
+
+def test_report_marker_arms_when_the_guard_is_switched_off(
+        tmp_path, monkeypatch):
+    monkeypatch.setenv("MEMSTACK_NO_WORKDIR_GUARD", "1")
+    repo, marker = _scratch_repo(tmp_path)
+    assert _arm(repo, OTHER, monkeypatch, tmp_path) is not None
+    assert marker.exists()
+
+
+def test_guard_does_not_wait_when_report_marker_is_its_own_sibling(
+        tmp_path, monkeypatch):
+    monkeypatch.setenv("CLAUDE_PLUGIN_ROOT", REPO_ROOT)
+    repo, marker = _scratch_repo(tmp_path)
+    prompt = paste("Working directory: " + OTHER + "\n\n" + REPORT_PHRASE)
+    started = time.monotonic()
+    assert _neutralize(repo, marker, prompt, None, 5.0) == "deferred"
+    assert time.monotonic() - started < 2.0
+
+
+def test_hooks_json_registers_the_guard_once_beside_report_marker():
+    with open(os.path.join(REPO_ROOT, "hooks", "hooks.json"),
+              encoding="utf-8") as fh:
+        hooks = json.load(fh)["hooks"]["UserPromptSubmit"]
+    commands = [h["command"] for entry in hooks for h in entry["hooks"]]
+    assert sum(c.endswith(" workdir-guard") for c in commands) == 1
+    assert sum(c.endswith(" report-marker") for c in commands) == 1
+    for command in commands:
+        assert ".py" not in command and ".sh" not in command
+
+
+def _git_bash():
+    for candidate in (r"C:\Program Files\Git\bin\bash.exe",
+                      r"C:\Program Files (x86)\Git\bin\bash.exe"):
+        if os.path.exists(candidate):
+            return candidate
+    return None if os.name == "nt" else shutil.which("bash")
+
+
+def _dispatchers():
+    found = []
+    if os.name == "nt":
+        found.append(pytest.param(["cmd.exe", "/d", "/c", RUN_HOOK], id="cmd"))
+    bash = _git_bash()
+    if bash:
+        found.append(pytest.param([bash, RUN_HOOK], id="bash"))
+    return found
+
+
+def _dispatch(argv, prompt, env_extra=None):
+    env = dict(os.environ)
+    for name in ("MEMSTACK_REPORT_ON_TASK_PROMPTS", "MEMSTACK_REPORT_TRIGGERS",
+                 "MEMSTACK_NO_WORKDIR_GUARD", "MEMSTACK_CR_STRIPPED"):
+        env.pop(name, None)
+    env["CLAUDE_PLUGIN_ROOT"] = REPO_ROOT
+    env.update(env_extra or {})
+    proc = subprocess.run(argv + ["workdir-guard"],
+                          input=json.dumps(payload(prompt)).encode("utf-8"),
+                          capture_output=True, env=env, timeout=60,
+                          check=False)
+    return (proc.returncode, proc.stdout.decode("utf-8"),
+            proc.stderr.decode("utf-8"))
+
+
+@pytest.mark.parametrize("argv", _dispatchers())
+def test_shipped_dispatch_forwards_the_decision_json_on_stdout(argv):
+    # stdout must be the decision object and nothing else, or Claude Code
+    # cannot parse it and the block is decorative.
+    assert_blocks(_dispatch(argv, MISMATCH), OTHER, SESSION_CWD)
+
+
+@pytest.mark.parametrize("argv", _dispatchers())
+def test_shipped_dispatch_is_silent_on_a_pass(argv):
+    assert_passes(_dispatch(argv, MATCH))
+
+
+@pytest.mark.parametrize("argv", _dispatchers())
+def test_shipped_dispatch_honours_the_kill_switch(argv):
+    code, out, err = _dispatch(argv, MISMATCH,
+                               {"MEMSTACK_NO_WORKDIR_GUARD": "1"})
+    assert (code, out) == (0, "")
+    assert "workdir-guard: SKIPPED" in err
+
+
+@pytest.mark.parametrize("argv", _dispatchers())
+def test_shipped_dispatch_without_the_script_degrades_loudly(argv, tmp_path):
+    code, out, err = _dispatch(argv, MISMATCH,
+                               {"CLAUDE_PLUGIN_ROOT": str(tmp_path)})
+    assert (code, out) == (0, "")
+    assert "workdir-guard: DEGRADED" in err

@@ -1175,6 +1175,24 @@ def report_prompt_head(prompt: str) -> str:
     return " ".join(prompt.split())[:REPORT_PROMPT_HEAD_CHARS]
 
 
+def _workdir_guard_blocks(payload: dict) -> bool:
+    """Will the working-directory guard, running in parallel on this same
+    payload, refuse the prompt? Then it never runs, and no report is owed.
+
+    Asked of the guard itself rather than re-derived here, so the two cannot
+    drift. Any failure to ask reads as no: an unanswerable question must not
+    drop a marker for a prompt that did run.
+    """
+    try:
+        here = str(Path(__file__).resolve().parent)
+        if here not in sys.path:
+            sys.path.insert(0, here)
+        import workdir_guard  # noqa: PLC0415 - only on a trigger match
+        return bool(workdir_guard.would_block(payload))
+    except Exception:  # noqa: BLE001
+        return False
+
+
 def report_marker_decide(payload: dict,
                          fallback_cwd: Path | None = None) -> Path | None:
     """Record a report request from a UserPromptSubmit payload.
@@ -1198,6 +1216,8 @@ def report_marker_decide(payload: dict,
         return None
     trigger = report_trigger_match(prompt)
     if trigger is None:
+        return None
+    if _workdir_guard_blocks(payload):
         return None
 
     start, root = _payload_root(payload, fallback_cwd)

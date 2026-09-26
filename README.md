@@ -373,6 +373,7 @@ MemStack ships a small set of hooks in `hooks/hooks.json`. They register themsel
 |------|-------|--------------|
 | Session context | SessionStart | Injects recent diary and observation summaries, and checks whether the installed plugin version is stale |
 | Report marker | UserPromptSubmit | Notes when a prompt requires a session report |
+| Working-directory guard | UserPromptSubmit | Refuses a prompt whose `Working directory:` line names a different directory than the session is in, so a prompt pasted into the wrong window never runs |
 | Verify gate | Stop | Refuses to end a session whose tracked changes have not passed the check chain |
 | Secret-read guard | PreToolUse (Read, Bash, Grep) | Refuses a whole-file read of a secret-bearing path, and prints the safe alternative |
 | Junk-write guard | PreToolUse (Bash) | Refuses a shell redirection whose target is a code fragment rather than a filename |
@@ -385,15 +386,16 @@ Every hook that can refuse an action has a kill switch. Set the variable to `1` 
 |----------|--------|
 | `MEMSTACK_NO_SECRET_GUARD=1` | Skips the secret-read guard |
 | `MEMSTACK_NO_JUNK_GUARD=1` | Skips the junk-write guard |
+| `MEMSTACK_NO_WORKDIR_GUARD=1` | Skips the working-directory guard |
 | `MEMSTACK_NO_UPDATE_CHECK=1` | Skips the SessionStart version probe (no network call) |
 
 The stderr line is deliberate. A guard that was switched off and a guard that examined the call and allowed it look identical from the outside, and only one of those is a claim the hook has earned.
 
-The two guards also fail open rather than closed. If no python interpreter is available, or the hook payload will not parse, they print a line beginning with `DEGRADED` and allow the call. A broken guard must never brick a session, and a silently broken guard must never be mistaken for a working one.
+The guards also fail open rather than closed. If no python interpreter is available, or the hook payload will not parse, they print a line beginning with `DEGRADED` and allow the call. A broken guard must never brick a session, and a silently broken guard must never be mistaken for a working one.
 
 ### What the guards do not cover
 
-Stated plainly, because a gate whose limits are unknown gets trusted past them. The secret-read guard does not inspect a content-mode Grep aimed at a directory rather than a file, does not model byte-dumping verbs such as `od` and `xxd`, and does not gate the Write or Edit tools. The junk-write guard allows a correctly quoted inline fragment containing an arrow, because blocking that shape refuses more than forty commands this project genuinely runs.
+Stated plainly, because a gate whose limits are unknown gets trusted past them. The secret-read guard does not inspect a content-mode Grep aimed at a directory rather than a file, does not model byte-dumping verbs such as `od` and `xxd`, and does not gate the Write or Edit tools. The junk-write guard allows a correctly quoted inline fragment containing an arrow, because blocking that shape refuses more than forty commands this project genuinely runs. The working-directory guard reads the declaration only from a pasted block or from the prompt's first non-blank line; a `Working directory:` line anywhere else is treated as prose and not checked.
 
 ## Installation
 

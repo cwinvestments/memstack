@@ -37,15 +37,20 @@ Contract, and every clause of it is deliberate:
   "workdir-guard: DEGRADED", so a broken guard is never mistaken for a quiet
   one.
 
-The report marker. verify.py's report-marker hook runs in PARALLEL with this
-one on the same prompt, knows nothing about a block, and may arm
-.memstack/report-required.json for a prompt that never ran. When this guard
-blocks a prompt that would have armed it, it waits (bounded) for that
-prompt's marker to land and puts back whatever was there before. See
-neutralize_report_marker for the residual that parallel execution leaves.
+- MEMSTACK_NO_WORKDIR_GUARD=1 skips the guard before the payload is read,
+  with one stderr line saying so.
 
-Stdlib only. Local dogfood: registered in .claude/settings.local.json, not in
-hooks/hooks.json.
+The report marker. verify.py's report-marker hook runs in PARALLEL with this
+one on the same prompt and could arm .memstack/report-required.json for a
+prompt that never ran. In the shipped plugin it does not: report-marker calls
+would_block() on the same payload and writes nothing for a prompt this guard
+refuses. Where this script runs beside an OLDER report-marker (a settings-file
+registration against an installed plugin that predates the guard), this guard
+still waits, bounded, for that prompt's marker to land and puts back whatever
+was there before. See neutralize_report_marker for that path's residual.
+
+Stdlib only. Shipped: dispatched by hooks/run-hook.cmd workdir-guard on
+UserPromptSubmit, beside verify.py, which it imports.
 """
 
 import json
@@ -56,6 +61,7 @@ import time
 from pathlib import Path
 
 PREFIX = "workdir-guard:"
+KILL_SWITCH = "MEMSTACK_NO_WORKDIR_GUARD"
 
 _OPEN_RE = re.compile(r"^[ \t]*<pasted_content\b[^>\n]*>[ \t]*$", re.MULTILINE)
 _CLOSE_RE = re.compile(r"^[ \t]*</pasted_content\b[^>\n]*>[ \t]*$", re.MULTILINE)
@@ -221,6 +227,45 @@ def decide(payload):
             + ". If this is the wrong window, paste it where it belongs.")
 
 
+def disabled():
+    """The kill switch: MEMSTACK_NO_WORKDIR_GUARD=1, and no other value."""
+    return os.environ.get(KILL_SWITCH) == "1"
+
+
+def would_block(payload):
+    """Would this guard refuse this payload? Never raises.
+
+    verify.py's report-marker calls this on the same payload before it arms a
+    marker, so a prompt this guard refuses never leaves a report owed. Both
+    sides are pure functions of one payload, so they agree without any
+    ordering between the two parallel hooks. The kill switch is honoured
+    here too: a switched-off guard blocks nothing, so the marker must arm.
+    """
+    try:
+        return not disabled() and decide(payload) is not None
+    except Exception:  # noqa: BLE001 - doubt means the prompt runs
+        return False
+
+
+def _report_marker_defers():
+    """True when the report-marker running beside this guard is the one in
+    this same tree, which already skips a prompt this guard blocks.
+
+    That is the shipped layout: both hooks run from CLAUDE_PLUGIN_ROOT/scripts.
+    Anywhere else, notably a settings-file registration of this script while
+    an older installed plugin runs report-marker, the marker may still arm
+    and the wait-and-restore below is what undoes it.
+    """
+    root = os.environ.get("CLAUDE_PLUGIN_ROOT")
+    if not root:
+        return False
+    try:
+        here = Path(__file__).resolve().parent
+        return (Path(root).resolve() / "scripts") == here
+    except (OSError, ValueError):
+        return False
+
+
 def _load_verify():
     """verify.py, imported from beside this file. It has no import-time side
     effects: everything it does sits behind its __main__ guard."""
@@ -310,18 +355,16 @@ def neutralize_report_marker(payload, started_at, prior_path=None,
       it should be rare; it is not impossible.
     - If report-marker takes longer than the wait, the marker lands after the
       guard has exited and stays armed for a prompt that never ran.
-    - The cleaner point, for promotion into the plugin, is report_marker_decide
-      in verify.py consulting decide() on the same payload before it writes.
-      Both are pure functions of one payload, so that has no race at all. It
-      is not done here because the local dogfood runs the INSTALLED plugin's
-      verify.py, which this repo does not reach, and because shipping that
-      check before this guard is registered would drop markers for prompts
-      that were never blocked.
+    Both residuals belong to this fallback only. In the shipped layout
+    report_marker_decide consults would_block() before it writes, which has
+    no race at all, and this function returns "deferred" without waiting.
     """
     prompt = payload.get("prompt")
     verify = _load_verify()
     if not isinstance(prompt, str) or verify.report_trigger_match(prompt) is None:
         return "not-armed"
+    if _report_marker_defers():
+        return "deferred"
     session_id = verify._payload_session(payload)
     _, root = verify._payload_root(payload, None)
     marker_path = verify.report_marker_path(root)
@@ -378,6 +421,10 @@ def run(raw, started_at=None):
 
 def main():
     started_at = time.time()
+    if disabled():
+        sys.stderr.write(PREFIX + " SKIPPED, " + KILL_SWITCH
+                         + "=1 is set, so this prompt was NOT examined\n")
+        return 0
     try:
         raw = sys.stdin.buffer.read().decode("utf-8")
     except Exception as exc:  # noqa: BLE001

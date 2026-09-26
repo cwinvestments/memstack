@@ -17,6 +17,7 @@ if "%~1"=="" (
 
 if /i "%~1"=="verify-gate" goto verify_gate
 if /i "%~1"=="report-marker" goto report_marker
+if /i "%~1"=="workdir-guard" goto workdir_guard
 
 REM Delayed expansion, and it is load-bearing rather than stylistic.
 REM Each bash call below sits inside a parenthesised if block, and cmd.exe
@@ -84,6 +85,25 @@ if errorlevel 1 exit /b 0
 if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" exit /b 0
 call python "%CLAUDE_PLUGIN_ROOT%\scripts\verify.py" report-marker
 exit /b 0
+
+REM The working-directory guard. Same probe and the same discarded exit
+REM code as report-marker, for the same reason: exit 2 on UserPromptSubmit
+REM erases the prompt. The guard blocks the other way, with exit 0 and a
+REM decision object on stdout, and stdout is not redirected anywhere here:
+REM python inherits this process's stdout, so the JSON it writes is the
+REM JSON Claude Code reads. Nothing in this branch may echo, or its text
+REM would land in front of that object and the block would not parse.
+REM Unlike report-marker, the guard fails open LOUD: a guard that cannot
+REM run says so on stderr, so it is never mistaken for one that passed.
+:workdir_guard
+call python -c "import sys" >nul 2>nul
+if errorlevel 1 goto workdir_guard_degraded
+if not exist "%CLAUDE_PLUGIN_ROOT%\scripts\workdir_guard.py" goto workdir_guard_degraded
+call python "%CLAUDE_PLUGIN_ROOT%\scripts\workdir_guard.py"
+exit /b 0
+:workdir_guard_degraded
+echo workdir-guard: DEGRADED, no usable python or no guard script, prompt not examined 1>&2
+exit /b 0
 CMDBLOCK
 # Everything from here to the re-exec below must be a comment.
 # This file is stored with CRLF endings because the batch half above
@@ -129,6 +149,23 @@ if [ "$SCRIPT_NAME" = "report-marker" ]; then
     [ -n "$PY" ] || exit 0
     [ -f "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" ] || exit 0
     "$PY" "${CLAUDE_PLUGIN_ROOT}/scripts/verify.py" report-marker
+    exit 0
+fi
+
+# The working-directory guard, same contract as report-marker: exit code
+# discarded, because the block is a decision object on stdout, which the
+# child writes straight to this process's inherited stdout.
+if [ "$SCRIPT_NAME" = "workdir-guard" ]; then
+    PY=""
+    command -v python >/dev/null 2>&1 && PY="python"
+    if [ -z "$PY" ]; then
+        command -v python3 >/dev/null 2>&1 && PY="python3"
+    fi
+    if [ -z "$PY" ] || [ ! -f "${CLAUDE_PLUGIN_ROOT}/scripts/workdir_guard.py" ]; then
+        echo "workdir-guard: DEGRADED, no usable python or no guard script, prompt not examined" >&2
+        exit 0
+    fi
+    "$PY" "${CLAUDE_PLUGIN_ROOT}/scripts/workdir_guard.py"
     exit 0
 fi
 

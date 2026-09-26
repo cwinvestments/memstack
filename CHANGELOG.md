@@ -1,5 +1,25 @@
 # MemStack™ Changelog
 
+## Unreleased - A prompt pasted into the wrong session is refused before it runs
+
+### Added
+- **A working-directory guard, registered on UserPromptSubmit beside the report marker.** A task prompt names its directory on a `Working directory:` line. Pasted into a Claude Code window open on a different repository, it used to run anyway, in the wrong tree. The guard reads that declaration and refuses the prompt when it contradicts the session's cwd, naming both paths so the user can see which window they meant. It reads the line from two places: inside the wrapper Claude Code puts around a longer paste, and from the prompt's first non-blank line, which is where a short paste's routing line sits because a short paste arrives with no wrapper at all. Both paths are normalized (case, slash direction, trailing slash, the Git Bash `/c/...` form) before comparison, and a declared parent or child of the cwd passes, so a worktree, a monorepo subdirectory, or a prompt naming the repo root from a subdirectory is never refused. The block is exit 0 with a decision object on stdout, never exit 2: exit 2 on this event erases the prompt, while the decision object shows the user their prompt back, so a refusal loses nothing.
+- **Kill switch `MEMSTACK_NO_WORKDIR_GUARD=1`**, checked before the payload is read, with one stderr line saying the prompt was not examined. Documented in the README hook section beside the other switches.
+
+### Changed
+- **The report marker no longer arms for a prompt the working-directory guard refuses.** The two hooks run in parallel on the same payload, so the marker used to be written for a prompt that never ran, and the Stop gate then demanded a report for it. report-marker now asks the guard's own decision function before writing. Both are pure functions of one payload, so they agree without any ordering between the parallel hooks. A switched-off guard refuses nothing, so the marker arms as before.
+- **`run-hook.cmd` gains a `workdir-guard` branch in both halves.** Like report-marker it discards the child's exit code, because the block travels on stdout, which the child inherits unredirected. Unlike report-marker it fails open loud: with no usable python or no guard script it prints a DEGRADED line to stderr and lets the prompt through.
+
+### Known gaps
+- **A typed first-line declaration is refused exactly as a paste would be.** A short paste and a typed prompt reach the hook as identical bytes, so there is nothing to tell them apart. A declaration that contradicts the cwd is wrong whichever way it arrived, and the refusal shows the prompt back for re-sending in the right window.
+- **A `Working directory:` line that is neither wrapped nor on the first non-blank line is treated as prose and not checked.** That is what keeps a quoted diary excerpt or a path mentioned in a question from being refused, and it means a routing line placed lower in an unwrapped prompt is missed.
+- **Any doubt passes.** A relative path, a UNC path, a dot segment, a metacharacter, an unreadable payload or an unusable cwd all let the prompt through silently, because a guard that gates every prompt of every session and false-blocks even occasionally trains its user to stop reading it.
+- **A session opened in one repository and deliberately pointed at an unrelated one by its first line is now refused.** The report skill's prefix rule still names the report for the prompt's directory; that case simply no longer reaches it unless the two directories are parent and child.
+
+### Notes
+- **The guard stays in `scripts/` beside `verify.py`, not in `hooks/`.** The extensionless convention in `hooks/` exists for bash scripts, because Claude Code's Windows auto-detection prepends bash to a command string containing `.sh`. This is a python script dispatched by name through `run-hook.cmd`, exactly as the verify gate and report marker are, so no `.py` appears in any `hooks.json` command string, and it imports `verify.py` from its own directory.
+- **Phase-2 item for publish time: delete this repository's local registration.** The guard has been dogfooded through `.claude/settings.local.json`, which runs `scripts/workdir_guard.py` directly. That is the only registration firing today, because the installed plugin predates the guard. Once this version is installed, that entry and the plugin's would both fire on every prompt, so it is deleted at publish time, as the two guard entries were in 3.10.0. The file is gitignored, so the deletion is a local step and appears in no commit.
+
 ## v3.10.1 - 2026-09-21 - The encoder verbs join the secret-read guard's blocked list
 
 ### Changed
