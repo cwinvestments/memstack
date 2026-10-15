@@ -102,18 +102,21 @@ MemStack has three parts that update independently. Restart Claude Code after an
 
 ### Skill Categories (131 total: 87 free + 44 Pro)
 
-| Category | Skills | Examples |
-|----------|--------|----------|
-| Security | 7 | rls-checker, rls-guardian, owasp-top10, secrets-scanner |
-| Deployment | 6 | railway-deploy, netlify-deploy, docker-setup, ci-cd-pipeline |
-| Development | 7 | database-architect, api-designer, code-reviewer, test-writer |
-| Business | 7 | proposal-writer, sop-builder, scope-of-work, financial-model |
-| Content | 8 | blog-post, landing-page-copy, email-sequence, youtube-script |
-| SEO & GEO | 6 | site-audit, keyword-research, schema-markup, ai-search-visibility |
-| Marketing | 8 | sales-funnel, facebook-ad, google-ad, launch-plan |
-| Product | 6 | prd-writer, feature-spec, mvp-scoper, roadmap-builder |
-| Automation | 5 | n8n-workflow-builder, webhook-designer, cron-scheduler |
-| Core | 13 | diary, echo, work, compress, humanize, sight, verify |
+For the current per-category counts and free/Pro breakdown, see the generated
+[skill reference](SKILL-REFERENCE.md). The table below gives examples only.
+
+| Category | Examples |
+|----------|----------|
+| Security | rls-checker, rls-guardian, owasp-top10, secrets-scanner |
+| Deployment | railway-deploy, netlify-deploy, docker-setup, ci-cd-pipeline |
+| Development | database-architect, api-designer, code-reviewer, test-writer, work, verify |
+| Business | proposal-writer, sop-builder, scope-of-work, financial-model |
+| Content | blog-post, landing-page-copy, email-sequence, youtube-script, humanize |
+| SEO & GEO | site-audit, keyword-research, schema-markup, ai-search-visibility |
+| Marketing | sales-funnel, facebook-ad, google-ad, launch-plan |
+| Product | prd-writer, feature-spec, mvp-scoper, roadmap-builder |
+| Automation | n8n-workflow-builder, webhook-designer, cron-scheduler |
+| Core | diary, echo, compress, sight |
 
 ### Key Features
 
