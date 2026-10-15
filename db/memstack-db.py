@@ -306,7 +306,7 @@ def _adopt_legacy_store(db_path: Path) -> None:
             return
     except OSError:
         return
-    src = sqlite3.connect(f"file:{legacy}?mode=ro", uri=True)
+    src = sqlite3.connect(f"{legacy.resolve().as_uri()}?mode=ro", uri=True)
     try:
         dst = sqlite3.connect(str(db_path))
         try:
@@ -716,7 +716,7 @@ def cmd_import_sessions(args):
         print(json.dumps({"ok": False, "error": "Source and destination are the same file"}))
         sys.exit(1)
     try:
-        src = sqlite3.connect(f"file:{source}?mode=ro", uri=True)
+        src = sqlite3.connect(f"{source.resolve().as_uri()}?mode=ro", uri=True)
     except sqlite3.Error as exc:
         dest.close()
         print(json.dumps({"ok": False, "error": f"Cannot open source read-only: {exc}"}))
