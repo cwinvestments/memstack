@@ -41,7 +41,8 @@ The gate also runs inside `npm run check:catalogs`, so the ordinary pre-release 
 4. Run `git grep -nE "<old-version>"` and confirm no canonical surface still holds the old version. Historical `CHANGELOG.md` lines and the deliberately decoupled doc-chrome (`MEMSTACK.md`, the generated `SKILL-REFERENCE.md` footer) are expected to remain and are not drift.
 5. Commit, citing the receipt path from step 1. No `Co-Authored-By` trailer: the `commit-msg` git-guard rejects it.
 6. `git merge --ff-only dev` into `master`, then `git push origin master`. This push is the publish step.
-7. Optional and human-facing only: cut a GitHub Release for the changelog.
+7. Tag the `master` head with an annotated tag `vX.Y.Z` and the message `MemStack plugin X.Y.Z`, for example `git tag -a v3.10.3 -m "MemStack plugin 3.10.3"`. Push it on its own with `git push origin vX.Y.Z`, then run `git ls-remote --tags origin "vX.Y.Z*"` and confirm two lines: the tag object, and the peeled `vX.Y.Z^{}` line whose SHA is the `master` head. No peeled line means the tag is lightweight, so delete it and tag again with `-a`. Tags here are on the 3.x plugin track only. Loader tags, the 4.x numbers, live in `memstack-skill-loader`, and none belongs in this repo.
+8. Cut the GitHub Release from that tag with `gh release create vX.Y.Z --verify-tag --title "MemStack vX.Y.Z - <summary>" --notes-file <path>`, notes drawn from the changelog entry. `--verify-tag` refuses to run if the tag from step 7 is not on the remote, so this step cannot run ahead of it. The marketplace still reads neither tags nor Releases, as described above; both are the release record.
 
 ## Sizing the bump
 
