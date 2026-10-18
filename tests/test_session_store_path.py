@@ -56,7 +56,7 @@ def _make_store(path, sessions=(), insights=()):
 
 
 def _sessions_in(path):
-    conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    conn = sqlite3.connect(f"{path.resolve().as_uri()}?mode=ro", uri=True)
     try:
         return conn.execute(
             "SELECT project, date, accomplished FROM sessions ORDER BY id"
@@ -114,10 +114,11 @@ def test_override_is_not_the_loader_env_var(tmp_path, monkeypatch):
 # 3. The one-time adoption copies, happens once, and never overwrites
 # ---------------------------------------------------------------------------
 
+@pytest.mark.parametrize("dirname", ["legacy", "legacy #1", "legacy %23"])
 def test_first_run_copies_legacy_store_and_leaves_source_in_place(
-    tmp_path, monkeypatch, capsys
+    tmp_path, monkeypatch, capsys, dirname
 ):
-    legacy = tmp_path / "legacy" / "memstack.db"
+    legacy = tmp_path / dirname / "memstack.db"
     legacy.parent.mkdir()
     _make_store(legacy, sessions=[("proj-a", "2026-09-02", "carried across", "2026-09-02 21:42:29")])
 
@@ -267,6 +268,31 @@ def test_import_sessions_assigns_fresh_ids_and_never_touches_the_source(
     # The source is opened read-only and must be untouched.
     assert source.exists()
     assert _sessions_in(source) == [("parceltoplan", "2026-09-03", "id one here")]
+
+
+@pytest.mark.parametrize("dirname", ["backup #1", "backup %23"])
+def test_import_sessions_cli_preserves_literal_source_path(tmp_path, dirname):
+    """A filesystem path must not be interpreted as URI syntax by SQLite."""
+    import json
+    import os
+    import subprocess
+    import sys
+
+    source = tmp_path / dirname / "memstack.db"
+    source.parent.mkdir()
+    _make_store(source, sessions=[
+        ("sample", "2026-10-15", "saved diary", "2026-10-15 12:00:00"),
+    ])
+    home = tmp_path / "home" / "memstack.db"
+    env = dict(os.environ, MEMSTACK_SESSION_DB=str(home))
+    result = subprocess.run(
+        [sys.executable, str(MODULE_PATH), "import-sessions", str(source)],
+        env=env, capture_output=True, text=True, timeout=30,
+    )
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    assert report["tables"]["sessions"] == {"imported": 1, "skipped": 0}
+    assert _sessions_in(home) == _sessions_in(source)
 
 
 def test_import_sessions_refuses_a_missing_source(tmp_path, monkeypatch, capsys):
