@@ -1,5 +1,14 @@
 # MemStack™ Changelog
 
+## v3.10.3 - 2026-10-18 - A session-store source path containing # is opened as written
+
+### Fixed
+- **A source path containing a `#` character is no longer cut short when the session store opens it.** The session-store CLI and the one-time legacy adoption built a SQLite URI by string interpolation, so a source path containing `#` was cut at the `#` and lost both the rest of the path and `?mode=ro`. `import-sessions` then reported `ok: true` with zero rows and every table absent, and opened read-write, creating a stray empty file beside the source. Source paths are now converted with `Path.as_uri()` before `?mode=ro` is appended. Reported and fixed by Wu Shuwen (dajiaohuang) in PR 17.
+
+### Notes
+- **A follow-up test adjustment in a5d6610.** The new CLI regression test pointed `MEMSTACK_SESSION_DB` at a home store that did not exist yet, which triggers legacy adoption and copied a real `db/memstack.db` on any checkout holding one. It now creates the home store first, so adoption returns early.
+- Plugin-load gate PASS before the version moved: receipt `.memstack/receipts/plugin-load-20261018T232531Z.json`.
+
 ## v3.10.2 - 2026-09-26 - A prompt pasted into the wrong session is refused before it runs
 
 ### Added
