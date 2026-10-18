@@ -284,6 +284,10 @@ def test_import_sessions_cli_preserves_literal_source_path(tmp_path, dirname):
         ("sample", "2026-10-15", "saved diary", "2026-10-15 12:00:00"),
     ])
     home = tmp_path / "home" / "memstack.db"
+    # An existing home store makes legacy adoption return early, so the
+    # subprocess never copies a real db/memstack.db beside the script.
+    home.parent.mkdir()
+    _make_store(home)
     env = dict(os.environ, MEMSTACK_SESSION_DB=str(home))
     result = subprocess.run(
         [sys.executable, str(MODULE_PATH), "import-sessions", str(source)],
