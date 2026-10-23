@@ -35,27 +35,38 @@ Run both commands. This unlocks the 87 free skills right away.
 
 Windows:
 ```bash
-pip install memstack-skill-loader
+pip install --upgrade memstack-skill-loader
 ```
 
-Linux / Mac: use the explicit interpreter (the same one you register in Step 3):
+Mac / Linux: install into a dedicated virtual environment:
 ```bash
-/usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
+python3 -m venv ~/.memstack-venv
+~/.memstack-venv/bin/pip install --upgrade memstack-skill-loader
 ```
-Find yours with `which python3` and substitute it if it isn't `/usr/bin/python3`. The `--break-system-packages` flag is required on newer externally-managed Python. No pip for that interpreter? Run `sudo apt install python3-pip` first (Debian/Ubuntu).
+Recent Homebrew and Debian Pythons refuse installs into the system environment, and the MCP registration in Step 3 must point at the Python that has the package, so both steps use the venv's own Python. No `venv` module? Run `sudo apt install python3-venv` first (Debian/Ubuntu).
 
-**Step 3: Register the MCP server · (in terminal):** register against the **same interpreter you installed onto in Step 2.**
+Check the install · (in terminal):
+```bash
+# Windows
+python -m memstack_skill_loader --version
+python -m memstack_skill_loader doctor
+# Mac / Linux
+~/.memstack-venv/bin/python -m memstack_skill_loader --version
+~/.memstack-venv/bin/python -m memstack_skill_loader doctor
+```
+
+**Step 3: Register the MCP server · (in terminal):** register against the **same Python you installed onto in Step 2.**
 
 Windows:
 ```bash
 claude mcp add --scope user memstack-skills -- python -m memstack_skill_loader
 ```
 
-Linux / Mac:
+Mac / Linux:
 ```bash
-claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skill_loader
+claude mcp add --scope user memstack-skills -- ~/.memstack-venv/bin/python -m memstack_skill_loader
 ```
-If this doesn't match Step 2's interpreter, the server won't launch (you'll see a "failed to reconnect" error and `activate_license` will be missing).
+If this doesn't match Step 2's Python, the server won't launch (you'll see a "failed to reconnect" error and `activate_license` will be missing).
 
 **Step 4: Activate your license · (in Claude Code, after a full restart):** fully quit and reopen Claude Code first so it picks up the new MCP server, then run:
 ```
@@ -67,27 +78,30 @@ See [GETTING-STARTED.md](GETTING-STARTED.md) for detailed setup, and the [Troubl
 
 ### Troubleshooting
 
-**`error: externally-managed-environment` (during Step 2)**: pip refuses to install on a system-managed Python. Add `--break-system-packages` · (in terminal):
+**`error: externally-managed-environment` (during Step 2)**: pip refuses to install into a system-managed Python (recent Homebrew and Debian). Do not answer it with `--break-system-packages`; install into the venv instead, then register that venv's Python as in Step 3 · (in terminal):
 ```bash
-/usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
+python3 -m venv ~/.memstack-venv
+~/.memstack-venv/bin/pip install --upgrade memstack-skill-loader
 ```
 
 **Plugin clone fails: "Host key verification failed" (during Step 1)**: a fresh server that's never connected to GitHub over SSH. **Default fix · (in terminal):** `git config --global url."https://github.com/".insteadOf "git@github.com:"` then retry Step 1. **Backup fix · (in terminal):** `mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts` then retry Step 1.
 
 **`activate_license` not found, or MCP "failed to reconnect (-32000)"**: the loader was installed onto a **different Python interpreter** than the one Claude Code launches (the classic bare-`python` mismatch on Linux/Mac). Check · (in terminal):
 ```bash
-/usr/bin/python3 -c "import memstack_skill_loader; print('ok')"
+~/.memstack-venv/bin/python -m memstack_skill_loader doctor
 ```
-If it prints `ok`, make sure Step 3 registered that exact path, then fully restart Claude Code. If it errors with `ModuleNotFoundError`, reinstall onto the explicit interpreter and re-register against that same path · (in terminal):
+If it runs, make sure Step 3 registered that exact path, then fully restart Claude Code. If it errors with `No such file or directory` or `ModuleNotFoundError`, create the venv, reinstall, and re-register against the venv's Python. An existing registration (for example one pointing at `/usr/bin/python3`) has to be removed first · (in terminal):
 ```bash
-/usr/bin/python3 -m pip install memstack-skill-loader --break-system-packages
-claude mcp add --scope user memstack-skills -- /usr/bin/python3 -m memstack_skill_loader
+python3 -m venv ~/.memstack-venv
+~/.memstack-venv/bin/pip install --upgrade memstack-skill-loader
+claude mcp remove --scope user memstack-skills
+claude mcp add --scope user memstack-skills -- ~/.memstack-venv/bin/python -m memstack_skill_loader
 ```
-Then fully restart Claude Code. Rule of thumb: whatever interpreter you `import`-check as `ok` is the path that must appear in your `claude mcp add` command.
+Then fully restart Claude Code. Rule of thumb: whichever Python runs `doctor` successfully is the path that must appear in your `claude mcp add` command.
 
-**`No module named pip` (during Step 2)**: that interpreter ships without pip (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
+**`ensurepip is not available` or `No module named venv` (during Step 2)**: that Python ships without the venv module (common on minimal Debian/Ubuntu server images). Install it, then retry the Step 2 install · (in terminal):
 ```bash
-sudo apt install python3-pip
+sudo apt install python3-venv
 ```
 
 ### Tier Structure
@@ -133,7 +147,10 @@ then `/reload-plugins` (or restart Claude Code).
 
 **3. Engine** (the skill loader itself), in your terminal:
 ```bash
+# Windows
 pip install --upgrade memstack-skill-loader
+# Mac / Linux
+~/.memstack-venv/bin/pip install --upgrade memstack-skill-loader
 ```
 
 ## Free Base (Included)
@@ -408,8 +425,12 @@ For manual setup or advanced configuration, see [GETTING-STARTED.md](GETTING-STA
 MemStack includes a localhost dashboard for managing skills, monitoring token usage, and running multi-agent tasks.
 
 ```bash
-pip install memstack-skill-loader
+# Windows
+pip install --upgrade memstack-skill-loader
 python -m memstack_skill_loader dashboard
+# Mac / Linux (the venv from Install Step 2)
+~/.memstack-venv/bin/pip install --upgrade memstack-skill-loader
+~/.memstack-venv/bin/python -m memstack_skill_loader dashboard
 ```
 
 Then open [http://localhost:3333](http://localhost:3333).
