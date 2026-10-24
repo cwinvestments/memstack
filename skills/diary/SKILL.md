@@ -41,7 +41,7 @@ When the user asks to save a diary, keep these in mind:
 
 | Temptation | Why it matters |
 |---|---|
-| "Nothing important happened" | Even small decisions have context worth capturing. |
+| "Nothing important happened" | Even small decisions are worth recording: what was decided, and who decided it. |
 | "Commits capture everything" | Commits don't capture decisions, blockers, or next steps. |
 | "Skip the handoff section" | Handoffs are the most valuable part for session continuity. |
 
@@ -57,8 +57,8 @@ When the user asks to save a diary, keep these in mind:
    - What was built or changed
    - Key files created or modified
    - Commits made (hashes and messages)
-   - Decisions made and why
-   - Problems encountered and solutions
+   - Decisions as made and who made each: a user decision with its reason as stated in the session, the task prompt or a commit message; a session choice as what was chosen
+   - Problems as they appeared (the error or failing check) and the fix as applied
 
 2. **Check git log** for commits:
    ```bash
@@ -79,7 +79,8 @@ When the user asks to save a diary, keep these in mind:
    - abc1234 Message
 
    ## Decisions
-   - Decision: reason
+   - User decision: what was decided. Stated reason: as quoted from the session, the task prompt or a commit message, or "none stated"
+   - Session choice: what was chosen
 
    ## Next Steps
    - What to do next
@@ -88,7 +89,7 @@ When the user asks to save a diary, keep these in mind:
    **In Progress:** [what was actively being worked on when session ended]
    **Uncommitted Changes:** [list any unstaged/uncommitted work, or "None"]
    **Pick Up Here:** [exact instruction for next session, specific enough to start cold]
-   **Session Context:** [anything important that isn't captured elsewhere: temp decisions, debugging state, gotchas discovered]
+   **Session Context:** [anything important that isn't captured elsewhere, as observed: temporary decisions and who made them, the debugging state as last seen (what was run and what it showed), gotchas found]
    ```
 
 4. **Save to SQLite database** (primary storage):
@@ -131,9 +132,9 @@ When the user asks to save a diary, keep these in mind:
    - `lesson`: a general rule learned the hard way. Broader than one bug.
    - `pattern`: a reusable approach or convention that worked.
    - `warning`: a known hazard to avoid. Not yet a bug, but will be.
-   - `failed_approach`: something tried that did not work, and why. Prevents retrying it.
+   - `failed_approach`: something tried that did not work, and the failure as observed (the error, the test result). Prevents retrying it.
    - `architecture`: a structural fact about how a system is built.
-   - `decision`: a choice made and the reasoning. Historical record.
+   - `decision`: a decision as made and who made it, with the reason only as already recorded (the user's words, the task prompt or a commit message). Historical record.
 
    The first five are **procedural**: an agent can act on them at retrieval time. `architecture` and `decision` are **record**. When a row could be either, prefer the procedural type.
 
