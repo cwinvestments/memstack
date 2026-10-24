@@ -2074,6 +2074,14 @@ def _gate_cases(base: Path) -> list[dict]:
     #     the SAME variable with a longer prompt, which must arm: without it
     #     this case would pass against a build whose trigger had simply stopped
     #     working, which is the failure it is meant to rule out.
+    #     The long prompt names the repo under test. The report marker defers
+    #     to the working-directory guard, so a long prompt naming any other
+    #     directory is refused before it can arm, and the control would fail
+    #     for the guard rather than the trigger. The short prompt keeps its
+    #     30 characters and so cannot name this repo; the floor is checked
+    #     before the guard is consulted, and report_trigger_match is asserted
+    #     None for it directly, so its quiet half is the floor's and not the
+    #     guard's.
     short_repo = base / "trigger-short"
     reason = _init_repo(short_repo, {"src/app.py": "VALUE = 1\n"})
     if reason:
@@ -2082,8 +2090,8 @@ def _gate_cases(base: Path) -> list[dict]:
     else:
         marker = report_marker_path(short_repo)
         short_prompt = "Working directory: C:/aaa/proj"
-        long_prompt = ("Working directory: C:/aaa/proj"
-                       "\n\nRun the checks and fix what fails.\n")
+        long_prompt = ("Working directory: " + str(short_repo)
+                       + "\n\nRun the checks and fix what fails.\n")
         saved = _env_snapshot(_REPORT_ENV_NAMES)
         try:
             _env_apply({REPORT_ON_TASK_PROMPTS_ENV: "1",
@@ -2092,7 +2100,8 @@ def _gate_cases(base: Path) -> list[dict]:
                 json.dumps(_prompt_payload(short_repo, "s-short",
                                            short_prompt)),
                 short_repo)
-            stayed_quiet = quiet is None and not marker.exists()
+            stayed_quiet = (quiet is None and not marker.exists()
+                            and report_trigger_match(short_prompt) is None)
             armed = report_marker_from_text(
                 json.dumps(_prompt_payload(short_repo, "s-short",
                                            long_prompt)),
@@ -2174,6 +2183,12 @@ def _gate_cases(base: Path) -> list[dict]:
     #     prompt with the first line removed, which must fall back to the cwd:
     #     without it this case would pass against a build that had simply
     #     stopped reading the cwd at all.
+    #     The named directory is other-project INSIDE the launch directory.
+    #     The report marker defers to the working-directory guard, which
+    #     refuses a declared directory unrelated to the cwd, so naming a
+    #     sibling repo would arm nothing. A child passes the guard and still
+    #     has a leaf that differs from the cwd's, which is the distinction
+    #     under test.
     keyed_repo = base / "report-keying"
     reason = _init_repo(keyed_repo, {"src/app.py": "VALUE = 1\n"})
     if reason:
@@ -2186,7 +2201,8 @@ def _gate_cases(base: Path) -> list[dict]:
         named = report_marker_from_text(
             json.dumps(_prompt_payload(
                 keyed_repo, "s-keyed",
-                "Working directory: C:\\Projects\\other-project\n\n" + body)),
+                "Working directory: " + str(keyed_repo / "other-project")
+                + "\n\n" + body)),
             keyed_repo)
         named_prefix = str((_load_json(marker) or {}).get("expected_prefix")
                            or "")
@@ -2204,7 +2220,8 @@ def _gate_cases(base: Path) -> list[dict]:
         )
         cases.append(_case(
             "prefix-follows-the-named-working-directory",
-            "one prompt naming another repo, then the same prompt naming none",
+            "one prompt naming a child directory, then the same prompt naming"
+            " none",
             ok,
             "named_prefix=" + repr(named_prefix)
             + " fallback_prefix=" + repr(fallback_prefix)
