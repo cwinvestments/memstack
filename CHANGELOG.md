@@ -1,5 +1,17 @@
 # MemStack™ Changelog
 
+## v3.10.4 - 2026-10-24 - The diary records reasons as stated, not reasoning
+
+### Changed
+- **The diary skill now records what happened and who decided it, not a narrative of reasoning.** Decisions are recorded as made and with who made them: a user's decision carries its reason only as stated in the session, the task prompt or a commit message, and a choice made by the session is recorded as what was chosen. Problems are recorded as they appeared, with the fix as applied, and failed approaches with the failure as observed. The `decision` and `failed_approach` insight types say the same. Section names, the FACTS format, the filename rule, the ingest call and the skip rules are unchanged.
+- **Why this was reviewed.** Issue #19 reported the diary turn being declined by Opus 5.5's safeguards as reasoning extraction. A short session does not reproduce it, and the report is filed upstream as anthropics/claude-code#104825. The wording change is a correctness fix to what the diary records, because a fact in the diary should carry provenance and an after-the-fact account of reasoning does not. It is not a workaround for the report.
+
+### Fixed
+- **Two selftest cases that failed since the report marker began deferring to the working-directory guard now declare a directory the guard accepts.** `short-prompts-never-arm` names the repo under test in its control prompt, and its short half also asserts that the length floor, not the guard, kept it quiet. `prefix-follows-the-named-working-directory` names a child of the launch directory, because the guard now refuses an unrelated repo, and a child still has a leaf that differs from the cwd's. No assertion was weakened; the marker and the guard are unchanged. Selftest is 36 of 36.
+
+### Notes
+- Plugin-load gate PASS before the version moved, 87 of 87 SKILL.md registered: receipt `.memstack/receipts/plugin-load-20261024T130549Z.json`.
+
 ## v3.10.3 - 2026-10-18 - A session-store source path containing # is opened as written
 
 ### Fixed
