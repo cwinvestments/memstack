@@ -476,66 +476,75 @@ def cmd_add_insight(args):
     print(json.dumps(response))
 
 
-def _insight_sync_module():
-    """The loader's insight_sync, or None when it cannot be used safely.
+# The first loader whose insight_sync resolves an unlinked insight's lesson.
+# A version check, not import success alone: insight_sync was committed to the
+# loader (f426663, 493d562) while its tree still said 4.21.3, and at f426663
+# correct_insight changed an unlinked insight's row only and reported lesson
+# action none. An editable or source install at that point imports fine.
+MIN_LOADER_FOR_INSIGHT_SYNC = (4, 21, 4)
 
-    None when the loader is not importable, predates insight_sync, or when
-    MEMSTACK_DB_PATH redirects it: lesson ids were minted against the default
-    memory.db, the same reason bridge_to_loader skips under that override.
+_LOADER_TOO_OLD = (
+    "the installed loader does not support safe insight correction ({found}); "
+    "update memstack-skill-loader to 4.21.4 or newer "
+    "(pip install --upgrade memstack-skill-loader) and run the command again. "
+    "Nothing was changed."
+)
+
+
+def _version_tuple(text):
+    """'4.21.4' or '4.21.4.dev1' to (4, 21, 4); None when not parseable."""
+    parts = []
+    for piece in str(text).split(".")[:3]:
+        digits = ""
+        for ch in piece:
+            if not ch.isdigit():
+                break
+            digits += ch
+        if not digits:
+            return None
+        parts.append(int(digits))
+    return tuple(parts) if len(parts) == 3 else None
+
+
+def _insight_sync_module():
+    """(insight_sync, None) when lesson sync is safe, else (None, reason).
+
+    The reason names the cause and the fix. Refused when the loader is not
+    importable, is older than 4.21.4, or when MEMSTACK_DB_PATH redirects it:
+    lesson ids were minted against the default memory.db, the same reason
+    bridge_to_loader skips under that override.
     """
     if os.environ.get("MEMSTACK_DB_PATH"):
-        return None
+        return None, (
+            "MEMSTACK_DB_PATH redirects the skill-loader's memory.db, so the "
+            "insight's bridged lesson cannot be reached; unset MEMSTACK_DB_PATH "
+            "and run the command again. Nothing was changed."
+        )
+    try:
+        import memstack_skill_loader as loader
+    except Exception:
+        return None, _LOADER_TOO_OLD.format(found="memstack-skill-loader is not installed")
+    version = getattr(loader, "__version__", None)
+    if version is None:
+        try:
+            import importlib.metadata as md
+            version = md.version("memstack-skill-loader")
+        except Exception:
+            version = None
+    parsed = _version_tuple(version) if version is not None else None
+    if parsed is None or parsed < MIN_LOADER_FOR_INSIGHT_SYNC:
+        found = f"found {version}" if version is not None else "version unknown"
+        return None, _LOADER_TOO_OLD.format(found=found)
     try:
         from memstack_skill_loader import insight_sync
     except Exception:
-        return None
-    return insight_sync
+        return None, _LOADER_TOO_OLD.format(found=f"found {version} without insight_sync")
+    return insight_sync, None
 
 
 def _fail(message: str) -> None:
     print(json.dumps({"ok": False, "error": message}))
     sys.exit(1)
-
-
-def _local_insight_op(insight_id: int, op: str, data: dict) -> dict:
-    """Correct or delete an insight that has no linked lesson, without the loader.
-
-    A linked insight is refused here: its lesson and index entry live in the
-    loader's memory.db, and changing only the insight is exactly how the
-    copies drift apart.
-    """
-    conn = get_db()
-    try:
-        row = conn.execute("SELECT * FROM insights WHERE id = ?", (insight_id,)).fetchone()
-        if row is None:
-            _fail(f"no insight {insight_id}")
-        if row["lesson_id"] is not None:
-            _fail(
-                f"insight {insight_id} is linked to lesson {row['lesson_id']} in the "
-                "skill-loader's memory.db, which cannot be reached here (the "
-                "memstack-skill-loader package is missing, too old, or "
-                "MEMSTACK_DB_PATH redirects it); nothing was changed"
-            )
-        if op == "correct":
-            conn.execute(
-                "UPDATE insights SET content = ?, context = ?, tags = ? WHERE id = ?",
-                (data["content"],
-                 row["context"] if data.get("context") is None else data["context"],
-                 row["tags"] if data.get("tags") is None else data["tags"],
-                 insight_id),
-            )
-            result = {"ok": True, "insight_id": insight_id,
-                      "previous": {"content": row["content"], "context": row["context"],
-                                   "tags": row["tags"]}}
-        else:
-            conn.execute("DELETE FROM insights WHERE id = ?", (insight_id,))
-            result = {"ok": True, "insight_id": insight_id,
-                      "deleted": {"content": row["content"], "context": row["context"]}}
-        conn.commit()
-    finally:
-        conn.close()
-    result["lesson"] = {"action": "none", "reason": "insight has no linked lesson"}
-    return result
 
 
 def cmd_correct_insight(args):
@@ -548,11 +557,13 @@ def cmd_correct_insight(args):
         _fail("id must be an integer insight id")
     if not str(data["content"]).strip():
         _fail("content must not be empty")
-    get_db().close()  # applies the lesson_id column to an older store
-    sync = _insight_sync_module()
+    # Gate before any store is opened: without a safe insight_sync the
+    # command refuses and touches nothing, rather than changing the insight
+    # row alone and leaving its lesson and search entry stale.
+    sync, reason = _insight_sync_module()
     if sync is None:
-        print(json.dumps(_local_insight_op(insight_id, "correct", data)))
-        return
+        _fail(reason)
+    get_db().close()  # applies the lesson_id column to an older store
     try:
         result = sync.correct_insight(
             insight_id, data["content"], context=data.get("context"),
@@ -566,11 +577,10 @@ def cmd_correct_insight(args):
 
 def cmd_delete_insight(args):
     """Delete an insight, its bridged lesson and the lesson's search index entry."""
-    get_db().close()  # applies the lesson_id column to an older store
-    sync = _insight_sync_module()
+    sync, reason = _insight_sync_module()  # refuse before touching any store
     if sync is None:
-        print(json.dumps(_local_insight_op(args.id, "delete", {})))
-        return
+        _fail(reason)
+    get_db().close()  # applies the lesson_id column to an older store
     try:
         result = sync.delete_insight(args.id, force=args.force,
                                      session_db=resolve_db_path())
@@ -586,11 +596,10 @@ def cmd_link_lessons(args):
     lesson category equals insight type and lesson content equals the bridged
     body. Only NULL lesson_id values are written, nothing else.
     """
+    sync, reason = _insight_sync_module()
+    if sync is None:
+        _fail(reason)
     get_db().close()  # applies the lesson_id column to an older store
-    sync = _insight_sync_module()
-    if sync is None or not hasattr(sync, "backfill_links"):
-        _fail("link-lessons needs the memstack-skill-loader package with insight_sync, "
-              "and MEMSTACK_DB_PATH unset")
     result = sync.backfill_links(session_db=resolve_db_path(), apply=args.apply,
                                  since=args.since)
     result["ok"] = True

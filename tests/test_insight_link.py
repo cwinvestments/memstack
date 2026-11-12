@@ -160,27 +160,51 @@ def test_shared_lesson_is_forked_not_rewritten(stores, capsys):
     assert search_ids("genets") == [str(lid)]
 
 
-def test_without_the_loader_linked_insights_are_refused(stores, capsys, monkeypatch):
+def test_without_insight_sync_every_insight_is_refused(stores, capsys, monkeypatch):
+    """No local fallback: linked or not, nothing changes and the command exits 1.
+
+    An unlinked insight is not proof of no lesson (pairs bridged before
+    lesson_id existed have one), so the old row-only fallback was a silent
+    half-correction. tests/test_insight_gate.py covers the real causes.
+    """
     linked = add(capsys, "Linked insight.")
     plain = add(capsys, "Plain decision.", type_="decision")
-    monkeypatch.setattr(mdb, "_insight_sync_module", lambda: None)
-    with pytest.raises(SystemExit):
-        correct(capsys, id=linked["id"], content="changed")
-    err = json.loads(capsys.readouterr().out)
-    assert err["ok"] is False and "nothing was changed" in err["error"]
-    assert q(stores["sess"], "SELECT content FROM insights WHERE id = ?",
-             (linked["id"],)) == [("Linked insight.",)]
-    res = correct(capsys, id=plain["id"], content="Better decision.")
-    assert res["ok"] and res["lesson"]["action"] == "none"
-    res = run(capsys, mdb.cmd_delete_insight, id=plain["id"], force=False)
-    assert res["ok"]
-    assert q(stores["sess"], "SELECT COUNT(*) FROM insights WHERE id = ?",
-             (plain["id"],)) == [(0,)]
+    before = q(stores["sess"], "SELECT * FROM insights ORDER BY id")
+    monkeypatch.setattr(mdb, "_insight_sync_module",
+                        lambda: (None, "simulated: update memstack-skill-loader"))
+    for iid in (linked["id"], plain["id"]):
+        with pytest.raises(SystemExit) as exc:
+            correct(capsys, id=iid, content="changed")
+        assert exc.value.code == 1
+        assert json.loads(capsys.readouterr().out)["ok"] is False
+        with pytest.raises(SystemExit) as exc:
+            run(capsys, mdb.cmd_delete_insight, id=iid, force=False)
+        assert exc.value.code == 1
+        assert json.loads(capsys.readouterr().out)["ok"] is False
+    assert q(stores["sess"], "SELECT * FROM insights ORDER BY id") == before
 
 
 def test_memstack_db_path_override_disables_lesson_sync(monkeypatch):
     monkeypatch.setenv("MEMSTACK_DB_PATH", "elsewhere.db")
-    assert mdb._insight_sync_module() is None
+    sync, reason = mdb._insight_sync_module()
+    assert sync is None and "MEMSTACK_DB_PATH" in reason
+
+
+def test_the_installed_loader_passes_the_gate():
+    assert mdb._insight_sync_module() == (isy, None)
+
+
+def test_unlinked_insight_still_goes_through_insight_sync(stores, capsys):
+    """With insight_sync available, an unlinked insight is the loader's call."""
+    plain = add(capsys, "Plain decision.", type_="decision")
+    res = correct(capsys, id=plain["id"], content="Better decision.")
+    assert res["ok"] and res["lesson"]["action"] == "none"
+    assert q(stores["sess"], "SELECT content FROM insights WHERE id = ?",
+             (plain["id"],)) == [("Better decision.",)]
+    res = run(capsys, mdb.cmd_delete_insight, id=plain["id"], force=False)
+    assert res["ok"]
+    assert q(stores["sess"], "SELECT COUNT(*) FROM insights WHERE id = ?",
+             (plain["id"],)) == [(0,)]
 
 
 def test_get_db_adds_the_link_column_to_an_older_store(tmp_path, monkeypatch):
