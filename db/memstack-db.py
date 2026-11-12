@@ -10,6 +10,9 @@ Commands:
     init                          Initialize/migrate the database
     add-session   <json>          Add a session diary entry
     add-insight   <json>          Add an insight/decision
+    correct-insight <json>        Correct an insight and every copy of it
+    delete-insight  <id>          Delete an insight and every copy of it
+    link-lessons  [--apply]       One-time: link insights to their bridged lessons
     search        <query> [opts]  Full-text search across all tables
     get-sessions  <project> [n]   Get recent sessions for a project
     get-insights  <project>       Get insights for a project
@@ -203,6 +206,50 @@ def resolve_project_dir(memory_db, project) -> dict:
     return {"project_dir": cwd, "autoregistered": cwd}
 
 
+# Derivation of the bridged lesson from an insight. correct-insight re-derives
+# with the loader's copy of these (memstack_skill_loader.insight_sync), so the
+# two MUST stay equivalent; tests/test_insight_link.py compares them.
+
+def derive_lesson_title(content) -> str:
+    """procedural_memory.title is NOT NULL and insights has no title: derive one."""
+    text = content or ""
+    idx = text.find(". ")
+    if idx != -1 and idx < 120:
+        title = text[:idx]
+    else:
+        title = text[:90]
+    title = title.strip()
+    if title.endswith("."):
+        title = title[:-1]
+    title = " ".join(title.split())
+    if len(title) > 90:
+        cut = title[:90]
+        if " " in cut:
+            cut = cut[:cut.rfind(" ")]
+        title = cut.rstrip() + "..."
+    if not title:
+        title = text[:60]
+    return title
+
+
+def derive_lesson_body(content, context) -> str:
+    """Content plus operative context (procedural_memory has no context column)."""
+    body = content or ""
+    if context and context.strip():
+        body = body + "\n\nContext: " + context.strip()
+    return body
+
+
+def derive_lesson_tags(tags):
+    """Comma-separated string to an ordered unique list; empty to None."""
+    tag_list = []
+    for tag in (tags or "").split(","):
+        tag = tag.strip()
+        if tag and tag not in tag_list:
+            tag_list.append(tag)
+    return tag_list or None
+
+
 def bridge_to_loader(project, type_value, content, context, tags, created_at) -> dict:
     """Mirror a procedural insight into the skill-loader's memory.db; never raises."""
     try:
@@ -230,37 +277,10 @@ def bridge_to_loader(project, type_value, content, context, tags, created_at) ->
             return {"bridge_skipped": resolution["reason"]}
         autoregistered = resolution.get("autoregistered")
 
-        # 5. Derive a title (procedural_memory.title is NOT NULL; insights has none).
-        text = content or ""
-        idx = text.find(". ")
-        if idx != -1 and idx < 120:
-            title = text[:idx]
-        else:
-            title = text[:90]
-        title = title.strip()
-        if title.endswith("."):
-            title = title[:-1]
-        title = " ".join(title.split())
-        if len(title) > 90:
-            cut = title[:90]
-            if " " in cut:
-                cut = cut[:cut.rfind(" ")]
-            title = cut.rstrip() + "..."
-        if not title:
-            title = text[:60]
-
-        # 6. Content: append operative context (procedural_memory has no context col).
-        body = content or ""
-        if context and context.strip():
-            body = body + "\n\nContext: " + context.strip()
-
-        # 7. Tags: comma-separated string -> ordered unique list; empty -> None.
-        tag_list = []
-        for tag in (tags or "").split(","):
-            tag = tag.strip()
-            if tag and tag not in tag_list:
-                tag_list.append(tag)
-        stack_tags = tag_list or None
+        # 5-7. Title, body (content plus operative context) and tag list.
+        title = derive_lesson_title(content)
+        body = derive_lesson_body(content, context)
+        stack_tags = derive_lesson_tags(tags)
 
         # 8-9. created_at passed through verbatim (keyword-only). None -> failure.
         lesson_id = memory_db.insert_lesson(
@@ -335,8 +355,28 @@ def get_db():
     conn.execute("PRAGMA foreign_keys = ON")
     if is_new:
         conn.executescript(SCHEMA_PATH.read_text())
+    _ensure_lesson_link(conn)
     print(f"memstack-db: store {db_path}", file=sys.stderr)
     return conn
+
+
+def _ensure_lesson_link(conn) -> None:
+    """Add insights.lesson_id to a store created before it existed.
+
+    lesson_id is the id of the lesson bridge_to_loader wrote for the insight
+    in the loader's memory.db. It is what lets correct-insight and
+    delete-insight reach the lesson without guessing from timestamps. The link
+    lives on the insight because one lesson can stand for several insights
+    (the loader dedupes identical lessons), which a single pointer on the
+    lesson could not express. NULL means no lesson is linked.
+    """
+    cols = [r[1] for r in conn.execute("PRAGMA table_info(insights)")]
+    if not cols or "lesson_id" in cols:
+        return
+    conn.execute("ALTER TABLE insights ADD COLUMN lesson_id INTEGER")
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_insights_lesson ON insights(lesson_id)")
+    conn.commit()
 
 
 def cmd_init(_args):
@@ -421,7 +461,140 @@ def cmd_add_insight(args):
             created_at,
         )
     )
+    lesson_id = (response.get("bridged") or {}).get("lesson_id")
+    if lesson_id is not None:
+        # Persist the link, so a later correct-insight or delete-insight
+        # reaches exactly this lesson instead of matching on timestamps.
+        try:
+            conn = get_db()
+            conn.execute("UPDATE insights SET lesson_id = ? WHERE id = ?",
+                         (lesson_id, row_id))
+            conn.commit()
+            conn.close()
+        except sqlite3.Error as exc:
+            response["link_error"] = str(exc)
     print(json.dumps(response))
+
+
+def _insight_sync_module():
+    """The loader's insight_sync, or None when it cannot be used safely.
+
+    None when the loader is not importable, predates insight_sync, or when
+    MEMSTACK_DB_PATH redirects it: lesson ids were minted against the default
+    memory.db, the same reason bridge_to_loader skips under that override.
+    """
+    if os.environ.get("MEMSTACK_DB_PATH"):
+        return None
+    try:
+        from memstack_skill_loader import insight_sync
+    except Exception:
+        return None
+    return insight_sync
+
+
+def _fail(message: str) -> None:
+    print(json.dumps({"ok": False, "error": message}))
+    sys.exit(1)
+
+
+def _local_insight_op(insight_id: int, op: str, data: dict) -> dict:
+    """Correct or delete an insight that has no linked lesson, without the loader.
+
+    A linked insight is refused here: its lesson and index entry live in the
+    loader's memory.db, and changing only the insight is exactly how the
+    copies drift apart.
+    """
+    conn = get_db()
+    try:
+        row = conn.execute("SELECT * FROM insights WHERE id = ?", (insight_id,)).fetchone()
+        if row is None:
+            _fail(f"no insight {insight_id}")
+        if row["lesson_id"] is not None:
+            _fail(
+                f"insight {insight_id} is linked to lesson {row['lesson_id']} in the "
+                "skill-loader's memory.db, which cannot be reached here (the "
+                "memstack-skill-loader package is missing, too old, or "
+                "MEMSTACK_DB_PATH redirects it); nothing was changed"
+            )
+        if op == "correct":
+            conn.execute(
+                "UPDATE insights SET content = ?, context = ?, tags = ? WHERE id = ?",
+                (data["content"],
+                 row["context"] if data.get("context") is None else data["context"],
+                 row["tags"] if data.get("tags") is None else data["tags"],
+                 insight_id),
+            )
+            result = {"ok": True, "insight_id": insight_id,
+                      "previous": {"content": row["content"], "context": row["context"],
+                                   "tags": row["tags"]}}
+        else:
+            conn.execute("DELETE FROM insights WHERE id = ?", (insight_id,))
+            result = {"ok": True, "insight_id": insight_id,
+                      "deleted": {"content": row["content"], "context": row["context"]}}
+        conn.commit()
+    finally:
+        conn.close()
+    result["lesson"] = {"action": "none", "reason": "insight has no linked lesson"}
+    return result
+
+
+def cmd_correct_insight(args):
+    """Correct an insight, its bridged lesson and the lesson's search index entry."""
+    data = parse_json_arg(args.json)
+    require_fields(data, "id", "content")
+    try:
+        insight_id = int(data["id"])
+    except (TypeError, ValueError):
+        _fail("id must be an integer insight id")
+    if not str(data["content"]).strip():
+        _fail("content must not be empty")
+    get_db().close()  # applies the lesson_id column to an older store
+    sync = _insight_sync_module()
+    if sync is None:
+        print(json.dumps(_local_insight_op(insight_id, "correct", data)))
+        return
+    try:
+        result = sync.correct_insight(
+            insight_id, data["content"], context=data.get("context"),
+            tags=data.get("tags"), force=bool(data.get("force", False)),
+            session_db=resolve_db_path(),
+        )
+    except sync.InsightSyncError as exc:
+        _fail(str(exc))
+    print(json.dumps(result))
+
+
+def cmd_delete_insight(args):
+    """Delete an insight, its bridged lesson and the lesson's search index entry."""
+    get_db().close()  # applies the lesson_id column to an older store
+    sync = _insight_sync_module()
+    if sync is None:
+        print(json.dumps(_local_insight_op(args.id, "delete", {})))
+        return
+    try:
+        result = sync.delete_insight(args.id, force=args.force,
+                                     session_db=resolve_db_path())
+    except sync.InsightSyncError as exc:
+        _fail(str(exc))
+    print(json.dumps(result))
+
+
+def cmd_link_lessons(args):
+    """One-time backfill of insights.lesson_id for insights bridged before it existed.
+
+    Dry run unless --apply. Matches exactly as the 2026-11-12 diagnosis did:
+    lesson category equals insight type and lesson content equals the bridged
+    body. Only NULL lesson_id values are written, nothing else.
+    """
+    get_db().close()  # applies the lesson_id column to an older store
+    sync = _insight_sync_module()
+    if sync is None or not hasattr(sync, "backfill_links"):
+        _fail("link-lessons needs the memstack-skill-loader package with insight_sync, "
+              "and MEMSTACK_DB_PATH unset")
+    result = sync.backfill_links(session_db=resolve_db_path(), apply=args.apply,
+                                 since=args.since)
+    result["ok"] = True
+    print(json.dumps(result))
 
 
 def cmd_search(args):
@@ -679,6 +852,8 @@ IMPORT_TABLES = (
         ("created_at", "project", "accomplished"),
     ),
     (
+        # lesson_id is NOT carried: it names a lesson in the memory.db of the
+        # machine that minted it, and means nothing in this store's memory.db.
         "insights",
         ("project", "type", "content", "context", "tags", "created_at"),
         ("created_at", "project", "content"),
@@ -804,6 +979,18 @@ def main():
     p = sub.add_parser("add-insight")
     p.add_argument("json")
 
+    p = sub.add_parser("correct-insight")
+    p.add_argument("json")
+
+    p = sub.add_parser("delete-insight")
+    p.add_argument("id", type=int)
+    p.add_argument("--force", action="store_true")
+
+    p = sub.add_parser("link-lessons")
+    p.add_argument("--apply", action="store_true")
+    p.add_argument("--since", default=None,
+                   help="only link insights created at or after this timestamp")
+
     p = sub.add_parser("search")
     p.add_argument("query")
     p.add_argument("--project", default=None)
@@ -848,6 +1035,9 @@ def main():
         "init": cmd_init,
         "add-session": cmd_add_session,
         "add-insight": cmd_add_insight,
+        "correct-insight": cmd_correct_insight,
+        "delete-insight": cmd_delete_insight,
+        "link-lessons": cmd_link_lessons,
         "search": cmd_search,
         "get-sessions": cmd_get_sessions,
         "get-insights": cmd_get_insights,

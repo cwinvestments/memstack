@@ -28,7 +28,8 @@ CREATE TABLE IF NOT EXISTS insights (
     content     TEXT    NOT NULL,
     context     TEXT,                            -- what prompted this insight
     tags        TEXT,                            -- comma-separated
-    created_at  TEXT    DEFAULT (datetime('now'))
+    created_at  TEXT    DEFAULT (datetime('now')),
+    lesson_id   INTEGER                          -- bridged lesson in the loader's memory.db
 );
 
 -- Project context: current state of each managed project
@@ -70,5 +71,6 @@ CREATE INDEX IF NOT EXISTS idx_sessions_project     ON sessions(project);
 CREATE INDEX IF NOT EXISTS idx_sessions_date        ON sessions(date);
 CREATE INDEX IF NOT EXISTS idx_insights_project     ON insights(project);
 CREATE INDEX IF NOT EXISTS idx_insights_type        ON insights(type);
+CREATE INDEX IF NOT EXISTS idx_insights_lesson      ON insights(lesson_id);
 CREATE INDEX IF NOT EXISTS idx_plans_project        ON plans(project);
 CREATE INDEX IF NOT EXISTS idx_plans_status         ON plans(status);
