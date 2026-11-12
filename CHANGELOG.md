@@ -1,5 +1,25 @@
 # MemStack™ Changelog
 
+## v3.10.5 - 2026-11-12 - Insight corrections reach every copy, or refuse
+
+An insight that `add-insight` bridges has three copies: the `insights` row in the plugin's memstack.db, the lesson in the skill-loader's `procedural_memory`, and that lesson's `memory_fts` row, which `memory_search` reads. Nothing corrected or deleted them together, so a correction left the old text searchable. This release gives them one correction path, owned by the loader.
+
+### Added
+- **`correct-insight <json>` and `delete-insight <id> [--force]` change an insight and every copy of it.** Both delegate to the loader's `insight_sync`, which rewrites or removes the insight, its lesson and the lesson's search entry in one transaction across both database files. Correction is in place, and the result carries the previous text. A lesson that another insight shares is forked on correct and kept on delete. A lesson that no longer holds the insight's current text is refused unless `force` is passed. An insight with no stored link is resolved by the loader, by the same rule `link-lessons` uses: the lesson's category equals the insight type, its content equals the bridged body exactly, and only one lesson matches.
+- **`insights.lesson_id` links an insight to its bridged lesson.** It lives on the insight because one lesson can stand for several insights (the loader dedupes identical lessons). `add-insight` writes it on every bridge, `schema.sql` carries it for new stores, and an older store gains the column on first open. `import-sessions` does not carry it, since it only means something in the source machine's memory.db.
+- **`link-lessons [--apply] [--since TS]` backfills the link** for insights bridged before the column existed. It is a dry run unless `--apply` is passed, and it writes only NULL `lesson_id` values.
+
+### Requires
+- **memstack-skill-loader 4.21.4 or newer.** `correct-insight`, `delete-insight` and `link-lessons` delegate to the loader's `insight_sync`, which first ships in 4.21.4. Update with `pip install --upgrade memstack-skill-loader`.
+- **On an older loader the commands refuse instead of half-correcting.** On a loader that was missing or older than 4.21.4, the first version of these commands on dev (`ac12dd9`, never released) fell back to changing an unlinked insight's row alone, reported lesson action `none` and exited 0. An unlinked insight can still have a bridged lesson, so that left the lesson and its search entry stale. All three commands now exit 1 with a message saying the installed loader does not support safe insight correction and to update memstack-skill-loader to 4.21.4 or newer, and nothing is changed, not even the insight row. The check runs before any store is opened. `MEMSTACK_DB_PATH` set is refused the same way, with a message naming that cause. The check reads the loader's version rather than relying on `insight_sync` importing, because the module existed in the loader's source tree while it still said 4.21.3, in a form that made the same row-only change. (`6fd9b55`)
+
+### Existing stores: link old pairs by hand
+Insights saved before this release have no `lesson_id`. Correct and delete handle them one at a time as above. To link them all at once, run `memstack-db.py link-lessons` from the plugin, which is a dry run, and then `memstack-db.py link-lessons --apply`. This is a one-time manual step. Neither the plugin nor the loader runs it automatically.
+
+### Notes
+- Plugin-load gate PASS before the version moved, 87 of 87 SKILL.md registered: receipt `.memstack/receipts/plugin-load-20261112T210307Z.json`.
+- Suite 282 passed. `tests/test_insight_gate.py` (25 tests) runs without the loader and covers the refusal; all 25 fail against the `ac12dd9` fallback.
+
 ## v3.10.4 - 2026-10-24 - The diary records reasons as stated, not reasoning
 
 ### Changed
